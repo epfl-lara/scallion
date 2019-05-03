@@ -2,9 +2,9 @@ package scallion
 
 object ExParsers extends Parsers with CharSources {
 
-  type Error = String
+  type ErrorMessage = String
 
-  sealed abstract class Token(val representation: Seq[Character])
+  sealed abstract class Token(val repr: Seq[Character]) extends HasRepr
 
   case object If extends Token("if")
   case object Else extends Token("else")
@@ -19,8 +19,6 @@ object ExParsers extends Parsers with CharSources {
   case class Operator(value: String) extends Token(value)
   case object ErrorToken extends Token("<Error>")
   case object EndToken extends Token("")
-
-  override def represent(token: Token): Seq[Character] = token.representation
 
   val tokenizer = Tokenizer(
     Producer(word("if"), cs => If),
@@ -41,18 +39,34 @@ object ExParsers extends Parsers with CharSources {
   case class IntegerLiteral(value: BigInt) extends Expr
   case class BooleanLiteral(value: Boolean) extends Expr
   case class IfExpr(condition: Expr, thenExpr: Expr, elseExpr: Expr) extends Expr
+  case class Plus(lhs: Expr, rhs: Expr) extends Expr
+  case class Minus(lhs: Expr, rhs: Expr) extends Expr
+  case class UPlus(expr: Expr) extends Expr
+  case class UMinus(expr: Expr) extends Expr
 
-  lazy val space: Parser[Unit] = accepts("Expected a space.", " ") {
+  lazy val space: Parser[Unit] = accepts(_ => "Expected a space.") {
     case Space => ()
   }
 
+  lazy val arithBinOp: Parser[(Expr, Expr) => Expr] =
+    accepts(_ => "Expected an operator", "+", "-") {
+      case Operator("+") => Plus(_, _)
+      case Operator("-") => Minus(_, _)
+    }
+
+  lazy val arithUnOp: Parser[Expr => Expr] =
+    accepts(_ => "Expected an operator", "+", "-") {
+      case Operator("+") => UPlus(_)
+      case Operator("-") => UMinus(_)
+    }
+
   lazy val ifParser: Parser[Expr] = {
-    elem(If, "Expected an if expression.") >>
-    spaced(elem(Punctuation('('), "Expected an open parenthesis.")) >>
+    elem(If, _ => "Expected an if expression.") >>
+    spaced(elem(Punctuation('('), _ => "Expected an open parenthesis.")) >>
     exprParser &&
-    spaced(elem(Punctuation(')'), "Expected a close parenthesis.")) >>
+    spaced(elem(Punctuation(')'), _ => "Expected a close parenthesis.")) >>
     exprParser &&
-    spaced(elem(Else, "Expected an else branch.")) >>
+    spaced(elem(Else, _ => "Expected an else branch.")) >>
     exprParser
   } map {
     case c && t && e => IfExpr(c, t , e)
@@ -62,12 +76,12 @@ object ExParsers extends Parsers with CharSources {
     integerLiteralParser | booleanLiteralParser
 
   lazy val integerLiteralParser: Parser[Expr] =
-    accepts("Expected a number literal", "0", "1") {
+    accepts(_ => "Expected a number literal", "0", "1") {
       case NumberLit(n) => IntegerLiteral(BigInt(n))
     }
 
   lazy val booleanLiteralParser: Parser[Expr] =
-    accepts("Expected a boolean literal", "true", "false") {
+    accepts(_ => "Expected a boolean literal", "true", "false") {
       case TrueLit => BooleanLiteral(true)
       case FalseLit => BooleanLiteral(false)
     }
@@ -75,8 +89,10 @@ object ExParsers extends Parsers with CharSources {
   def spaced[A](parser: Parser[A]): Parser[A] =
     opt(space) >> parser << opt(space)
 
-  lazy val exprParser: Parser[Expr] =
-    (ifParser | literalParser).explain("Expected an expression.")
+  lazy val nonOpExprParser = (ifParser | literalParser).explain("Expected an expression.")
 
-  lazy val parser: Parser[Expr] = phrase(spaced(exprParser), "Expected end of input.")
+  lazy val exprParser: Parser[Expr] =
+    infixesLeft(prefixes(arithUnOp, nonOpExprParser) << opt(space), arithBinOp << opt(space))
+
+  lazy val parser: Parser[Expr] = phrase(spaced(exprParser), _ => "Expected end of input.")
 }
