@@ -109,7 +109,7 @@ object ExParsers extends Parsers with CharSources {
   lazy val nonOpExprParser = (ifParser | literalParser).explain("Expected an expression.")
 
   lazy val exprParser: Parser[Expr] =
-    infixesLeft(prefixes(arithUnOp, nonOpExprParser) << opt(space), arithBinOp << opt(space))
+    rec(infixesLeft(prefixes(arithUnOp, nonOpExprParser) << opt(space), arithBinOp << opt(space)))
 
   lazy val parser: Parser[Expr] = phrase(spaced(exprParser), _ => "Expected end of input.")
 }

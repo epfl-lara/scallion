@@ -123,14 +123,14 @@ trait Parsers extends Tokenizers {
       Disjunction(this, Failure(error))
     final def map[U](function: T => U): Parser[U] =
       Transform(this, function)
-    final def <>[U](that: => Parser[U]): Parser[(T, U)] =
-      Sequence(this, Lazy(() => that))
-    final def &&[U](that: => Parser[U]): Parser[T && U] =
-      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
-    final def <<[U](that: => Parser[U]): Parser[T] =
-      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => p._1)
-    final def >>[U](that: => Parser[U]): Parser[U] =
-      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => p._2)
+    final def <>[U](that: Parser[U]): Parser[(T, U)] =
+      Sequence(this, that)
+    final def &&[U](that: Parser[U]): Parser[T && U] =
+      Transform(Sequence(this, that), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
+    final def <<[U](that: Parser[U]): Parser[T] =
+      Transform(Sequence(this, that), (p: (T, U)) => p._1)
+    final def >>[U](that: Parser[U]): Parser[U] =
+      Transform(Sequence(this, that), (p: (T, U)) => p._2)
     final def |[U >: T](that: Parser[U]): Parser[U] =
       Disjunction(this, that)
     final def filter(error: T => ErrorMessage)(predicate: T => Boolean): Parser[T] =
@@ -432,6 +432,10 @@ trait Parsers extends Tokenizers {
    */
   def opt[A](parser: Parser[A]): Parser[Option[A]] =
     parser.map(Some(_)) | success(None)
+
+  /** Indicates that the parser recursively calls itself. */
+  def rec[A](parser: => Parser[A]): Parser[A] =
+    Lazy(() => parser)
 
   /** Matches against the `EndToken` token. */
   def end(error: Token => ErrorMessage): Parser[Unit] =
