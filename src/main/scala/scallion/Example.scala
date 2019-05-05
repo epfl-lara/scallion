@@ -75,9 +75,7 @@ object ExParsers extends Parsers with CharSources {
 
   lazy val ifParser: Parser[Expr] = {
     elem(If, _ => "Expected an if expression.") >>
-    spaced(elem(Punctuation('('), _ => "Expected an open parenthesis.")) >>
-    exprParser &&
-    spaced(elem(Punctuation(')'), _ => "Expected a close parenthesis.")) >>
+    spaced(inParens(exprParser)) &&
     exprParser &&
     spaced(elem(Else, _ => "Expected an else branch.")) >>
     exprParser
@@ -99,13 +97,22 @@ object ExParsers extends Parsers with CharSources {
       case FalseLit => BooleanLiteral(false)
     }
 
+  def inParens[A](parser: Parser[A]): Parser[A] =
+    elem(Punctuation('('), _ => "Expected an open parenthesis") >>
+    spaced(parser) <<
+    elem(Punctuation(')'), _ => "Expected a close parenthesis")
+
   def spaced[A](parser: Parser[A]): Parser[A] =
     opt(space) >> parser << opt(space)
 
   def binOp(repr: String, op: (Expr, Expr) => Expr): Parser[(Expr, Expr) => Expr] =
     elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
 
-  lazy val nonOpExprParser = (ifParser | literalParser).explain("Expected an expression.")
+  lazy val nonOpExprParser = {
+      ifParser      |
+      literalParser |
+      inParens(exprParser)
+    }.explain("Expected an expression.")
 
   lazy val exprParser: Parser[Expr] = rec {
     operators(prefixes(arithUnOp, nonOpExprParser) << opt(space))(
