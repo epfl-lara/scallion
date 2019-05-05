@@ -121,5 +121,5 @@ trait RegExps {
   def many1(regExp: RegExp): RegExp = regExp ~ many(regExp)
 
   /** Zero or one instances of the regular expression `regExp`. */
-  def optional(regExp: RegExp): RegExp = regExp | EmptyStr
+  def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 }

@@ -106,6 +106,15 @@ trait Parsers extends Tokenizers {
     lazy val value = computation()
   }
 
+  /** Resolves sequences of tokens into values of type `T`.
+   *
+   * This class describes LL(1) parsers:
+   * - The input is consumed left-to-right.
+   * - In case of sequences, the leftmost parser are queried first.
+   * - A single token of lookahead is available.
+   *
+   * Importantly, the parsers do not support backtracking.
+   */
   sealed abstract class Parser[+T] {
 
     import Combinators._
@@ -159,10 +168,12 @@ trait Parsers extends Tokenizers {
       override def parse(input: Input): ParseResult[S] = {
         val previousIndex = input.currentIndex
         left.parse(input) match {
-          case Complete(leftValue) => Complete(leftValue)
-          case Incomplete(rest) => {
+          case c@Complete(leftValue) => c
+          case i@Incomplete(rest) => {
             if (input.currentIndex > previousIndex) {
-              Incomplete(rest)
+              // We commit to the left branch,
+              // since some input was consumed.
+              i
             }
             else {
               Incomplete(this)
@@ -170,9 +181,12 @@ trait Parsers extends Tokenizers {
           }
           case f@Failed(_, _) => {
             if (input.currentIndex > previousIndex) {
+              // We commit to the error,
+              // since some input was consumed.
               f
             }
             else {
+              // We try the right branch.
               right.parse(input)
             }
           }
@@ -207,7 +221,11 @@ trait Parsers extends Tokenizers {
       }
     }
 
-    case class Element(token: Token, reprs: Seq[Repr], error: Token => ErrorMessage) extends Parser[Token] {
+    case class Element(
+        token: Token,
+        reprs: Seq[Repr],
+        error: Token => ErrorMessage) extends Parser[Token] {
+
       override val acceptsEmpty: Boolean = false
       override def parse(input: Input): ParseResult[Token] = {
         if (input.atEnd) {
@@ -226,7 +244,11 @@ trait Parsers extends Tokenizers {
       }
     }
 
-    case class Accept[A](classifier: PartialFunction[Token, A], reprs: Seq[Repr], error: Token => ErrorMessage) extends Parser[A] {
+    case class Accept[A](
+        classifier: PartialFunction[Token, A],
+        reprs: Seq[Repr],
+        error: Token => ErrorMessage) extends Parser[A] {
+
       override val acceptsEmpty: Boolean = false
       override def parse(input: Input): ParseResult[A] = {
         if (input.atEnd) {
@@ -248,7 +270,8 @@ trait Parsers extends Tokenizers {
     case class Transform[S, T](parser: Parser[S], function: S => T) extends Parser[T] {
       override def acceptsEmpty: Boolean = parser.acceptsEmpty
       override def reprs: Seq[Repr] = parser.reprs
-      override def parse(input: Input): ParseResult[T] = parser.parse(input).map(function)
+      override def parse(input: Input): ParseResult[T] =
+        parser.parse(input).map(function)
     }
 
     case class Repeat[T](parser: Parser[T]) extends Parser[Seq[T]] {
@@ -363,13 +386,29 @@ trait Parsers extends Tokenizers {
 
   import Combinators._
 
+  /** Produces `value` without consuming any input. */
   def success[A](value: A): Parser[A] = Success(value)
+
+  /** Fails without consuming any input. */
   def fail(error: ErrorMessage): Parser[Nothing] = Failure(error)
+
+  /** Matches a single token against `token`.
+   *
+   * Consumes the next input token if it matches, fails otherwise.
+   */
   def elem(token: Token with HasRepr, error: Token => ErrorMessage): Parser[Token] =
     Element(token, Seq(token.repr), error)
+
+  /** Matches a single token against partial function.
+   *
+   * Consumes the next input token if it matches, fails otherwise.
+   */
   def accepts[A](error: Token => ErrorMessage, reprs: Repr*)(function: PartialFunction[Token, A]): Parser[A] =
     Accept(function, reprs, error)
 
+  /** Successively applies the provided `parsers` until one
+   *  either produces a value or consumes input.
+   */
   def oneOf[A](error: ErrorMessage)(parsers: Parser[A]*): Parser[A] = {
     val zero: Parser[A] = fail(error)
     parsers.foldRight(zero) {
@@ -377,10 +416,26 @@ trait Parsers extends Tokenizers {
     }
   }
 
+  /** Repeatedly applies the provided parser. */
   def many[A](parser: Parser[A]): Parser[Seq[A]] = Repeat(parser)
-  def opt[A](parser: Parser[A]): Parser[Option[A]] = parser.map(Some(_)) | success(None)
 
-  def end(error: Token => ErrorMessage): Parser[Unit] = Element(EndToken, Seq(), error).map((_: Token) => ())
+  /** Applies the provided parser at least once. */
+  def many1[A](parser: Parser[A]): Parser[Seq[A]] =
+    Sequence(parser, Repeat(parser)).map {
+      case (x, xs) => x +: xs
+    }
+
+  /** Catches failures that do not consume input.
+   *
+   * When the underlying parser fails without consuming any tokens,
+   * the resulting parser instead produces None.
+   */
+  def opt[A](parser: Parser[A]): Parser[Option[A]] =
+    parser.map(Some(_)) | success(None)
+
+  /** Matches against the `EndToken` token. */
+  def end(error: Token => ErrorMessage): Parser[Unit] =
+    Element(EndToken, Seq(), error).map((_: Token) => ())
 
   def phrase[A](parser: Parser[A], error: Token => ErrorMessage): Parser[A] =
     parser << end(error)

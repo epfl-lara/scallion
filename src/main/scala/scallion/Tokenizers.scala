@@ -27,6 +27,17 @@ trait Tokenizers extends Sources with RegExps {
   /** Associates a regular expression with a token generator. */
   case class Producer(regExp: RegExp, makeToken: Seq[Character] => Token)
 
+  // Notation for writing producers.
+  case object |> {
+    def unapply(arg: Producer) = Producer.unapply(arg)
+  }
+
+  implicit class ProducerDecorator(regExp: RegExp) {
+    def |>(makeToken: Seq[Character] => Token) = Producer(regExp, makeToken)
+    def |>(token: Token) = Producer(regExp, (_: Seq[Character]) => token)
+  }
+
+
   /** Tokenizes an input source with respect to a sequence of token producers. */
   class Tokenizer(producers: Seq[Producer]) {
 

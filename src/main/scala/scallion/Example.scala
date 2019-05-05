@@ -21,18 +21,35 @@ object ExParsers extends Parsers with CharSources {
   case object EndToken extends Token("")
 
   val tokenizer = Tokenizer(
-    Producer(word("if"), cs => If),
-    Producer(word("else"), cs => Else),
-    Producer(word("while"), cs => While),
-    Producer(word("true"), cs => TrueLit),
-    Producer(word("false"), cs => FalseLit),
-    Producer(many1(elem(_.isWhitespace)), cs => Space),
-    Producer(elem("+-*/<>") | word(">=") | word("<=") | word("=="), cs => Operator(cs.mkString(""))),
-    Producer(elem(".,(){}!;?"), cs => Punctuation(cs.head)),
-    Producer(elem('"') ~ many(elem(c => c != '"' && c != '\\') | elem('\\') ~ elem("\\\"")) ~ elem('"'),
-      cs => StringLit(cs.tail.init.mkString(""))),
-    Producer(elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_')), cs => Identifier(cs.mkString(""))),
-    Producer(many1(elem(_.isDigit)) ~ optional(elem('.') ~ many(elem(_.isDigit))), cs => NumberLit(cs.mkString("")))
+    // Keywords
+    word("if")    |> If,
+    word("else")  |> Else,
+    word("while") |> While,
+    word("true")  |> TrueLit,
+    word("false") |> FalseLit,
+
+    // Operators
+    elem("+-*/<>") | word(">=") | word("<=") | word("==")
+      |> { cs => Operator(cs.mkString("")) },
+
+    // Punctuation
+    elem(".,(){}!;?")
+      |> { cs => Punctuation(cs.head) },
+
+    // String literal
+    elem('"') ~ many(elem(c => c != '"' && c != '\\') | elem('\\') ~ elem("\\\"")) ~ elem('"')
+      |> { cs => StringLit(cs.tail.init.mkString("")) },
+
+    // Identifiers
+    elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
+      |> { cs => Identifier(cs.mkString("")) },
+
+    // Number literal
+    many1(elem(_.isDigit)) ~ opt(elem('.') ~ many(elem(_.isDigit)))
+      |> { cs => NumberLit(cs.mkString("")) },
+
+    // Space
+    many1(elem(_.isWhitespace)) |> Space
   )
 
   sealed abstract class Expr
