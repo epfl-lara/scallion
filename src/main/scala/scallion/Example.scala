@@ -60,16 +60,12 @@ object ExParsers extends Parsers with CharSources {
   case class Minus(lhs: Expr, rhs: Expr) extends Expr
   case class UPlus(expr: Expr) extends Expr
   case class UMinus(expr: Expr) extends Expr
+  case class Times(lhs: Expr, rhs: Expr) extends Expr
+  case class Div(lhs: Expr, rhs: Expr) extends Expr
 
   lazy val space: Parser[Unit] = accepts(_ => "Expected a space.") {
     case Space => ()
   }
-
-  lazy val arithBinOp: Parser[(Expr, Expr) => Expr] =
-    accepts(_ => "Expected an operator", "+", "-") {
-      case Operator("+") => Plus(_, _)
-      case Operator("-") => Minus(_, _)
-    }
 
   lazy val arithUnOp: Parser[Expr => Expr] =
     accepts(_ => "Expected an operator", "+", "-") {
@@ -106,10 +102,16 @@ object ExParsers extends Parsers with CharSources {
   def spaced[A](parser: Parser[A]): Parser[A] =
     opt(space) >> parser << opt(space)
 
+  def binOp(repr: String, op: (Expr, Expr) => Expr): Parser[(Expr, Expr) => Expr] =
+    elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
+
   lazy val nonOpExprParser = (ifParser | literalParser).explain("Expected an expression.")
 
-  lazy val exprParser: Parser[Expr] =
-    rec(infixesLeft(prefixes(arithUnOp, nonOpExprParser) << opt(space), arithBinOp << opt(space)))
+  lazy val exprParser: Parser[Expr] = rec {
+    operators(prefixes(arithUnOp, nonOpExprParser) << opt(space))(
+      (binOp("+", Plus(_, _))  | binOp("-", Minus(_, _))) << opt(space) |> Associativity.Left,
+      (binOp("*", Times(_, _)) | binOp("/", Div(_, _)))   << opt(space) |> Associativity.Left)
+  }
 
   lazy val parser: Parser[Expr] = phrase(spaced(exprParser), _ => "Expected end of input.")
 }

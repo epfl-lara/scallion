@@ -137,6 +137,8 @@ trait Parsers extends Tokenizers {
       Filter(this, predicate, error, (repr: Repr) => true)
     final def validate[U](function: T => Either[ErrorMessage, U]): Parser[U] =
       this.map(function).filter(_.left.get)(_.isRight).map(_.right.get)
+    final def |>[A](associativity: Associativity)(implicit ev: this.type <:< Parser[((A, A) => A)]): Level[A] =
+      Level(ev(this), associativity)
   }
 
   object Combinators {
@@ -478,4 +480,21 @@ trait Parsers extends Tokenizers {
         }
       }
     }
+
+  sealed abstract class Associativity
+  object Associativity {
+    case object Left extends Associativity
+    case object Right extends Associativity
+  }
+
+  case class Level[A](operator: Parser[(A, A) => A], assoc: Associativity)
+
+  def operators[A](parser: Parser[A])(levels: Level[A]*): Parser[A] = {
+    levels.foldRight(parser) {
+      case (Level(op, assoc), acc) => assoc match {
+        case Associativity.Left => infixesLeft(acc, op)
+        case Associativity.Right => infixesRight(acc, op)
+      }
+    }
+  }
 }

@@ -25,7 +25,7 @@ trait Tokenizers extends Sources with RegExps {
   //---- Tokenizer ----//
 
   /** Associates a regular expression with a token generator. */
-  case class Producer(regExp: RegExp, makeToken: Seq[Character] => Token)
+  case class Producer(regExp: RegExp, makeToken: (Seq[Character], Range) => Token)
 
   // Notation for writing producers.
   case object |> {
@@ -33,8 +33,12 @@ trait Tokenizers extends Sources with RegExps {
   }
 
   implicit class ProducerDecorator(regExp: RegExp) {
-    def |>(makeToken: Seq[Character] => Token) = Producer(regExp, makeToken)
-    def |>(token: Token) = Producer(regExp, (_: Seq[Character]) => token)
+    def |>(makeToken: (Seq[Character], Range) => Token) =
+      Producer(regExp, makeToken)
+    def |>(makeToken: Seq[Character] => Token) =
+      Producer(regExp, (cs: Seq[Character], _: Range) => makeToken(cs))
+    def |>(token: Token) =
+      Producer(regExp, (_: Seq[Character], _: Range) => token)
   }
 
 
@@ -94,6 +98,7 @@ trait Tokenizers extends Sources with RegExps {
 
     /** Tries to produce a single token from the source. */
     private def tokenizeOne(source: Source): Option[(Token, Range)] = {
+
       // The first producer that was successful on the longest subsequence so far.
       var lastSuccessfulProducer: Option[Producer] = None
 
@@ -144,8 +149,8 @@ trait Tokenizers extends Sources with RegExps {
           // Only done in case of a successful tokenization.
           source.back()
 
-          val token = makeToken(buffer.toSeq)
           val range = (startPos, endPos)
+          val token = makeToken(buffer.toSeq, range)
 
           (token, range)
         }
