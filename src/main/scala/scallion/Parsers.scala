@@ -102,10 +102,6 @@ trait Parsers extends Tokenizers {
 
   case class &&[+A, +B](fst: A, snd: B)
 
-  case class Lazy[A](computation: () => A) {
-    lazy val value = computation()
-  }
-
   /** Resolves sequences of tokens into values of type `T`.
    *
    * This class describes LL(1) parsers:
@@ -128,13 +124,13 @@ trait Parsers extends Tokenizers {
     final def map[U](function: T => U): Parser[U] =
       Transform(this, function)
     final def <>[U](that: => Parser[U]): Parser[(T, U)] =
-      Sequence(this, that)
+      Sequence(this, Lazy(() => that))
     final def &&[U](that: => Parser[U]): Parser[T && U] =
-      Transform(Sequence(this, that), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
+      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
     final def <<[U](that: => Parser[U]): Parser[T] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._1)
+      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => p._1)
     final def >>[U](that: => Parser[U]): Parser[U] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._2)
+      Transform(Sequence(this, Lazy(() => that)), (p: (T, U)) => p._2)
     final def |[U >: T](that: Parser[U]): Parser[U] =
       Disjunction(this, that)
     final def filter(error: T => ErrorMessage)(predicate: T => Boolean): Parser[T] =
@@ -144,11 +140,11 @@ trait Parsers extends Tokenizers {
   }
 
   object Combinators {
-    case class Sequence[S, T](pre: Parser[S], post: Lazy[Parser[T]]) extends Parser[(S, T)] {
-      override def acceptsEmpty: Boolean = pre.acceptsEmpty && post.value.acceptsEmpty
-      override def reprs: Seq[Repr] = if (pre.acceptsEmpty) pre.reprs ++ post.value.reprs else pre.reprs
+    case class Sequence[S, T](pre: Parser[S], post: Parser[T]) extends Parser[(S, T)] {
+      override def acceptsEmpty: Boolean = pre.acceptsEmpty && post.acceptsEmpty
+      override def reprs: Seq[Repr] = if (pre.acceptsEmpty) pre.reprs ++ post.reprs else pre.reprs
       override def parse(input: Input): ParseResult[(S, T)] = pre.parse(input) match {
-        case Complete(preValue) => post.value.parse(input) match {
+        case Complete(preValue) => post.parse(input) match {
           case Complete(postValue) => Complete((preValue, postValue))
           case Incomplete(rest) => Incomplete(rest.map(postValue => (preValue, postValue)))
           case f@Failed(_, _) => f
@@ -156,10 +152,6 @@ trait Parsers extends Tokenizers {
         case Incomplete(rest) => Incomplete(Sequence(rest, post))
         case f@Failed(_, _) => f
       }
-    }
-
-    object Sequence {
-      def apply[S, T](pre: Parser[S], post: => Parser[T]): Sequence[S, T] = Sequence(pre, Lazy(() => post))
     }
 
     case class Disjunction[S](left: Parser[S], right: Parser[S]) extends Parser[S] {
@@ -381,6 +373,14 @@ trait Parsers extends Tokenizers {
           }
         }
       }
+    }
+
+    case class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
+      private lazy val parser: Parser[A] = computation()
+
+      override def acceptsEmpty: Boolean = parser.acceptsEmpty
+      override def reprs: Seq[Repr] = parser.reprs
+      override def parse(input: Input): ParseResult[A] = parser.parse(input)
     }
   }
 
