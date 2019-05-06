@@ -20,7 +20,7 @@ object ExParsers extends Parsers with CharSources {
   case object ErrorToken extends Token("<Error>")
   case object EndToken extends Token("")
 
-  val tokenizer = Tokenizer(
+  val tokenizer = Lexer(
     // Keywords
     word("if")    |> If,
     word("else")  |> Else,

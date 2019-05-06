@@ -1,6 +1,6 @@
 package scallion
 
-trait Parsers extends Tokenizers {
+trait Parsers extends Lexers {
 
   type Repr = Seq[Character]
 
