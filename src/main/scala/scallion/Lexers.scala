@@ -45,7 +45,11 @@ trait Lexers extends Sources with RegExps {
   class Lexer(producers: Seq[Producer]) {
 
     /** Returns an iterator that produces tokens from the source. */
-    def apply(source: Source, generateEndToken: Boolean = true): Iterator[(Token, Range)] =
+    def apply(
+        source: Source,
+        generateEndToken: Boolean = true,
+        skipToken: Token => Boolean = (_: Token) => false): Iterator[(Token, Range)] =
+
       new Iterator[(Token, Range)] {
 
         /** Indicates if the source has ended. */
@@ -56,6 +60,7 @@ trait Lexers extends Sources with RegExps {
 
         /** Queries the source for the next token and update the state. */
         private def fetchNext(): Unit = tokenizeOne(source) match {
+          case Some((token, _)) if skipToken(token) => fetchNext()
           case Some(pair) => cacheNext = Some(pair)
           case None => {
             ended = true

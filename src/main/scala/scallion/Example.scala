@@ -63,10 +63,6 @@ object ExParsers extends Parsers with CharSources {
   case class Times(lhs: Expr, rhs: Expr) extends Expr
   case class Div(lhs: Expr, rhs: Expr) extends Expr
 
-  lazy val space: Parser[Unit] = accepts(_ => "Expected a space.") {
-    case Space => ()
-  }
-
   lazy val arithUnOp: Parser[Expr => Expr] =
     accepts(_ => "Expected an operator", "+", "-") {
       case Operator("+") => UPlus(_)
@@ -75,9 +71,9 @@ object ExParsers extends Parsers with CharSources {
 
   lazy val ifParser: Parser[Expr] = {
     elem(If, _ => "Expected an if expression.") >>
-    spaced(inParens(exprParser)) &&
+    inParens(exprParser) &&
     exprParser &&
-    spaced(elem(Else, _ => "Expected an else branch.")) >>
+    elem(Else, _ => "Expected an else branch.") >>
     exprParser
   } map {
     case c && t && e => IfExpr(c, t , e)
@@ -99,11 +95,8 @@ object ExParsers extends Parsers with CharSources {
 
   def inParens[A](parser: Parser[A]): Parser[A] =
     elem(Punctuation('('), _ => "Expected an open parenthesis") >>
-    spaced(parser) <<
+    parser <<
     elem(Punctuation(')'), _ => "Expected a close parenthesis")
-
-  def spaced[A](parser: Parser[A]): Parser[A] =
-    opt(space) >> parser << opt(space)
 
   def binOp(repr: String, op: (Expr, Expr) => Expr): Parser[(Expr, Expr) => Expr] =
     elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
@@ -115,10 +108,18 @@ object ExParsers extends Parsers with CharSources {
       inParens(exprParser))
 
   lazy val exprParser: Parser[Expr] = rec {
-    operators(prefixes(arithUnOp, nonOpExprParser) << opt(space))(
-      (binOp("+", Plus(_, _))  | binOp("-", Minus(_, _))) << opt(space) |> Associativity.Left,
-      (binOp("*", Times(_, _)) | binOp("/", Div(_, _)))   << opt(space) |> Associativity.Left)
+    operators(prefixes(arithUnOp, nonOpExprParser))(
+      binOp("+", Plus(_, _))  | binOp("-", Minus(_, _)) |> Associativity.Left,
+      binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
   }
 
-  lazy val parser: Parser[Expr] = phrase(spaced(exprParser), _ => "Expected end of input.")
+  lazy val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input.")
+
+  def run(text: String): ParseResult[Expr] = {
+    val source = new StringSource(text)
+    val tokens = tokenizer(source, skipToken=(_ == Space))
+    val input = new Input(tokens)
+    parser.parse(input)
+  }
+
 }
