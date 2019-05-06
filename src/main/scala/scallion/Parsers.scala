@@ -143,6 +143,7 @@ trait Parsers extends Lexers {
     /** Parses the input. */
     def parse(input: Input): ParseResult[T]
 
+    def isLeftRecursive(accept: Set[Int] = Set(), reject: Set[Int] = Set()): Boolean = false
 
     // Concrete members
 
@@ -203,7 +204,7 @@ trait Parsers extends Lexers {
     /** Associates this `parser` with an `associativity`.
       *
       * @see The function `operators`.
-      */ 
+      */
     def |>[A](associativity: Associativity)
         (implicit ev: this.type <:< Parser[((A, A) => A)]): Level[A] =
       Level(ev(this), associativity)
@@ -225,6 +226,10 @@ trait Parsers extends Lexers {
         case Incomplete(rest) => Incomplete(Sequence(rest, post))
         case f@Failed(_, _) => f
       }
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        if (pre.isLeftRecursive(accept, reject)) true
+        else if (pre.acceptsEmpty) post.isLeftRecursive(accept, reject)
+        else post.isLeftRecursive(accept union reject, Set())
     }
 
     /** Disjunction of parsers. */
@@ -258,6 +263,8 @@ trait Parsers extends Lexers {
           }
         }
       }
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        left.isLeftRecursive(accept, reject) || right.isLeftRecursive(accept, reject)
     }
 
     /** Produces value without consuming input. */
@@ -343,6 +350,8 @@ trait Parsers extends Lexers {
       override def reprs: Seq[Repr] = parser.reprs
       override def parse(input: Input): ParseResult[T] =
         parser.parse(input).map(function)
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        parser.isLeftRecursive(accept, reject)
     }
 
     /** Repeatedly queries the given `parser`. */
@@ -375,6 +384,8 @@ trait Parsers extends Lexers {
             else f
         }
       }
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        parser.isLeftRecursive(accept, reject)
     }
 
     /** Produces an error when the parsed value doesn't satify a predicate. */
@@ -416,6 +427,8 @@ trait Parsers extends Lexers {
           }
         }
       }
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        parser.isLeftRecursive(accept, reject)
     }
 
     /** Decorated a parsed value with the start and end position of the
@@ -461,15 +474,30 @@ trait Parsers extends Lexers {
           }
         }
       }
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        parser.isLeftRecursive(accept, reject)
     }
 
     /** Lazy wrapper around a parser. Allows for recursive parser values. */
     case class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
+      val id = Lazy.nextId()
       private lazy val parser: Parser[A] = computation()
 
       override def acceptsEmpty: Boolean = parser.acceptsEmpty
       override def reprs: Seq[Repr] = parser.reprs
       override def parse(input: Input): ParseResult[A] = parser.parse(input)
+      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
+        if (reject.contains(id)) true
+        else if (accept.contains(id)) false
+        else parser.isLeftRecursive(accept, reject + id)
+    }
+
+    object Lazy {
+      private var currentId = 0
+      private def nextId(): Int = synchronized {
+        currentId += 1
+        currentId
+      }
     }
   }
 
@@ -533,7 +561,7 @@ trait Parsers extends Lexers {
   def opt[A](parser: Parser[A]): Parser[Option[A]] =
     parser.map(Some(_)) | success(None)
 
-  /** Indicates that the parser recursively calls itself. */
+  /** Indicates that the parser may recursively call itself. */
   def rec[A](parser: => Parser[A]): Parser[A] =
     Lazy(() => parser)
 
@@ -600,6 +628,14 @@ trait Parsers extends Lexers {
         case Associativity.Left => infixesLeft(acc, op)
         case Associativity.Right => infixesRight(acc, op)
       }
+    }
+  }
+
+
+  // Debug functions.
+  def checkRecs(parser: Parser[Any]): Unit = {
+    if (parser.isLeftRecursive()) {
+      throw new Error("Parser is left-recursive")
     }
   }
 }

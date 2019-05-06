@@ -113,7 +113,7 @@ object ExParsers extends Parsers with CharSources {
       binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
   }
 
-  lazy val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input.")
+  val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input.")
 
   def run(text: String): ParseResult[Expr] = {
     val source = new StringSource(text)
