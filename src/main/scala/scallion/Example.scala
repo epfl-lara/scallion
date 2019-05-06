@@ -108,11 +108,11 @@ object ExParsers extends Parsers with CharSources {
   def binOp(repr: String, op: (Expr, Expr) => Expr): Parser[(Expr, Expr) => Expr] =
     elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
 
-  lazy val nonOpExprParser = {
-      ifParser      |
-      literalParser |
-      inParens(exprParser)
-    }.explain("Expected an expression.")
+  lazy val nonOpExprParser =
+    oneOf("Expected an expression.")(
+      ifParser,
+      literalParser,
+      inParens(exprParser))
 
   lazy val exprParser: Parser[Expr] = rec {
     operators(prefixes(arithUnOp, nonOpExprParser) << opt(space))(

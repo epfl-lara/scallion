@@ -1,13 +1,17 @@
 package scallion
 
+/** Contains definitions for recursive descent LL(1) parsers. */
 trait Parsers extends Lexers {
 
+  /** Representation of tokens. Used for representing the next possible tokens. */
   type Repr = Seq[Character]
 
+  /** Indicates that this class has a representation. */
   trait HasRepr {
     def repr: Repr
   }
 
+  /** The type of errors produced by the parsers. */
   type ErrorMessage
 
   /** Input stream with a single token look-ahead. */
@@ -89,59 +93,126 @@ trait Parsers extends Lexers {
     def currentIndex: Int = consumedTokens
   }
 
+  /** Result of a parser run. */
   sealed abstract class ParseResult[+T] {
+
+    /** Applies a function to the parsed value. */
     def map[S](function: T => S): ParseResult[S] = this match {
       case Complete(value) => Complete(function(value))
       case Incomplete(rest) => Incomplete(rest.map(function))
       case f@Failed(_, _) => f
     }
   }
+
+  /** Successfully parsed `value`. */
   case class Complete[T](value: T) extends ParseResult[T]
+
+  /** Indicates incomplete input. */
   case class Incomplete[T](rest: Parser[T]) extends ParseResult[T]
+
+  /** Indicates a failed parse. */
   case class Failed(range: Range, error: ErrorMessage) extends ParseResult[Nothing]
 
+  /** Pairs together two values.
+    *
+    * Designed to be used as an infix operator.
+    */
   case class &&[+A, +B](fst: A, snd: B)
 
   /** Resolves sequences of tokens into values of type `T`.
-   *
-   * This class describes LL(1) parsers:
-   * - The input is consumed left-to-right.
-   * - In case of sequences, the leftmost parser are queried first.
-   * - A single token of lookahead is available.
-   *
-   * Importantly, the parsers do not support backtracking.
-   */
+    *
+    * The type of parsers that can be described by are LL(1) parsers:
+    * - The input is consumed left-to-right.
+    * - In case of sequences, the leftmost parser are queried first.
+    * - A single token of lookahead is available.
+    *
+    * Importantly, such parsers do not support backtracking.
+    */
   sealed abstract class Parser[+T] {
 
     import Combinators._
 
+    // Abstract members.
+
+    /** Indicates if this parser accepts the empty string. */
     def acceptsEmpty: Boolean
+
+    /** Returns representation of the first token that can be consumed. */
     def reprs: Seq[Repr]
+
+    /** Parses the input. */
     def parse(input: Input): ParseResult[T]
 
-    final def explain(error: ErrorMessage): Parser[T] =
-      Disjunction(this, Failure(error))
-    final def map[U](function: T => U): Parser[U] =
+
+    // Concrete members
+
+    /** Applies a function to the parsed value. */
+    def map[U](function: T => U): Parser[U] =
       Transform(this, function)
-    final def <>[U](that: Parser[U]): Parser[(T, U)] =
-      Sequence(this, that)
-    final def &&[U](that: Parser[U]): Parser[T && U] =
-      Transform(Sequence(this, that), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
-    final def <<[U](that: Parser[U]): Parser[T] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._1)
-    final def >>[U](that: Parser[U]): Parser[U] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._2)
-    final def |[U >: T](that: Parser[U]): Parser[U] =
-      Disjunction(this, that)
-    final def filter(error: T => ErrorMessage)(predicate: T => Boolean): Parser[T] =
+
+    /** Fails with the provided `error` when the parsed value
+      * doesn't satisfy the given `predicate`.
+      */
+    def filter(error: T => ErrorMessage)(predicate: T => Boolean): Parser[T] =
       Filter(this, predicate, error, (repr: Repr) => true)
-    final def validate[U](function: T => Either[ErrorMessage, U]): Parser[U] =
+
+    /** Applies a validation function to the parsed value. */
+    def validate[U](function: T => Either[ErrorMessage, U]): Parser[U] =
       this.map(function).filter(_.left.get)(_.isRight).map(_.right.get)
-    final def |>[A](associativity: Associativity)(implicit ev: this.type <:< Parser[((A, A) => A)]): Level[A] =
+
+    /** Sequences `this` and `that` parser.
+      *
+      * Returns both values as a pair.
+      */
+    def <>[U](that: Parser[U]): Parser[(T, U)] =
+      Sequence(this, that)
+
+    /** Sequences `this` and `that` parser.
+      *
+      * Returns both values as a `&&`-pair.
+      */
+    def &&[U](that: Parser[U]): Parser[T && U] =
+      Transform(Sequence(this, that), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
+
+    /** Sequences `this` and `that` parser.
+      *
+      * Returns only the first value.
+      */
+    def <<[U](that: Parser[U]): Parser[T] =
+      Transform(Sequence(this, that), (p: (T, U)) => p._1)
+
+    /** Sequences `this` and `that` parser.
+      *
+      * Returns only the second value.
+      */
+    def >>[U](that: Parser[U]): Parser[U] =
+      Transform(Sequence(this, that), (p: (T, U)) => p._2)
+
+    /** Falls back to `that` parser in case `this` parser
+      *  fails without consuming input.
+      */
+    def |[U >: T](that: Parser[U]): Parser[U] =
+      Disjunction(this, that)
+
+    /** Specifies the error message in case `this` parser
+      *  fails without consuming input.
+      */
+    def explain(error: ErrorMessage): Parser[T] =
+      Disjunction(this, Failure(error))
+
+    /** Associates this `parser` with an `associativity`.
+      *
+      * @see The function `operators`.
+      */ 
+    def |>[A](associativity: Associativity)
+        (implicit ev: this.type <:< Parser[((A, A) => A)]): Level[A] =
       Level(ev(this), associativity)
   }
 
+  /** Contains primitive parser combinators. */
   object Combinators {
+
+    /** Sequential composition of parsers. */
     case class Sequence[S, T](pre: Parser[S], post: Parser[T]) extends Parser[(S, T)] {
       override def acceptsEmpty: Boolean = pre.acceptsEmpty && post.acceptsEmpty
       override def reprs: Seq[Repr] = if (pre.acceptsEmpty) pre.reprs ++ post.reprs else pre.reprs
@@ -156,6 +227,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Disjunction of parsers. */
     case class Disjunction[S](left: Parser[S], right: Parser[S]) extends Parser[S] {
       override def acceptsEmpty: Boolean = left.acceptsEmpty || right.acceptsEmpty
       override def reprs: Seq[Repr] = left.reprs ++ right.reprs
@@ -188,6 +260,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Produces value without consuming input. */
     case class Success[T](value: T) extends Parser[T] {
       override val acceptsEmpty: Boolean = true
       override val reprs: Seq[Repr] = Seq()
@@ -201,6 +274,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Produces an error without consuming input. */
     case class Failure(error: ErrorMessage) extends Parser[Nothing] {
       override val acceptsEmpty: Boolean = false
       override val reprs: Seq[Repr] = Seq()
@@ -215,6 +289,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Matches a token against a single `token`. */
     case class Element(
         token: Token,
         reprs: Seq[Repr],
@@ -238,6 +313,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Matches a single token against a partial function. */
     case class Accept[A](
         classifier: PartialFunction[Token, A],
         reprs: Seq[Repr],
@@ -261,6 +337,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Applies a function on the parsed value. */
     case class Transform[S, T](parser: Parser[S], function: S => T) extends Parser[T] {
       override def acceptsEmpty: Boolean = parser.acceptsEmpty
       override def reprs: Seq[Repr] = parser.reprs
@@ -268,6 +345,7 @@ trait Parsers extends Lexers {
         parser.parse(input).map(function)
     }
 
+    /** Repeatedly queries the given `parser`. */
     case class Repeat[T](parser: Parser[T]) extends Parser[Seq[T]] {
       override val acceptsEmpty: Boolean = true
       override def reprs: Seq[Repr] = parser.reprs
@@ -299,6 +377,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Produces an error when the parsed value doesn't satify a predicate. */
     case class Filter[T](
         parser: Parser[T],
         predicate: T => Boolean,
@@ -339,6 +418,13 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Decorated a parsed value with the start and end position of the
+      * sequences of tokens consumed.
+      *
+      * In case the underlying parser doesn't consume any tokens,
+      * the range will be equals to `(start, start)`, where
+      * `start` is the start position of the next token.
+      */
     case class Positioned[T](
         parser: Parser[T],
         optStartPos: Option[Position] = None,
@@ -377,6 +463,7 @@ trait Parsers extends Lexers {
       }
     }
 
+    /** Lazy wrapper around a parser. Allows for recursive parser values. */
     case class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
       private lazy val parser: Parser[A] = computation()
 
@@ -388,29 +475,29 @@ trait Parsers extends Lexers {
 
   import Combinators._
 
-  /** Produces `value` without consuming any input. */
+  /** A parser that produces `value` without consuming any input. */
   def success[A](value: A): Parser[A] = Success(value)
 
-  /** Fails without consuming any input. */
+  /** A parser that fails without consuming any input. */
   def fail(error: ErrorMessage): Parser[Nothing] = Failure(error)
 
-  /** Matches a single token against `token`.
-   *
-   * Consumes the next input token if it matches, fails otherwise.
-   */
+  /** A parser that matches against `token`.
+    *
+    * Consumes the next input token if it matches, fails otherwise.
+    */
   def elem(token: Token with HasRepr, error: Token => ErrorMessage): Parser[Token] =
     Element(token, Seq(token.repr), error)
 
-  /** Matches a single token against partial function.
-   *
-   * Consumes the next input token if it matches, fails otherwise.
-   */
+  /** A parser that matches single tokens in the domain of the partial function.
+    *
+    * Consumes the next input token if it matches, fails otherwise.
+    */
   def accepts[A](error: Token => ErrorMessage, reprs: Repr*)(function: PartialFunction[Token, A]): Parser[A] =
     Accept(function, reprs, error)
 
-  /** Successively applies the provided `parsers` until one
-   *  either produces a value or consumes input.
-   */
+  /** A parser that tries the provided `parsers` until one
+    * either produces a value or consumes input.
+    */
   def oneOf[A](error: ErrorMessage)(parsers: Parser[A]*): Parser[A] = {
     val zero: Parser[A] = fail(error)
     parsers.foldRight(zero) {
@@ -418,20 +505,31 @@ trait Parsers extends Lexers {
     }
   }
 
-  /** Repeatedly applies the provided parser. */
+  /** A parser that repeatedly applies the provided parser until it fails.
+    *
+    * If the last invocation fails without consuming input,
+    * the sequence of parsed values is returned.
+    * Otherwise, the error is produced.
+    */
   def many[A](parser: Parser[A]): Parser[Seq[A]] = Repeat(parser)
 
-  /** Applies the provided parser at least once. */
+  /** A parser that repeatedly applies the provided parser until it fails.
+    * Also fails when the underlying parser immediatly fails.
+    *
+    * If the last invocation fails without consuming input,
+    * the sequence of parsed values is returned.
+    * Otherwise, the error is produced.
+    */
   def many1[A](parser: Parser[A]): Parser[Seq[A]] =
     Sequence(parser, Repeat(parser)).map {
       case (x, xs) => x +: xs
     }
 
-  /** Catches failures that do not consume input.
-   *
-   * When the underlying parser fails without consuming any tokens,
-   * the resulting parser instead produces None.
-   */
+  /** A parser that catches failures that do not consume input.
+    *
+    * When the underlying parser fails without consuming any tokens,
+    * the resulting parser instead produces `None`.
+    */
   def opt[A](parser: Parser[A]): Parser[Option[A]] =
     parser.map(Some(_)) | success(None)
 
@@ -439,37 +537,43 @@ trait Parsers extends Lexers {
   def rec[A](parser: => Parser[A]): Parser[A] =
     Lazy(() => parser)
 
-  /** Matches against the `EndToken` token. */
+  /** A parser that matches against the `EndToken` token. */
   def end(error: Token => ErrorMessage): Parser[Unit] =
     Element(EndToken, Seq(), error).map((_: Token) => ())
 
+  /** A parser that ensures that the consumed input ends with an `EndToken`. */
   def phrase[A](parser: Parser[A], error: Token => ErrorMessage): Parser[A] =
     parser << end(error)
 
+  /** A parser that matches against non-empty sequences of `rep` separated by `sep`. */
   def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] =
     rep <> many(sep >> rep) map {
       case (x, xs) => x +: xs
     }
 
+  /** A parser that applies any number of prefixes to a parser. */
   def prefixes[A](prefix: Parser[A => A], parser: Parser[A]): Parser[A] =
     many(prefix) <> parser map {
       case (ps, v) => ps.foldRight(v) { case (p, acc) => p(acc) }
     }
 
+  /** A parser that applies any number of postfix to a parser. */
   def postfixes[A](parser: Parser[A], postfix: Parser[A => A]): Parser[A] =
     parser <> many(postfix) map {
       case (v, ps) => ps.foldLeft(v) { case (acc, p) => p(acc) }
     }
 
-  def infixesLeft[A](parser: Parser[A], operator: Parser[(A, A) => A]): Parser[A] =
-    parser <> many(operator <> parser) map {
+  /** A parser that matches sequences of `operand` separated by (left-associative) `operator`. */
+  def infixesLeft[A](operand: Parser[A], operator: Parser[(A, A) => A]): Parser[A] =
+    operand <> many(operator <> operand) map {
       case (v, opUs) => opUs.foldLeft(v) {
         case (acc, (op, u)) => op(acc, u)
       }
     }
 
-  def infixesRight[A](parser: Parser[A], operator: Parser[(A, A) => A]): Parser[A] =
-    parser <> many(operator <> parser) map {
+  /** A parser that matches sequences of `operand` separated by (right-associative) `operator`. */
+  def infixesRight[A](operand: Parser[A], operator: Parser[(A, A) => A]): Parser[A] =
+    operand <> many(operator <> operand) map {
       case (v, Seq()) => v
       case (v, opUs) => {
         val (ops, us) = opUs.unzip
@@ -489,8 +593,9 @@ trait Parsers extends Lexers {
 
   case class Level[A](operator: Parser[(A, A) => A], assoc: Associativity)
 
-  def operators[A](parser: Parser[A])(levels: Level[A]*): Parser[A] = {
-    levels.foldRight(parser) {
+  /** A parser that matches against applications of infix operators. */
+  def operators[A](operand: Parser[A])(levels: Level[A]*): Parser[A] = {
+    levels.foldRight(operand) {
       case (Level(op, assoc), acc) => assoc match {
         case Associativity.Left => infixesLeft(acc, op)
         case Associativity.Right => infixesRight(acc, op)

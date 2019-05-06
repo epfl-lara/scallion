@@ -7,34 +7,34 @@ trait Sources extends Positions {
   type Character
 
   /** Represents a sequence of characters mutably traversed over.
-   *
-   * The sequence can be traversed only once, but arbitrary long lookaheads are supported.
-   *
-   * Sources conceptually contain two mutable pointers:
-   * - The base pointer, which points past the fully traversed portion of the sequence.
-   * - The lookahead pointer, which can point arbitrarily past the base pointer. 
-   *
-   * The base pointer can be advanced all the way through the lookahead pointer using `consume()`.
-   * The sequence of characters advanced over are returned.
-   *
-   * The lookahead pointer can be advanced by one character at the time using `ahead()`,
-   * and can be reset to the base pointer by a call to `back()`.
-   */
+    *
+    * The sequence can be traversed only once, but arbitrary long lookaheads are supported.
+    *
+    * Sources conceptually contain two mutable pointers:
+    * - The base pointer, which points past the fully traversed portion of the sequence.
+    * - The lookahead pointer, which can point arbitrarily past the base pointer. 
+    *
+    * The base pointer can be advanced all the way through the lookahead pointer using `consume()`.
+    * The sequence of characters advanced over are returned.
+    *
+    * The lookahead pointer can be advanced by one character at the time using `ahead()`,
+    * and can be reset to the base pointer by a call to `back()`.
+    */
   trait Source {
 
     /** Checks if the lookahead pointer is at the end of the sequence. */
     def atEnd: Boolean
 
     /** Advances the lookahead pointer by one character in the sequence.
-     *
-     * @return The character that was advanced over.
-     */
+      *
+      * @return The character that was advanced over.
+      */
     def ahead(): Character
 
     /** Consumes all characters that are currently looked ahead.
-     *
-     * @return The sequence of characters.
-     */
+      *
+      * @return The sequence of characters.
+      */
     def consume(): Seq[Character]
 
     /** Resets the lookahead pointer. */
@@ -48,10 +48,10 @@ trait Sources extends Positions {
   trait Retrievable {
 
     /** Look up a subsequence.
-     *
-     * @param start Start position, inclusive.
-     * @param end   End position, exclusive.
-     */
+      *
+      * @param start Start position, inclusive.
+      * @param end   End position, exclusive.
+      */
     def retrieve(start: Position, end: Position): Seq[Character]
   }
 }

@@ -11,15 +11,14 @@ trait Lexers extends Sources with RegExps {
   type Token
 
   /** The error token.
-   *
-   * Automatically produced by the lexer when it fails.
-   */
+    *
+    * Automatically produced by the lexer when it fails.
+    */
   val ErrorToken: Token
 
   /** The end token.
-   *
-   *
-   * Automatically produced by the lexer when it reaches the end of the source. */
+    *
+    * Automatically produced by the lexer when it reaches the end of the source. */
   val EndToken: Token
 
   //---- Lexer ----//
@@ -161,9 +160,9 @@ trait Lexers extends Sources with RegExps {
   object Lexer {
 
     /** Creates a lexer for a sequence of producers.
-     *
-     * @param producers The producers, in decreasing priority.
-     */
+      *
+      * @param producers The producers, in decreasing priority.
+      */
     def apply(producers: Producer*): Lexer = new Lexer(producers)
   }
 }

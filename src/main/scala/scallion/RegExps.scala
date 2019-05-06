@@ -3,6 +3,7 @@ package scallion
 /** Contains definitions relating to regular expressions. */
 trait RegExps {
 
+  /** Underlying characters. */
   type Character
 
   import RegExp._
@@ -10,7 +11,7 @@ trait RegExps {
   /** Regular expressions over characters. */
   sealed abstract class RegExp {
 
-    /** Checks whether this regular expression accepts the empty word. */
+    /** Indicates if this regular expression accepts the empty word. */
     val acceptsEmpty: Boolean
 
     /** Returns the rest of a regular expression after consuming a character. */
@@ -28,11 +29,11 @@ trait RegExps {
     }
 
     /** Union of `this` and `that` regular expression.
-     *
-     * Performs surface-level simplifications.
-     *
-     * @return A regular expression that accepts words if either `this` or `that` accepts it.
-     */
+      *
+      * Performs surface-level simplifications.
+      *
+      * @return A regular expression that accepts words if either `this` or `that` accepts it.
+      */
     def |(that: RegExp): RegExp = (this, that) match {
       case (EmptySet, _) => that
       case (_, EmptySet) => this
@@ -40,11 +41,11 @@ trait RegExps {
     }
 
     /** Concatenation of `this` and `that` regular expression.
-     *
-     * Performs surface-level simplifications.
-     *
-     * @return A regular expression that accepts words
-     *.        if `this` accepts a prefix and `that` accepts the suffix.
+      *
+      * Performs surface-level simplifications.
+      *
+      * @return A regular expression that accepts words
+      *.        if `this` accepts a prefix and `that` accepts the suffix.
      */
     def ~(that: RegExp): RegExp = (this, that) match {
       case (EmptySet, _) => EmptySet
@@ -68,7 +69,7 @@ trait RegExps {
       override val acceptsEmpty: Boolean = false
     }
 
-    /** Accepts single character that satisfy a predicate. */
+    /** Accepts single characters that satisfy a predicate. */
     case class Elem(predicate: Character => Boolean) extends RegExp {
       override val acceptsEmpty: Boolean = false
     }
@@ -114,12 +115,12 @@ trait RegExps {
     }
   }
 
-  /** Zero or more repetitions of the regular expression `regExp`. */
+  /** Regular expression that accepts zero or more repetitions of the regular expression `regExp`. */
   def many(regExp: RegExp): RegExp = Star(regExp)
 
-  /** One or more repetitions of the regular expression `regExp`. */
+  /** Regular expression that accepts one or more repetitions of the regular expression `regExp`. */
   def many1(regExp: RegExp): RegExp = regExp ~ many(regExp)
 
-  /** Zero or one instances of the regular expression `regExp`. */
+  /** Regular expression that accepts zero or one instances of the regular expression `regExp`. */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 }
