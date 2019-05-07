@@ -151,16 +151,6 @@ trait Parsers extends Tokens with Positions {
     def map[U](function: T => U): Parser[U] =
       Transform(this, function)
 
-    /** Fails with the provided `error` when the parsed value
-      * doesn't satisfy the given `predicate`.
-      */
-    def filter(error: T => ErrorMessage)(predicate: T => Boolean): Parser[T] =
-      Filter(this, predicate, error, (repr: Repr) => true)
-
-    /** Applies a validation function to the parsed value. */
-    def validate[U](function: T => Either[ErrorMessage, U]): Parser[U] =
-      this.map(function).filter(_.left.get)(_.isRight).map(_.right.get)
-
     /** Sequences `this` and `that` parser.
       *
       * Returns both values as a pair.
@@ -322,9 +312,8 @@ trait Parsers extends Tokens with Positions {
 
     /** Matches a single token against a partial function. */
     case class Accept[A](
-        classifier: PartialFunction[Token, A],
-        reprs: Seq[Repr],
-        error: Token => ErrorMessage) extends Parser[A] {
+        classifier: Token => Either[ErrorMessage, A],
+        reprs: Seq[Repr]) extends Parser[A] {
 
       override val acceptsEmpty: Boolean = false
       override def parse(input: Input): ParseResult[A] = {
@@ -333,12 +322,13 @@ trait Parsers extends Tokens with Positions {
         }
         else {
           val token = input.current
-          classifier.lift(token) match {
-            case Some(value) => {
+          classifier(token) match {
+            case Right(value) => {
               input.skip()
               Complete(value)
             }
-            case None => Failed(input.currentRange, error(token))
+            case Left(error) =>
+              Failed(input.currentRange, error)
           }
         }
       }
@@ -382,49 +372,6 @@ trait Parsers extends Tokens with Positions {
               Complete(Seq())
             }
             else f
-        }
-      }
-      override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
-        parser.isLeftRecursive(accept, reject)
-    }
-
-    /** Produces an error when the parsed value doesn't satify a predicate. */
-    case class Filter[T](
-        parser: Parser[T],
-        predicate: T => Boolean,
-        error: T => ErrorMessage,
-        reprPredicate: Repr => Boolean,
-        optStartPos: Option[Position] = None,
-        optStartIndex: Option[Int] = None) extends Parser[T] {
-
-      override def acceptsEmpty: Boolean = parser.acceptsEmpty
-      override def reprs: Seq[Repr] = parser.reprs.filter(reprPredicate)
-      override def parse(input: Input): ParseResult[T] = {
-        if (input.atEnd) {
-          Incomplete(this)
-        }
-        else {
-          val startPosition = optStartPos.getOrElse(input.currentStart)
-          val startIndex = optStartIndex.getOrElse(input.currentIndex)
-          parser.parse(input) match {
-            case f@Failed(_, _) => f
-            case Incomplete(rest) =>
-              Incomplete(copy(parser=rest,
-                optStartPos=Some(startPosition),
-                optStartIndex=Some(startIndex)))
-            case Complete(value) if !predicate(value) => {
-              val range = {
-                if (input.currentIndex > startIndex) {
-                  (startPosition, input.previousEnd)
-                }
-                else {
-                  (startPosition, startPosition)
-                }
-              }
-              Failed(range, error(value))
-            }
-            case c@Complete(_) => c
-          }
         }
       }
       override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
@@ -521,7 +468,14 @@ trait Parsers extends Tokens with Positions {
     * Consumes the next input token if it matches, fails otherwise.
     */
   def accepts[A](error: Token => ErrorMessage, reprs: Repr*)(function: PartialFunction[Token, A]): Parser[A] =
-    Accept(function, reprs, error)
+    Accept((token: Token) => function.lift(token).map(Right(_)).getOrElse(Left(error(token))), reprs)
+
+  /** A parser that matches single tokens in the domain of the partial function.
+    *
+    * Consumes the next input token if it matches, fails otherwise.
+    */
+  def classify[A](reprs: Repr*)(function: Token => Either[ErrorMessage, A]): Parser[A] =
+    Accept(function, reprs)
 
   /** A parser that tries the provided `parsers` until one
     * either produces a value or consumes input.
