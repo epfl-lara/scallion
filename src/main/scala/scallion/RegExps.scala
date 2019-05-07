@@ -1,10 +1,7 @@
 package scallion
 
 /** Contains definitions relating to regular expressions. */
-trait RegExps {
-
-  /** Underlying characters. */
-  type Character
+trait RegExps[Character] {
 
   import RegExp._
 

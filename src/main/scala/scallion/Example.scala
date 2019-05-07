@@ -1,12 +1,7 @@
 package scallion
 
-object ExParsers extends Lexers with Parsers with StringSources {
-
-  type ErrorMessage = String
-  type Repr = String
-
-  sealed abstract class Token(val repr: String) extends HasRepr
-
+object ExDefs extends predefs.StringPredefs {
+  sealed abstract class Token(val repr: String) extends HasRepr[String]
   case object If extends Token("if")
   case object Else extends Token("else")
   case object While extends Token("while")
@@ -18,9 +13,28 @@ object ExParsers extends Lexers with Parsers with StringSources {
   case class NumberLit(value: String) extends Token(value)
   case class StringLit(value: String) extends Token("\"" + value + "\"")
   case class Operator(value: String) extends Token(value)
-  case object ErrorToken extends Token("<Error>")
-  case object EndToken extends Token("")
+  case object Error extends Token("<Error>")
+  case object End extends Token("")
   case class Comment(text: String) extends Token("<Comment>")
+
+  sealed abstract class Expr
+  case class IntegerLiteral(value: BigInt) extends Expr
+  case class BooleanLiteral(value: Boolean) extends Expr
+  case class IfExpr(condition: Expr, thenExpr: Expr, elseExpr: Expr) extends Expr
+  case class Plus(lhs: Expr, rhs: Expr) extends Expr
+  case class Minus(lhs: Expr, rhs: Expr) extends Expr
+  case class UPlus(expr: Expr) extends Expr
+  case class UMinus(expr: Expr) extends Expr
+  case class Times(lhs: Expr, rhs: Expr) extends Expr
+  case class Div(lhs: Expr, rhs: Expr) extends Expr
+}
+
+import ExDefs._
+
+object ExParsers extends Lexers[Token, Char, Position] with Parsers[Token, Position, String, String] {
+
+  val ErrorToken = Error
+  val EndToken = End
 
   val tokenizer = Lexer(
     // Keywords
@@ -61,17 +75,6 @@ object ExParsers extends Lexers with Parsers with StringSources {
     // Space
     many1(elem(_.isWhitespace)) |> Space
   )
-
-  sealed abstract class Expr
-  case class IntegerLiteral(value: BigInt) extends Expr
-  case class BooleanLiteral(value: Boolean) extends Expr
-  case class IfExpr(condition: Expr, thenExpr: Expr, elseExpr: Expr) extends Expr
-  case class Plus(lhs: Expr, rhs: Expr) extends Expr
-  case class Minus(lhs: Expr, rhs: Expr) extends Expr
-  case class UPlus(expr: Expr) extends Expr
-  case class UMinus(expr: Expr) extends Expr
-  case class Times(lhs: Expr, rhs: Expr) extends Expr
-  case class Div(lhs: Expr, rhs: Expr) extends Expr
 
   lazy val arithUnOp: Parser[Expr => Expr] =
     accepts(_ => "Expected an operator", "+", "-") {

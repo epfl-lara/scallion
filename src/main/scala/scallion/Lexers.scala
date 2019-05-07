@@ -3,12 +3,12 @@ package scallion
 import scala.collection.mutable.ArrayBuffer
 
 /** Contains definitions for lexers. */
-trait Lexers extends Tokens with Sources with RegExps {
+trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Character] {
 
   //---- Lexer ----//
 
   /** Associates a regular expression with a token generator. */
-  case class Producer(regExp: RegExp, makeToken: (Seq[Character], Range) => Token)
+  case class Producer(regExp: RegExp, makeToken: (Seq[Character], (Position, Position)) => Token)
 
   // Notation for writing producers.
   case object |> {
@@ -16,12 +16,12 @@ trait Lexers extends Tokens with Sources with RegExps {
   }
 
   implicit class ProducerDecorator(regExp: RegExp) {
-    def |>(makeToken: (Seq[Character], Range) => Token) =
+    def |>(makeToken: (Seq[Character], (Position, Position)) => Token) =
       Producer(regExp, makeToken)
     def |>(makeToken: Seq[Character] => Token) =
-      Producer(regExp, (cs: Seq[Character], _: Range) => makeToken(cs))
+      Producer(regExp, (cs: Seq[Character], _: (Position, Position)) => makeToken(cs))
     def |>(token: Token) =
-      Producer(regExp, (_: Seq[Character], _: Range) => token)
+      Producer(regExp, (_: Seq[Character], _: (Position, Position)) => token)
   }
 
 
@@ -30,17 +30,17 @@ trait Lexers extends Tokens with Sources with RegExps {
 
     /** Returns an iterator that produces tokens from the source. */
     def apply(
-        source: Source,
+        source: Source[Character, Position],
         generateEndToken: Boolean = true,
-        skipToken: Token => Boolean = (_: Token) => false): Iterator[(Token, Range)] =
+        skipToken: Token => Boolean = (_: Token) => false): Iterator[(Token, (Position, Position))] =
 
-      new Iterator[(Token, Range)] {
+      new Iterator[(Token, (Position, Position))] {
 
         /** Indicates if the source has ended. */
         private var ended: Boolean = false
 
         /** Cache for the next. Computed by `hasNext()` or `next()`. */
-        private var cacheNext: Option[(Token, Range)] = None
+        private var cacheNext: Option[(Token, (Position, Position))] = None
 
         /** Queries the source for the next token and update the state. */
         private def fetchNext(): Unit = tokenizeOne(source) match {
@@ -71,7 +71,7 @@ trait Lexers extends Tokens with Sources with RegExps {
           }
         }
 
-        override def next(): (Token, Range) = cacheNext match {
+        override def next(): (Token, (Position, Position)) = cacheNext match {
           case Some(pair) => {
             cacheNext = None
             pair
@@ -85,7 +85,7 @@ trait Lexers extends Tokens with Sources with RegExps {
       }
 
     /** Tries to produce a single token from the source. */
-    private def tokenizeOne(source: Source): Option[(Token, Range)] = {
+    private def tokenizeOne(source: Source[Character, Position]): Option[(Token, (Position, Position))] = {
 
       // The first producer that was successful on the longest subsequence so far.
       var lastSuccessfulProducer: Option[Producer] = None

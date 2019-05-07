@@ -1,9 +1,6 @@
 package scallion
 
-trait Tokens {
-
-  /** Type of tokens. */
-  type Token
+trait Tokens[Token] {
 
   /** The error token. */
   val ErrorToken: Token

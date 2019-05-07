@@ -1,30 +1,24 @@
 package scallion
 
+/** Indicates that this class has a representation. */
+trait HasRepr[Repr] {
+  def repr: Repr
+}
+
 /** Contains definitions for recursive descent LL(1) parsers. */
-trait Parsers extends Tokens with Positions {
-
-  /** Representation of tokens. Used for representing the next possible tokens. */
-  type Repr
-
-  /** Indicates that this class has a representation. */
-  trait HasRepr {
-    def repr: Repr
-  }
-
-  /** The type of errors produced by the parsers. */
-  type ErrorMessage
+trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
 
   /** Input stream with a single token look-ahead. */
-  class Input(it: Iterator[(Token, Range)]) {
+  class Input(it: Iterator[(Token, (Position, Position))]) {
 
     /** The current token. */
     private var optCurrentToken: Option[Token] = None
 
     /** The range of the current token. */
-    private var optCurrentRange: Option[Range] = None
+    private var optCurrentRange: Option[(Position, Position)] = None
 
     /** The range of the previous token. */
-    private var optPreviousRange: Option[Range] = None
+    private var optPreviousRange: Option[(Position, Position)] = None
 
     /** Number of tokens consumed so far (excluding current). */
     private var consumedTokens: Int = 0
@@ -65,12 +59,12 @@ trait Parsers extends Tokens with Positions {
     }
 
     /** The range of the current token. Fails when the input has ended. */
-    def currentRange: Range = optCurrentRange.getOrElse {
+    def currentRange: (Position, Position) = optCurrentRange.getOrElse {
       throw new IllegalStateException("Input past end.")
     }
 
     /** The range of the previous token. Fails when the input is at the start. */
-    def previousRange: Range = optPreviousRange.getOrElse {
+    def previousRange: (Position, Position) = optPreviousRange.getOrElse {
       throw new IllegalStateException("Input at start.")
     }
 
@@ -111,7 +105,7 @@ trait Parsers extends Tokens with Positions {
   case class Incomplete[T](rest: Parser[T]) extends ParseResult[T]
 
   /** Indicates a failed parse. */
-  case class Failed(range: Range, error: ErrorMessage) extends ParseResult[Nothing]
+  case class Failed(range: (Position, Position), error: ErrorMessage) extends ParseResult[Nothing]
 
   /** Pairs together two values.
     *
@@ -388,11 +382,11 @@ trait Parsers extends Tokens with Positions {
     case class Positioned[T](
         parser: Parser[T],
         optStartPos: Option[Position] = None,
-        optStartIndex: Option[Int] = None) extends Parser[(T, Range)] {
+        optStartIndex: Option[Int] = None) extends Parser[(T, (Position, Position))] {
 
       override def acceptsEmpty: Boolean = parser.acceptsEmpty
       override def reprs: Seq[Repr] = parser.reprs
-      override def parse(input: Input): ParseResult[(T, Range)] = {
+      override def parse(input: Input): ParseResult[(T, (Position, Position))] = {
         if (input.atEnd) {
           Incomplete(this)
         }
@@ -460,7 +454,7 @@ trait Parsers extends Tokens with Positions {
     *
     * Consumes the next input token if it matches, fails otherwise.
     */
-  def elem(token: Token with HasRepr, error: Token => ErrorMessage): Parser[Token] =
+  def elem(token: Token with HasRepr[Repr], error: Token => ErrorMessage): Parser[Token] =
     Element(token, Seq(token.repr), error)
 
   /** A parser that matches single tokens in the domain of the partial function.
@@ -575,12 +569,14 @@ trait Parsers extends Tokens with Positions {
 
   case class Level[A](operator: Parser[(A, A) => A], assoc: Associativity)
 
+  import Associativity._
+
   /** A parser that matches against applications of infix operators. */
   def operators[A](operand: Parser[A])(levels: Level[A]*): Parser[A] = {
     levels.foldRight(operand) {
       case (Level(op, assoc), acc) => assoc match {
-        case Associativity.Left => infixesLeft(acc, op)
-        case Associativity.Right => infixesRight(acc, op)
+        case Left => infixesLeft(acc, op)
+        case Right => infixesRight(acc, op)
       }
     }
   }
