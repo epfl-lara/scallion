@@ -182,7 +182,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     /** Specifies the error message in case `this` parser
       *  fails without consuming input.
       */
-    def explain(error: ErrorMessage): Parser[T] =
+    def explain(error: Token => ErrorMessage): Parser[T] =
       Disjunction(this, Failure(error))
 
     /** Associates this `parser` with an `associativity`.
@@ -266,7 +266,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     }
 
     /** Produces an error without consuming input. */
-    case class Failure(error: ErrorMessage) extends Parser[Nothing] {
+    case class Failure(error: Token => ErrorMessage) extends Parser[Nothing] {
       override val acceptsEmpty: Boolean = false
       override val reprs: Seq[Repr] = Seq()
       override def parse(input: Input): ParseResult[Nothing] = {
@@ -274,8 +274,8 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
           Incomplete(this)
         }
         else {
-          val start = input.currentStart
-          Failed((start, start), error)
+          val range = input.currentRange
+          Failed(range, error(input.current))
         }
       }
     }
@@ -448,7 +448,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
   def success[A](value: A): Parser[A] = Success(value)
 
   /** A parser that fails without consuming any input. */
-  def fail(error: ErrorMessage): Parser[Nothing] = Failure(error)
+  def fail(error: Token => ErrorMessage): Parser[Nothing] = Failure(error)
 
   /** A parser that matches against `token`.
     *
@@ -477,7 +477,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
   /** A parser that tries the provided `parsers` until one
     * either produces a value or consumes input.
     */
-  def oneOf[A](error: ErrorMessage)(parsers: Parser[A]*): Parser[A] = {
+  def oneOf[A](error: Token => ErrorMessage)(parsers: Parser[A]*): Parser[A] = {
     val zero: Parser[A] = fail(error)
     parsers.foldRight(zero) {
       case (parser, rest) => parser | rest

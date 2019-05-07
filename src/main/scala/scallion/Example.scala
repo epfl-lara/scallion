@@ -134,7 +134,7 @@ object ExParser extends Parsers[Token, Position, String, String] {
     elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
 
   lazy val nonOpExprParser =
-    oneOf("Expected an expression.")(
+    oneOf(_ => "Expected an expression")(
       ifParser,
       literalParser,
       inParens(exprParser))
@@ -145,11 +145,32 @@ object ExParser extends Parsers[Token, Position, String, String] {
       binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
   }
 
-  val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input.")
+  val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input")
 
   def run(tokens: Iterator[(Token, (Position, Position))]): ParseResult[Expr] = {
     val input = new Input(tokens)
     parser.parse(input)
   }
+}
 
+object Example {
+  def run(text: String): Expr = {
+    import ExParser._
+
+    ExParser.run(ExLexer.run(text)) match {
+      case Complete(expr)   => expr
+      case Incomplete(rest) => throw new Exception(
+        "Incomplete input. Can be completed by, for instance, " + rest.reprs.mkString(", ") + ".")
+      case Failed((start, end), error) => {
+        val line = text.drop(start.index - start.column).takeWhile(_ != '\n')
+        val pos = if (start.row == end.row) line else line + "..."
+        val count =
+          if (start.row == end.row) Math.max(1, end.column - start.column)
+          else pos.size - start.column
+        val markers = " " * start.column + "^" * count
+        throw new Exception(
+          "Error: " + error + ". Line " + (start.row + 1) + ":\n" + pos + "\n" + markers)
+      }
+    }
+  }
 }
