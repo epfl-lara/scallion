@@ -31,14 +31,11 @@ object ExDefs extends predefs.StringPredefs {
 
 import ExDefs._
 
-object ExParsers
-    extends Lexers[Token, Char, Position]
-       with Parsers[Token, Position, String, String] {
-
+object ExLexer extends Lexers[Token, Char, Position] {
   val ErrorToken = Error
   val EndToken = End
 
-  val tokenizer = Lexer(
+  val lexer = Lexer(
     // Keywords
     word("if")    |> If,
     word("else")  |> Else,
@@ -82,6 +79,20 @@ object ExParsers
     // Space
     many1(elem(_.isWhitespace)) |> Space
   )
+
+  def run(text: String): Iterator[(Token, (Position, Position))] = {
+    val source = new StringSource(text)
+    lexer(source, skipToken={
+      case Space => true
+      case Comment(_) => true
+      case _ => false
+    })
+  }
+}
+
+object ExParser extends Parsers[Token, Position, String, String] {
+  val ErrorToken = Error
+  val EndToken = End
 
   lazy val arithUnOp: Parser[Expr => Expr] =
     accepts(_ => "Expected an operator", "+", "-") {
@@ -136,13 +147,7 @@ object ExParsers
 
   val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input.")
 
-  def run(text: String): ParseResult[Expr] = {
-    val source = new StringSource(text)
-    val tokens = tokenizer(source, skipToken={
-      case Space => true
-      case Comment(_) => true
-      case _ => false
-    })
+  def run(tokens: Iterator[(Token, (Position, Position))]): ParseResult[Expr] = {
     val input = new Input(tokens)
     parser.parse(input)
   }
