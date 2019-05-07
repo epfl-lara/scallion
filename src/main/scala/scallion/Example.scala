@@ -19,6 +19,7 @@ object ExParsers extends Parsers with CharSources {
   case class Operator(value: String) extends Token(value)
   case object ErrorToken extends Token("<Error>")
   case object EndToken extends Token("")
+  case class Comment(text: String) extends Token("<Comment>")
 
   val tokenizer = Lexer(
     // Keywords
@@ -47,6 +48,14 @@ object ExParsers extends Parsers with CharSources {
     // Number literal
     many1(elem(_.isDigit)) ~ opt(elem('.') ~ many(elem(_.isDigit)))
       |> { cs => NumberLit(cs.mkString("")) },
+
+    // Single line comment.
+    word("//") ~ many(elem(_ != '\n'))
+      |> { cs => Comment(cs.mkString("")) },
+
+    // Multiline comments.
+    word("/*") ~ many(elem(_ != '*') | elem('*') ~ elem(_ != '/')) ~ opt(elem('*')) ~ word("*/")
+      |> { cs => Comment(cs.mkString("")) },
 
     // Space
     many1(elem(_.isWhitespace)) |> Space
@@ -117,7 +126,11 @@ object ExParsers extends Parsers with CharSources {
 
   def run(text: String): ParseResult[Expr] = {
     val source = new StringSource(text)
-    val tokens = tokenizer(source, skipToken=(_ == Space))
+    val tokens = tokenizer(source, skipToken={
+      case Space => true
+      case Comment(_) => true
+      case _ => false
+    })
     val input = new Input(tokens)
     parser.parse(input)
   }
