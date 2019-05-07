@@ -1,6 +1,6 @@
 package scallion
 
-object ExParsers extends Lexers with Parsers with CharSources {
+object ExParsers extends Lexers with Parsers with StringSources {
 
   type ErrorMessage = String
   type Repr = String

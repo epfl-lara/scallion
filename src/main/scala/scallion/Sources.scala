@@ -1,5 +1,8 @@
 package scallion
 
+import scala.collection.mutable.ArrayBuffer
+import scala.io
+
 /** Contains definitions related to input sources. */
 trait Sources extends Positions {
 
@@ -44,6 +47,97 @@ trait Sources extends Positions {
     def currentPosition: Position
   }
 
+  /** Source over an iterator. */
+  abstract class IteratorSource(start: Position, it: Iterator[Character]) extends Source {
+
+    def increment(pos: Position, char: Character): Position
+
+    private var buffer: ArrayBuffer[Character] = new ArrayBuffer()
+    private var index: Int = 0
+    private var basePos: Position = start
+    private var aheadPos: Position = start
+
+    /** Checks if the lookahead pointer is at the end of the sequence. */
+    def atEnd: Boolean = index >= buffer.size && !it.hasNext
+
+    /** Advances the lookahead pointer by one character in the sequence.
+      *
+      * @return The character that was advanced over.
+      */
+    def ahead(): Character = {
+      if (index >= buffer.size) {
+        val res = it.next()
+        buffer += res
+        index += 1
+        aheadPos = increment(aheadPos, res)
+        res
+      }
+      else {
+        val res = buffer(index)
+        index += 1
+        aheadPos = increment(aheadPos, res)
+        res
+      }
+    }
+
+    /** Consumes all characters that are currently looked ahead.
+      *
+      * @return The sequence of characters.
+      */
+    def consume(): Seq[Character] = {
+      val res = buffer.slice(0, index).toSeq
+      buffer = buffer.drop(index)
+      basePos = aheadPos
+      index = 0
+      res
+    }
+
+    /** Resets the lookahead pointer. */
+    def back(): Unit = {
+      aheadPos = basePos
+      index = 0
+    }
+
+    /** Current position of the lookahead pointer in the source. */
+    def currentPosition: Position = aheadPos
+  }
+
+  /** Source over multiple sources. */
+  class SeqSource(sources: Seq[Source]) extends Source {
+    require(sources.nonEmpty)
+
+    var consumedSources = 0
+    var activeSources = Seq(sources.head)
+    var inactiveSources = sources.tail
+
+    override def atEnd =
+      (consumedSources + activeSources.length) == sources.length &&
+      activeSources.last.atEnd
+    
+    override def ahead(): Character = {
+      while (activeSources.last.atEnd) {
+        activeSources = activeSources :+ inactiveSources.head
+        inactiveSources = inactiveSources.tail
+      }
+      activeSources.last.ahead()
+    }
+
+    override def consume(): Seq[Character] = {
+      val res = activeSources.flatMap(_.consume())
+      consumedSources += activeSources.size - 1
+      activeSources = Seq(activeSources.last)
+      res
+    }
+
+    override def back(): Unit = {
+      activeSources.foreach(_.back())
+      activeSources = Seq(activeSources.head)
+    }
+
+    override def currentPosition: Position =
+      activeSources.last.currentPosition
+  }
+
   /** Supports subsequence lookups. */
   trait Retrievable {
 
@@ -57,7 +151,7 @@ trait Sources extends Positions {
 }
 
 /** Contains sources for handling character sequences. */
-trait CharSources extends Sources {
+trait StringSources extends Sources {
   type Character = Char
 
   /** Position in a string. */
@@ -101,5 +195,29 @@ trait CharSources extends Sources {
     def retrieve(start: Position, end: Position): Seq[Character] = {
       string.substring(start.index, end.index)
     }
+  }
+}
+
+/** Contains sources for handling character sequences from files. */
+trait FileSources extends Sources {
+  type Character = Char
+
+  /** Position in a file. */
+  case class Position(file: Option[String], index: Int, row: Int, column: Int) {
+    def +(char: Character): Position = if (char == '\n') {
+      Position(file, index + 1, row + 1, 0)
+    } else {
+      Position(file, index + 1, row, column + 1)
+    }
+  }
+
+  /** Source over a file. */
+  class FileSource(file: String) extends IteratorSource(Position(Some(file), 0, 0, 0), io.Source.fromFile(file)) {
+    def increment(pos: Position, char: Character): Position = pos + char
+  }
+
+  /** Source over a string. */
+  class StringSource(text: String) extends IteratorSource(Position(None, 0, 0, 0), text.toIterator) {
+    def increment(pos: Position, char: Character): Position = pos + char
   }
 }
