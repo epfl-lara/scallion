@@ -27,6 +27,16 @@ object ExDefs extends predefs.StringPredefs {
   case class UMinus(expr: Expr) extends Expr
   case class Times(lhs: Expr, rhs: Expr) extends Expr
   case class Div(lhs: Expr, rhs: Expr) extends Expr
+  case class Variable(name: String) extends Expr
+
+  case class ParseError(expected: String, got: Token) {
+    override def toString = "Expected " + expected + ", got " + (got match {
+      case End => "the end of input"
+      case Error => "an unknown token"
+      case Identifier(name) => "the identifier `" + name + "`"
+      case _ => got.repr
+    })
+  }
 }
 
 import ExDefs._
@@ -90,21 +100,21 @@ object ExLexer extends Lexers[Token, Char, Position] {
   }
 }
 
-object ExParser extends Parsers[Token, Position, String, String] {
+object ExParser extends Parsers[Token, Position, ParseError, String] {
   val ErrorToken = Error
   val EndToken = End
 
   lazy val arithUnOp: Parser[Expr => Expr] =
-    accepts(_ => "Expected an operator", "+", "-") {
+    accepts(ParseError("an operator", _), "+", "-") {
       case Operator("+") => UPlus(_)
       case Operator("-") => UMinus(_)
     }
 
   lazy val ifParser: Parser[Expr] = {
-    elem(If, _ => "Expected an if expression.") >>
+    elem(If, ParseError("an if expression", _)) >>
     inParens(exprParser) &&
     exprParser &&
-    elem(Else, _ => "Expected an else branch.") >>
+    elem(Else, ParseError("an else branch", _)) >>
     exprParser
   } map {
     case c && t && e => IfExpr(c, t , e)
@@ -114,29 +124,35 @@ object ExParser extends Parsers[Token, Position, String, String] {
     integerLiteralParser | booleanLiteralParser
 
   lazy val integerLiteralParser: Parser[Expr] =
-    accepts(_ => "Expected a number literal", "0", "1") {
+    accepts(ParseError("a number literal", _), "0", "1") {
       case NumberLit(n) => IntegerLiteral(BigInt(n))
     }
 
   lazy val booleanLiteralParser: Parser[Expr] =
-    accepts(_ => "Expected a boolean literal", "true", "false") {
+    accepts(ParseError("a boolean literal", _), "true", "false") {
       case TrueLit => BooleanLiteral(true)
       case FalseLit => BooleanLiteral(false)
     }
 
   def inParens[A](parser: Parser[A]): Parser[A] =
-    elem(Punctuation('('), _ => "Expected an open parenthesis") >>
+    elem(Punctuation('('), ParseError("an open parenthesis", _)) >>
     parser <<
-    elem(Punctuation(')'), _ => "Expected a close parenthesis")
+    elem(Punctuation(')'), ParseError("a close parenthesis", _))
 
   def binOp(repr: String, op: (Expr, Expr) => Expr):
       Parser[(Expr, Expr) => Expr] =
-    elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
+    elem(Operator(repr), ParseError("the operator " + repr, _)).map(_ => op)
+
+  lazy val variableParser: Parser[Expr] =
+    accepts(ParseError("an identifier", _), "foo", "bar", "baz") {
+      case Identifier(name) => Variable(name)
+    }
 
   lazy val nonOpExprParser =
-    oneOf(_ => "Expected an expression")(
+    oneOf(ParseError("an expression", _))(
       ifParser,
       literalParser,
+      variableParser,
       inParens(exprParser))
 
   lazy val exprParser: Parser[Expr] = rec {
@@ -145,7 +161,7 @@ object ExParser extends Parsers[Token, Position, String, String] {
       binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
   }
 
-  val parser: Parser[Expr] = phrase(exprParser, _ => "Expected end of input")
+  val parser: Parser[Expr] = phrase(exprParser, ParseError("the end of input", _))
 
   def run(tokens: Iterator[(Token, (Position, Position))]): ParseResult[Expr] = {
     val input = new Input(tokens)
