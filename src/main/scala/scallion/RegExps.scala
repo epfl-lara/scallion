@@ -112,12 +112,12 @@ trait RegExps[Character] {
     }
   }
 
-  /** Regular expression that accepts zero or more repetitions of the regular expression `regExp`. */
+  /** Regular expression that accepts zero or more repetitions of `regExp`. */
   def many(regExp: RegExp): RegExp = Star(regExp)
 
-  /** Regular expression that accepts one or more repetitions of the regular expression `regExp`. */
+  /** Regular expression that accepts one or more repetitions of `regExp`. */
   def many1(regExp: RegExp): RegExp = regExp ~ many(regExp)
 
-  /** Regular expression that accepts zero or one instances of the regular expression `regExp`. */
+  /** Regular expression that accepts zero or one instances of `regExp`. */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 }

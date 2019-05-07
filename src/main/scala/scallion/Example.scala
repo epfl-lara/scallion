@@ -31,7 +31,9 @@ object ExDefs extends predefs.StringPredefs {
 
 import ExDefs._
 
-object ExParsers extends Lexers[Token, Char, Position] with Parsers[Token, Position, String, String] {
+object ExParsers
+    extends Lexers[Token, Char, Position]
+       with Parsers[Token, Position, String, String] {
 
   val ErrorToken = Error
   val EndToken = End
@@ -53,7 +55,9 @@ object ExParsers extends Lexers[Token, Char, Position] with Parsers[Token, Posit
       |> { cs => Punctuation(cs.head) },
 
     // String literal
-    elem('"') ~ many(elem(c => c != '"' && c != '\\') | elem('\\') ~ elem("\\\"")) ~ elem('"')
+    elem('"') ~
+    many(elem(c => c != '"' && c != '\\') | elem('\\') ~ elem("\\\"")) ~
+    elem('"')
       |> { cs => StringLit(cs.tail.init.mkString("")) },
 
     // Identifiers
@@ -69,7 +73,10 @@ object ExParsers extends Lexers[Token, Char, Position] with Parsers[Token, Posit
       |> { cs => Comment(cs.mkString("")) },
 
     // Multiline comments.
-    word("/*") ~ many(elem(_ != '*') | elem('*') ~ elem(_ != '/')) ~ opt(elem('*')) ~ word("*/")
+    word("/*") ~
+    many(elem(_ != '*') | elem('*') ~ elem(_ != '/')) ~
+    opt(elem('*')) ~
+    word("*/")
       |> { cs => Comment(cs.mkString("")) },
 
     // Space
@@ -111,7 +118,8 @@ object ExParsers extends Lexers[Token, Char, Position] with Parsers[Token, Posit
     parser <<
     elem(Punctuation(')'), _ => "Expected a close parenthesis")
 
-  def binOp(repr: String, op: (Expr, Expr) => Expr): Parser[(Expr, Expr) => Expr] =
+  def binOp(repr: String, op: (Expr, Expr) => Expr):
+      Parser[(Expr, Expr) => Expr] =
     elem(Operator(repr), _ => "Expected operator " + repr).map(_ => op)
 
   lazy val nonOpExprParser =

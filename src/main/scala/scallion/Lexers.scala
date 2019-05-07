@@ -32,7 +32,8 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
     def apply(
         source: Source[Character, Position],
         generateEndToken: Boolean = true,
-        skipToken: Token => Boolean = (_: Token) => false): Iterator[(Token, (Position, Position))] =
+        skipToken: Token => Boolean = (_: Token) => false):
+          Iterator[(Token, (Position, Position))] =
 
       new Iterator[(Token, (Position, Position))] {
 
@@ -85,7 +86,8 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
       }
 
     /** Tries to produce a single token from the source. */
-    private def tokenizeOne(source: Source[Character, Position]): Option[(Token, (Position, Position))] = {
+    private def tokenizeOne(source: Source[Character, Position]):
+        Option[(Token, (Position, Position))] = {
 
       // The first producer that was successful on the longest subsequence so far.
       var lastSuccessfulProducer: Option[Producer] = None
@@ -116,8 +118,10 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
         // resulting in new regexps that handle the rest of input.
         activeProducers = activeProducers.flatMap {
           case Producer(regExp, makeToken) => regExp.derive(char) match {
-            case RegExp.EmptySet => None  // When the regExp is EmptySet, we can ignore the producer.
-            case derived => Some(Producer(derived, makeToken))  // Otherwise, we update it.
+            // When the regExp is EmptySet, we can ignore the producer.
+            case RegExp.EmptySet => None
+            // Otherwise, we update it.
+            case derived => Some(Producer(derived, makeToken))
           }
         }
 

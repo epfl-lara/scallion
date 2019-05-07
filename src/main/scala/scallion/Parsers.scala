@@ -461,8 +461,11 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     *
     * Consumes the next input token if it matches, fails otherwise.
     */
-  def accepts[A](error: Token => ErrorMessage, reprs: Repr*)(function: PartialFunction[Token, A]): Parser[A] =
-    Accept((token: Token) => function.lift(token).map(Right(_)).getOrElse(Left(error(token))), reprs)
+  def accepts[A](error: Token => ErrorMessage, reprs: Repr*)
+      (function: PartialFunction[Token, A]): Parser[A] =
+    Accept({ (token: Token) =>
+      function.lift(token).map(Right(_)).getOrElse(Left(error(token)))
+    }, reprs)
 
   /** A parser that matches single tokens in the domain of the partial function.
     *

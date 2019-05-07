@@ -18,7 +18,10 @@ trait FilePredefs {
 
   /** Source over a file. */
   class FileSource(file: String)
-      extends IteratorSource[Char, Position](Position(Some(file), 0, 0, 0), io.Source.fromFile(file)) {
+      extends IteratorSource[Char, Position](
+        Position(Some(file), 0, 0, 0),
+        io.Source.fromFile(file)) {
+
     def increment(pos: Position, char: Char): Position = pos + char
   }
 
