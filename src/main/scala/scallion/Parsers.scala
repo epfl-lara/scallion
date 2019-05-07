@@ -1,10 +1,10 @@
 package scallion
 
 /** Contains definitions for recursive descent LL(1) parsers. */
-trait Parsers extends Lexers {
+trait Parsers extends Tokens with Positions {
 
   /** Representation of tokens. Used for representing the next possible tokens. */
-  type Repr = Seq[Character]
+  type Repr
 
   /** Indicates that this class has a representation. */
   trait HasRepr {

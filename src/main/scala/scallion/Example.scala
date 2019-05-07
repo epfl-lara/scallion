@@ -1,10 +1,11 @@
 package scallion
 
-object ExParsers extends Parsers with CharSources {
+object ExParsers extends Lexers with Parsers with CharSources {
 
   type ErrorMessage = String
+  type Repr = String
 
-  sealed abstract class Token(val repr: Seq[Character]) extends HasRepr
+  sealed abstract class Token(val repr: String) extends HasRepr
 
   case object If extends Token("if")
   case object Else extends Token("else")
