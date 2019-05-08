@@ -200,7 +200,9 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     /** Sequential composition of parsers. */
     case class Sequence[S, T](pre: Parser[S], post: Parser[T]) extends Parser[(S, T)] {
       override def acceptsEmpty: Boolean = pre.acceptsEmpty && post.acceptsEmpty
-      override def reprs: Seq[Repr] = if (pre.acceptsEmpty) pre.reprs ++ post.reprs else pre.reprs
+      override def reprs: Seq[Repr] =
+        if (pre.acceptsEmpty) (pre.reprs ++ post.reprs).distinct
+        else pre.reprs
       override def parse(input: Input): ParseResult[(S, T)] = pre.parse(input) match {
         case Complete(preValue) => post.parse(input) match {
           case Complete(postValue) => Complete((preValue, postValue))
@@ -219,7 +221,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     /** Disjunction of parsers. */
     case class Disjunction[S](left: Parser[S], right: Parser[S]) extends Parser[S] {
       override def acceptsEmpty: Boolean = left.acceptsEmpty || right.acceptsEmpty
-      override def reprs: Seq[Repr] = left.reprs ++ right.reprs
+      override def reprs: Seq[Repr] = (left.reprs ++ right.reprs).distinct
       override def parse(input: Input): ParseResult[S] = {
         val previousIndex = input.currentIndex
         left.parse(input) match {
@@ -426,7 +428,13 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
 
       override def acceptsEmpty: Boolean = parser.acceptsEmpty
       override def reprs: Seq[Repr] = parser.reprs
-      override def parse(input: Input): ParseResult[A] = parser.parse(input)
+      override def parse(input: Input): ParseResult[A] =
+        if (input.atEnd) {
+          Incomplete(this)
+        }
+        else {
+          parser.parse(input)
+        }
       override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
         if (reject.contains(id)) true
         else if (accept.contains(id)) false
@@ -465,14 +473,14 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
       (function: PartialFunction[Token, A]): Parser[A] =
     Accept({ (token: Token) =>
       function.lift(token).map(Right(_)).getOrElse(Left(error(token)))
-    }, reprs)
+    }, reprs.distinct)
 
   /** A parser that matches single tokens in the domain of the partial function.
     *
     * Consumes the next input token if it matches, fails otherwise.
     */
   def classify[A](reprs: Repr*)(function: Token => Either[ErrorMessage, A]): Parser[A] =
-    Accept(function, reprs)
+    Accept(function, reprs.distinct)
 
   /** A parser that tries the provided `parsers` until one
     * either produces a value or consumes input.
@@ -517,12 +525,15 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     Lazy(() => parser)
 
   /** A parser that matches against the `EndToken` token. */
-  def end(error: Token => ErrorMessage): Parser[Unit] =
-    Element(EndToken, Seq(), error).map((_: Token) => ())
+  def end(error: Token => ErrorMessage, reprs: Seq[Repr] = Seq()): Parser[Unit] =
+    Element(EndToken, reprs.distinct, error).map((_: Token) => ())
 
   /** A parser that ensures that the consumed input ends with an `EndToken`. */
-  def phrase[A](parser: Parser[A], error: Token => ErrorMessage): Parser[A] =
-    parser << end(error)
+  def phrase[A](
+      parser: Parser[A],
+      error: Token => ErrorMessage,
+      reprs: Seq[Repr] = Seq()): Parser[A] =
+    parser << end(error, reprs)
 
   /** A parser that matches against non-empty sequences of `rep` separated by `sep`. */
   def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] =

@@ -90,9 +90,9 @@ object ExLexer extends Lexers[Token, Char, Position] {
     many1(elem(_.isWhitespace)) |> Space
   )
 
-  def run(text: String): Iterator[(Token, (Position, Position))] = {
+  def run(text: String, partial: Boolean = false): Iterator[(Token, (Position, Position))] = {
     val source = new StringSource(text)
-    lexer(source, skipToken={
+    lexer(source, generateEndToken = !partial, skipToken = {
       case Space => true
       case Comment(_) => true
       case _ => false
@@ -124,7 +124,7 @@ object ExParser extends Parsers[Token, Position, ParseError, String] {
     integerLiteralParser | booleanLiteralParser
 
   lazy val integerLiteralParser: Parser[Expr] =
-    accepts(ParseError("a number literal", _), "0", "1") {
+    accepts(ParseError("a number literal", _), "<a number>") {
       case NumberLit(n) => IntegerLiteral(BigInt(n))
     }
 
@@ -144,7 +144,7 @@ object ExParser extends Parsers[Token, Position, ParseError, String] {
     elem(Operator(repr), ParseError("the operator " + repr, _)).map(_ => op)
 
   lazy val variableParser: Parser[Expr] =
-    accepts(ParseError("an identifier", _), "foo", "bar", "baz") {
+    accepts(ParseError("an identifier", _), "<an identifier>") {
       case Identifier(name) => Variable(name)
     }
 
@@ -161,7 +161,7 @@ object ExParser extends Parsers[Token, Position, ParseError, String] {
       binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
   }
 
-  val parser: Parser[Expr] = phrase(exprParser, ParseError("the end of input", _))
+  val parser: Parser[Expr] = phrase(exprParser, ParseError("the end of input", _), Seq("<EOF>"))
 
   def run(tokens: Iterator[(Token, (Position, Position))]): ParseResult[Expr] = {
     val input = new Input(tokens)
@@ -170,10 +170,10 @@ object ExParser extends Parsers[Token, Position, ParseError, String] {
 }
 
 object Example {
-  def run(text: String): Expr = {
+  def run(text: String, partial: Boolean = false): Expr = {
     import ExParser._
 
-    ExParser.run(ExLexer.run(text)) match {
+    ExParser.run(ExLexer.run(text, partial=partial)) match {
       case Complete(expr)   => expr
       case Incomplete(rest) => throw new Exception(
         "Incomplete input. Can be completed by, for instance, " + rest.reprs.mkString(", ") + ".")
