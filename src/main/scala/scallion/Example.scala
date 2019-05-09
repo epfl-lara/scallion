@@ -148,17 +148,19 @@ object ExParser extends Parsers[Token, Position, ParseError, String] {
       case Identifier(name) => Variable(name)
     }
 
-  lazy val nonOpExprParser =
-    oneOf(ParseError("an expression", _))(
-      ifParser,
+  lazy val operandParser: Parser[Expr] =
+    oneOf(ParseError("an operand", _))(
       literalParser,
       variableParser,
       inParens(exprParser))
 
-  lazy val exprParser: Parser[Expr] = rec {
-    operators(prefixes(arithUnOp, nonOpExprParser))(
+  lazy val operationParser: Parser[Expr] =
+    operators(prefixes(arithUnOp, operandParser))(
       binOp("+", Plus(_, _))  | binOp("-", Minus(_, _)) |> Associativity.Left,
       binOp("*", Times(_, _)) | binOp("/", Div(_, _))   |> Associativity.Left)
+
+  lazy val exprParser = rec {
+    operationParser | ifParser
   }
 
   val parser: Parser[Expr] = phrase(exprParser, ParseError("the end of input", _), Seq("<EOF>"))
