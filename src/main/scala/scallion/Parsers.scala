@@ -1,5 +1,7 @@
 package scallion
 
+import scala.collection.mutable.ArrayBuffer
+
 /** Indicates that this class has a representation. */
 trait HasRepr[Repr] {
   def repr: Repr
@@ -142,48 +144,56 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     // Concrete members
 
     /** Applies a function to the parsed value. */
-    def map[U](function: T => U): Parser[U] =
-      Transform(this, function)
+    def map[U](function: T => U): Parser[U] = this match {
+      case f@Failure(_) => f
+      case Success(value) => Success(function(value))
+      case Transform(inner, firstFunction) => Transform(inner, firstFunction andThen function)
+      case _ => Transform(this, function)
+    }
 
     /** Sequences `this` and `that` parser.
       *
       * Returns both values as a pair.
       */
-    def <>[U](that: Parser[U]): Parser[(T, U)] =
-      Sequence(this, that)
+    def <>[U](that: Parser[U]): Parser[(T, U)] = this match {
+      case f@Failure(_) => f
+      case _ => Sequence(this, that)
+    }
 
     /** Sequences `this` and `that` parser.
       *
       * Returns both values as a `&&`-pair.
       */
     def &&[U](that: Parser[U]): Parser[T && U] =
-      Transform(Sequence(this, that), (p: (T, U)) => Parsers.this.&&(p._1, p._2))
+      (this <> that).map((p: (T, U)) => Parsers.this.&&(p._1, p._2))
 
     /** Sequences `this` and `that` parser.
       *
       * Returns only the first value.
       */
     def <<[U](that: Parser[U]): Parser[T] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._1)
+      (this <> that).map((p: (T, U)) => p._1)
 
     /** Sequences `this` and `that` parser.
       *
       * Returns only the second value.
       */
     def >>[U](that: Parser[U]): Parser[U] =
-      Transform(Sequence(this, that), (p: (T, U)) => p._2)
+      (this <> that).map((p: (T, U)) => p._2)
 
     /** Falls back to `that` parser in case `this` parser
       *  fails without consuming input.
       */
-    def |[U >: T](that: Parser[U]): Parser[U] =
-      Disjunction(this, that)
+    def |[U >: T](that: Parser[U]): Parser[U] = this match {
+      case Failure(_) => that
+      case _ => Disjunction(this, that)
+    }
 
     /** Specifies the error message in case `this` parser
       *  fails without consuming input.
       */
     def explain(error: Token => ErrorMessage): Parser[T] =
-      Disjunction(this, Failure(error))
+      this | Failure(error)
 
     /** Associates this `parser` with an `associativity`.
       *
@@ -209,7 +219,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
           case Incomplete(rest) => Incomplete(rest.map(postValue => (preValue, postValue)))
           case f@Failed(_, _) => f
         }
-        case Incomplete(rest) => Incomplete(Sequence(rest, post))
+        case Incomplete(rest) => Incomplete(rest <> post)
         case f@Failed(_, _) => f
       }
       override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
@@ -345,30 +355,39 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
       override val acceptsEmpty: Boolean = true
       override def reprs: Seq[Repr] = parser.reprs
       override def parse(input: Input): ParseResult[Seq[T]] = {
-        val previousIndex = input.currentIndex
-        parser.parse(input) match {
-          case Complete(value) =>
-            if (input.currentIndex == previousIndex) {
-              Complete(Stream.continually(value))
-            }
-            else {
-              parse(input).map(values => value +: values)
-            }
-          case Incomplete(rest) =>
-            if (input.currentIndex == previousIndex) {
-              Incomplete(this)
-            }
-            else {
-              Incomplete(Sequence(rest, Repeat(parser)).map {
-                case (value, values) => value +: values
-              })
-            }
-          case f@Failed(_, _) =>
-            if (input.currentIndex == previousIndex) {
-              Complete(Seq())
-            }
-            else f
+        val partial: ArrayBuffer[T] = new ArrayBuffer()
+        var result: Option[ParseResult[Seq[T]]] = None
+        while (result.isEmpty) {
+          val previousIndex = input.currentIndex
+          parser.parse(input) match {
+            case Complete(value) =>
+              if (input.currentIndex == previousIndex) {
+                result = Some(Complete(Stream.continually(value)))
+              }
+              else {
+                partial += value
+              }
+            case Incomplete(rest) =>
+              result = Some {
+                if (input.currentIndex == previousIndex) {
+                  Incomplete(this).map(partial.toSeq ++ _)
+                }
+                else {
+                  Incomplete((rest <> Repeat(parser)).map {
+                    case (value, values) => partial.toSeq ++ (value +: values)
+                  })
+                }
+              }
+            case f@Failed(_, _) =>
+              result = Some {
+                if (input.currentIndex == previousIndex) {
+                  Complete(partial.toSeq)
+                }
+                else f
+              }
+          }
         }
+        result.get
       }
       override def isLeftRecursive(accept: Set[Int], reject: Set[Int]): Boolean =
         parser.isLeftRecursive(accept, reject)
@@ -422,7 +441,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
     }
 
     /** Lazy wrapper around a parser. Allows for recursive parser values. */
-    case class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
+    class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
       val id = Lazy.nextId()
       private lazy val parser: Parser[A] = computation()
 
@@ -447,6 +466,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
         currentId += 1
         currentId
       }
+      def apply[A](parser: => Parser[A]): Parser[A] = new Lazy(() => parser)
     }
   }
 
@@ -522,7 +542,7 @@ trait Parsers[Token, Position, ErrorMessage, Repr] extends Tokens[Token] {
 
   /** Indicates that the parser may recursively call itself. */
   def rec[A](parser: => Parser[A]): Parser[A] =
-    Lazy(() => parser)
+    Lazy(parser)
 
   /** A parser that matches against the `EndToken` token. */
   def end(error: Token => ErrorMessage, reprs: Seq[Repr] = Seq()): Parser[Unit] =
