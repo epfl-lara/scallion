@@ -61,7 +61,10 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       elem('\\') ~ (elem("\"\\/bfnrt") | elem('u') ~ hex.times(4))
     } ~
     elem('"')
-      |> { cs => StringToken(cs.tail.init.mkString) },
+      |> { cs => StringToken {
+        val string = cs.mkString
+        string.slice(1, string.length - 1)
+      }},
 
     // Numbers
     opt {
@@ -82,8 +85,8 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       |> { cs => NumberToken(cs.mkString.toDouble) }
   )
 
-  def apply(text: String): Iterator[Token] = {
-    val source = new IteratorSource(0, text.toIterator) {
+  def apply(it: Iterator[Char]): Iterator[Token] = {
+    val source = new IteratorSource(0, it) {
       override def increment(pos: Int, char: Char): Int = pos + 1
     }
 
@@ -141,5 +144,5 @@ object JSONParser extends Parsers[Token, TokenClass] {
     arrayValue | objectValue | booleanValue | numberValue | stringValue | nullValue
   }
 
-  def apply(it: Iterator[Token]): Option[Value] = value.parse(it)
+  def apply(it: Iterator[Token]): ParseResult[Value] = value.parse(it)
 }

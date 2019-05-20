@@ -10,13 +10,35 @@ trait Parsers[Token, Kind] {
 
   sealed abstract class Parser[+A] {
 
+    /** The value, if any, produced by this parser without consuming more input. */
     def nullable: Option[A]
+
+    /** Indicates if there exists a sequence of tokens that the parser can accept. */
     def isProductive: Boolean
 
+    /** Returns the set of tokens that are accepted as the next token. */
     @inline def first: Set[Kind] = collectFirst(Set())
+
+    /** Returns the set of tokens that should not be accept
+      * as the next token by a subsequent parser. */
     @inline def shouldNotFollow: Set[Kind] = collectShouldNotFollow(Set())
+
+    /** Checks if a `Recursive` parser can be entered without consuming input first.
+      *
+      * @param id The reference of the `Recursive` parser.
+      */
     @inline def calledLeft(id: AnyRef): Boolean = collectCalledLeft(id, Set())
+
+    /** Checks if this parser corresponds to a LL(1) grammar. */
     @inline def isLL1: Boolean = collectIsLL1(Set())
+
+
+    // All the functions below have an argument `recs` which
+    // contains the set of all `Recursive` parser on which the call
+    // was already performed.
+    //
+    // This is done to handle the potentially cyclic structure of parsers
+    // introduced by `Recursive`.
 
     def collectNullable(recs: Set[AnyRef]): Option[A]
     def collectFirst(recs: Set[AnyRef]): Set[Kind]
@@ -25,8 +47,10 @@ trait Parsers[Token, Kind] {
     def collectIsProductive(recs: Set[AnyRef]): Boolean
     def collectIsLL1(recs: Set[AnyRef]): Boolean
 
+    /** Feeds a token to the parser and obtain a parser for the rest of input. */
     def derive(token: Token): Parser[A]
 
+    /** Apply a function to the parsed values. */
     def map[B](function: A => B): Parser[B] = this match {
       case Failure => Failure
       case Success(value) => Success(function(value))
@@ -34,6 +58,7 @@ trait Parsers[Token, Kind] {
       case _ => Transform(function, this)
     }
 
+    /** Prepend a value to the parsed values. */
     def prepend[B](prefix: Seq[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] = ev1(this) match {
       case Failure => Failure
       case Success(value) => Success(prefix ++ value)
@@ -41,6 +66,7 @@ trait Parsers[Token, Kind] {
       case _ => Prepend(prefix, this)
     }
 
+    /** Sequences `this` and `that` parser. The parsed values are returned as a pair. */
     def merge[B](that: Parser[B]): Parser[(A, B)] = (this, that) match {
       case (Failure, _) => Failure
       case (_, Failure) => Failure
@@ -48,46 +74,95 @@ trait Parsers[Token, Kind] {
       case _ => Sequence(this, that)
     }
 
+    /** Sequences `this` and `that` parser. The parsed values are concatenated. */
     def ++[B](that: Parser[Seq[B]])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] = (this, that) match {
       case (Failure, _) => Failure
       case (_, Failure) => Failure
       case (Success(a), Success(b)) => Success(a ++ b)
-      //case (_, Concat(left, right)) => (this ++ left) ++ right  // Left is where values hide.
+      case (_, Concat(left, right)) => (this ++ left) ++ right
       case _ => Concat(this, that)
     }
 
+    /** Sequences `this` and `that` parser. The parsed value from `that` is returned. */
     def ~>~[B](that: Parser[B]): Parser[B] = this.merge(that).map(_._2)
 
+    /** Sequences `this` and `that` parser. The parsed value from `this` is returned. */
     def ~<~[B](that: Parser[B]): Parser[A] = this.merge(that).map(_._1)
 
+    /** Sequences `this` and `that` parser. The parsed value from `that` is appended to that from `this`. */
     def :+[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
       this ++ that.map(Vector(_))
 
+    /** Sequences `this` and `that` parser. The parsed value from `that` is prepended to that from `this`. */
     def +:[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
       that.map(Vector(_)) ++ this
 
+    /** Sequences `this` and `that` parser. The parsed values are returned as a ~-pair.
+      *
+      * This is done for conveniently building long sequences and matching on them.
+      */
     def ~[B](that: Parser[B]): Parser[A ~ B] =
       this.merge(that).map {
         case (lhs, rhs) => scallion.~(lhs, rhs)
       }
 
+    /** Disjunction of `this` and `that` parser. */
     def |[B >: A](that: Parser[B]): Parser[B] = (this, that) match {
       case (Failure, _) => that
       case (_, Failure) => this
       case _ => Disjunction(this, that)
     }
 
-    def parse(it: Iterator[Token]): Option[A] = {
-      require(isLL1)
+    /** Consumes a sequence of tokens and parses into a value. */
+    def parse(it: Iterator[Token]): ParseResult[A] = {
+      require(isLL1 && this.isProductive)
 
-      var p: Parser[A] = this
-      while (it.hasNext && p != Failure /*p.isProductive*/) {
-        p = p.derive(it.next())
+      var parser: Parser[A] = this
+      while (it.hasNext) {
+        val token = it.next()
+        val newParser = parser.derive(token)
+        if (!newParser.isProductive) {
+          return UnexpectedToken(token, parser)
+        }
+        parser = newParser
       }
-      p.nullable
+      parser.nullable match {
+        case None => UnexpectedEnd(parser)
+        case Some(value) => Parsed(value, parser)
+      }
     }
   }
-    object Parser {
+
+  /** Result of calling `parse` on a `Parser`. */
+  sealed abstract class ParseResult[+A] {
+    val parser: Parser[A]
+  }
+
+  /** Indicates that the input has been fully processed, resulting in a `value`.
+    *
+    * A `parser` for subsequent input is also provided.
+    */
+  case class Parsed[A](value: A, parser: Parser[A]) extends ParseResult[A]
+
+  /** Indicates that the provided `token` was not expected at that point.
+    *
+    * The `parser` that rejected the token is returned.
+    */
+  case class UnexpectedToken[A](token: Token, parser: Parser[A]) extends ParseResult[A]
+
+  /** Indicates that end of input was unexpectedly encountered.
+    *
+    * The `parser` for subsequent input is provided.
+    */
+  case class UnexpectedEnd[A](parser: Parser[A]) extends ParseResult[A]
+
+  sealed abstract class LL1Violation
+  case class NullableViolation(parser: Parser[Any]) extends LL1Violation
+  case class FirstViolation(parser: Parser[Any]) extends LL1Violation
+  case class FollowViolation(parser: Parser[Any]) extends LL1Violation
+  case class LeftRecursiveViolation(parser: Parser[Any]) extends LL1Violation
+
+  object Parser {
     case class Success[A](value: A) extends Parser[A] {
       override val nullable: Option[A] = Some(value)
       override val isProductive: Boolean = true
@@ -257,7 +332,7 @@ trait Parsers[Token, Kind] {
         }
       }
     }
-    case class Lazy[A](computation: () => Parser[A]) extends Parser[A] {
+    case class Recursive[A](computation: () => Parser[A]) extends Parser[A] {
       lazy val inner: Parser[A] = computation()
 
       override lazy val nullable: Option[A] = inner.collectNullable(Set(this))
@@ -282,12 +357,17 @@ trait Parsers[Token, Kind] {
 
   def elem(kind: Kind): Parser[Token] = Elem(kind)
   def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] = elem(kind).map(function)
-  def recursive[A](parser: => Parser[A]): Parser[A] = Lazy(() => parser)
+  def recursive[A](parser: => Parser[A]): Parser[A] = Recursive(() => parser)
   def epsilon[A](value: A): Parser[A] = Success(value)
-  def failure[A]: Parser[A] = Failure
-  def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = {
+  val failure: Parser[Nothing] = Failure
+  def many[A](rep: Parser[A]): Parser[Seq[A]] = {
+    lazy val rest: Parser[Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
+    rest
+  }
+  def many1[A](rep: Parser[A]): Parser[Seq[A]] = rep +: many(rep)
+  def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = rep1sep(rep, sep) | epsilon(Vector())
+  def rep1sep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
-
-    rep +: rest | epsilon(Vector())
+    rep +: rest
   }
 }
