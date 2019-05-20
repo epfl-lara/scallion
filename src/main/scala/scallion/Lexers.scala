@@ -3,7 +3,7 @@ package scallion
 import scala.collection.mutable.ArrayBuffer
 
 /** Contains definitions for lexers. */
-trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Character] {
+trait Lexers[Token, Character, Position] extends RegExps[Character] {
 
   //---- Lexer ----//
 
@@ -31,36 +31,32 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
     /** Returns an iterator that produces tokens from the source. */
     def apply(
         source: Source[Character, Position],
-        generateEndToken: Boolean = true,
-        skipToken: Token => Boolean = (_: Token) => false):
-          Iterator[(Token, (Position, Position))] =
+        errorToken: (Seq[Character], (Position, Position)) => Token,
+        skipToken: Token => Boolean = (_: Token) => false): Iterator[Token] =
 
-      new Iterator[(Token, (Position, Position))] {
+      new Iterator[Token] {
 
         /** Indicates if the source has ended. */
         private var ended: Boolean = false
 
         /** Cache for the next. Computed by `hasNext()` or `next()`. */
-        private var cacheNext: Option[(Token, (Position, Position))] = None
+        private var cacheNext: Option[Token] = None
 
         /** Queries the source for the next token and update the state. */
         private def fetchNext(): Unit = tokenizeOne(source) match {
-          case Some((token, _)) if skipToken(token) => fetchNext()
-          case Some(pair) => cacheNext = Some(pair)
+          case Some(token) if skipToken(token) => fetchNext()
+          case Some(token) => cacheNext = Some(token)
           case None => {
             ended = true
 
             val endPos = source.currentPosition
-            source.back()
+            val content = source.back()
             val startPos = source.currentPosition
 
-            val range = (startPos, endPos)
-
             if (source.atEnd) {
-              cacheNext = if (generateEndToken) Some((EndToken, range)) else None
+              cacheNext = None
             } else {
-              cacheNext = Some((ErrorToken, range))
-            }
+              cacheNext = Some(errorToken(content, (startPos, endPos)))            }
           }
         }
 
@@ -72,10 +68,10 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
           }
         }
 
-        override def next(): (Token, (Position, Position)) = cacheNext match {
-          case Some(pair) => {
+        override def next(): Token = cacheNext match {
+          case Some(token) => {
             cacheNext = None
-            pair
+            token
           }
           case None if ended => throw new NoSuchElementException("Token iterator ended.")
           case None => {
@@ -86,8 +82,7 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
       }
 
     /** Tries to produce a single token from the source. */
-    private def tokenizeOne(source: Source[Character, Position]):
-        Option[(Token, (Position, Position))] = {
+    private def tokenizeOne(source: Source[Character, Position]): Option[Token] = {
 
       // The first producer that was successful on the longest subsequence so far.
       var lastSuccessfulProducer: Option[Producer] = None
@@ -144,7 +139,7 @@ trait Lexers[Token, Character, Position] extends Tokens[Token] with RegExps[Char
           val range = (startPos, endPos)
           val token = makeToken(buffer.toSeq, range)
 
-          (token, range)
+          token
         }
       }
     }

@@ -51,6 +51,17 @@ trait RegExps[Character] {
       case (_, EmptyStr) => this
       case _ => Concat(this, that)
     }
+
+    def times(n: Int): RegExp = {
+      require(n >= 0)
+
+      if (n == 0) {
+        EmptyStr
+      }
+      else {
+        this ~ this.times(n - 1)
+      }
+    }
   }
 
   /** Contains primitive constructors for regular expressions. */
