@@ -350,7 +350,7 @@ trait Parsers[Token, Kind] {
   def epsilon[A](value: A): Parser[A] = Success(value)
 
   /** Parser that always fails. */
-  val failure: Parser[Nothing] = Failure
+  def failure[A]: Parser[A] = Failure
 
   /** Parser that represents 0 or more repetitions of the `rep` parser. */
   def many[A](rep: Parser[A]): Parser[Seq[A]] = {
@@ -371,12 +371,10 @@ trait Parsers[Token, Kind] {
   }
 
   /** Parser that represents the disjunction of several `parsers`. */
-  def oneOf[A](parsers: Parser[A]*): Parser[A] = {
-    val zero: Parser[A] = failure
-    parsers.foldRight(zero) {
+  def oneOf[A](parsers: Parser[A]*): Parser[A] =
+    parsers.foldRight(failure[A]) {
       case (parser, acc) => parser | acc
     }
-  }
 
   /** Parser that accepts repetitions of `elem` separated by left-associative `op`.
     * The value returned is reduced left-to-right. */
