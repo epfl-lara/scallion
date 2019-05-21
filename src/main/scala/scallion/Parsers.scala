@@ -8,7 +8,7 @@ trait Parsers[Token, Kind] {
 
   def getKind(token: Token): Kind
 
-  sealed abstract class Parser[+A] {
+  sealed trait Parser[+A] {
 
     /** The value, if any, produced by this parser without consuming more input. */
     def nullable: Option[A]
