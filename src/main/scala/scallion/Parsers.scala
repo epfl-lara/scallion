@@ -58,14 +58,6 @@ trait Parsers[Token, Kind] {
       case _ => Transform(function, this)
     }
 
-    /** Prepend a value to the parsed values. */
-    def prepend[B](prefix: Seq[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] = ev1(this) match {
-      case Failure => Failure
-      case Success(value) => Success(prefix ++ value)
-      case Prepend(rest, inner) => Prepend(prefix ++ rest, inner)
-      case _ => Prepend(prefix, this)
-    }
-
     /** Sequences `this` and `that` parser. The parsed values are returned as a pair. */
     def merge[B](that: Parser[B]): Parser[(A, B)] = (this, that) match {
       case (Failure, _) => Failure
@@ -207,17 +199,6 @@ trait Parsers[Token, Kind] {
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
       override def derive(token: Token): Parser[B] = inner.derive(token).map(function)
     }
-    case class Prepend[A](prefix: Seq[A], inner: Parser[Seq[A]]) extends Parser[Seq[A]] {
-      override lazy val nullable: Option[Seq[A]] = inner.nullable.map(prefix ++ _)
-      override lazy val isProductive: Boolean = inner.isProductive
-      override def collectNullable(recs: Set[AnyRef]): Option[Seq[A]] = inner.collectNullable(recs).map(prefix ++ _)
-      override def collectFirst(recs: Set[AnyRef]): Set[Kind] = inner.collectFirst(recs)
-      override def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = inner.collectShouldNotFollow(recs)
-      override def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
-      override def collectIsLL1(recs: Set[AnyRef]): Boolean = inner.collectIsLL1(recs)
-      override def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
-      override def derive(token: Token): Parser[Seq[A]] = inner.derive(token).prepend(prefix)
-    }
     case class Sequence[A, B](left: Parser[A], right: Parser[B]) extends Parser[(A, B)] {
       override lazy val nullable: Option[(A, B)] = for {
         leftValue <- left.nullable
@@ -250,7 +231,7 @@ trait Parsers[Token, Kind] {
 
         if (!derived.isProductive) {
           left.nullable match {
-            case Some(leftValue) => right.derive(token).map(rightValue => (leftValue, rightValue))
+            case Some(leftValue) => Success(leftValue).merge(right.derive(token))
             case None => Failure
           }
         }
@@ -259,7 +240,7 @@ trait Parsers[Token, Kind] {
         }
       }
     }
-    case class Concat[A, B](left: Parser[Seq[A]], right: Parser[Seq[A]]) extends Parser[Seq[A]] {
+    case class Concat[A](left: Parser[Seq[A]], right: Parser[Seq[A]]) extends Parser[Seq[A]] {
       override lazy val nullable: Option[Seq[A]] = for {
         leftValue <- left.nullable
         rightValue <- right.nullable
@@ -291,7 +272,7 @@ trait Parsers[Token, Kind] {
 
         if (!derived.isProductive) {
           left.nullable match {
-            case Some(leftValue) => right.derive(token).prepend(leftValue)
+            case Some(leftValue) => Success(leftValue) ++ right.derive(token)
             case None => Failure
           }
         }
