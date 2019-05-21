@@ -355,19 +355,45 @@ trait Parsers[Token, Kind] {
     }
   }
 
+  /** Parser that accepts tokens of the provided `kind`. */
   def elem(kind: Kind): Parser[Token] = Elem(kind)
+
+  /** Parser that accepts tokens of the provided `kind`.
+    * A function directly is applied on the successfully matched token. */
   def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] = elem(kind).map(function)
+
+  /** Indicates that the parser can be recursively invoke itself. */
   def recursive[A](parser: => Parser[A]): Parser[A] = Recursive(() => parser)
+
+  /** Parser that produces the given `value` without consuming any input. */
   def epsilon[A](value: A): Parser[A] = Success(value)
+
+  /** Parser that always fails. */
   val failure: Parser[Nothing] = Failure
+
+  /** Parser that represents 0 or more repetitions of the `rep` parser. */
   def many[A](rep: Parser[A]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
     rest
   }
+
+  /** Parser that represents 1 or more repetitions of the `rep` parser. */
   def many1[A](rep: Parser[A]): Parser[Seq[A]] = rep +: many(rep)
+
+  /** Parser that represents 0 or more repetitions of the `rep` parser, separated by `sep`. */
   def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = rep1sep(rep, sep) | epsilon(Vector())
+
+  /** Parser that represents 1 or more repetitions of the `rep` parser, separated by `sep`. */
   def rep1sep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
+  }
+
+  /** Parser that represents the disjunction of several `parsers`. */
+  def oneOf[A](parsers: Parser[A]*): Parser[A] = {
+    val zero: Parser[A] = failure
+    parsers.foldRight(zero) {
+      case (parser, acc) => parser | acc
+    }
   }
 }
