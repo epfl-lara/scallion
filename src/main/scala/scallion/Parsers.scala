@@ -32,6 +32,8 @@ trait Parsers[Token, Kind] {
     /** Checks if this parser corresponds to a LL(1) grammar. */
     @inline def isLL1: Boolean = collectIsLL1(Set())
 
+    /** Returns all LL(1) conflicts in the parser. */
+    @inline def conflicts: Set[LL1Conflict] = collectLL1Conflicts(Set())
 
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` parser on which the call
@@ -46,6 +48,7 @@ trait Parsers[Token, Kind] {
     def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean
     def collectIsProductive(recs: Set[AnyRef]): Boolean
     def collectIsLL1(recs: Set[AnyRef]): Boolean
+    def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict]
 
     /** Feeds a token to the parser and obtain a parser for the rest of input. */
     def derive(token: Token): Parser[A]
@@ -123,6 +126,9 @@ trait Parsers[Token, Kind] {
         case Some(value) => Parsed(value, parser)
       }
     }
+
+    /** Makes the parser nullable. */
+    def opt: Parser[Option[A]] = this.map(Some(_)) | epsilon(None)
   }
 
   /** Result of calling `parse` on a `Parser`. */
@@ -148,11 +154,11 @@ trait Parsers[Token, Kind] {
     */
   case class UnexpectedEnd[A](parser: Parser[A]) extends ParseResult[A]
 
-  sealed abstract class LL1Violation
-  case class NullableViolation(parser: Parser[Any]) extends LL1Violation
-  case class FirstViolation(parser: Parser[Any]) extends LL1Violation
-  case class FollowViolation(parser: Parser[Any]) extends LL1Violation
-  case class LeftRecursiveViolation(parser: Parser[Any]) extends LL1Violation
+  sealed abstract class LL1Conflict
+  case class NullableConflict(parser: Parser[Any]) extends LL1Conflict
+  case class FirstConflict(parser: Parser[Any]) extends LL1Conflict
+  case class FollowConflict(parser: Parser[Any]) extends LL1Conflict
+  case class LeftRecursiveConflict(parser: Parser[Any]) extends LL1Conflict
 
   object Parser {
     case class Success[A](value: A) extends Parser[A] {
@@ -163,6 +169,7 @@ trait Parsers[Token, Kind] {
       override def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = Set()
       override def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override def collectIsLL1(recs: Set[AnyRef]): Boolean = true
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override def derive(token: Token): Parser[A] = Failure
     }
@@ -174,6 +181,7 @@ trait Parsers[Token, Kind] {
       override def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = Set()
       override def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override def collectIsLL1(recs: Set[AnyRef]): Boolean = true
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = false
       override def derive(token: Token): Parser[Nothing] = Failure
     }
@@ -185,6 +193,7 @@ trait Parsers[Token, Kind] {
       override def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = Set()
       override def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override def collectIsLL1(recs: Set[AnyRef]): Boolean = true
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override def derive(token: Token): Parser[Token] = if (getKind(token) == kind) Success(token) else Failure
     }
@@ -196,6 +205,7 @@ trait Parsers[Token, Kind] {
       override def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = inner.collectShouldNotFollow(recs)
       override def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override def collectIsLL1(recs: Set[AnyRef]): Boolean = inner.collectIsLL1(recs)
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = inner.collectLL1Conflicts(recs)
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
       override def derive(token: Token): Parser[B] = inner.derive(token).map(function)
     }
@@ -223,6 +233,16 @@ trait Parsers[Token, Kind] {
       override def collectIsLL1(recs: Set[AnyRef]): Boolean = {
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (if (left.nullable.nonEmpty) (left.shouldNotFollow & right.first).isEmpty else true)
+      }
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
+        val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+
+        if (left.nullable.nonEmpty && (left.shouldNotFollow & right.first).nonEmpty) {
+          base + FollowConflict(this)
+        }
+        else {
+          base
+        }
       }
       override def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
@@ -265,6 +285,16 @@ trait Parsers[Token, Kind] {
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (if (left.nullable.nonEmpty) (left.shouldNotFollow & right.first).isEmpty else true)
       }
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
+        val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+
+        if (left.nullable.nonEmpty && (left.shouldNotFollow & right.first).nonEmpty) {
+          base + FollowConflict(this)
+        }
+        else {
+          base
+        }
+      }
       override def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
       override def derive(token: Token): Parser[Seq[A]] = {
@@ -300,6 +330,25 @@ trait Parsers[Token, Kind] {
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (left.nullable.isEmpty || right.nullable.isEmpty) &&
         (left.first & right.first).isEmpty
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
+        val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+
+        val nullableConflict: Set[LL1Conflict] = if (left.nullable.nonEmpty && right.nullable.nonEmpty) {
+          Set(NullableConflict(this))
+        }
+        else {
+          Set()
+        }
+
+        val firstConflict: Set[LL1Conflict] = if ((left.first & right.first).nonEmpty) {
+          Set(FirstConflict(this))
+        }
+        else {
+          Set()
+        }
+
+        base union nullableConflict union firstConflict
+      }
       override def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) || right.collectIsProductive(recs)
       override def derive(token: Token): Parser[A] = {
@@ -329,6 +378,17 @@ trait Parsers[Token, Kind] {
         if (recs.contains(this)) false else (this eq id) || inner.collectCalledLeft(id, recs + this)
       override def collectIsLL1(recs: Set[AnyRef]): Boolean =
         if (recs.contains(this)) true else !inner.calledLeft(this) && inner.collectIsLL1(recs + this)
+      override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = 
+        if (recs.contains(this)) Set() else {
+          val base = inner.collectLL1Conflicts(recs + this)
+
+          if (inner.calledLeft(this)) {
+            base + LeftRecursiveConflict(this)
+          }
+          else {
+            base
+          }
+        }
       override def collectIsProductive(recs: Set[AnyRef]): Boolean =
         if (recs.contains(this)) false else inner.collectIsProductive(recs + this)
       override def derive(token: Token): Parser[A] =
