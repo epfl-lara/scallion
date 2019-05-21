@@ -4,14 +4,16 @@ import scala.language.implicitConversions
 
 import scallion._
 
-sealed abstract class Token
-case class PunctuationToken(value: Char) extends Token
-case class BooleanToken(value: Boolean) extends Token
-case class NumberToken(value: Double) extends Token
-case class StringToken(value: String) extends Token
-case object NullToken extends Token
-case object SpaceToken extends Token
-case class UnknownToken(content: String) extends Token
+sealed abstract class Token {
+  val range: (Int, Int)
+}
+case class PunctuationToken(value: Char, range: (Int, Int)) extends Token
+case class BooleanToken(value: Boolean, range: (Int, Int)) extends Token
+case class NumberToken(value: Double, range: (Int, Int)) extends Token
+case class StringToken(value: String, range: (Int, Int)) extends Token
+case class NullToken(range: (Int, Int)) extends Token
+case class SpaceToken(range: (Int, Int)) extends Token
+case class UnknownToken(content: String, range: (Int, Int)) extends Token
 
 sealed abstract class TokenClass
 case class PunctuationClass(value: Char) extends TokenClass
@@ -21,13 +23,15 @@ case object StringClass extends TokenClass
 case object NullClass extends TokenClass
 case object NoClass extends TokenClass
 
-sealed abstract class Value
-case class ArrayValue(elems: Seq[Value]) extends Value
-case class ObjectValue(elems: Seq[(String, Value)]) extends Value
-case class BooleanValue(value: Boolean) extends Value
-case class NumberValue(value: Double) extends Value
-case class StringValue(value: String) extends Value
-case object NullValue extends Value
+sealed abstract class Value {
+  val range: (Int, Int)
+}
+case class ArrayValue(elems: Seq[Value], range: (Int, Int)) extends Value
+case class ObjectValue(elems: Seq[(StringValue, Value)], range: (Int, Int)) extends Value
+case class BooleanValue(value: Boolean, range: (Int, Int)) extends Value
+case class NumberValue(value: Double, range: (Int, Int)) extends Value
+case class StringValue(value: String, range: (Int, Int)) extends Value
+case class NullValue(range: (Int, Int)) extends Value
 
 object JSONLexer extends Lexers[Token, Char, Int] {
 
@@ -38,21 +42,21 @@ object JSONLexer extends Lexers[Token, Char, Int] {
   val lexer = Lexer(
     // Punctuation
     elem("[]{},:")
-      |> { cs => PunctuationToken(cs.head) },
+      |> { (cs, r) => PunctuationToken(cs.head, r) },
 
     // Space
     many1(elem(_.isWhitespace))
-      |> SpaceToken,
+      |> { (_, r) => SpaceToken(r) },
 
     // Booleans
     word("true") 
-      |> BooleanToken(true),
+      |> { (_, r) => BooleanToken(true, r) },
     word("false")
-      |> BooleanToken(false),
+      |> { (_, r) => BooleanToken(false, r) },
 
     // Null
     word("null")
-      |> NullToken,
+      |> { (_, r) => NullToken(r) },
 
     // Strings
     elem('"') ~
@@ -61,9 +65,9 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       elem('\\') ~ (elem("\"\\/bfnrt") | elem('u') ~ hex.times(4))
     } ~
     elem('"')
-      |> { cs => StringToken {
+      |> { (cs, r) => {
         val string = cs.mkString
-        string.slice(1, string.length - 1)
+        StringToken(string.slice(1, string.length - 1), r)
       }},
 
     // Numbers
@@ -82,7 +86,7 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       opt(elem("+-")) ~
       many1(digit)
     }
-      |> { cs => NumberToken(cs.mkString.toDouble) }
+      |> { (cs, r) => NumberToken(cs.mkString.toDouble, r) }
   )
 
   def apply(it: Iterator[Char]): Iterator[Token] = {
@@ -90,55 +94,50 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       override def increment(pos: Int, char: Char): Int = pos + 1
     }
 
-    lexer(source, (content, _) => UnknownToken(content.mkString), _ == SpaceToken)
+    lexer(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
   }
 }
 
 object JSONParser extends Parsers[Token, TokenClass] {
 
   override def getKind(token: Token): TokenClass = token match {
-    case PunctuationToken(value) => PunctuationClass(value)
-    case BooleanToken(_) => BooleanClass
-    case NumberToken(_) => NumberClass
-    case StringToken(_) => StringClass
-    case NullToken => NullClass
+    case PunctuationToken(value, _) => PunctuationClass(value)
+    case BooleanToken(_, _) => BooleanClass
+    case NumberToken(_, _) => NumberClass
+    case StringToken(_, _) => StringClass
+    case NullToken(_) => NullClass
     case _ => NoClass
   }
 
   val booleanValue = accept(BooleanClass) {
-    case BooleanToken(value) => BooleanValue(value)
+    case BooleanToken(value, range) => BooleanValue(value, range)
   }
   val numberValue = accept(NumberClass) {
-    case NumberToken(value) => NumberValue(value)
+    case NumberToken(value, range) => NumberValue(value, range)
   }
   val stringValue = accept(StringClass) {
-    case StringToken(value) => StringValue(value)
+    case StringToken(value, range) => StringValue(value, range)
   }
   val nullValue = accept(NullClass) {
-    case NullToken => NullValue
+    case NullToken(range) => NullValue(range)
   }
-  val rawString = accept(StringClass) {
-    case StringToken(value) => value
+  implicit def punctuation(char: Char) = accept(PunctuationClass(char)) {
+    case PunctuationToken(_, range) => range
   }
-  implicit def punctuation(char: Char) =
-    elem(PunctuationClass(char))
 
-  lazy val arrayValue: Parser[Value] =
+  lazy val arrayValue =
     ('[' ~ repsep(value, ',') ~ ']').map {
-      case _ ~ vs ~ _ => ArrayValue(vs)
+      case start ~ vs ~ end => ArrayValue(vs, (start._1, end._2))
     }
 
-  lazy val binding: Parser[(String, Value)] =
-    (rawString ~ ':' ~ value) map {
-      case k ~ _ ~ v => (k, v)
+  lazy val binding =
+    (stringValue ~ ':' ~ value).map {
+      case key ~ _ ~ value => (key, value)
     }
-  lazy val objectValue: Parser[Value] =
-    '{' ~>~ objectContent.map(ObjectValue(_)) ~<~ '}'
-  lazy val objectContent: Parser[Seq[(String, Value)]] =
-    (binding +: objectRest) | epsilon(Seq())
-  lazy val objectRest: Parser[Seq[(String, Value)]] = recursive {
-    ',' ~>~ binding +: objectRest | epsilon(Seq())
-  }
+  lazy val objectValue =
+    ('{' ~ repsep(binding, ',') ~ '}').map {
+      case start ~ bs ~ end => ObjectValue(bs, (start._1, end._2))
+    }
 
   lazy val value: Parser[Value] = recursive {
     arrayValue | objectValue | booleanValue | numberValue | stringValue | nullValue
