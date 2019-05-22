@@ -2,6 +2,8 @@ package scallion
 
 import scala.collection.mutable.ArrayBuffer
 
+import scallion.util._
+
 /** Contains definitions for lexers. */
 trait Lexers[Token, Character, Position] extends RegExps[Character] {
 
@@ -81,6 +83,42 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
           }
         }
       }
+
+    /** Returns an iterator that produces tokens from the source. */
+    def spawn(
+        source: Source[Character, Position],
+        errorToken: (Seq[Character], (Position, Position)) => Token,
+        skipToken: Token => Boolean = (_: Token) => false): Iterator[Token] = {
+
+      val it = new BufferedIterator[Token]
+
+      val thread = new Thread {
+        override def run: Unit = {
+          while (true) {
+            tokenizeOne(source) match {
+              case Some(token) => if (!skipToken(token)) it.add(token)
+              case None => {
+                val endPos = source.currentPosition
+                val content = source.back()
+                val startPos = source.currentPosition
+
+                if (source.atEnd) {
+                  it.end()
+                } else {
+                  it.add(errorToken(content, (startPos, endPos)))
+                }
+
+                return
+              }
+            }
+          }
+        }
+      }
+
+      thread.start()
+
+      it
+    }
 
     /** Tries to produce a single token from the source. */
     private def tokenizeOne(source: Source[Character, Position]): Option[Token] = {

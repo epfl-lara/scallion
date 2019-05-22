@@ -4,6 +4,16 @@ import scala.language.implicitConversions
 
 import scallion._
 
+object time {
+  def apply[T](block: => T): T = {
+    val start = System.currentTimeMillis
+    val res = block
+    val totalTime = System.currentTimeMillis - start
+    println("Elapsed time: %1d ms".format(totalTime))
+    res
+  }
+}
+
 sealed abstract class Token {
   val range: (Int, Int)
 }
