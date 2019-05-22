@@ -46,8 +46,10 @@ case class NullValue(range: (Int, Int)) extends Value
 object JSONLexer extends Lexers[Token, Char, Int] {
 
   val digit = elem(_.isDigit)
-  val nonZero = elem("123456789")
-  val hex = elem("abcdefABCDEF") | digit
+  val nonZero = elem((c: Char) => c >= '1' && c <= '9')
+  val hex = elem((c: Char) => c >= 'a' && c <= 'f') |
+            elem((c: Char) => c >= 'A' && c <= 'F') |
+            digit
 
   val lexer = Lexer(
     // Punctuation
