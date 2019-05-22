@@ -62,6 +62,8 @@ trait RegExps[Character] {
         this ~ this.times(n - 1)
       }
     }
+
+    def opt: RegExp = this | EmptyStr
   }
 
   /** Contains primitive constructors for regular expressions. */
