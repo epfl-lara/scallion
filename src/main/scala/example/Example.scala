@@ -49,7 +49,7 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       |> { (_, r) => SpaceToken(r) },
 
     // Booleans
-    word("true") 
+    word("true")
       |> { (_, r) => BooleanToken(true, r) },
     word("false")
       |> { (_, r) => BooleanToken(false, r) },
@@ -73,8 +73,8 @@ object JSONLexer extends Lexers[Token, Char, Int] {
     // Numbers
     opt {
       elem('-')
-    } ~ 
-    { 
+    } ~
+    {
       elem('0') |
       nonZero ~ many(digit)
     } ~

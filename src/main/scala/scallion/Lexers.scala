@@ -56,7 +56,8 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
             if (source.atEnd) {
               cacheNext = None
             } else {
-              cacheNext = Some(errorToken(content, (startPos, endPos)))            }
+              cacheNext = Some(errorToken(content, (startPos, endPos)))
+            }
           }
         }
 
