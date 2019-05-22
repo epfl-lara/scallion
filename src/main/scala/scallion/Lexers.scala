@@ -84,11 +84,14 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
         }
       }
 
-    /** Returns an iterator that produces tokens from the source. */
+    /** Spawn a thread that immediately start producing tokens from the source. */
     def spawn(
         source: Source[Character, Position],
         errorToken: (Seq[Character], (Position, Position)) => Token,
-        skipToken: Token => Boolean = (_: Token) => false): Iterator[Token] = {
+        skipToken: Token => Boolean = (_: Token) => false,
+        threshold: Int = 50): Iterator[Token] = {
+
+      var buffer: Vector[Token] = Vector()
 
       val it = new BufferedIterator[Token]
 
@@ -96,17 +99,28 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
         override def run: Unit = {
           while (true) {
             tokenizeOne(source) match {
-              case Some(token) => if (!skipToken(token)) it.add(token)
+              case Some(token) => if (!skipToken(token)) {
+                buffer = buffer :+ token
+
+                if (buffer.size >= threshold) {
+                  it.addAll(buffer)
+                  buffer = Vector()
+                }
+              }
               case None => {
                 val endPos = source.currentPosition
                 val content = source.back()
                 val startPos = source.currentPosition
 
-                if (source.atEnd) {
-                  it.end()
-                } else {
-                  it.add(errorToken(content, (startPos, endPos)))
+                if (!source.atEnd) {
+                  buffer = buffer :+ errorToken(content, (startPos, endPos))
                 }
+
+                if (buffer.nonEmpty) {
+                  it.addAll(buffer)
+                }
+
+                it.end()
 
                 return
               }

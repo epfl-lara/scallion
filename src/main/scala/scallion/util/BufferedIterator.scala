@@ -24,8 +24,12 @@ class BufferedIterator[A] extends Iterator[A] {
   }
 
   def add(elem: A): Unit = synchronized {
-    require(!ended)
     elements.enqueue(elem)
+    notifyAll()
+  }
+
+  def addAll(elems: Seq[A]): Unit = synchronized {
+    elements ++= elems
     notifyAll()
   }
 

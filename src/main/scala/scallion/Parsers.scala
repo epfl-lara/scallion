@@ -109,7 +109,7 @@ trait Parsers[Token, Kind] {
     }
 
     /** Consumes a sequence of tokens and parses into a value. */
-    def parse(it: Iterator[Token]): ParseResult[A] = {
+    def apply(it: Iterator[Token]): ParseResult[A] = {
       require(isLL1 && this.isProductive)
 
       var parser: Parser[A] = this

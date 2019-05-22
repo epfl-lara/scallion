@@ -17,7 +17,7 @@ object time {
 sealed abstract class Token {
   val range: (Int, Int)
 }
-case class PunctuationToken(value: Char, range: (Int, Int)) extends Token
+case class SeparatorToken(value: Char, range: (Int, Int)) extends Token
 case class BooleanToken(value: Boolean, range: (Int, Int)) extends Token
 case class NumberToken(value: Double, range: (Int, Int)) extends Token
 case class StringToken(value: String, range: (Int, Int)) extends Token
@@ -26,7 +26,7 @@ case class SpaceToken(range: (Int, Int)) extends Token
 case class UnknownToken(content: String, range: (Int, Int)) extends Token
 
 sealed abstract class TokenClass
-case class PunctuationClass(value: Char) extends TokenClass
+case class SeparatorClass(value: Char) extends TokenClass
 case object BooleanClass extends TokenClass
 case object NumberClass extends TokenClass
 case object StringClass extends TokenClass
@@ -52,9 +52,9 @@ object JSONLexer extends Lexers[Token, Char, Int] {
             digit
 
   val lexer = Lexer(
-    // Punctuation
+    // Separator
     elem("[]{},:")
-      |> { (cs, r) => PunctuationToken(cs.head, r) },
+      |> { (cs, r) => SeparatorToken(cs.head, r) },
 
     // Space
     many1(elem(_.isWhitespace))
@@ -106,14 +106,14 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       override def increment(pos: Int, char: Char): Int = pos + 1
     }
 
-    lexer(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
+    lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
   }
 }
 
 object JSONParser extends Parsers[Token, TokenClass] {
 
   override def getKind(token: Token): TokenClass = token match {
-    case PunctuationToken(value, _) => PunctuationClass(value)
+    case SeparatorToken(value, _) => SeparatorClass(value)
     case BooleanToken(_, _) => BooleanClass
     case NumberToken(_, _) => NumberClass
     case StringToken(_, _) => StringClass
@@ -133,8 +133,8 @@ object JSONParser extends Parsers[Token, TokenClass] {
   val nullValue = accept(NullClass) {
     case NullToken(range) => NullValue(range)
   }
-  implicit def punctuation(char: Char) = accept(PunctuationClass(char)) {
-    case PunctuationToken(_, range) => range
+  implicit def separator(char: Char) = accept(SeparatorClass(char)) {
+    case SeparatorToken(_, range) => range
   }
 
   lazy val arrayValue =
@@ -155,5 +155,5 @@ object JSONParser extends Parsers[Token, TokenClass] {
     arrayValue | objectValue | booleanValue | numberValue | stringValue | nullValue
   }
 
-  def apply(it: Iterator[Token]): ParseResult[Value] = value.parse(it)
+  def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
 }
