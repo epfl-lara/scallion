@@ -237,7 +237,7 @@ Finally, we can define the `apply` method for the whole parser.
 
 ### Example
 
-```scala
+```
 scala> val src = scala.io.Source.fromString("""[123.45, "hello!", null]""")
 src: scala.io.Source = non-empty iterator
 
