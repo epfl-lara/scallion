@@ -176,6 +176,9 @@ trait RegExps[Character] {
     * @group combinator
     */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
+
+  /** Regular expression that accepts any single character. */
+  val any: RegExp = Elem((c: Character) => true)
 }
 
 /** Regular expressions on characters. Expected to be mixed-in. */
