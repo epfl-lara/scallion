@@ -52,6 +52,7 @@ trait RegExps[Character] {
       case _ => Concat(this, that)
     }
 
+    /** Exactly `n` instances of `this` regular expression. */
     def times(n: Int): RegExp = {
       require(n >= 0)
 
@@ -63,6 +64,7 @@ trait RegExps[Character] {
       }
     }
 
+    /** Zero or one instances of `this` regular expression. */
     def opt: RegExp = this | EmptyStr
   }
 
@@ -103,12 +105,9 @@ trait RegExps[Character] {
   //---- Combinators ----//
 
   /** Regular expression that accepts any of the characters in `chars`. */
-  def elem(chars: Seq[Character]): RegExp = {
-    val empty: RegExp = EmptySet
-
-    chars.foldRight(empty) {
-      case (char, rest) => elem(char) | rest
-    }
+  def oneOf(chars: Seq[Character]): RegExp = {
+    val set = Set(chars: _*)
+    elem((c: Character) => set.contains(c))
   }
 
   /** Regular expression that accepts single characters based on a `predicate`. */

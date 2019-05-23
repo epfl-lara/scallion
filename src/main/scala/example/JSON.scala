@@ -47,7 +47,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
 
   val lexer = Lexer(
     // Separator
-    elem("[]{},:")
+    oneOf("[]{},:")
       |> { (cs, r) => SeparatorToken(cs.head, r) },
 
     // Space
@@ -68,7 +68,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
     elem('"') ~
     many {
       elem(c => c != '"' && c != '\\' && !c.isControl) |
-      elem('\\') ~ (elem("\"\\/bfnrt") | elem('u') ~ hex.times(4))
+      elem('\\') ~ (oneOf("\"\\/bfnrt") | elem('u') ~ hex.times(4))
     } ~
     elem('"')
       |> { (cs, r) => {
@@ -88,8 +88,8 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
       elem('.') ~ many1(digit)
     } ~
     opt {
-      elem("eE") ~
-      opt(elem("+-")) ~
+      oneOf("eE") ~
+      opt(oneOf("+-")) ~
       many1(digit)
     }
       |> { (cs, r) => NumberToken(cs.mkString.toDouble, r) }
