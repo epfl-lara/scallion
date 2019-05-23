@@ -1,11 +1,5 @@
 package scallion
 
-/** Simply a pair.
-  *
-  * Can be used in infix position in pattern matching.
-  */ 
-case class ~[+A, +B](_1: A, _2: B)
-
 /** Contains definitions relating to parsers.
   *
   * @groupprio abstract
@@ -136,6 +130,8 @@ trait Parsers[Token, Kind] {
       case (Failure, _) => Failure
       case (_, Failure) => Failure
       case (Success(a), Success(b)) => Success(a ++ b)
+      // The next transformation is crucial.
+      // It allows to merge together values which accumulate on the left.
       case (_, Concat(left, right)) => (this ++ left) ++ right
       case _ => Concat(this, that)
     }
@@ -220,7 +216,7 @@ trait Parsers[Token, Kind] {
     *
     * @group result
     */
-  sealed abstract class ParseResult[+A] {
+  sealed trait ParseResult[+A] {
 
     /** Parser for the rest of input. */
     val parser: Parser[A]
@@ -232,7 +228,7 @@ trait Parsers[Token, Kind] {
     *
     * @group result
     */
-  case class Parsed[A](value: A, parser: Parser[A]) extends ParseResult[A]
+  case class Parsed[+A](value: A, parser: Parser[A]) extends ParseResult[A]
 
   /** Indicates that the provided `token` was not expected at that point.
     *
@@ -240,7 +236,7 @@ trait Parsers[Token, Kind] {
     *
     * @group result
     */
-  case class UnexpectedToken[A](token: Token, parser: Parser[A]) extends ParseResult[A]
+  case class UnexpectedToken[+A](token: Token, parser: Parser[A]) extends ParseResult[A]
 
   /** Indicates that end of input was unexpectedly encountered.
     *
@@ -248,7 +244,7 @@ trait Parsers[Token, Kind] {
     *
     * @group result
     */
-  case class UnexpectedEnd[A](parser: Parser[A]) extends ParseResult[A]
+  case class UnexpectedEnd[+A](parser: Parser[A]) extends ParseResult[A]
 
   /** Describes a LL(1) conflict.
     *
