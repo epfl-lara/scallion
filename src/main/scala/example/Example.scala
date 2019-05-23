@@ -43,13 +43,7 @@ case class NumberValue(value: Double, range: (Int, Int)) extends Value
 case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
-object JSONLexer extends Lexers[Token, Char, Int] {
-
-  val digit = elem(_.isDigit)
-  val nonZero = elem((c: Char) => c >= '1' && c <= '9')
-  val hex = elem((c: Char) => c >= 'a' && c <= 'f') |
-            elem((c: Char) => c >= 'A' && c <= 'F') |
-            digit
+object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
 
   val lexer = Lexer(
     // Separator
@@ -57,7 +51,7 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       |> { (cs, r) => SeparatorToken(cs.head, r) },
 
     // Space
-    many1(elem(_.isWhitespace))
+    many1(whiteSpace)
       |> { (_, r) => SpaceToken(r) },
 
     // Booleans

@@ -134,3 +134,22 @@ trait RegExps[Character] {
   /** Regular expression that accepts zero or one instances of `regExp`. */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 }
+
+/* Regular expressions on characters. Expected to be mixed-in. */
+trait CharRegExps { self: RegExps[Char] =>
+  
+  /** Single digit between 0 and 9. */
+  val digit = elem(_.isDigit)
+
+  /** Single digit between 1 and 9. */
+  val nonZero = elem((c: Char) => c >= '1' && c <= '9')
+
+  /** Single digit between 0 and 9 or A and F or a and f. */
+  val hex = elem((c: Char) => c.isDigit || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
+
+  /** Single control character. */
+  val control = elem(_.isControl)
+
+  /** Single white space character. */
+  val whiteSpace = elem(_.isWhitespace)
+}
