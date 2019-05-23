@@ -1,24 +1,46 @@
 package scallion
 
+/** Simply a pair.
+  *
+  * Can be used in infix position in pattern matching.
+  */ 
 case class ~[+A, +B](_1: A, _2: B)
 
-/** Contains defintions related to parsers. */
+/** Contains definitions relating to parsers.
+  *
+  * @groupprio abstract
+  * @groupname abstract Abstract Members
+  *
+  * @groupprio parser 1
+  * @groupname parser Parser
+  *
+  * @groupprio result 2
+  * @groupname result Parse Results
+  *
+  * @groupprio combinator 3
+  * @groupname combinator Combinators
+  *
+  * @groupprio conflict 4
+  * @groupname conflict LL(1) Conflicts
+  */
 trait Parsers[Token, Kind] {
 
   import Parser._
 
-  /** Computes the kind associated a `token`. */
+  /** Computes the kind associated a `token`.
+    *
+    * @group abstract
+    */
   def getKind(token: Token): Kind
 
   /** Consumes a stream of tokens and tries to produces a value of type `A`.
     *
-    * @groupprio parsing 0
+    * @group parser
+    *
+    * @groupprio parsing 5
     * @groupname parsing Parsing
     *
-    * @groupprio combinator 1
-    * @groupname combinator Combinators
-    *
-    * @groupprio property 2
+    * @groupprio property 6
     * @groupname property Properties
     */
   sealed trait Parser[+A] {
@@ -194,7 +216,10 @@ trait Parsers[Token, Kind] {
     }
   }
 
-  /** Result of running a `Parser`. */
+  /** Result of running a `Parser`.
+    *
+    * @group result
+    */
   sealed abstract class ParseResult[+A] {
 
     /** Parser for the rest of input. */
@@ -204,25 +229,37 @@ trait Parsers[Token, Kind] {
   /** Indicates that the input has been fully processed, resulting in a `value`.
     *
     * A `parser` for subsequent input is also provided.
+    *
+    * @group result
     */
   case class Parsed[A](value: A, parser: Parser[A]) extends ParseResult[A]
 
   /** Indicates that the provided `token` was not expected at that point.
     *
     * The `parser` that rejected the token is returned.
+    *
+    * @group result
     */
   case class UnexpectedToken[A](token: Token, parser: Parser[A]) extends ParseResult[A]
 
   /** Indicates that end of input was unexpectedly encountered.
     *
     * The `parser` for subsequent input is provided.
+    *
+    * @group result
     */
   case class UnexpectedEnd[A](parser: Parser[A]) extends ParseResult[A]
 
-  /** Describes a LL(1) conflict. */
+  /** Describes a LL(1) conflict.
+    *
+    * @group conflict
+    */
   sealed trait LL1Conflict
 
-  /** Contains the description of the various LL(1) conflicts. */
+  /** Contains the description of the various LL(1) conflicts.
+    *
+    * @group conflict
+    */
   object LL1Conflict {
 
     /** Indicates that both branches of a disjunction are nullable. */
@@ -240,7 +277,10 @@ trait Parsers[Token, Kind] {
 
   import LL1Conflict._
 
-  /** Contains primitive parser combinators. */
+  /** Contains primitive parser combinators.
+    *
+    * @group parser
+    */
   object Parser {
 
     /** Parser that produces `value` without consuming input tokens. */
@@ -523,48 +563,81 @@ trait Parsers[Token, Kind] {
     }
   }
 
-  /** Parser that accepts tokens of the provided `kind`. */
+  /** Parser that accepts tokens of the provided `kind`.
+    *
+    * @group combinator
+    */
   def elem(kind: Kind): Parser[Token] = Elem(kind)
 
   /** Parser that accepts tokens of the provided `kind`.
-    * A function directly is applied on the successfully matched token. */
+    * A function directly is applied on the successfully matched token.
+    *
+    * @group combinator
+    */
   def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] = elem(kind).map(function)
 
-  /** Indicates that the parser can be recursively invoke itself. */
+  /** Indicates that the parser can be recursively invoke itself.
+    *
+    * @group combinator
+    */
   def recursive[A](parser: => Parser[A]): Parser[A] = Recursive(() => parser)
 
-  /** Parser that produces the given `value` without consuming any input. */
+  /** Parser that produces the given `value` without consuming any input.
+    *
+    * @group combinator
+    */
   def epsilon[A](value: A): Parser[A] = Success(value)
 
-  /** Parser that always fails. */
+  /** Parser that always fails.
+    *
+    * @group combinator
+    */
   def failure[A]: Parser[A] = Failure
 
-  /** Parser that represents 0 or more repetitions of the `rep` parser. */
+  /** Parser that represents 0 or more repetitions of the `rep` parser.
+    *
+    * @group combinator
+    */
   def many[A](rep: Parser[A]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
     rest
   }
 
-  /** Parser that represents 1 or more repetitions of the `rep` parser. */
+  /** Parser that represents 1 or more repetitions of the `rep` parser.
+    *
+    * @group combinator
+    */
   def many1[A](rep: Parser[A]): Parser[Seq[A]] = rep +: many(rep)
 
-  /** Parser that represents 0 or more repetitions of the `rep` parser, separated by `sep`. */
+  /** Parser that represents 0 or more repetitions of the `rep` parser, separated by `sep`.
+    *
+    * @group combinator
+    */
   def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = rep1sep(rep, sep) | epsilon(Vector())
 
-  /** Parser that represents 1 or more repetitions of the `rep` parser, separated by `sep`. */
+  /** Parser that represents 1 or more repetitions of the `rep` parser, separated by `sep`.
+    *
+    * @group combinator
+    */
   def rep1sep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
   }
 
-  /** Parser that represents the disjunction of several `parsers`. */
+  /** Parser that represents the disjunction of several `parsers`.
+    *
+    * @group combinator
+    */
   def oneOf[A](parsers: Parser[A]*): Parser[A] =
     parsers.foldRight(failure[A]) {
       case (parser, acc) => parser | acc
     }
 
   /** Parser that accepts repetitions of `elem` separated by left-associative `op`.
-    * The value returned is reduced left-to-right. */
+    * The value returned is reduced left-to-right.
+    *
+    * @group combinator
+    */
   def infixLeft[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
     (elem ~ many(op ~ elem)).map {
       case first ~ opElems => opElems.foldLeft(first) {
@@ -573,7 +646,10 @@ trait Parsers[Token, Kind] {
     }
 
   /** Parser that accepts repetitions of `elem` separated by right-associative `op`.
-    * The value returned is reduced right-to-left. */
+    * The value returned is reduced right-to-left.
+    *
+    * @group combinator
+    */
   def infixRight[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
     (elem ~ many(op ~ elem)).map {
       case first ~ opElems => {

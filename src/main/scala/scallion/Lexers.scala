@@ -4,30 +4,49 @@ import scala.collection.mutable.ArrayBuffer
 
 import scallion.util._
 
-/** Contains definitions for lexers. */
+/** Contains definitions for lexers.
+  *
+  * @groupprio lexer 0
+  * @groupname lexer Lexers
+  *
+  * @groupprio producer 1
+  * @groupname producer Producers
+  */
 trait Lexers[Token, Character, Position] extends RegExps[Character] {
 
-  //---- Lexer ----//
+  //---- Producers ----//
 
-  /** Associates a regular expression with a token generator. */
+  /** Associates a regular expression with a token generator.
+    *
+    * @group producer
+    */
   case class Producer(regExp: RegExp, makeToken: (Seq[Character], (Position, Position)) => Token)
 
-  // Notation for writing producers.
-  case object |> {
-    def unapply(arg: Producer) = Producer.unapply(arg)
-  }
-
+  /** Adds methods to build a`Producer` to a `RegExp`.
+    *
+    * @group producer
+    */
   implicit class ProducerDecorator(regExp: RegExp) {
+
+    /** Creates a `Producer`. */
     def |>(makeToken: (Seq[Character], (Position, Position)) => Token) =
       Producer(regExp, makeToken)
+
+    /** Creates a `Producer`. */
     def |>(makeToken: Seq[Character] => Token) =
       Producer(regExp, (cs: Seq[Character], _: (Position, Position)) => makeToken(cs))
+
+    /** Creates a `Producer`. */
     def |>(token: Token) =
       Producer(regExp, (_: Seq[Character], _: (Position, Position)) => token)
   }
 
+  //---- Lexers ----//
 
-  /** Tokenizes an input source with respect to a sequence of token producers. */
+  /** Tokenizes an input source with respect to a sequence of token producers.
+    *
+    * @group lexer
+    */
   class Lexer(producers: Seq[Producer]) {
 
     /** Returns an iterator that produces tokens from the source. */
@@ -198,6 +217,10 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
     }
   }
 
+  /** Contains utilities to build lexers.
+    *
+    * @group lexer
+    */
   object Lexer {
 
     /** Creates a lexer for a sequence of producers.

@@ -1,11 +1,21 @@
 package scallion
 
-/** Contains definitions relating to regular expressions. */
+/** Contains definitions relating to regular expressions.
+  *
+  * @groupname regexp Regular Expressions
+  * @groupprio regexp 1
+  *
+  * @groupname combinator Combinators
+  * @groupprio combinator 2
+  */
 trait RegExps[Character] {
 
   import RegExp._
 
-  /** Regular expressions over characters. */
+  /** Regular expressions over characters.
+    *
+    * @group regexp
+    */
   sealed abstract class RegExp {
 
     /** Indicates if this regular expression accepts the empty word. */
@@ -30,6 +40,8 @@ trait RegExps[Character] {
       * Performs surface-level simplifications.
       *
       * @return A regular expression that accepts words if either `this` or `that` accepts it.
+      *
+      * @group combinator
       */
     def |(that: RegExp): RegExp = (this, that) match {
       case (EmptySet, _) => that
@@ -42,8 +54,10 @@ trait RegExps[Character] {
       * Performs surface-level simplifications.
       *
       * @return A regular expression that accepts words
-      *.        if `this` accepts a prefix and `that` accepts the suffix.
-     */
+      *         if `this` accepts a prefix and `that` accepts the suffix.
+      *
+      * @group combinator
+      */
     def ~(that: RegExp): RegExp = (this, that) match {
       case (EmptySet, _) => EmptySet
       case (_, EmptySet) => EmptySet
@@ -52,7 +66,10 @@ trait RegExps[Character] {
       case _ => Concat(this, that)
     }
 
-    /** Exactly `n` instances of `this` regular expression. */
+    /** Exactly `n` instances of `this` regular expression.
+      *
+      * @group combinator
+      */
     def times(n: Int): RegExp = {
       require(n >= 0)
 
@@ -64,11 +81,17 @@ trait RegExps[Character] {
       }
     }
 
-    /** Zero or one instances of `this` regular expression. */
+    /** Zero or one instances of `this` regular expression.
+      *
+      * @group combinator
+      */
     def opt: RegExp = this | EmptyStr
   }
 
-  /** Contains primitive constructors for regular expressions. */
+  /** Contains primitive constructors for regular expressions.
+    *
+    * @group regexp
+    */
   object RegExp {
 
     /** Accepts only the empty word. */
@@ -104,19 +127,31 @@ trait RegExps[Character] {
 
   //---- Combinators ----//
 
-  /** Regular expression that accepts any of the characters in `chars`. */
+  /** Regular expression that accepts any of the characters in `chars`.
+    *
+    * @group combinator
+    */
   def oneOf(chars: Seq[Character]): RegExp = {
     val set = Set(chars: _*)
     elem((c: Character) => set.contains(c))
   }
 
-  /** Regular expression that accepts single characters based on a `predicate`. */
+  /** Regular expression that accepts single characters based on a `predicate`.
+    *
+    * @group combinator
+    */
   def elem(predicate: Character => Boolean): RegExp = Elem(predicate)
 
-  /** Regular expression that accepts only the single character `char`. */
+  /** Regular expression that accepts only the single character `char`.
+    *
+    * @group combinator
+    */
   def elem(char: Character): RegExp = Elem(_ == char)
 
-  /** Regular expression that accepts only the sequence of characters `chars`. */
+  /** Regular expression that accepts only the sequence of characters `chars`.
+    *
+    * @group combinator
+    */
   def word(chars: Seq[Character]): RegExp = {
     val empty: RegExp = EmptyStr
     chars.foldRight(empty) {
@@ -124,17 +159,26 @@ trait RegExps[Character] {
     }
   }
 
-  /** Regular expression that accepts zero or more repetitions of `regExp`. */
+  /** Regular expression that accepts zero or more repetitions of `regExp`.
+    *
+    * @group combinator
+    */
   def many(regExp: RegExp): RegExp = Star(regExp)
 
-  /** Regular expression that accepts one or more repetitions of `regExp`. */
+  /** Regular expression that accepts one or more repetitions of `regExp`.
+    *
+    * @group combinator
+    */
   def many1(regExp: RegExp): RegExp = regExp ~ many(regExp)
 
-  /** Regular expression that accepts zero or one instances of `regExp`. */
+  /** Regular expression that accepts zero or one instances of `regExp`.
+    *
+    * @group combinator
+    */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 }
 
-/* Regular expressions on characters. Expected to be mixed-in. */
+/** Regular expressions on characters. Expected to be mixed-in. */
 trait CharRegExps { self: RegExps[Char] =>
   
   /** Single digit between 0 and 9. */
