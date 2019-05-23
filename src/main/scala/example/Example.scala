@@ -106,7 +106,7 @@ object JSONLexer extends Lexers[Token, Char, Int] {
       override def increment(pos: Int, char: Char): Int = pos + 1
     }
 
-    lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
+    lexer(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
   }
 }
 
