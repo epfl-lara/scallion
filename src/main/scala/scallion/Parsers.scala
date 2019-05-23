@@ -53,20 +53,16 @@ trait Parsers[Token, Kind] {
     /** Feeds a token to the parser and obtain a parser for the rest of input. */
     def derive(token: Token): Parser[A]
 
+    override def toString = repr(0, Map.empty)
+
+    def repr(level: Int, recs: Map[AnyRef, String]): String
+
     /** Apply a function to the parsed values. */
     def map[B](function: A => B): Parser[B] = this match {
       case Failure => Failure
       case Success(value) => Success(function(value))
       case Transform(other, inner) => Transform(other andThen function, inner)
       case _ => Transform(function, this)
-    }
-
-    /** Sequences `this` and `that` parser. The parsed values are returned as a pair. */
-    def merge[B](that: Parser[B]): Parser[(A, B)] = (this, that) match {
-      case (Failure, _) => Failure
-      case (_, Failure) => Failure
-      case (Success(a), Success(b)) => Success((a, b))
-      case _ => Sequence(this, that)
     }
 
     /** Sequences `this` and `that` parser. The parsed values are concatenated. */
@@ -79,10 +75,10 @@ trait Parsers[Token, Kind] {
     }
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is returned. */
-    def ~>~[B](that: Parser[B]): Parser[B] = this.merge(that).map(_._2)
+    def ~>~[B](that: Parser[B]): Parser[B] = this.~(that).map(_._2)
 
     /** Sequences `this` and `that` parser. The parsed value from `this` is returned. */
-    def ~<~[B](that: Parser[B]): Parser[A] = this.merge(that).map(_._1)
+    def ~<~[B](that: Parser[B]): Parser[A] = this.~(that).map(_._1)
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is appended to that from `this`. */
     def :+[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
@@ -92,14 +88,13 @@ trait Parsers[Token, Kind] {
     def +:[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
       that.map(Vector(_)) ++ this
 
-    /** Sequences `this` and `that` parser. The parsed values are returned as a ~-pair.
-      *
-      * This is done for conveniently building long sequences and matching on them.
-      */
-    def ~[B](that: Parser[B]): Parser[A ~ B] =
-      this.merge(that).map {
-        case (lhs, rhs) => scallion.~(lhs, rhs)
-      }
+    /** Sequences `this` and `that` parser. The parsed values are returned as a pair. */
+    def ~[B](that: Parser[B]): Parser[A ~ B] = (this, that) match {
+      case (Failure, _) => Failure
+      case (_, Failure) => Failure
+      case (Success(a), Success(b)) => Success(scallion.~(a, b))
+      case _ => Sequence(this, that)
+    }
 
     /** Disjunction of `this` and `that` parser. */
     def |[B >: A](that: Parser[B]): Parser[B] = (this, that) match {
@@ -107,6 +102,10 @@ trait Parsers[Token, Kind] {
       case (_, Failure) => this
       case _ => Disjunction(this, that)
     }
+
+
+    /** Makes the parser nullable. */
+    def opt: Parser[Option[A]] = this.map(Some(_)) | epsilon(None)
 
     /** Consumes a sequence of tokens and parses into a value. */
     def apply(it: Iterator[Token]): ParseResult[A] = {
@@ -126,9 +125,6 @@ trait Parsers[Token, Kind] {
         case Some(value) => Parsed(value, parser)
       }
     }
-
-    /** Makes the parser nullable. */
-    def opt: Parser[Option[A]] = this.map(Some(_)) | epsilon(None)
   }
 
   /** Result of calling `parse` on a `Parser`. */
@@ -172,6 +168,7 @@ trait Parsers[Token, Kind] {
       override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override def derive(token: Token): Parser[A] = Failure
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = "epsilon(" + value.toString + ")"
     }
     case object Failure extends Parser[Nothing] {
       override val nullable: Option[Nothing] = None
@@ -184,6 +181,7 @@ trait Parsers[Token, Kind] {
       override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = false
       override def derive(token: Token): Parser[Nothing] = Failure
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = "failure"
     }
     case class Elem(kind: Kind) extends Parser[Token] {
       override val nullable: Option[Token] = None
@@ -196,6 +194,7 @@ trait Parsers[Token, Kind] {
       override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = Set()
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override def derive(token: Token): Parser[Token] = if (getKind(token) == kind) Success(token) else Failure
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = "elem(" + kind + ")"
     }
     case class Transform[A, B](function: A => B, inner: Parser[A]) extends Parser[B] {
       override lazy val nullable: Option[B] = inner.nullable.map(function)
@@ -208,17 +207,18 @@ trait Parsers[Token, Kind] {
       override def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = inner.collectLL1Conflicts(recs)
       override def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
       override def derive(token: Token): Parser[B] = inner.derive(token).map(function)
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = inner.repr(10, recs) + ".map(<function>)"
     }
-    case class Sequence[A, B](left: Parser[A], right: Parser[B]) extends Parser[(A, B)] {
-      override lazy val nullable: Option[(A, B)] = for {
+    case class Sequence[A, B](left: Parser[A], right: Parser[B]) extends Parser[A ~ B] {
+      override lazy val nullable: Option[A ~ B] = for {
         leftValue <- left.nullable
         rightValue <- right.nullable
-      } yield (leftValue, rightValue)
+      } yield scallion.~(leftValue, rightValue)
       override lazy val isProductive: Boolean = left.isProductive && right.isProductive
-      override def collectNullable(recs: Set[AnyRef]): Option[(A, B)] = for {
+      override def collectNullable(recs: Set[AnyRef]): Option[A ~ B] = for {
         leftValue <- left.collectNullable(recs)
         rightValue <- right.collectNullable(recs)
-      } yield (leftValue, rightValue)
+      } yield scallion.~(leftValue, rightValue)
       override def collectFirst(recs: Set[AnyRef]): Set[Kind] = left.nullable match {
         case Some(_) => left.collectFirst(recs) ++ right.collectFirst(recs)
         case None => left.collectFirst(recs)
@@ -246,17 +246,28 @@ trait Parsers[Token, Kind] {
       }
       override def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
-      override def derive(token: Token): Parser[(A, B)] = {
+      override def derive(token: Token): Parser[A ~ B] = {
         val derived = left.derive(token)
 
         if (!derived.isProductive) {
           left.nullable match {
-            case Some(leftValue) => Success(leftValue).merge(right.derive(token))
+            case Some(leftValue) => Success(leftValue) ~ right.derive(token)
             case None => Failure
           }
         }
         else {
-          derived.merge(right)
+          derived ~ right
+        }
+      }
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = {
+        val l = left.repr(9, recs)
+        val r = right.repr(10, recs)
+
+        if (level > 9) {
+          "(" + l + " ~ " + r + ")"
+        }
+        else {
+          l + " ~ " + r
         }
       }
     }
@@ -310,6 +321,17 @@ trait Parsers[Token, Kind] {
           derived ++ right
         }
       }
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = {
+        val l = left.repr(7, recs)
+        val r = right.repr(8, recs)
+
+        if (level > 7) {
+          "(" + l + " ++ " + r + ")"
+        }
+        else {
+          l + " ++ " + r
+        }
+      }
     }
     case class Disjunction[A](left: Parser[A], right: Parser[A]) extends Parser[A] {
       override lazy val nullable: Option[A] = left.nullable orElse right.nullable
@@ -361,6 +383,17 @@ trait Parsers[Token, Kind] {
           right.derive(token)
         }
       }
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = {
+        val l = left.repr(1, recs)
+        val r = right.repr(2, recs)
+
+        if (level > 1) {
+          "(" + l + " | " + r + ")"
+        }
+        else {
+          l + " | " + r
+        }
+      }
     }
     case class Recursive[A](computation: () => Parser[A]) extends Parser[A] {
       lazy val inner: Parser[A] = computation()
@@ -393,6 +426,15 @@ trait Parsers[Token, Kind] {
         if (recs.contains(this)) false else inner.collectIsProductive(recs + this)
       override def derive(token: Token): Parser[A] =
         inner.derive(token)
+      override def repr(level: Int, recs: Map[AnyRef, String]): String = {
+        recs.get(this) match {
+          case None => {
+            val n = (recs.size + 1).toString
+            "recursive<" + n + ">(" + inner.repr(0, recs + (this -> n)) + ")"
+          }
+          case Some(n) => "<" + n + ">"
+        }
+      }
     }
   }
 
@@ -439,18 +481,18 @@ trait Parsers[Token, Kind] {
   /** Parser that accepts repetitions of `elem` separated by left-associative `op`.
     * The value returned is reduced left-to-right. */
   def infixLeft[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op.merge(elem))).map {
+    (elem ~ many(op ~ elem)).map {
       case first ~ opElems => opElems.foldLeft(first) {
-        case (acc, (op, elem)) => op(acc, elem)
+        case (acc, (op ~ elem)) => op(acc, elem)
       }
     }
 
   /** Parser that accepts repetitions of `elem` separated by right-associative `op`.
     * The value returned is reduced right-to-left. */
   def infixRight[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op.merge(elem))).map {
+    (elem ~ many(op ~ elem)).map {
       case first ~ opElems => {
-        val (ops, elems) = opElems.unzip
+        val (ops, elems) = opElems.map(t => (t._1, t._2)).unzip
         val allElems = first +: elems
         val elemOps = allElems.zip(ops)
         elemOps.foldRight(allElems.last) {
