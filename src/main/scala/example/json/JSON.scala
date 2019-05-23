@@ -1,4 +1,4 @@
-package example
+package example.json
 
 import scala.language.implicitConversions
 

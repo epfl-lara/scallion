@@ -43,22 +43,6 @@ object JSONLexer extends Lexers[Token, Char, Int] {
 
 `Lexers` is parameterized by three types: the type of tokens, the type of characters and the type of positions. In our case, tokens are of type `Token`, characters of type `Char` and positions of type `Int`.
 
-The lexer uses regular expressions to describe sequences of characters.
-We define the following helpful regular expressions to be used later.
-
-```scala
-  // Matches a single digit.
-  val digit = elem(_.isDigit)
-  
-  // Matches a single non-zero digit.
-  val nonZero = elem((c: Char) => c >= '1' && c <= '9')
-  
-  // Matches a single hexadecimal digit.
-  val hex = elem((c: Char) => c >= 'a' && c <= 'f') |
-            elem((c: Char) => c >= 'A' && c <= 'F') |
-            digit
-```
-
 Each lexer is built using `Lexer`. `Lexer` accepts any number of rules, each made up of a regular expression and a function to produce a token from the accepted string and range.
 
 ```scala
