@@ -4,14 +4,16 @@ package util
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
+/** Contains utilities to vizualize parsers as graphs using Graphviz. */
 trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
-  case class Node(id: Int, label: String, targets: Seq[Int])
+  private case class Node(id: Int, label: String, targets: Seq[Int])
 
-  type Graph = Seq[Node]
+  private type Graph = Seq[Node]
 
   import Parser._
-  def getGraph(parser: Parser[Any]): Graph = {
+
+  private def getGraph(parser: Parser[Any]): Graph = {
     var nextId = 0
     var nodes = Vector[Node]()
     val queue = new Queue[(Parser[Any], Int)]
@@ -78,7 +80,10 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
     nodes
   }
 
-  def toDot(graph: Graph): String = {
+  /** Returns a Graphviz representation of the parser. */
+  def toGraphviz(parser: Parser[Any]): String = {
+
+    val graph = getGraph(parser)
 
     def addPorts[A](elems: Seq[A]): Seq[(A, String)] = {
       val n = elems.size
@@ -93,6 +98,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
     val builder = new StringBuilder()
     builder ++= "digraph G {\n"
+    builder ++= "node [shape=box];\n"
     for {
       Node(id, _, targets) <- graph
       (target, port) <- addPorts(targets)
@@ -108,16 +114,22 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
     builder.toString
   }
 
-  def display(graph: Graph, location: String, name: String): Unit = {
+  /** Produces a graph representation of the parser as a PDF file using `dot` from Graphviz.
+    *
+    * @param parser   The parser to display.
+    * @param location The directory in which to save the files.
+    * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
+    */
+  def display(parser: Parser[Any], location: String, name: String): Unit = {
     import java.nio.file._
     import sys.process._
 
-    val content = toDot(graph)
+    val content = toGraphviz(parser)
     val dotPath = Paths.get(location, name + ".dot")
     val pdfPath = Paths.get(location, name + ".pdf")
     
     Files.write(dotPath, content.getBytes())
 
-    ("dot " + dotPath + " -Tpdf -o" + pdfPath) !
+    ("dot " + dotPath + " -Tpdf -o" + pdfPath).!
   }
 }
