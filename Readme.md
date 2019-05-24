@@ -1,8 +1,6 @@
-<center>
-<img src="images/scallion.png" style="width:250px" alt="SCALL1ON" />
-
-<i>Scala LL(1) parser combinators.</i>
-</center>
+<p align="center">
+<img src="images/scallion.png" width="300px" alt="SCALL1ON" />
+</p>
 
 # Overview
 
