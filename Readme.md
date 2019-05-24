@@ -1,9 +1,12 @@
-# Scallion
-*Scala LL(1) parser combinators.*
+<center>
+<img src="images/scallion.png" style="width:250px" alt="SCALL1ON" />
+
+<i>Scala LL(1) parser combinators.</i>
+</center>
+
+# Overview
 
 Scallion is a library for writing lexers and parsers for *LL(1)* languages in Scala.
-
-## Overview
 
 In Scallion, lexing and parsing are two distinct phases.
 During lexing, the input stream of characters is turned into a stream of tokens.
