@@ -107,7 +107,8 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   }
 }
 
-object JSONParser extends Parsers[Token, TokenClass] with Graphs[TokenClass] {
+object JSONParser extends Parsers[Token, TokenClass]
+    with Graphs[TokenClass] with Grammars[TokenClass] {
 
   override def getKind(token: Token): TokenClass = token match {
     case SeparatorToken(value, _) => SeparatorClass(value)

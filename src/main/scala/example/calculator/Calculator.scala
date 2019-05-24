@@ -12,7 +12,7 @@ case object SpaceToken extends Token
 case class UnknownToken(content: String) extends Token
 
 object CalcLexer extends Lexers[Token, Char, Unit] with CharRegExps {
-  
+
   val lexer = Lexer(
     // Operators
     oneOf("-+/*!")
@@ -51,7 +51,9 @@ case class OperatorClass(op: Char) extends TokenClass(op.toString)
 case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
 case object OtherClass extends TokenClass("?")
 
-object CalcParser extends Parsers[Token, TokenClass] with Operators with Graphs[TokenClass] {
+object CalcParser extends Parsers[Token, TokenClass] with Operators
+    with Graphs[TokenClass] with Grammars[TokenClass] {
+
   override def getKind(token: Token): TokenClass = token match {
     case NumberToken(_) => NumberClass
     case OperatorToken(c) => OperatorClass(c)
