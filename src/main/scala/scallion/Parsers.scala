@@ -628,33 +628,4 @@ trait Parsers[Token, Kind] {
     parsers.foldRight(failure[A]) {
       case (parser, acc) => parser | acc
     }
-
-  /** Parser that accepts repetitions of `elem` separated by left-associative `op`.
-    * The value returned is reduced left-to-right.
-    *
-    * @group combinator
-    */
-  def infixLeft[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op ~ elem)).map {
-      case first ~ opElems => opElems.foldLeft(first) {
-        case (acc, (op ~ elem)) => op(acc, elem)
-      }
-    }
-
-  /** Parser that accepts repetitions of `elem` separated by right-associative `op`.
-    * The value returned is reduced right-to-left.
-    *
-    * @group combinator
-    */
-  def infixRight[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op ~ elem)).map {
-      case first ~ opElems => {
-        val (ops, elems) = opElems.map(t => (t._1, t._2)).unzip
-        val allElems = first +: elems
-        val elemOps = allElems.zip(ops)
-        elemOps.foldRight(allElems.last) {
-          case ((elem, op), acc) => op(elem, acc)
-        }
-      }
-    }
 }
