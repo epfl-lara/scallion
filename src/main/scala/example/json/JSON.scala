@@ -3,6 +3,7 @@ package example.json
 import scala.language.implicitConversions
 
 import scallion._
+import scallion.util._
 
 object time {
   def apply[T](block: => T): T = {
@@ -25,13 +26,15 @@ case class NullToken(range: (Int, Int)) extends Token
 case class SpaceToken(range: (Int, Int)) extends Token
 case class UnknownToken(content: String, range: (Int, Int)) extends Token
 
-sealed abstract class TokenClass
-case class SeparatorClass(value: Char) extends TokenClass
-case object BooleanClass extends TokenClass
-case object NumberClass extends TokenClass
-case object StringClass extends TokenClass
-case object NullClass extends TokenClass
-case object NoClass extends TokenClass
+sealed abstract class TokenClass(repr: String) {
+  override def toString = repr
+}
+case class SeparatorClass(value: Char) extends TokenClass(value.toString)
+case object BooleanClass extends TokenClass("<boolean>")
+case object NumberClass extends TokenClass("<number>")
+case object StringClass extends TokenClass("<string>")
+case object NullClass extends TokenClass("<null>")
+case object NoClass extends TokenClass("<error>")
 
 sealed abstract class Value {
   val range: (Int, Int)
@@ -104,7 +107,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   }
 }
 
-object JSONParser extends Parsers[Token, TokenClass] {
+object JSONParser extends Parsers[Token, TokenClass] with Graphs[TokenClass] {
 
   override def getKind(token: Token): TokenClass = token match {
     case SeparatorToken(value, _) => SeparatorClass(value)
