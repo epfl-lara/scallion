@@ -183,7 +183,7 @@ trait RegExps[Character] {
 
 /** Regular expressions on characters. Expected to be mixed-in. */
 trait CharRegExps { self: RegExps[Char] =>
-  
+
   /** Single digit between 0 and 9. */
   val digit = elem(_.isDigit)
 
@@ -192,9 +192,6 @@ trait CharRegExps { self: RegExps[Char] =>
 
   /** Single digit between 0 and 9 or A and F or a and f. */
   val hex = elem((c: Char) => c.isDigit || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
-
-  /** Single control character. */
-  val control = elem(_.isControl)
 
   /** Single white space character. */
   val whiteSpace = elem(_.isWhitespace)
