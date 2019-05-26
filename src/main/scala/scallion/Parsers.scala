@@ -454,7 +454,7 @@ trait Parsers[Token, Kind] {
     /** Parser that acts either as the disjunction of the `left` and `right` parsers. */
     case class Disjunction[+A](left: Parser[A], right: Parser[A]) extends Parser[A] {
       private lazy val order = if (right.nullable.nonEmpty) (left, right) else (right, left)
-      private lazy val firstFirst = order._1.first.to[collection.immutable.HashSet]
+      private lazy val firstFirst = order._1.first
 
       override lazy val nullable: Option[A] = left.nullable orElse right.nullable
       override lazy val isProductive: Boolean = left.isProductive || right.isProductive
