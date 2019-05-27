@@ -1,5 +1,7 @@
 package scallion
 
+import collection.mutable.Queue
+
 /** Contains definitions relating to regular expressions.
   *
   * @groupname regexp Regular Expressions
@@ -163,7 +165,10 @@ trait RegExps[Character] {
     *
     * @group combinator
     */
-  def many(regExp: RegExp): RegExp = Star(regExp)
+  def many(regExp: RegExp): RegExp = regExp match {
+    case Star(_) => regExp
+    case _ => Star(regExp)
+  }
 
   /** Regular expression that accepts one or more repetitions of `regExp`.
     *
@@ -195,4 +200,137 @@ trait CharRegExps { self: RegExps[Char] =>
 
   /** Single white space character. */
   val whiteSpace = elem(_.isWhitespace)
+}
+
+trait Compiled[Character] { self: RegExps[Character] =>
+
+  sealed trait Transition {
+    val target: Int
+  }
+  case class Guarded(predicate: Character => Boolean, target: Int) extends Transition
+  case class Epsilon(target: Int) extends Transition
+
+  trait NFA {
+    val states: IndexedSeq[Set[Transition]]
+    val start: Set[Int]
+    val accepting: Set[Int]
+
+    def size = states.size
+
+    def epsilonClosure(state: Set[Int]): Set[Int] = {
+      var res = state
+      val queue = new Queue[Int]()
+      for (s <- state) {
+        queue.enqueue(s)
+      }
+      
+      while (queue.nonEmpty) {
+        val s = queue.dequeue()
+        
+        states(s).foreach {
+          case Epsilon(target) =>
+            if (!res.contains(target)) {
+              res += target
+              queue.enqueue(target)
+            }
+          case _ => ()
+        }
+      }
+
+      res
+    }
+
+    def apply(state: Set[Int], character: Character): Set[Int] = epsilonClosure {
+      state.flatMap(states(_)).collect {
+        case Guarded(predicate, target) if predicate(character) => target
+      }
+    }
+  }
+
+  import RegExp._
+
+  def toNFA(regExp: RegExp, index: Int = 0): NFA = regExp match {
+    case EmptySet => new NFA { 
+      val states = Vector()
+      val start = Set()
+      val accepting = Set()
+    }
+    case EmptyStr => 
+      new NFA {
+      val states = Vector(Set())
+      val start = Set(index)
+      val accepting = Set(index)
+    }
+    case Elem(predicate) => new NFA {
+      val states = Vector(Set(Guarded(predicate, index + 1)), Set())
+      val start = Set(index)
+      val accepting = Set(index + 1)
+    }
+    case Union(left, right) => {
+      val leftNFA = toNFA(left, index)
+      val rightNFA = toNFA(right, index + leftNFA.size)
+
+      new NFA {
+        val states = leftNFA.states ++ rightNFA.states
+        val start = leftNFA.start union rightNFA.start
+        val accepting = leftNFA.accepting union rightNFA.accepting
+      }
+    }
+    case Concat(left, right) => {
+      val leftNFA = toNFA(left, index)
+      val rightNFA = toNFA(right, index + leftNFA.size)
+
+      new NFA {
+        val states = leftNFA.states.zipWithIndex.map {
+          case (transitions, i) =>
+            if (leftNFA.accepting.contains(i + index)) {
+              transitions union rightNFA.start.map(Epsilon(_))
+            }
+            else {
+              transitions
+            }
+        } ++ rightNFA.states
+        val start = leftNFA.start
+        val accepting = rightNFA.accepting
+      }
+    }
+    case Star(inner) => {
+      val innerNFA = toNFA(inner, index + 1)
+
+      new NFA {
+        val states = innerNFA.start.map(Epsilon(_): Transition) +: innerNFA.states.zipWithIndex.map {
+          case (transitions, i) => {
+            if (innerNFA.accepting.contains(i + index + 1)) {
+              transitions + Epsilon(index)
+            }
+            else {
+              transitions
+            }
+          }
+        }
+        val start = Set(index)
+        val accepting = Set(index)
+      }
+    }
+  }
+
+  class Automaton(regExp: RegExp) {
+    val nfa = toNFA(regExp)
+    val start = nfa.epsilonClosure(nfa.start)
+    var current = start
+
+    def isAccepting: Boolean = (current & nfa.accepting).nonEmpty
+
+    def next(character: Character): (Boolean, Boolean) = {
+      current = nfa(current, character)
+      ((current & nfa.accepting).nonEmpty, current.exists(i => nfa.states(i).exists {
+        case Guarded(_, _) => true
+        case _ => false
+      }))
+    }
+
+    def reset(): Unit = current = start
+  }
+
+  def compile(regExp: RegExp): Automaton = new Automaton(regExp)
 }
