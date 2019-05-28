@@ -18,7 +18,7 @@ In this short tutorial, we show how to write a JSON parser using Scallion.
 
 We first define the tokens that will be produced by the lexer and consumed by the parser.
 
-```
+```scala
 sealed abstract class Token {
   val range: (Int, Int)
 }
@@ -124,7 +124,7 @@ Finally, we define the `apply` method for the JSON lexer, which takes an input a
 
 ### Example
 
-```
+```scala
 scala> val src = scala.io.Source.fromString("""[123.45, "hello!", null]""")
 src: scala.io.Source = non-empty iterator
 
@@ -222,7 +222,7 @@ Finally, we can define the `apply` method for the whole parser.
 
 ### Example
 
-```
+```scala
 scala> val src = scala.io.Source.fromString("""[123.45, "hello!", null]""")
 src: scala.io.Source = non-empty iterator
 
