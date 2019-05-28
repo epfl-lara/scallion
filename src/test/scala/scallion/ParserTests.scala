@@ -743,6 +743,6 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] {
       many(elem(NumClass)) ++ parser2 ++ many(elem(BoolClass)) | many(elem(KeywordClass("ok")))
     }
 
-    assert(!parser.isLL1)
+    assert(!parser2.isLL1)
   }
 }
