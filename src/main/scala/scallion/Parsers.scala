@@ -361,12 +361,12 @@ trait Parsers[Token, Kind] {
       }
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = {
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
-        (if (left.nullable.nonEmpty) (left.shouldNotFollow & right.first).isEmpty else true)
+        (left.shouldNotFollow & right.first).isEmpty
       }
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
         val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
 
-        if (left.nullable.nonEmpty && (left.shouldNotFollow & right.first).nonEmpty) {
+        if ((left.shouldNotFollow & right.first).nonEmpty) {
           base + FollowConflict(this)
         }
         else {
