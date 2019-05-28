@@ -194,7 +194,7 @@ trait Parsers[Token, Kind] {
       * @group parsing
       */
     def apply(it: Iterator[Token]): ParseResult[A] = {
-      require(isLL1 && this.isProductive)
+      require(isLL1, "The parser is not LL(1).") 
 
       var parser: Parser[A] = this
       while (it.hasNext) {
