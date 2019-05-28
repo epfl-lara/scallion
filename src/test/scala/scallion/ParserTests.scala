@@ -2,6 +2,8 @@ package scallion
 
 import org.scalatest._
 
+import scallion.util._
+
 object Tokens {
   sealed trait Token
   case class Num(value: Int) extends Token
@@ -19,7 +21,7 @@ object Tokens {
 }
 import Tokens._
 
-class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] {
+class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] with Operators {
 
   override def getKind(token: Token): TokenClass = token match {
     case Num(_) => NumClass
@@ -744,5 +746,208 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] {
     }
 
     assert(!parser2.isLL1)
+  }
+
+  // prefixes
+
+  "prefixes" should "apply functions left-to-right" in {
+    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
+    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = prefixes(times2 | plus1, number)
+
+    inside(parser(Seq(Op('*'), Op('+'), Num(2)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 6)
+      }
+    }
+
+    inside(parser(Seq(Op('+'), Op('*'), Num(2)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 5)
+      }
+    }
+  }
+
+  it should "accept empty prefixes" in {
+    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
+    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = prefixes(times2 | plus1, number)
+
+    inside(parser(Seq(Num(3)).toIterator)) {
+      case Parsed(res, _) =>
+        assert(res == 3)
+    }
+  }
+
+  // postfixes
+
+  "postfixes" should "apply functions right-to-left" in {
+    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
+    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = postfixes(number, times2 | plus1)
+
+    inside(parser(Seq(Num(2), Op('*'), Op('+')).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 5)
+      }
+    }
+
+    inside(parser(Seq(Num(2), Op('+'), Op('*')).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 6)
+      }
+    }
+  }
+
+  it should "accept empty postfixes" in {
+    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
+    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = postfixes(number, times2 | plus1)
+
+    inside(parser(Seq(Num(3)).toIterator)) {
+      case Parsed(res, _) =>
+        assert(res == 3)
+    }
+  }
+
+  // infixLeft
+
+  "infixLeft" should "associate to the left" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = infixLeft(number, times | plus)
+
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 5)
+      }
+    }
+  }
+
+  it should "accept zero repetitions of operator" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = infixLeft(number, times | plus)
+
+    inside(parser(Seq(Num(2)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 2)
+      }
+    }
+  }
+
+  // infixRight
+
+  "infixRight" should "associate to the right" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = infixRight(number, times | plus)
+
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 8)
+      }
+    }
+  }
+
+  it should "accept zero repetitions of operator" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = infixRight(number, times | plus)
+
+    inside(parser(Seq(Num(12)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 12)
+      }
+    }
+  }
+
+  // operators
+
+  "operators" should "respect priorities" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = operators(number)(
+      times is LeftAssociative,
+      plus is LeftAssociative)
+
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3), Op('*'), Num(4)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 14)
+      }
+    }
+
+    inside(parser(Seq(Num(2), Op('+'), Num(1), Op('*'), Num(3), Op('+'), Num(4)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 9)
+      }
+    }
+  }
+
+  it should "respect specified associativities" in {
+    val div = elem(OperatorClass('/')).map(_ => (x: Int, y: Int) => x / y)
+    val minus = elem(OperatorClass('-')).map(_ => (x: Int, y: Int) => x - y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = operators(number)(
+      div is RightAssociative,
+      minus is LeftAssociative)
+
+    inside(parser(Seq(Num(12), Op('/'), Num(6), Op('/'), Num(3)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 6)
+      }
+    }
+
+    inside(parser(Seq(Num(12), Op('-'), Num(6), Op('-'), Num(3)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 3)
+      }
+    }
+  }
+
+  it should "accept zero repetitions of operator" in {
+    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
+    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
+    val number = accept(NumClass) {
+      case Num(value) => value
+    }
+    val parser = operators(number)(
+      times is LeftAssociative,
+      plus is LeftAssociative)
+
+    inside(parser(Seq(Num(42)).toIterator)) {
+      case Parsed(res, _) => {
+        assert(res == 42)
+      }
+    }
   }
 }
