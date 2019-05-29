@@ -71,7 +71,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
             ended = true
 
             val endPos = source.currentPosition
-            val content = source.back()
+            val content = source.backContent()
             val startPos = source.currentPosition
 
             if (source.atEnd) {
@@ -128,7 +128,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
               }
               case None => {
                 val endPos = source.currentPosition
-                val content = source.back()
+                val content = source.backContent()
                 val startPos = source.currentPosition
 
                 if (!source.atEnd) {
@@ -164,7 +164,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
       var activeProducers: List[Producer] = producers
 
       // The sequence of characters that are consumed so far.
-      var buffer: Vector[Character] = Vector()
+      val buffer: ArrayBuffer[Character] = new ArrayBuffer()
 
       // The start position in the source.
       val startPos = source.currentPosition
@@ -182,9 +182,9 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
         activeProducers = activeProducers.flatMap {
           case Producer(regExp, makeToken) => regExp.derive(char) match {
             // When the regExp is EmptySet, we can ignore the producer.
-            case RegExp.EmptySet => None
+            case RegExp.EmptySet => Nil
             // Otherwise, we update it.
-            case derived => Some(Producer(derived, makeToken))
+            case derived => Producer(derived, makeToken) :: Nil
           }
         }
 

@@ -32,7 +32,10 @@ trait Source[Character, Position] {
   def consume(): Seq[Character]
 
   /** Resets the lookahead pointer. */
-  def back(): Seq[Character]
+  def back(): Unit
+
+  /** Resets the lookahead pointer and returns the content looked-ahead. */
+  def backContent(): Seq[Character]
 
   /** Current position of the lookahead pointer in the source. */
   def currentPosition: Position
@@ -85,7 +88,13 @@ abstract class IteratorSource[Character, Position](start: Position, it: Iterator
   }
 
   /** Resets the lookahead pointer. */
-  def back(): Seq[Character] = {
+  def back(): Unit = {
+    aheadPos = basePos
+    index = 0
+  }
+
+  /** Resets the lookahead pointer. */
+  def backContent(): Seq[Character] = {
     val res = buffer.take(index)
     aheadPos = basePos
     index = 0
