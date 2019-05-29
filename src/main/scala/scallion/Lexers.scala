@@ -172,14 +172,10 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
       // The position after the consumed characters.
       var endPos = startPos
 
-      // The position after the consumed and looked-ahead characters.
-      var currentPos = startPos
-
       // Loops as long as some producers can potentially produce,
       // and as long as the source is not empty.
       while (activeProducers.nonEmpty && !source.atEnd) {
         val char = source.ahead()  // Next character.
-        currentPos = source.currentPosition
 
         // Feeds the character to all regexps,
         // resulting in new regexps that handle the rest of input.
@@ -194,8 +190,8 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
 
         // Finds the first producer that accepts the entire subsequence, if any.
         activeProducers.find(_.regExp.acceptsEmpty).foreach { (prod: Producer) =>
+          endPos = source.currentPosition
           buffer.appendAll(source.consume())  // Consumes all that was read so far.
-          endPos = currentPos
           lastSuccessfulProducer = Some(prod)
         }
       }
