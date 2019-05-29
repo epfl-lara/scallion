@@ -47,7 +47,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
     *
     * @group lexer
     */
-  class Lexer(producers: Seq[Producer]) {
+  class Lexer(producers: List[Producer]) {
 
     /** Returns an iterator that produces tokens from the source. */
     def apply(
@@ -161,10 +161,10 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
 
       // The producers which can potentially produce
       // something depending on the next characters.
-      var activeProducers: Seq[Producer] = producers
+      var activeProducers: List[Producer] = producers
 
       // The sequence of characters that are consumed so far.
-      val buffer: ArrayBuffer[Character] = new ArrayBuffer[Character]()
+      var buffer: Vector[Character] = Vector()
 
       // The start position in the source.
       val startPos = source.currentPosition
@@ -191,7 +191,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
         // Finds the first producer that accepts the entire subsequence, if any.
         activeProducers.find(_.regExp.acceptsEmpty).foreach { (prod: Producer) =>
           endPos = source.currentPosition
-          buffer.appendAll(source.consume())  // Consumes all that was read so far.
+          buffer ++= source.consume()  // Consumes all that was read so far.
           lastSuccessfulProducer = Some(prod)
         }
       }
@@ -205,7 +205,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
           source.back()
 
           val range = (startPos, endPos)
-          val token = makeToken(buffer.toSeq, range)
+          val token = makeToken(buffer, range)
 
           token
         }
@@ -223,6 +223,6 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
       *
       * @param producers The producers, in decreasing priority.
       */
-    def apply(producers: Producer*): Lexer = new Lexer(producers)
+    def apply(producers: Producer*): Lexer = new Lexer(producers.toList)
   }
 }
