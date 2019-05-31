@@ -12,7 +12,7 @@ import scallion.util._
   * @groupprio producer 1
   * @groupname producer Producers
   */
-trait Lexers[Token, Character, Position] extends RegExps[Character] {
+trait Lexers[Token, Character, Position] extends RegExps[Character] with Automatons[Character] {
 
   //---- Producers ----//
 
@@ -64,7 +64,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
         private var cacheNext: Option[Token] = None
 
         /** Queries the source for the next token and update the state. */
-        private def fetchNext(): Unit = tokenizeOne(source) match {
+        private def fetchNext(): Unit = tokenizeOneAutomata(source) match {
           case Some(token) if skipToken(token) => fetchNext()
           case Some(token) => cacheNext = Some(token)
           case None => {
@@ -117,7 +117,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
       val thread = new Thread {
         override def run: Unit = {
           while (true) {
-            tokenizeOne(source) match {
+            tokenizeOneAutomata(source) match {
               case Some(token) => if (!skipToken(token)) {
                 buffer = buffer :+ token
 
@@ -153,8 +153,81 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] {
       it
     }
 
-    /** Tries to produce a single token from the source. */
-    private def tokenizeOne(source: Source[Character, Position]): Option[Token] = {
+    // The makeToken functions, as an array for fast access.
+    private val makeTokens = producers.map(_.makeToken).toArray
+
+    // The automata corresponding to the regular expressions, as an array for fast access.
+    private val dfas = producers.map(p => DFA(NFA(p.regExp))).toArray
+
+    // The lists of start positions and indices. A list for fast flatMap.
+    private val starts = List.tabulate(dfas.size)(n => (0, n))
+
+    /** Tries to produce a single token from the source. Uses automata. */
+    private def tokenizeOneAutomata(source: Source[Character, Position]): Option[Token] = {
+
+      // The state and index of active automata.
+      var states = starts
+
+      // The buffer containing successfully consumed input.
+      val buffer: ArrayBuffer[Character] = new ArrayBuffer()
+
+      // Start position of the consumed input.
+      val startPos = source.currentPosition
+
+      // End position of the consumed input.
+      var endPos = startPos
+
+      // Index of the last successful state machine.
+      var successful: Option[Int] = None
+
+      while (states.nonEmpty && !source.atEnd) {
+        val char = source.ahead()
+
+        // Indicates if an automaton was accepting
+        // for this character already.
+        var accepted = false
+
+        // Updates the states of all automata and
+        // filter out the ones which can no longer
+        // reach an accepting state.
+        states = states.flatMap {
+          case (current, index) => {
+            val dfa = dfas(index)
+            val next = dfa(current, char)
+
+            // Also records the first accepting automaton.
+            if (!accepted && dfa.isAccepting(next)) {
+              endPos = source.currentPosition
+              buffer ++= source.consume()
+              successful = Some(index)
+              accepted = true
+            }
+
+            if (dfa.isLive(next)) {
+              (next, index) :: Nil
+            }
+            else {
+              Nil
+            }
+          }
+        }
+      }
+
+      // Creates the token, if any.
+      successful.map { (index: Int) =>
+        // Resets the looked-ahead pointer in the source.
+        // Only done in case of a successful tokenization.
+        source.back()
+
+        val range = (startPos, endPos)
+        val token = makeTokens(index)(buffer, range)
+
+        token
+      }
+    }
+
+    /** Tries to produce a single token from the source. Uses regular expression derivation. */
+    private def tokenizeOneDerivation(source: Source[Character, Position]): Option[Token] = {
 
       // The first producer that was successful on the longest subsequence so far.
       var lastSuccessfulProducer: Option[Producer] = None
