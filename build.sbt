@@ -5,7 +5,8 @@ scalacOptions in (Compile, doc) ++= Seq(
 )
 
 scalacOptions ++= Seq(
-  "-deprecation"
+  "-deprecation",
+  "-feature"
 )
 
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
