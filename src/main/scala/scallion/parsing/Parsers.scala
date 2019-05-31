@@ -28,7 +28,7 @@ trait Parsers[Token, Kind] {
 
   import Parser._
 
-  /** Computes the kind associated a `token`.
+  /** Returns the kind associated with `token`.
     *
     * @group abstract
     */
