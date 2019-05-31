@@ -2,7 +2,7 @@ package scallion
 
 import org.scalatest._
 
-class RegExpAutomataTests extends FlatSpec with RegExps[Char] with CharRegExps with Compiled[Char] {
+class RegExpAutomataTests extends FlatSpec with RegExps[Char] with CharRegExps with Automatons[Char] {
 
   // Automaton with mutable current state for easier tests.
   class Automaton(regExp: RegExp) {

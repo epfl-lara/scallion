@@ -182,7 +182,10 @@ trait RegExps[Character] {
     */
   def opt(regExp: RegExp): RegExp = regExp | EmptyStr
 
-  /** Regular expression that accepts any single character. */
+  /** Regular expression that accepts any single character.
+    *
+    * @group combinator
+    */
   val any: RegExp = Elem((c: Character) => true)
 }
 
@@ -205,11 +208,11 @@ trait CharRegExps { self: RegExps[Char] =>
 /** Adds conversions from regular expressions to non-deterministic finite automata (NFAs)
   * and from NFAs to deterministic finite automata (DFAs).
   *
-  * @groupname nfa Non-deterministic finite automata
-  * @groupprio nfa 1
+  * @groupname nfa Non-deterministic Finite Automata
+  * @groupprio nfa 11
   *
-  * @groupname dfa Deterministic finite automata
-  * @groupprio dfa 2
+  * @groupname dfa Deterministic Finite Automata
+  * @groupprio dfa 12
   */
 trait Automatons[Character] { self: RegExps[Character] =>
 
@@ -386,7 +389,8 @@ trait Automatons[Character] { self: RegExps[Character] =>
   case class Branch[+A](predicate: Character => Boolean,
                         trueSide: DecisionTree[A],
                         falseSide: DecisionTree[A]) extends DecisionTree[A] {
-    override def apply(char: Character): A = if (predicate(char)) trueSide(char) else falseSide(char)
+    override def apply(char: Character): A =
+      if (predicate(char)) trueSide(char) else falseSide(char)
     override def map[B](function: A => B): DecisionTree[B] = {
       val ths = trueSide.map(function)
       val fhs = falseSide.map(function)
@@ -429,6 +433,10 @@ trait Automatons[Character] { self: RegExps[Character] =>
     */
   object DFA {
 
+    /** Builds a DFA equivalent to the given regular expression. */
+    def apply(regExp: RegExp): DFA = toDFA(NFA(regExp))
+
+    /** Builds a DFA equivalent to the given NFA. */
     def apply(nfa: NFA): DFA = toDFA(nfa)
 
     private def toDFA(nfa: NFA) = {
@@ -477,21 +485,22 @@ trait Automatons[Character] { self: RegExps[Character] =>
         val decisions = guardedTransitions.groupBy(_._1).mapValues(_.map(_._2).toSet).toList
 
         // Converts the guarded targets to a decision tree of NFA states.
-        def toTree(pairs: List[(Character => Boolean, Set[Int])]): DecisionTree[Set[Int]] = pairs match {
-          case Nil => Leaf(Set())
-          case (predicate, values) :: rest => {
-            val tree = toTree(rest)
-            val ths = tree.map(_ union values)
-            val fhs = tree
+        def toTree(pairs: List[(Character => Boolean, Set[Int])]): DecisionTree[Set[Int]] =
+          pairs match {
+            case Nil => Leaf(Set())
+            case (predicate, values) :: rest => {
+              val tree = toTree(rest)
+              val ths = tree.map(_ union values)
+              val fhs = tree
 
-            if (ths == fhs) {
-              ths
-            }
-            else {
-              Branch(predicate, ths, fhs)
+              if (ths == fhs) {
+                ths
+              }
+              else {
+                Branch(predicate, ths, fhs)
+              }
             }
           }
-        }
 
         // Records the new DFA state.
         transitions :+= toTree(decisions).map(nfa.epsilonClosure(_)).map(inspect)
