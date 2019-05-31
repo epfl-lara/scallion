@@ -150,7 +150,7 @@ object JSONParser extends Parsers[Token, TokenClass]
     }
 
   lazy val value: Parser[Value] = recursive {
-    arrayValue | objectValue | booleanValue | numberValue | stringValue | nullValue
+    oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
   def apply(it: Iterator[Token]): ParseResult[Value] = value(it)

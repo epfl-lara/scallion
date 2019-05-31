@@ -625,8 +625,16 @@ trait Parsers[Token, Kind] {
     *
     * @group combinator
     */
-  def oneOf[A](parsers: Parser[A]*): Parser[A] =
-    parsers.foldRight(failure[A]) {
-      case (parser, acc) => parser | acc
+  def oneOf[A](parsers: Parser[A]*): Parser[A] = {
+    var queue = parsers.toVector :+ failure[A]
+
+    while (queue.size > 1) {
+      val a = queue(0)
+      val b = queue(1)
+      queue = queue.drop(2)
+      queue :+= a | b
     }
+
+    queue.head
+  }
 }
