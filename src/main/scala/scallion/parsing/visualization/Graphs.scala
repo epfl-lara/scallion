@@ -6,7 +6,7 @@ package visualization
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to vizualize parsers as graphs using Graphviz.
-  * Expected to be mixed-in `Parsers`. */
+  * Expected to be mixed-in [[scallion.parsing.Parsers]]. */
 trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
   private case class Node(id: Int, label: String, targets: Seq[Int])

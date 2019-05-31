@@ -4,6 +4,9 @@ import scala.collection.immutable.ListSet
 
 /** Contains definitions relating to parsers.
   *
+  * @see See trait [[scallion.parsing.Operators]] for useful combinators
+  *      to describe infix, prefix and postfix operators.
+  *
   * @group parsing
   *
   * @groupprio abstract

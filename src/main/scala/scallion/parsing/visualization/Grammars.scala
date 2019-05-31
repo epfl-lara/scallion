@@ -6,7 +6,7 @@ package visualization
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to vizualize parsers as BNF grammars.
-  * Expected to be mixed-in `Parsers`.
+  * Expected to be mixed-in [[scallion.parsing.Parsers]].
   *
   * @groupprio grammar 1
   * @groupname grammar Grammar
