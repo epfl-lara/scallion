@@ -162,8 +162,10 @@ object JSONParser extends Parsers[Token, TokenClass]
 
 object JSON {
   def main(args: Array[String]): Unit = {
-    for (_ <- 1 to 300) {
-      time(JSONParser(JSONLexer(io.Source.fromFile("ex.json"))))
+    for (arg <- args) {
+      for (_ <- 1 to 10) {
+        time(JSONParser(JSONLexer(io.Source.fromFile(arg))))
+      }
     }
   }
 }
