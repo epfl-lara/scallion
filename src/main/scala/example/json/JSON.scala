@@ -1,3 +1,5 @@
+/* Copyright 2019 EPFL, Lausanne */
+
 package example.json
 
 import scala.language.implicitConversions

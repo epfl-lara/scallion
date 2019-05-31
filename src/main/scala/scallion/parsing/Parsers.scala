@@ -1,3 +1,5 @@
+/* Copyright 2019 EPFL, Lausanne */
+
 package scallion.parsing
 
 import scala.collection.immutable.ListSet

@@ -1,3 +1,5 @@
+/* Copyright 2019 EPFL, Lausanne */
+
 package scallion.util.internal
 
 import scala.collection.mutable.Queue

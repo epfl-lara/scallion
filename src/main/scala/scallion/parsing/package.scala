@@ -1,3 +1,5 @@
+/* Copyright 2019 EPFL, Lausanne */
+
 package scallion
 
 /** Scala LL(1) parsers. */
