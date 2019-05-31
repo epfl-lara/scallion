@@ -1,10 +1,12 @@
 
 package scallion
-package util
+package parsing
+package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
-/** Contains utilities to vizualize parsers as graphs using Graphviz. */
+/** Contains utilities to vizualize parsers as graphs using Graphviz.
+  * Expected to be mixed-in `Parsers`. */
 trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
   private case class Node(id: Int, label: String, targets: Seq[Int])
@@ -42,21 +44,21 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
         case Success(_) => ("𝛆", Seq())
         case Elem(kind) => (kind.toString, Seq())
         case Disjunction(left, right) => {
-          
+
           val leftId = inspect(left)
           val rightId = inspect(right)
 
           ("|", Seq(leftId, rightId))
         }
         case Sequence(left, right) => {
-          
+
           val leftId = inspect(left)
           val rightId = inspect(right)
 
           ("~", Seq(leftId, rightId))
         }
         case Concat(left, right) => {
-          
+
           val leftId = inspect(left)
           val rightId = inspect(right)
 
@@ -81,7 +83,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
   }
 
   /** Returns a Graphviz representation of the parser. */
-  def toGraphviz(parser: Parser[Any]): String = {
+  private def toGraphviz(parser: Parser[Any]): String = {
 
     val graph = getGraph(parser)
 
@@ -120,14 +122,14 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
     * @param location The directory in which to save the files.
     * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
     */
-  def display(parser: Parser[Any], location: String, name: String): Unit = {
+  def outputGraph(parser: Parser[Any], location: String, name: String): Unit = {
     import java.nio.file._
     import sys.process._
 
     val content = toGraphviz(parser)
     val dotPath = Paths.get(location, name + ".dot")
     val pdfPath = Paths.get(location, name + ".pdf")
-    
+
     Files.write(dotPath, content.getBytes())
 
     ("dot " + dotPath + " -Tpdf -o" + pdfPath).!

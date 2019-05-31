@@ -1,8 +1,10 @@
 package scallion
+package lexing
 
 import scala.collection.mutable.ArrayBuffer
 
-import scallion.util._
+import scallion.input.Source
+import scallion.util.internal.BufferedIterator
 
 /** Contains definitions for lexers.
   *

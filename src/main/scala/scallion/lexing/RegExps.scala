@@ -1,4 +1,5 @@
 package scallion
+package lexing
 
 import collection.mutable.Queue
 

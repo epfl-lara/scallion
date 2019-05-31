@@ -2,8 +2,10 @@ package example.json
 
 import scala.language.implicitConversions
 
-import scallion._
-import scallion.util._
+import scallion.input._
+import scallion.lexing._
+import scallion.parsing._
+import scallion.parsing.visualization._
 
 object time {
   def apply[T](block: => T): T = {
@@ -103,7 +105,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
       override def increment(pos: Int, char: Char): Int = pos + 1
     }
 
-    lexer(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
+    lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
   }
 }
 
@@ -154,4 +156,12 @@ object JSONParser extends Parsers[Token, TokenClass]
   }
 
   def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+}
+
+object JSON {
+  def main(args: Array[String]): Unit = {
+    for (_ <- 1 to 300) {
+      time(JSONParser(JSONLexer(io.Source.fromFile("ex.json"))))
+    }
+  }
 }

@@ -1,8 +1,10 @@
 
 package example.calculator
 
-import scallion._
-import scallion.util._
+import scallion.input._
+import scallion.lexing._
+import scallion.parsing._
+import scallion.parsing.visualization._
 
 sealed trait Token
 case class NumberToken(value: Int) extends Token

@@ -2,6 +2,8 @@ package scallion
 
 import org.scalatest._
 
+import scallion.lexing._
+
 class RegExpsTests extends FlatSpec with RegExps[Char] with CharRegExps {
 
   "elem (predicate)" should "not accept empty" in {

@@ -1,4 +1,5 @@
 package scallion
+package input
 
 /** Represents a sequence of characters mutably traversed over.
   *

@@ -2,6 +2,9 @@ package scallion
 
 import org.scalatest._
 
+import scallion.input._
+import scallion.lexing._
+
 class LexerTests extends FlatSpec with Lexers[String, Char, (Int, Int)] with CharRegExps {
 
   def source(text: String): Source[Char, (Int, Int)] = new IteratorSource((0, 0), text.toIterator) {

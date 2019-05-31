@@ -2,7 +2,7 @@ package scallion
 
 import org.scalatest._
 
-import scallion.util._
+import scallion.parsing._
 
 object Tokens {
   sealed trait Token
@@ -323,9 +323,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
     val left = elem(NumClass) ~ (elem(BoolClass) | epsilon(Bool(true)))
-    
+
     assert(left.isLL1)
-    
+
     val parser = left ~ elem(BoolClass)
 
     assert(!parser.isLL1)
@@ -434,9 +434,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
     val left = elem(NumClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_))
-    
+
     assert(left.isLL1)
-    
+
     val parser = left ++ elem(BoolClass).map(Seq(_))
 
     assert(!parser.isLL1)

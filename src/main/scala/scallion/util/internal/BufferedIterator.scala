@@ -1,4 +1,4 @@
-package scallion.util
+package scallion.util.internal
 
 import scala.collection.mutable.Queue
 
