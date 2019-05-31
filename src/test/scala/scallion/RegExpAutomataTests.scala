@@ -4,6 +4,21 @@ import org.scalatest._
 
 class RegExpAutomataTests extends FlatSpec with RegExps[Char] with CharRegExps with Compiled[Char] {
 
+  // Automaton with mutable current state for easier tests.
+  class Automaton(regExp: RegExp) {
+    val dfa = DFA(NFA(regExp))
+    var current = dfa.start
+
+    def next(character: Character): (Boolean, Boolean) = {
+      current = dfa(current, character)
+      (dfa.isAccepting(current), dfa.isLive(current))
+    }
+
+    def reset(): Unit = current = dfa.start
+  }
+
+  def compile(regExp: RegExp): Automaton = new Automaton(regExp)
+
   import RegExp._
 
   "Automaton" should "work for empty set" in {
@@ -104,10 +119,61 @@ class RegExpAutomataTests extends FlatSpec with RegExps[Char] with CharRegExps w
       }
     }
 
-    for (c <- "2173") {
+    assert(automaton.next('+') == (false, false))
+    assert(automaton.next('0') == (false, false))
+
+    automaton.reset()
+
+    assert(automaton.next('0') == (true, true))
+    assert(automaton.next('1') == (false, false))
+
+    automaton.reset()
+
+    for (c <- "2123") {
+      assert(automaton.next(c) == (true, true))
+    }
+    for (c <- ".") {
+      assert(automaton.next(c) == (false, true))
+    }
+    for (c <- "2313") {
+      assert(automaton.next(c) == (true, true))
+    }
+    for (c <- "e-") {
+      assert(automaton.next(c) == (false, true))
+    }
+    for (c <- "324") {
       assert(automaton.next(c) == (true, true))
     }
 
+    assert(automaton.next('-') == (false, false))
+
     automaton.reset()
+
+    assert(automaton.next('-') == (false, true))
+    for (c <- "32") {
+      assert(automaton.next(c) == (true, true))
+    }
+    for (c <- "E+") {
+      assert(automaton.next(c) == (false, true))
+    }
+    for (c <- "324") {
+      assert(automaton.next(c) == (true, true))
+    }
+
+    assert(automaton.next('+') == (false, false))
+
+    automaton.reset()
+
+     for (c <- "0") {
+      assert(automaton.next(c) == (true, true))
+    }
+    for (c <- "e") {
+      assert(automaton.next(c) == (false, true))
+    }
+    for (c <- "324") {
+      assert(automaton.next(c) == (true, true))
+    }
+
+    assert(automaton.next('+') == (false, false))
   }
 }
