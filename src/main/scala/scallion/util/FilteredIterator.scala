@@ -17,6 +17,11 @@ package scallion.util
 
 import scala.annotation._
 
+/** Filters the values of an iterator.
+  *
+  * @param iterator  The iterator to filter.
+  * @param predicate The predicate that values must satisfy.
+  */
 class FilteredIterator[A](iterator: Iterator[A], predicate: A => Boolean) extends Iterator[A] {
   private var cacheNext: Option[A] = None
   private var ended = false

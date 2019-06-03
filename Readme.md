@@ -102,19 +102,17 @@ Finally, we define the `apply` method for the JSON lexer, which takes an input a
 
 ```scala
   def apply(it: Iterator[Char]): Iterator[Token] = {
-  
+
     // Creates a source which keeps tracks of positions.
-    val source = new IteratorSource(0, it) {
-      override def increment(pos: Int, char: Char): Int = pos + 1
-    }
+    val source = Source.fromIterator(it, IndexPositioner)
 
     lexer(
       // The source.
       source,
-      
+
       // Token to produce in case of errors.
       (content, range) => UnknownToken(content.mkString, range),
-      
+
       // Tokens to ignore.
       token => token.isInstanceOf[SpaceToken])
   }

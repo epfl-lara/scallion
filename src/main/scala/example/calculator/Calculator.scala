@@ -51,9 +51,7 @@ object CalcLexer extends Lexers[Token, Char, Unit] with CharRegExps {
 
 
   def apply(it: Iterator[Char]): Iterator[Token] = {
-    val source = new IteratorSource((), it) {
-      override def increment(pos: Unit, char: Char): Unit = ()
-    }
+    val source = Source.fromIterator(it, NoPositioner)
 
     lexer(source, (content, range) => UnknownToken(content.mkString), _ == SpaceToken)
   }

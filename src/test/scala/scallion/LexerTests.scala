@@ -22,9 +22,13 @@ import scallion.lexing._
 
 class LexerTests extends FlatSpec with Lexers[String, Char, (Int, Int)] with CharRegExps {
 
-  def source(text: String): Source[Char, (Int, Int)] = new IteratorSource((0, 0), text.toIterator) {
-    def increment(pos: (Int, Int), char: Char): (Int, Int) = if (char == '\n') (pos._1 + 1, 0) else (pos._1, pos._2 + 1)
+  object PairPositioner extends Positioner[Char, (Int, Int)] {
+    override val start = (0, 0)
+    override def increment(pos: (Int, Int), char: Char): (Int, Int) =
+      if (char == '\n') (pos._1 + 1, 0) else (pos._1, pos._2 + 1)
   }
+
+  def source(text: String): Source[Char, (Int, Int)] = Source.fromString(text, PairPositioner)
 
   "Lexer" should "be able to produce a single token" in {
     val lexer = Lexer(many1(digit) |> { cs => cs.mkString })

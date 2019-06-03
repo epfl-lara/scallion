@@ -29,6 +29,8 @@ package input
   *
   * The lookahead pointer can be advanced by one character at the time using `ahead()`,
   * and can be reset to the base pointer by a call to `back()`.
+  *
+  * @group source
   */
 trait Source[Character, Position] {
 
@@ -57,19 +59,67 @@ trait Source[Character, Position] {
   def currentPosition: Position
 }
 
-/** Source over an iterator. */
-abstract class IteratorSource[Character, Position](start: Position, it: Iterator[Character])
-    extends Source[Character, Position] {
+/** Builds sources.
+  *
+  * @group source
+  */
+object Source {
 
-  def increment(pos: Position, char: Character): Position
+  /** Builds a source from a `file`. */
+  def fromFile(file: String): Source[Char, StringPosition] = {
+    fromFile(file, StringPositioner)
+  }
+
+  /** Builds a source from a `file` and a `positioner`. */
+  def fromFile[Position](
+      file: String,
+      positioner: Positioner[Char, Position]): Source[Char, Position] = {
+
+    val iterator = io.Source.fromFile(file)
+
+    new IteratorSource[Char, Position](iterator, positioner)
+  }
+
+  /** Builds a source from a `string`. */
+  def fromString(string: String): Source[Char, StringPosition] = {
+    fromString(string, StringPositioner)
+  }
+
+  /** Builds a source from a `string` and a `positioner`. */
+  def fromString[Position](
+      string: String,
+      positioner: Positioner[Char, Position]): Source[Char, Position] = {
+
+    val iterator = string.toIterator
+
+    new IteratorSource[Char, Position](iterator, positioner)
+  }
+
+  /** Builds a source from an `iterator` and a `positioner`. */
+  def fromIterator[Character, Position](
+      iterator: Iterator[Character],
+      positioner: Positioner[Character, Position]): Source[Character, Position] = {
+
+    new IteratorSource[Character, Position](iterator, positioner)
+  }
+}
+
+/** Source over an iterator.
+  *
+  * @group source
+  */
+class IteratorSource[Character, Position](
+      iterator: Iterator[Character],
+      positioner: Positioner[Character, Position])
+    extends Source[Character, Position] {
 
   private var buffer: Vector[Character] = Vector()
   private var index: Int = 0
-  private var basePos: Position = start
-  private var aheadPos: Position = start
+  private var basePos: Position = positioner.start
+  private var aheadPos: Position = positioner.start
 
   /** Checks if the lookahead pointer is at the end of the sequence. */
-  def atEnd: Boolean = !it.hasNext && index >= buffer.size
+  def atEnd: Boolean = !iterator.hasNext && index >= buffer.size
 
   /** Advances the lookahead pointer by one character in the sequence.
     *
@@ -77,16 +127,16 @@ abstract class IteratorSource[Character, Position](start: Position, it: Iterator
     */
   def ahead(): Character = {
     if (index >= buffer.size) {
-      val res = it.next()
+      val res = iterator.next()
       buffer :+= res
       index += 1
-      aheadPos = increment(aheadPos, res)
+      aheadPos = positioner.increment(aheadPos, res)
       res
     }
     else {
       val res = buffer(index)
       index += 1
-      aheadPos = increment(aheadPos, res)
+      aheadPos = positioner.increment(aheadPos, res)
       res
     }
   }

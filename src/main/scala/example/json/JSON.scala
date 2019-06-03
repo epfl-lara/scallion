@@ -116,9 +116,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   )
 
   def apply(it: Iterator[Char]): Iterator[Token] = {
-    val source = new IteratorSource(0, it) {
-      override def increment(pos: Int, char: Char): Int = pos + 1
-    }
+    val source = Source.fromIterator(it, IndexPositioner)
 
     lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
   }
