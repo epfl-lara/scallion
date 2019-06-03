@@ -106,15 +106,16 @@ Finally, we define the `apply` method for the JSON lexer, which takes an input a
     // Creates a source which keeps tracks of positions.
     val source = Source.fromIterator(it, IndexPositioner)
 
-    lexer(
+    // Generates the tokens.
+    val tokens = lexer(
       // The source.
       source,
 
       // Token to produce in case of errors.
-      (content, range) => UnknownToken(content.mkString, range),
+      (content, range) => UnknownToken(content.mkString, range))
 
-      // Tokens to ignore.
-      token => token.isInstanceOf[SpaceToken])
+    // Filter out the space tokens.
+    new FilteredIterator(tokens, (token: Token) => token.isInstanceOf[SpaceToken])
   }
 }
 
