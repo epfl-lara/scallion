@@ -114,8 +114,8 @@ Finally, we define the `apply` method for the JSON lexer, which takes an input a
       // Token to produce in case of errors.
       (content, range) => UnknownToken(content.mkString, range))
 
-    // Filter out the space tokens.
-    new FilteredIterator(tokens, (token: Token) => token.isInstanceOf[SpaceToken])
+    // Filters out the space tokens.
+    tokens.filter((token: Token) => !token.isInstanceOf[SpaceToken])
   }
 }
 
