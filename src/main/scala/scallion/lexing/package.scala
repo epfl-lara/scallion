@@ -15,30 +15,20 @@
 
 package scallion
 
-/** This package is used to write LL(1) parsers.
+/** This package is used to write lexers.
   *
-  * To use the package, mix-in the [[scallion.parsing.Parsers]] trait.
+  * To use the package, mix-in the [[scallion.lexing.Lexers]] trait.
   *
   * {{{
-  * object MyParsers extends Parsers[Token, Kind, Position] {
-  *
-  *   // Define the token kind of tokens.
-  *   override def getKind(token: Token): Kind = ...
+  * object MyLexers extends Lexers[Character, Position] {
   *
   *   // Then define your parsers using combinators.
-  *   lazy val myParser = ...
+  *   val myLexer = Lexer(...)
   * }
   * }}}
   *
   * Additional traits can be mixed-in.
-  * See for instance [[scallion.parsing.Operators]] or [[scallion.parsing.visualization]].
+  * See for instance [[scallion.lexing.CharRegExps]]
+  * for regular expressions on `Char`.
   */
-package object parsing {
-
-  /** Simply a pair.
-    *
-    * Can be used in infix position in pattern matching.
-    */
-  case class ~[+A, +B](_1: A, _2: B)
-
-}
+package object lexing

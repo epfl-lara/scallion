@@ -21,6 +21,7 @@ import scallion.input._
 import scallion.lexing._
 import scallion.parsing._
 import scallion.parsing.visualization._
+import scallion.util._
 
 object time {
   def apply[T](block: => T): T = {
@@ -118,7 +119,9 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   def apply(it: Iterator[Char]): Iterator[Token] = {
     val source = Source.fromIterator(it, IndexPositioner)
 
-    lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range), _.isInstanceOf[SpaceToken])
+    val tokens = lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range))
+
+    new FilteredIterator(tokens, (token: Token) => !token.isInstanceOf[SpaceToken])
   }
 }
 
@@ -174,7 +177,7 @@ object JSONParser extends Parsers[Token, TokenClass]
 object JSON {
   def main(args: Array[String]): Unit = {
     for (arg <- args) {
-      for (_ <- 1 to 10) {
+      for (_ <- 1 to 100) {
         time(JSONParser(JSONLexer(io.Source.fromFile(arg))))
       }
     }

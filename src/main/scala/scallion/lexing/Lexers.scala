@@ -39,7 +39,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
     */
   case class Producer(regExp: RegExp, makeToken: (Seq[Character], (Position, Position)) => Token)
 
-  /** Adds methods to build a`Producer` to a `RegExp`.
+  /** Adds methods to build a `Producer` to a `RegExp`.
     *
     * @group producer
     */
@@ -66,11 +66,14 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
     */
   class Lexer(producers: List[Producer]) {
 
-    /** Returns an iterator that produces tokens from the source. */
+    /** Returns an iterator that produces tokens from the `source`.
+      *
+      * @param source     The input source.
+      * @param errorToken Function to apply when no regular expression match.
+      */
     def apply(
         source: Source[Character, Position],
-        errorToken: (Seq[Character], (Position, Position)) => Token,
-        skipToken: Token => Boolean = (_: Token) => false): Iterator[Token] =
+        errorToken: (Seq[Character], (Position, Position)) => Token): Iterator[Token] =
 
       new Iterator[Token] {
 
@@ -82,7 +85,6 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
 
         /** Queries the source for the next token and update the state. */
         private def fetchNext(): Unit = tokenizeOneAutomata(source) match {
-          case Some(token) if skipToken(token) => fetchNext()
           case Some(token) => cacheNext = Some(token)
           case None => {
             ended = true
@@ -120,12 +122,16 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
         }
       }
 
-    /** Spawn a thread that immediately start producing tokens from the source. */
+    /** Spawn a thread that immediately start producing tokens from the `source`.
+      *
+      * @param source     The input source.
+      * @param errorToken Function to apply when no regular expression match.
+      * @param batchSize  Number of tokens to produce in a batch. By default `50`.
+      */
     def spawn(
         source: Source[Character, Position],
         errorToken: (Seq[Character], (Position, Position)) => Token,
-        skipToken: Token => Boolean = (_: Token) => false,
-        threshold: Int = 50): Iterator[Token] = {
+        batchSize: Int = 50): Iterator[Token] = {
 
       var buffer: Vector[Token] = Vector()
 
@@ -135,10 +141,10 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
         override def run: Unit = {
           while (true) {
             tokenizeOneAutomata(source) match {
-              case Some(token) => if (!skipToken(token)) {
+              case Some(token) => {
                 buffer = buffer :+ token
 
-                if (buffer.size >= threshold) {
+                if (buffer.size >= batchSize) {
                   it.addAll(buffer)
                   buffer = Vector()
                 }

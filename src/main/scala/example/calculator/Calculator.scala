@@ -19,6 +19,7 @@ import scallion.input._
 import scallion.lexing._
 import scallion.parsing._
 import scallion.parsing.visualization._
+import scallion.util._
 
 sealed trait Token
 case class NumberToken(value: Int) extends Token
@@ -53,7 +54,9 @@ object CalcLexer extends Lexers[Token, Char, Unit] with CharRegExps {
   def apply(it: Iterator[Char]): Iterator[Token] = {
     val source = Source.fromIterator(it, NoPositioner)
 
-    lexer(source, (content, range) => UnknownToken(content.mkString), _ == SpaceToken)
+    val tokens = lexer(source, (content, range) => UnknownToken(content.mkString))
+
+    new FilteredIterator(tokens, (token: Token) => token == SpaceToken)
   }
 }
 
