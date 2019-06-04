@@ -234,11 +234,26 @@ trait Automatons[Character] { self: RegExps[Character] =>
     * @group dfa
     */
   trait DFA {
+
+    /** State transitions. */
     val transitions: IndexedSeq[DecisionTree[Int]]
+
+    /** Index of starting state. */
     val start: Int
+
+    /** Contains, for each state, whether it is accepting or not. */
     val isAccepting: IndexedSeq[Boolean]
+
+    /** Contains, for each state, whether an
+      * accepting state can be reached later on.
+      */
     val isLive: IndexedSeq[Boolean]
 
+    /** Returns the index of the next state.
+      *
+      * @param state The index of the current state.
+      * @param char  The next input character.
+      */
     def apply(state: Int, char: Character): Int = transitions(state)(char)
   }
 
