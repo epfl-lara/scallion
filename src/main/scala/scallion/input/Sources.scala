@@ -80,6 +80,21 @@ object Source {
     new IteratorSource[Char, Position](iterator, positioner)
   }
 
+  /** Builds a source from a `file`. */
+  def fromFile(file: java.io.File): Source[Char, StringPosition] = {
+    fromFile(file, StringPositioner)
+  }
+
+  /** Builds a source from a `file` and a `positioner`. */
+  def fromFile[Position](
+      file: java.io.File,
+      positioner: Positioner[Char, Position]): Source[Char, Position] = {
+
+    val iterator = io.Source.fromFile(file)
+
+    new IteratorSource[Char, Position](iterator, positioner)
+  }
+
   /** Builds a source from a `string`. */
   def fromString(string: String): Source[Char, StringPosition] = {
     fromString(string, StringPositioner)
