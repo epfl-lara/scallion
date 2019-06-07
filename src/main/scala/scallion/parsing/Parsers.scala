@@ -216,7 +216,7 @@ trait Parsers[Token, Kind] {
       * @group parsing
       */
     def apply(it: Iterator[Token]): ParseResult[A] = {
-      require(isLL1, "The parser is not LL(1).")
+      //require(isLL1, "The parser is not LL(1).")
 
       var parser: Parser[A] = this
       while (it.hasNext) {
@@ -612,6 +612,12 @@ trait Parsers[Token, Kind] {
     * @group combinator
     */
   def failure[A]: Parser[A] = Failure
+
+  /** Parser that represents 0 or 1 instances of the `parser`.
+    *
+    * @group combinator
+    */
+  def opt[A](parser: Parser[A]): Parser[Option[A]] = parser.opt
 
   /** Parser that represents 0 or more repetitions of the `rep` parser.
     *
