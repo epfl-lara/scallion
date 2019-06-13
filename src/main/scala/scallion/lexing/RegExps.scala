@@ -43,6 +43,9 @@ trait RegExps[Character] {
     def derive(char: Character): RegExp = this match {
       case EmptyStr => EmptySet
       case EmptySet => EmptySet
+      case Singleton(value) =>
+        if (char == value) EmptyStr
+        else EmptySet
       case Elem(predicate) =>
         if (predicate(char)) EmptyStr
         else EmptySet
@@ -122,6 +125,11 @@ trait RegExps[Character] {
       override val acceptsEmpty: Boolean = false
     }
 
+    /** Accepts single character `value`. */
+    case class Singleton(value: Character) extends RegExp {
+      override val acceptsEmpty: Boolean = false
+    }
+
     /** Accepts single characters that satisfy a predicate. */
     case class Elem(predicate: Character => Boolean) extends RegExp {
       override val acceptsEmpty: Boolean = false
@@ -164,7 +172,7 @@ trait RegExps[Character] {
     *
     * @group combinator
     */
-  def elem(char: Character): RegExp = Elem(_ == char)
+  def elem(char: Character): RegExp = Singleton(char)
 
   /** Regular expression that accepts only the sequence of characters `chars`.
     *

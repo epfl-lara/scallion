@@ -4,11 +4,9 @@
 
 # Overview
 
-Scallion is a library for writing lexers and parsers for *LL(1)* languages in Scala.
+Scallion is a library for writing lexers and parsers in Scala.
+Lexers are described using regular expressions, while parsers are described using parser combinators.
 
-In Scallion, lexing and parsing are two distinct phases.
-During lexing, the input stream of characters is turned into a stream of tokens.
-During parsing, the stream of tokens is consumed and turned into a value.
 
 # Tutorial: JSON Parser
 

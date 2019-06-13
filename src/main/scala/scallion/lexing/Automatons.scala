@@ -31,6 +31,17 @@ import collection.mutable.Queue
   */
 trait Automatons[Character] { self: RegExps[Character] =>
 
+  sealed trait Condition {
+    def apply(value: Character): Boolean
+  }
+  case class Predicated(predicate: Character => Boolean) extends Condition {
+    override def apply(value: Character): Boolean =
+      predicate(value)
+  }
+  case class Valued(value: Character) extends Condition {
+    override def apply(other: Character): Boolean = value == other
+  }
+
   /** Transition of an NFA.
     *
     * @group nfa
@@ -45,7 +56,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group nfa
     */
-  case class Guarded(predicate: Character => Boolean, target: Int) extends Transition
+  case class Guarded(condition: Condition, target: Int) extends Transition
 
   /** Epsilon transition. Can be freely taken.
     *
@@ -120,8 +131,13 @@ trait Automatons[Character] { self: RegExps[Character] =>
         val start = Set(index)
         val accepting = Set(index)
       }
+    case Singleton(value) => new NFA {
+        val transitions = Vector(Set(Guarded(Valued(value), index + 1)), Set())
+        val start = Set(index)
+        val accepting = Set(index + 1)
+      }
       case Elem(predicate) => new NFA {
-        val transitions = Vector(Set(Guarded(predicate, index + 1)), Set())
+        val transitions = Vector(Set(Guarded(Predicated(predicate), index + 1)), Set())
         val start = Set(index)
         val accepting = Set(index + 1)
       }
@@ -191,21 +207,25 @@ trait Automatons[Character] { self: RegExps[Character] =>
 
     /** All values of the tree. */
     def values: Seq[A]
+
+    def assume(condition: Condition): DecisionTree[A]
+
+    def compact: DecisionTree[A]
   }
 
   /** Branching tree.
     *
-    * The `predicate` decides whether the value corresponding to a character is in
+    * The `condition` decides whether the value corresponding to a character is in
     * the `trueSide` (in case `predicate` returns `true`) or
     * the `falseSide` (in case `predicate` returns `false`).
     *
     * @group dfa
     */
-  case class Branch[+A](predicate: Character => Boolean,
+  case class Branch[+A](condition: Condition,
                         trueSide: DecisionTree[A],
                         falseSide: DecisionTree[A]) extends DecisionTree[A] {
     override def apply(char: Character): A =
-      if (predicate(char)) trueSide(char) else falseSide(char)
+      if (condition(char)) trueSide(char) else falseSide(char)
     override def map[B](function: A => B): DecisionTree[B] = {
       val ths = trueSide.map(function)
       val fhs = falseSide.map(function)
@@ -213,10 +233,29 @@ trait Automatons[Character] { self: RegExps[Character] =>
         ths
       }
       else {
-        Branch(predicate, ths, fhs)
+        Branch(condition, ths, fhs)
       }
     }
     override def values: Seq[A] = trueSide.values ++ falseSide.values
+
+    override def assume(condition: Condition): DecisionTree[A] = {
+      def ths = trueSide.assume(condition)
+      def fhs = falseSide.assume(condition)
+
+      (this.condition, condition) match {
+        case (Valued(first), Valued(second)) => if (first == second) ths else fhs
+        case (Valued(first), Predicated(pre)) => if (pre(first)) Branch(this.condition, ths, fhs).compact else fhs
+        case (Predicated(pre), Valued(second)) => if (pre(second)) ths else fhs
+        case _ => Branch(this.condition, ths, fhs).compact
+      }
+    }
+
+    override def compact: DecisionTree[A] = {
+      val ths = trueSide.compact
+      val fhs = falseSide.compact
+
+      if (ths == fhs) ths else Branch(condition, ths, fhs)
+    }
   }
 
   /** Leaf tree. Always contains the same value for all characters.
@@ -227,6 +266,8 @@ trait Automatons[Character] { self: RegExps[Character] =>
     override def apply(char: Character): A = value
     override def map[B](function: A => B): Leaf[B] = Leaf(function(value))
     override def values: Seq[A] = Vector(value)
+    override def assume(condition: Condition): DecisionTree[A] = this
+    override def compact: DecisionTree[A] = this
   }
 
   /** Deterministic finite automaton.
@@ -308,26 +349,29 @@ trait Automatons[Character] { self: RegExps[Character] =>
 
         // Get all guarded transitions from the current NFA state.
         val guardedTransitions = state.flatMap(nfa.transitions(_)).collect {
-          case Guarded(predicate, target) => (predicate, target)
+          case Guarded(condition, target) => (condition, target)
         }
 
-        // Group targets by the predicate that leads there.
+        // Group targets by the condition that leads there.
         val decisions = guardedTransitions.groupBy(_._1).mapValues(_.map(_._2).toSet).toList
 
         // Converts the guarded targets to a decision tree of NFA states.
-        def toTree(pairs: List[(Character => Boolean, Set[Int])]): DecisionTree[Set[Int]] =
+        def toTree(pairs: List[(Condition, Set[Int])]): DecisionTree[Set[Int]] =
           pairs match {
             case Nil => Leaf(Set())
-            case (predicate, values) :: rest => {
+            case (condition, values) :: rest => {
               val tree = toTree(rest)
-              val ths = tree.map(_ union values)
-              val fhs = tree
+              val ths = tree.map(_ union values).assume(condition)
+              val fhs = tree.assume(condition match {
+                case Predicated(pre) => Predicated(!pre(_))
+                case Valued(value) => Predicated(_ != value)
+              })
 
               if (ths == fhs) {
                 ths
               }
               else {
-                Branch(predicate, ths, fhs)
+                Branch(condition, ths, fhs)
               }
             }
           }
