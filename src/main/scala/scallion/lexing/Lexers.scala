@@ -64,16 +64,25 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
     *
     * @group lexer
     */
-  class Lexer(producers: List[Producer]) {
+  class Lexer(producers: List[Producer],
+              errorToken: Option[(Seq[Character], (Position, Position)) => Token],
+              endToken: Option[Position => Token]) {
+
+    /** Specifies what token to generate in case no regular expressions match. */
+    def onError(handler: (Seq[Character], (Position, Position)) => Token): Lexer = {
+      new Lexer(producers, Some(handler), endToken)
+    }
+
+    /** Specifies what token to generate at the end of input. */
+    def onEnd(handler: Position => Token): Lexer = {
+      new Lexer(producers, errorToken, Some(handler))
+    }
 
     /** Returns an iterator that produces tokens from the `source`.
       *
       * @param source     The input source.
-      * @param errorToken Function to apply when no regular expression match.
       */
-    def apply(
-        source: Source[Character, Position],
-        errorToken: (Seq[Character], (Position, Position)) => Token): Iterator[Token] =
+    def apply(source: Source[Character, Position]): Iterator[Token] =
 
       new Iterator[Token] {
 
@@ -94,9 +103,9 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
             val startPos = source.currentPosition
 
             if (source.atEnd) {
-              cacheNext = None
+              cacheNext = endToken.map(_.apply(endPos))
             } else {
-              cacheNext = Some(errorToken(content, (startPos, endPos)))
+              cacheNext = errorToken.map(_.apply(content, (startPos, endPos)))
             }
           }
         }
@@ -125,12 +134,10 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
     /** Spawn a thread that immediately start producing tokens from the `source`.
       *
       * @param source     The input source.
-      * @param errorToken Function to apply when no regular expression match.
       * @param batchSize  Number of tokens to produce in a batch. By default `50`.
       */
     def spawn(
         source: Source[Character, Position],
-        errorToken: (Seq[Character], (Position, Position)) => Token,
         batchSize: Int = 50): Iterator[Token] = {
 
       var buffer: Vector[Token] = Vector()
@@ -154,8 +161,15 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
                 val content = source.backContent()
                 val startPos = source.currentPosition
 
-                if (!source.atEnd) {
-                  buffer = buffer :+ errorToken(content, (startPos, endPos))
+                if (source.atEnd) {
+                  endToken.foreach { f =>
+                    buffer = buffer :+ f(endPos)
+                  }
+                }
+                else {
+                  errorToken.foreach { f =>
+                    buffer = buffer :+ f(content, (startPos, endPos))
+                  }
                 }
 
                 if (buffer.nonEmpty) {
@@ -319,6 +333,6 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
       *
       * @param producers The producers, in decreasing priority.
       */
-    def apply(producers: Producer*): Lexer = new Lexer(producers.toList)
+    def apply(producers: Producer*): Lexer = new Lexer(producers.toList, None, None)
   }
 }

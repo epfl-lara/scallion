@@ -93,7 +93,10 @@ Each lexer is built using `Lexer`. `Lexer` accepts any number of rules, each mad
       many1(digit)
     }
       |> { (cs, r) => NumberToken(cs.mkString.toDouble, r) }
-  )
+  ) onError {
+    // Token to produce in case of errors.
+    (cs, r) => UnknownToken(cs.mkString, r))
+  }
 ```
 
 Finally, we define the `apply` method for the JSON lexer, which takes an input an iterator of characters and produces an iterator of tokens.
@@ -105,12 +108,7 @@ Finally, we define the `apply` method for the JSON lexer, which takes an input a
     val source = Source.fromIterator(it, IndexPositioner)
 
     // Generates the tokens.
-    val tokens = lexer(
-      // The source.
-      source,
-
-      // Token to produce in case of errors.
-      (content, range) => UnknownToken(content.mkString, range))
+    val tokens = lexer(source)
 
     // Filters out the space tokens.
     tokens.filter((token: Token) => !token.isInstanceOf[SpaceToken])

@@ -46,13 +46,15 @@ object CalcLexer extends Lexers[Token, Char, Unit] with CharRegExps {
       nonZero ~ many(digit)
     }
       |> { cs => NumberToken(cs.mkString.toInt) }
-  )
+  ) onError {
+    (cs, _) => UnknownToken(cs.mkString)
+  }
 
 
   def apply(it: Iterator[Char]): Iterator[Token] = {
     val source = Source.fromIterator(it, NoPositioner)
 
-    val tokens = lexer(source, (content, range) => UnknownToken(content.mkString))
+    val tokens = lexer(source)
 
     tokens.filter((token: Token) => token != SpaceToken)
   }

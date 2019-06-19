@@ -113,12 +113,14 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
       many1(digit)
     }
       |> { (cs, r) => NumberToken(cs.mkString.toDouble, r) }
-  )
+  ) onError {
+    (cs, r) => UnknownToken(cs.mkString, r)
+  }
 
   def apply(it: Iterator[Char]): Iterator[Token] = {
     val source = Source.fromIterator(it, IndexPositioner)
 
-    val tokens = lexer.spawn(source, (content, range) => UnknownToken(content.mkString, range))
+    val tokens = lexer.spawn(source)
 
     tokens.filter(!_.isInstanceOf[SpaceToken])
   }
