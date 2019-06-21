@@ -1,28 +1,33 @@
-scalaVersion := "2.12.7"
 
-name := "scallion"
+lazy val scallion = project
+  .in(file("."))
+  .settings(
+    name               := "scallion",
+    version            := "0.1.1",
+    scalaVersion       := "2.12.8",
+    crossScalaVersions := Seq("2.12.8", "2.13.0"),
+    organization       := "ch.epfl.lara",
 
-version := "0.1.1"
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-feature"
+    ),
 
-organization := "ch.epfl.lara"
+    Compile / doc / scalacOptions ++= Seq(
+      "-groups"
+    ),
 
-scalacOptions in (Compile, doc) ++= Seq(
-  "-groups"
-)
+    libraryDependencies ++= Seq(
+      "org.scalactic" %% "scalactic" % "3.0.8",
+      "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+    ),
 
-scalacOptions ++= Seq(
-  "-deprecation",
-  "-feature"
-)
+    bintrayOrganization := Some("epfl-lara"),
+    licenses += ("Apache-2.0", url("https://opensource.org/licenses/Apache-2.0")),
+    bintrayPackageLabels := Seq(
+      "scala", "parser", "parsing",
+      "ll1", "ll1-parsing", "ll1-grammar",
+      "parser-combinators", "parsing-combinators"
+    ),
+  )
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
-
-bintrayOrganization := Some("epfl-lara")
-
-licenses += ("Apache-2.0", url("https://opensource.org/licenses/Apache-2.0"))
-
-bintrayPackageLabels := Seq("scala", "parser", "parsing",
-                            "ll1", "ll1-parsing", "ll1-grammar",
-                            "parser-combinators", "parsing-combinators")

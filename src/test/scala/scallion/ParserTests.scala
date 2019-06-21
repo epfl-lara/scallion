@@ -53,7 +53,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "elem" should "parse tokens from the specified class" in {
     val parser = elem(NumClass)
 
-    inside(parser(Seq(Num(1)).toIterator)) {
+    inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Num(1))
         assert(rest.first.isEmpty)
@@ -64,7 +64,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "not parse tokens from different classes" in {
     val parser = elem(NumClass)
 
-    inside(parser(Seq(Bool(true)).toIterator)) {
+    inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest == parser)
@@ -75,7 +75,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "correctly fail at the end of input" in {
     val parser = elem(NumClass)
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
         assert(rest == parser)
       }
@@ -107,7 +107,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       case Num(value) => value * 2
     }
 
-    inside(parser(Seq(Num(1)).toIterator)) {
+    inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == 2)
         assert(rest.first.isEmpty)
@@ -120,7 +120,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       case Num(value) => value * 2
     }
 
-    inside(parser(Seq(Bool(true)).toIterator)) {
+    inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest == parser)
@@ -133,7 +133,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       case Num(value) => value * 2
     }
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
         assert(rest == parser)
       }
@@ -169,7 +169,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "epsilon" should "correctly return value at the end of input" in {
     val parser = epsilon("ok")
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case Parsed(res, rest) => {
         assert(res == "ok")
         assert(rest == parser)
@@ -180,7 +180,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "fail in case of remaining input" in {
     val parser = epsilon("ok")
 
-    inside(parser(Seq(Bool(true)).toIterator)) {
+    inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest == parser)
@@ -211,7 +211,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "failure" should "correctly fail in case of end of input" in {
     val parser = failure[String]
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
         assert(rest == parser)
       }
@@ -221,7 +221,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "correctly fail in case of remaining input" in {
     val parser = failure[String]
 
-    inside(parser(Seq(Bool(true)).toIterator)) {
+    inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest == parser)
@@ -252,7 +252,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "sequencing" should "parse using the two parsers in sequence" in {
     val parser = elem(BoolClass) ~ elem(NumClass)
 
-    inside(parser(Seq(Bool(true), Num(32)).toIterator)) {
+    inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(first ~ second, rest) => {
         assert(first == Bool(true))
         assert(second == Num(32))
@@ -263,7 +263,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "use the fact that left might be nullable for parsing" in {
     val parser = (elem(BoolClass) | epsilon(Bool(true))) ~ elem(NumClass)
 
-    inside(parser(Seq(Num(32)).toIterator)) {
+    inside(parser(Seq(Num(32)).iterator)) {
       case Parsed(first ~ second, rest) => {
         assert(first == Bool(true))
         assert(second == Num(32))
@@ -274,14 +274,14 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "fail at the correct point" in {
     val parser = elem(BoolClass) ~ elem(NumClass)
 
-    inside(parser(Seq(Num(1), Num(2)).toIterator)) {
+    inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Num(1))
         assert(rest.first == Set(BoolClass))
       }
     }
 
-    inside(parser(Seq(Bool(true), Bool(false)).toIterator)) {
+    inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(false))
         assert(rest.first == Set(NumClass))
@@ -369,7 +369,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "concatenation" should "parse using the two parsers in sequence" in {
     val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
 
-    inside(parser(Seq(Bool(true), Num(32)).toIterator)) {
+    inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Bool(true), Num(32)))
         assert(rest.first.isEmpty)
@@ -380,7 +380,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "use the fact that left might be nullable for parsing" in {
     val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
 
-    inside(parser(Seq(Num(32)).toIterator)) {
+    inside(parser(Seq(Num(32)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Bool(true), Num(32)))
       }
@@ -390,14 +390,14 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "fail at the correct point" in {
     val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
 
-    inside(parser(Seq(Num(1), Num(2)).toIterator)) {
+    inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Num(1))
         assert(rest.first == Set(BoolClass))
       }
     }
 
-    inside(parser(Seq(Bool(true), Bool(false)).toIterator)) {
+    inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(false))
         assert(rest.first == Set(NumClass))
@@ -480,7 +480,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "disjunction" should "accept from the first parser" in {
     val parser = elem(BoolClass) | elem(NumClass)
 
-    inside(parser(Seq(Bool(true)).toIterator)) {
+    inside(parser(Seq(Bool(true)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Bool(true))
         assert(rest == epsilon(Bool(true)))
@@ -491,7 +491,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "accept from the second parser" in {
     val parser = elem(BoolClass) | elem(NumClass)
 
-    inside(parser(Seq(Num(1)).toIterator)) {
+    inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Num(1))
         assert(rest == epsilon(Num(1)))
@@ -564,7 +564,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "many" should "parse zero repetitions" in {
     val parser = many(elem(NumClass))
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq())
         assert(rest.first == Set(NumClass))
@@ -575,7 +575,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "parse one repetition" in {
     val parser = many(elem(NumClass))
 
-    inside(parser(Seq(Num(12)).toIterator)) {
+    inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12)))
         assert(rest.first == Set(NumClass))
@@ -586,7 +586,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "parse several repetitions" in {
     val parser = many(elem(NumClass))
 
-    inside(parser(Seq(Num(12), Num(34), Num(1)).toIterator)) {
+    inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Num(34), Num(1)))
         assert(rest.first == Set(NumClass))
@@ -597,7 +597,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "not fix choices" in {
     val parser = many(elem(NumClass) | elem(BoolClass))
 
-    inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).toIterator)) {
+    inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)))
         assert(rest.first == Set(NumClass, BoolClass))
@@ -608,7 +608,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "fail when inner parser fails" in {
     val parser = many(elem(NumClass))
 
-    inside(parser(Seq(Num(12), Bool(true), Num(1)).toIterator)) {
+    inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest.first == Set(NumClass))
@@ -652,7 +652,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "many1" should "not parse zero repetitions" in {
     val parser = many1(elem(NumClass))
 
-    inside(parser(Seq().toIterator)) {
+    inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
         assert(rest.first == Set(NumClass))
       }
@@ -662,7 +662,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "parse one repetition" in {
     val parser = many1(elem(NumClass))
 
-    inside(parser(Seq(Num(12)).toIterator)) {
+    inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12)))
         assert(rest.first == Set(NumClass))
@@ -673,7 +673,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "parse several repetitions" in {
     val parser = many1(elem(NumClass))
 
-    inside(parser(Seq(Num(12), Num(34), Num(1)).toIterator)) {
+    inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Num(34), Num(1)))
         assert(rest.first == Set(NumClass))
@@ -684,7 +684,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "not fix choices" in {
     val parser = many1(elem(NumClass) | elem(BoolClass))
 
-    inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).toIterator)) {
+    inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)))
         assert(rest.first == Set(NumClass, BoolClass))
@@ -695,7 +695,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   it should "fail when inner parser fails" in {
     val parser = many1(elem(NumClass))
 
-    inside(parser(Seq(Num(12), Bool(true), Num(1)).toIterator)) {
+    inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
         assert(rest.first == Set(NumClass))
@@ -741,7 +741,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       elem(BoolClass) +: parser | epsilon(Seq())
     }
 
-    inside(parser(Seq(Bool(true), Bool(false)).toIterator)) {
+    inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Bool(true), Bool(false)))
         assert(rest.first == Set(BoolClass))
@@ -773,13 +773,13 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = prefixes(times2 | plus1, number)
 
-    inside(parser(Seq(Op('*'), Op('+'), Num(2)).toIterator)) {
+    inside(parser(Seq(Op('*'), Op('+'), Num(2)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 6)
       }
     }
 
-    inside(parser(Seq(Op('+'), Op('*'), Num(2)).toIterator)) {
+    inside(parser(Seq(Op('+'), Op('*'), Num(2)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 5)
       }
@@ -794,7 +794,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = prefixes(times2 | plus1, number)
 
-    inside(parser(Seq(Num(3)).toIterator)) {
+    inside(parser(Seq(Num(3)).iterator)) {
       case Parsed(res, _) =>
         assert(res == 3)
     }
@@ -810,13 +810,13 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = postfixes(number, times2 | plus1)
 
-    inside(parser(Seq(Num(2), Op('*'), Op('+')).toIterator)) {
+    inside(parser(Seq(Num(2), Op('*'), Op('+')).iterator)) {
       case Parsed(res, _) => {
         assert(res == 5)
       }
     }
 
-    inside(parser(Seq(Num(2), Op('+'), Op('*')).toIterator)) {
+    inside(parser(Seq(Num(2), Op('+'), Op('*')).iterator)) {
       case Parsed(res, _) => {
         assert(res == 6)
       }
@@ -831,7 +831,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = postfixes(number, times2 | plus1)
 
-    inside(parser(Seq(Num(3)).toIterator)) {
+    inside(parser(Seq(Num(3)).iterator)) {
       case Parsed(res, _) =>
         assert(res == 3)
     }
@@ -847,7 +847,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = infixLeft(number, times | plus)
 
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).toIterator)) {
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 5)
       }
@@ -862,7 +862,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = infixLeft(number, times | plus)
 
-    inside(parser(Seq(Num(2)).toIterator)) {
+    inside(parser(Seq(Num(2)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 2)
       }
@@ -879,7 +879,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = infixRight(number, times | plus)
 
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).toIterator)) {
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 8)
       }
@@ -894,7 +894,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     }
     val parser = infixRight(number, times | plus)
 
-    inside(parser(Seq(Num(12)).toIterator)) {
+    inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 12)
       }
@@ -913,13 +913,13 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       times is LeftAssociative,
       plus is LeftAssociative)
 
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3), Op('*'), Num(4)).toIterator)) {
+    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3), Op('*'), Num(4)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 14)
       }
     }
 
-    inside(parser(Seq(Num(2), Op('+'), Num(1), Op('*'), Num(3), Op('+'), Num(4)).toIterator)) {
+    inside(parser(Seq(Num(2), Op('+'), Num(1), Op('*'), Num(3), Op('+'), Num(4)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 9)
       }
@@ -936,13 +936,13 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       div is RightAssociative,
       minus is LeftAssociative)
 
-    inside(parser(Seq(Num(12), Op('/'), Num(6), Op('/'), Num(3)).toIterator)) {
+    inside(parser(Seq(Num(12), Op('/'), Num(6), Op('/'), Num(3)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 6)
       }
     }
 
-    inside(parser(Seq(Num(12), Op('-'), Num(6), Op('-'), Num(3)).toIterator)) {
+    inside(parser(Seq(Num(12), Op('-'), Num(6), Op('-'), Num(3)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 3)
       }
@@ -959,7 +959,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       times is LeftAssociative,
       plus is LeftAssociative)
 
-    inside(parser(Seq(Num(42)).toIterator)) {
+    inside(parser(Seq(Num(42)).iterator)) {
       case Parsed(res, _) => {
         assert(res == 42)
       }
