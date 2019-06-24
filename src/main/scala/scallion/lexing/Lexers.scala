@@ -82,7 +82,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
       *
       * @param source     The input source.
       */
-    def apply(source: Source[Character, Position]): Iterator[Token] =
+    def apply(source: Source[Character, Position], stopOnError: Boolean = true): Iterator[Token] =
 
       new Iterator[Token] {
 
@@ -93,18 +93,27 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
         private var cacheNext: Option[Token] = None
 
         /** Queries the source for the next token and update the state. */
-        private def fetchNext(): Unit = tokenizeOneAutomata(source) match {
-          case Some(token) => cacheNext = Some(token)
-          case None => {
+        private def fetchNext(): Unit = {
+          val startPos = source.currentPosition
+
+          if (source.atEnd) {
             ended = true
+            cacheNext = endToken.map(_.apply(startPos))
+            return
+          }
 
-            val endPos = source.currentPosition
-            val content = source.backContent()
-            val startPos = source.currentPosition
+          tokenizeOneAutomata(source) match {
+            case Some(token) => cacheNext = Some(token)
+            case None => {
+              val endPos = source.currentPosition
+              val content = if (stopOnError) {
+                ended = true
+                source.backContent()
+              }
+              else {
+                source.consume()
+              }
 
-            if (source.atEnd) {
-              cacheNext = endToken.map(_.apply(endPos))
-            } else {
               cacheNext = errorToken.map(_.apply(content, (startPos, endPos)))
             }
           }
@@ -138,6 +147,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
       */
     def spawn(
         source: Source[Character, Position],
+        stopOnError: Boolean = true,
         batchSize: Int = 50): Iterator[Token] = {
 
       var buffer: Vector[Token] = Vector()
@@ -147,6 +157,22 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
       val thread = new Thread {
         override def run: Unit = {
           while (true) {
+            val startPos = source.currentPosition
+
+            if (source.atEnd) {
+              endToken.foreach { f =>
+                buffer = buffer :+ f(startPos)
+              }
+
+              if (buffer.nonEmpty) {
+                it.addAll(buffer)
+              }
+
+              it.end()
+
+              return
+            }
+
             tokenizeOneAutomata(source) match {
               case Some(token) => {
                 buffer = buffer :+ token
@@ -158,27 +184,31 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
               }
               case None => {
                 val endPos = source.currentPosition
-                val content = source.backContent()
-                val startPos = source.currentPosition
-
-                if (source.atEnd) {
-                  endToken.foreach { f =>
-                    buffer = buffer :+ f(endPos)
-                  }
+                val content = if (stopOnError) {
+                  source.backContent()
                 }
                 else {
-                  errorToken.foreach { f =>
-                    buffer = buffer :+ f(content, (startPos, endPos))
+                  source.consume()
+                }
+
+                errorToken.foreach { f =>
+                  buffer = buffer :+ f(content, (startPos, endPos))
+                }
+
+
+                if (stopOnError) {
+                  if (buffer.nonEmpty) {
+                    it.addAll(buffer)
                   }
-                }
 
-                if (buffer.nonEmpty) {
+                  it.end()
+
+                  return
+                }
+                else if (buffer.size >= batchSize) {
                   it.addAll(buffer)
+                  buffer = Vector()
                 }
-
-                it.end()
-
-                return
               }
             }
           }

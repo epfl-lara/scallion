@@ -2,7 +2,7 @@ scalaVersion := "2.12.7"
 
 name := "scallion"
 
-version := "0.1"
+version := "0.1.1"
 
 organization := "ch.epfl.lara"
 
