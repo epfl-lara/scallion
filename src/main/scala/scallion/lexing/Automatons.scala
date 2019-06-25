@@ -353,7 +353,11 @@ trait Automatons[Character] { self: RegExps[Character] =>
         }
 
         // Group targets by the condition that leads there.
-        val decisions = guardedTransitions.groupBy(_._1).mapValues(_.map(_._2).toSet).toList
+        val decisions = guardedTransitions
+          .groupBy(_._1)
+          .iterator
+          .map { case (c, ts) => c -> ts.map(_._2).toSet }
+          .toList
 
         // Converts the guarded targets to a decision tree of NFA states.
         def toTree(pairs: List[(Condition, Set[Int])]): DecisionTree[Set[Int]] =
@@ -404,9 +408,9 @@ trait Automatons[Character] { self: RegExps[Character] =>
 
       new DFA {
         val start = 0
-        val transitions = transitionsArray
-        val isAccepting = isAcceptingArray
-        val isLive = isLiveArray
+        val transitions = transitionsArray.toIndexedSeq
+        val isAccepting = isAcceptingArray.toIndexedSeq
+        val isLive = isLiveArray.toIndexedSeq
       }
     }
   }

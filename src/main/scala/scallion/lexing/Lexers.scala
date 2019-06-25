@@ -287,7 +287,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
         source.back()
 
         val range = (startPos, endPos)
-        val token = makeTokens(index)(buffer, range)
+        val token = makeTokens(index)(buffer.toSeq, range)
 
         token
       }
@@ -345,7 +345,7 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
           source.back()
 
           val range = (startPos, endPos)
-          val token = makeToken(buffer, range)
+          val token = makeToken(buffer.toSeq, range)
 
           token
         }

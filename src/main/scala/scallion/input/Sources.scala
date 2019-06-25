@@ -105,7 +105,7 @@ object Source {
       string: String,
       positioner: Positioner[Char, Position]): Source[Char, Position] = {
 
-    val iterator = string.toIterator
+    val iterator = string.iterator
 
     new IteratorSource[Char, Position](iterator, positioner)
   }
