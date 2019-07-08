@@ -353,7 +353,7 @@ trait Parsers[Token, Kind] {
       override protected def collectNullable(recs: Set[AnyRef]): Option[B] = inner.collectNullable(recs).map(function)
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] = inner.collectFirst(recs)
       override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = inner.collectShouldNotFollow(recs)
-      override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
+      override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = inner.collectCalledLeft(id, recs)
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = inner.collectIsLL1(recs)
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = inner.collectLL1Conflicts(recs)
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
