@@ -965,4 +965,124 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       }
     }
   }
+
+  // LL1 conflicts
+
+  import LL1Conflict._
+
+  "LL1 conflicts" should "catch ambiguous first kinds" in {
+    val parser = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass)
+
+    assert(!parser.isLL1)
+
+    val conflicts = parser.conflicts.toSeq
+    assert(conflicts.size == 1)
+
+    inside(conflicts(0)) {
+      case FirstConflict(ambiguities, left, right) => {
+        assert(ambiguities == Set(BoolClass))
+        assert(left == elem(BoolClass))
+        assert(right == (elem(BoolClass) ~<~ elem(NumClass)))
+      }
+    }
+  }
+
+  it should "catch multiple nullable branchs" in {
+    val parser =
+      elem(NumClass)           |
+      epsilon(Bool(true))      |
+      elem(OperatorClass('+')) |
+      epsilon(Bool(true))
+
+    assert(!parser.isLL1)
+
+    val conflicts = parser.conflicts.toSeq
+    assert(conflicts.size == 1)
+
+    inside(conflicts(0)) {
+      case NullableConflict(problematic) => {
+        assert(problematic == parser)
+      }
+    }
+  }
+
+  it should "catch ambiguous nullable in sequences" in {
+    val parser =
+      elem(BoolClass) ~
+      opt(elem(NumClass)) ~
+      (elem(NumClass) | opt(elem(BoolClass))) ~
+      elem(BoolClass)
+
+    assert(!parser.isLL1)
+
+    val conflicts = parser.conflicts.toSeq
+    assert(conflicts.size == 2)
+  }
+
+  it should "catch left-recursion" in {
+    lazy val parser: Parser[Any] = recursive {
+      parser
+    }
+
+    assert(!parser.isLL1)
+
+    val conflicts = parser.conflicts.toSeq
+    assert(conflicts.size == 1)
+
+    inside(conflicts(0)) {
+      case LeftRecursiveConflict(problematic) => {
+        assert(problematic == parser)
+      }
+    }
+  }
+
+  it should " catch combinations of problems" in {
+    val literal = accept(NumClass) {
+      case Num(value) => value
+    } | epsilon(0)
+
+    lazy val expr: Parser[Int] = recursive {
+      plusExpr | opt(elem(OperatorClass('+'))) ~>~ literal
+    }
+
+    lazy val plusExpr: Parser[Int] = (expr ~ opt(elem(OperatorClass('+'))) ~ expr).map {
+      case lhs ~ _ ~ rhs => lhs + rhs
+    }
+
+    val cs = expr.conflicts.toSeq
+
+    assert(cs.size == 5)
+
+    val firstConflicts = cs.collect {
+      case c: FirstConflict => c
+    }
+
+    // In expr, both branchs can start with "+" or "Num".
+    assert(firstConflicts.size == 1)
+    assert(firstConflicts(0).ambiguities == Set(OperatorClass('+'), NumClass))
+
+    val nullableConflicts = cs.collect {
+      case c: NullableConflict => c
+    }
+
+    // Both branches of expr are nullable.
+    assert(nullableConflicts.size == 1)
+
+    val followConflicts = cs.collect {
+      case c: FollowConflict => c
+    }
+
+    // In expr ~ opt(+), expr is nullable and can start with '+' and is followed by '+'.
+    // Also, in opt(+) ~ expr, opt('+') is nullable and starts with '+' and is followed by '+'.
+    assert(followConflicts.size == 2)
+    assert(followConflicts(0).ambiguities == Set(OperatorClass('+')))
+    assert(followConflicts(1).ambiguities == Set(OperatorClass('+')))
+
+    val leftRecursiveConflicts = cs.collect {
+      case c: LeftRecursiveConflict => c
+    }
+
+    // expr is left recursive.
+    assert(leftRecursiveConflicts.size == 1)
+  }
 }

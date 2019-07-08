@@ -284,10 +284,10 @@ trait Parsers[Token, Kind] {
     case class NullableConflict(parser: Disjunction[Any]) extends LL1Conflict
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
-    case class FirstConflict(parser: Disjunction[Any]) extends LL1Conflict
+    case class FirstConflict(ambiguities: Set[Kind], first: Parser[Any], second: Parser[Any]) extends LL1Conflict
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
-    case class FollowConflict(parser: Parser[Any] with SequenceLike[Any, Any]) extends LL1Conflict
+    case class FollowConflict(ambiguities: Set[Kind], left: Parser[Any], second: Parser[Any]) extends LL1Conflict
 
     /** Indicates that the parser recursively calls itself in a left position. */
     case class LeftRecursiveConflict(parser: Recursive[Any]) extends LL1Conflict
@@ -386,14 +386,15 @@ trait Parsers[Token, Kind] {
         (left.shouldNotFollow & right.first).isEmpty
       }
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
-        val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+        val ss = sequents(this)
 
-        if ((left.shouldNotFollow & right.first).nonEmpty) {
-          base + FollowConflict(this)
-        }
-        else {
-          base
-        }
+        val followConflicts: Seq[LL1Conflict] = for {
+          (lhs, rhs) <- ss.zip(ss.tail)
+          ambiguities = lhs.shouldNotFollow & rhs.first
+          if ambiguities.nonEmpty
+        } yield FollowConflict(ambiguities, lhs, rhs)
+
+        ss.flatMap(_.collectLL1Conflicts(recs)).toSet union followConflicts.toSet
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
@@ -497,23 +498,21 @@ trait Parsers[Token, Kind] {
         (left.nullable.isEmpty || right.nullable.isEmpty) &&
         (left.first & right.first).isEmpty
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
-        val base = left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+        val ds = disjuncts(this)
 
-        val nullableConflict: Set[LL1Conflict] = if (left.nullable.nonEmpty && right.nullable.nonEmpty) {
-          Set(NullableConflict(this))
-        }
-        else {
-          ListSet()
-        }
+        val firstConflicts: Seq[LL1Conflict] = for {
+          i <- 0 until (ds.size - 1)
+          j <- (i + 1) until ds.size
+          lhs = ds(i)
+          rhs = ds(j)
+          ambiguities = lhs.first & rhs.first
+          if ambiguities.nonEmpty
+        } yield FirstConflict(ambiguities, lhs, rhs)
 
-        val firstConflict: Set[LL1Conflict] = if ((left.first & right.first).nonEmpty) {
-          Set(FirstConflict(this))
-        }
-        else {
-          ListSet()
-        }
+        val nullableConflicts: Set[LL1Conflict] =
+          if (ds.count(_.nullable.nonEmpty) > 1) Set(NullableConflict(this)) else Set()
 
-        base union nullableConflict union firstConflict
+        ds.flatMap(_.collectLL1Conflicts(recs)).toSet union firstConflicts.toSet union nullableConflicts
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) || right.collectIsProductive(recs)
@@ -580,6 +579,21 @@ trait Parsers[Token, Kind] {
         }
       }
     }
+
+    def disjuncts(parser: Parser[Any]): Seq[Parser[Any]] = parser match {
+      case Disjunction(lhs, rhs) => disjuncts(lhs) ++ disjuncts(rhs)
+      case _ => Seq(parser)
+    }
+
+    def sequents(parser: Parser[Any]): Seq[Parser[Any]] =
+      if (parser.isInstanceOf[SequenceLike[_, _]]) {
+        val seqLike = parser.asInstanceOf[SequenceLike[Any, Any]]
+
+        sequents(seqLike.left) ++ sequents(seqLike.right)
+      }
+      else {
+        Seq(parser)
+      }
   }
 
   /** Parser that accepts tokens of the provided `kind`.
