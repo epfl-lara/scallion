@@ -7,6 +7,9 @@
 Scallion is a library for writing lexers and parsers in Scala.
 Lexers are described using regular expressions, while parsers are described using parser combinators.
 
+# Documentation
+
+A comprehensive Scaladoc API is [available online](https://epfl-lara.github.io/scallion/).
 
 # Tutorial: JSON Parser
 
