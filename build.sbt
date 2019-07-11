@@ -14,7 +14,10 @@ lazy val scallion = project
     ),
 
     Compile / doc / scalacOptions ++= Seq(
-      "-groups"
+      "-groups",
+      "-sourcepath", baseDirectory.value.getAbsolutePath,
+      "-doc-source-url", "https://raw.githubusercontent.com/epfl-lara/scallion/master€{FILE_PATH}.scala",
+      "-doc-root-content", baseDirectory.value + "/project/root-doc.txt"
     ),
 
     target in Compile in doc := baseDirectory.value / "docs",

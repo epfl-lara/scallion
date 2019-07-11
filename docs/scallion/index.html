@@ -65,10 +65,155 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../index.html"><span class="name">root</span></a>
+        <a title="Scallion is a library for easily writing lexers and parsers in Scala." href="../index.html"><span class="name">root</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">Scallion is a library for easily writing lexers and parsers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers and parsers in Scala.
+See the package <a href="" class="extype" name="scallion">scallion</a> for more information.</p><h4>Example</h4><p>Below is an example JSON parser built from scratch using Scallion.</p><p>First, we define the type of tokens that we have in JSON.</p><pre><span class="kw">import</span> scallion.input._
+<span class="kw">import</span> scallion.lexing._
+<span class="kw">import</span> scallion.parsing._
+
+<span class="cmt">// Definition of the different tokens.</span>
+<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> Token {
+  <span class="kw">val</span> range: (<span class="std">Int</span>, <span class="std">Int</span>)
+}
+<span class="kw">case</span> <span class="kw">class</span> SeparatorToken(value: <span class="std">Char</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> BooleanToken(value: <span class="std">Boolean</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> NumberToken(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> StringToken(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> NullToken(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> SpaceToken(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+<span class="kw">case</span> <span class="kw">class</span> UnknownToken(content: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
+
+<span class="cmt">// Each token has an associated class.</span>
+<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> TokenClass(repr: <span class="std">String</span>) {
+  <span class="kw">override</span> <span class="kw">def</span> toString = repr
+}
+<span class="kw">case</span> <span class="kw">class</span> SeparatorClass(value: <span class="std">Char</span>) <span class="kw">extends</span> TokenClass(value.toString)
+<span class="kw">case</span> <span class="kw">object</span> BooleanClass <span class="kw">extends</span> TokenClass(<span class="lit">"BOOLEAN"</span>)
+<span class="kw">case</span> <span class="kw">object</span> NumberClass <span class="kw">extends</span> TokenClass(<span class="lit">"NUMBER"</span>)
+<span class="kw">case</span> <span class="kw">object</span> StringClass <span class="kw">extends</span> TokenClass(<span class="lit">"STRING"</span>)
+<span class="kw">case</span> <span class="kw">object</span> NullClass <span class="kw">extends</span> TokenClass(<span class="lit">"NULL"</span>)
+<span class="kw">case</span> <span class="kw">object</span> NoClass <span class="kw">extends</span> TokenClass(<span class="lit">"ERROR"</span>)</pre><p>Then, we can define the actual lexer, which will convert sequences of characters into sequences of tokens.</p><pre><span class="cmt">// Definition of the Lexer.</span>
+<span class="kw">object</span> JSONLexer <span class="kw">extends</span> Lexers[Token, <span class="std">Char</span>, <span class="std">Int</span>] <span class="kw">with</span> CharRegExps {
+
+  <span class="kw">val</span> lexer = Lexer(
+    <span class="cmt">// Separator</span>
+    oneOf(<span class="lit">"[]{},:"</span>)
+      |&gt; { (cs, r) <span class="kw">=&gt;</span> SeparatorToken(cs.head, r) },
+
+    <span class="cmt">// Space</span>
+    many1(whiteSpace)
+      |&gt; { (_, r) <span class="kw">=&gt;</span> SpaceToken(r) },
+
+    <span class="cmt">// Booleans</span>
+    word(<span class="lit">"true"</span>)
+      |&gt; { (_, r) <span class="kw">=&gt;</span> BooleanToken(<span class="kw">true</span>, r) },
+    word(<span class="lit">"false"</span>)
+      |&gt; { (_, r) <span class="kw">=&gt;</span> BooleanToken(<span class="kw">false</span>, r) },
+
+    <span class="cmt">// Null</span>
+    word(<span class="lit">"null"</span>)
+      |&gt; { (_, r) <span class="kw">=&gt;</span> NullToken(r) },
+
+    <span class="cmt">// Strings</span>
+    elem(<span class="lit">'"'</span>) ~
+    many {
+      elem(c <span class="kw">=&gt;</span> c != <span class="lit">'"'</span> &amp;&amp; c != '\\' &amp;&amp; !c.isControl) |
+      elem('\\') ~ (oneOf(<span class="lit">"\"\\/bfnrt"</span>) | elem(<span class="lit">'u'</span>) ~ hex.times(<span class="num">4</span>))
+    } ~
+    elem(<span class="lit">'"'</span>)
+      |&gt; { (cs, r) <span class="kw">=&gt;</span> {
+        <span class="kw">val</span> string = cs.mkString
+        StringToken(string.slice(<span class="num">1</span>, string.length - <span class="num">1</span>), r)
+      }},
+
+    <span class="cmt">// Numbers</span>
+    opt {
+      elem(<span class="lit">'-'</span>)
+    } ~
+    {
+      elem(<span class="lit">'0'</span>) |
+      nonZero ~ many(digit)
+    } ~
+    opt {
+      elem(<span class="lit">'.'</span>) ~ many1(digit)
+    } ~
+    opt {
+      oneOf(<span class="lit">"eE"</span>) ~
+      opt(oneOf(<span class="lit">"+-"</span>)) ~
+      many1(digit)
+    }
+      |&gt; { (cs, r) <span class="kw">=&gt;</span> NumberToken(cs.mkString.toDouble, r) }
+  ) onError {
+    (cs, r) <span class="kw">=&gt;</span> UnknownToken(cs.mkString, r)
+  }
+
+  <span class="kw">def</span> apply(it: Iterator[<span class="std">Char</span>]): Iterator[Token] = {
+    <span class="kw">val</span> source = Source.fromIterator(it, IndexPositioner)
+
+    <span class="kw">val</span> tokens = lexer.spawn(source)
+
+    tokens.filter(!_.isInstanceOf[SpaceToken])
+  }
+}</pre><p>Then, we define the possible JSON values.</p><pre><span class="cmt">// Definition of the different JSON values.</span>
+<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> Value {
+  <span class="kw">val</span> range: (<span class="std">Int</span>, <span class="std">Int</span>)
+}
+<span class="kw">case</span> <span class="kw">class</span> ArrayValue(elems: <span class="std">Seq</span>[Value], range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
+<span class="kw">case</span> <span class="kw">class</span> ObjectValue(elems: <span class="std">Seq</span>[(StringValue, Value)], range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
+<span class="kw">case</span> <span class="kw">class</span> BooleanValue(value: <span class="std">Boolean</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
+<span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
+<span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
+<span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
+    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+
+  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
+    <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
+    <span class="kw">case</span> BooleanToken(_, _) <span class="kw">=&gt;</span> BooleanClass
+    <span class="kw">case</span> NumberToken(_, _) <span class="kw">=&gt;</span> NumberClass
+    <span class="kw">case</span> StringToken(_, _) <span class="kw">=&gt;</span> StringClass
+    <span class="kw">case</span> NullToken(_) <span class="kw">=&gt;</span> NullClass
+    <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
+  }
+
+  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+    <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
+  }
+  <span class="kw">val</span> numberValue = accept(NumberClass) {
+    <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
+  }
+  <span class="kw">val</span> stringValue = accept(StringClass) {
+    <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
+  }
+  <span class="kw">val</span> nullValue = accept(NullClass) {
+    <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
+  }
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
+    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
+  }
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+    (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+    }
+
+  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+    (stringValue ~ <span class="lit">':'</span> ~ value).map {
+      <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
+    }
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+    (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+    }
+
+  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+    oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
+  }
+
+  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
       <span class="permalink">
@@ -202,7 +347,7 @@ See for instance <a href="parsing/Operators.html" class="extype" name="scallion.
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="parsing/index.html" class="extype" name="scallion.parsing">scallion.parsing</a> for parsers.</p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/package.scala" target="_blank">package.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="parsing/index.html" class="extype" name="scallion.parsing">scallion.parsing</a> for parsers.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
