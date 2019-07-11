@@ -205,6 +205,14 @@ trait Parsers[Token, Kind] {
       case _ => Disjunction(this, that)
     }
 
+    /** Disjunction of `this` and `that` parser.
+      * The value is tagged to indicate the side which produced it.
+      *
+      * @group combinator
+      */
+    def ||[B](that: Parser[B]): Parser[Either[A, B]] =
+      this.map(Left(_)) | that.map(Right(_))
+
     /** Makes the parser nullable.
       *
       * @group combinator

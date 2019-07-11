@@ -559,6 +559,40 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     assert(parser.isLL1)
   }
 
+  // tagged disjunction
+
+  "tagged disjunction" should "correctly tag values" in {
+    val parser = elem(BoolClass) || elem(NumClass)
+
+    inside(parser(Seq(Num(1)).iterator)) {
+      case Parsed(res, rest) => {
+        assert(res == Right(Num(1)))
+      }
+    }
+
+    inside(parser(Seq(Bool(true)).iterator)) {
+      case Parsed(res, rest) => {
+        assert(res == Left(Bool(true)))
+      }
+    }
+  }
+
+  it should "accept different branch types" in {
+    val parser = elem(BoolClass).map(_ => "X") || elem(NumClass).map(_ => 42)
+
+    inside(parser(Seq(Num(1)).iterator)) {
+      case Parsed(res, rest) => {
+        assert(res == Right(42))
+      }
+    }
+
+    inside(parser(Seq(Bool(true)).iterator)) {
+      case Parsed(res, rest) => {
+        assert(res == Left("X"))
+      }
+    }
+  }
+
   // many
 
   "many" should "parse zero repetitions" in {
