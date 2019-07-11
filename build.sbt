@@ -17,6 +17,8 @@ lazy val scallion = project
       "-groups"
     ),
 
+    target in Compile in doc := baseDirectory.value / "docs",
+
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     ),
