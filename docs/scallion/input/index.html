@@ -1,0 +1,474 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="../../lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="../../lib/index.js"></script>
+      <script type="text/javascript" src="../../index.js"></script>
+      <script type="text/javascript" src="../../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '../../';
+      </script>
+    
+        </head>
+        <body>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../index.html"><span class="name">root</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scallion"></a><a id="scallion:scallion"></a>
+      <span class="permalink">
+      <a href="index.html#scallion" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Scallion is a library for building lexers and parsers." href="../index.html"><span class="name">scallion</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Scallion is a library for building lexers and parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../parsing/index.html" class="extype" name="scallion.parsing">scallion.parsing</a> for parsers.</p></span></dd></dl></div>
+    </li><li name="scallion.input" visbl="pub" class="indented2 current" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="input"></a><a id="input:input"></a>
+      <span class="permalink">
+      <a href="../scallion/index.html#input" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">input</span>
+      </span>
+      
+      <p class="shortcomment cmt">This package contains utilities for handling input sources and positions.</p><div class="fullcomment"><div class="comment cmt"><p>This package contains utilities for handling input sources and positions.</p><pre><span class="cmt">// Building a source from a string:</span>
+<span class="kw">val</span> stringSource = Source.fromString(<span class="lit">"[1, 2, 3]"</span>)
+
+<span class="cmt">// Or from a file:</span>
+<span class="kw">val</span> fileSource = Source.fromFile(<span class="lit">"data/clients.json"</span>)
+
+<span class="cmt">// With a custom positioner:</span>
+<span class="kw">val</span> customSource = Source.fromFile(<span class="lit">"data/clients.json"</span>, IndexPositioner)</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="object" href="IndexPositioner$.html" title="General index-based positioner."></a>
+                        <a href="IndexPositioner$.html" title="General index-based positioner.">IndexPositioner</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="IteratorSource.html" title="Source over an iterator."></a>
+                        <a href="IteratorSource.html" title="Source over an iterator.">IteratorSource</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="object" href="NoPositioner$.html" title="Positioner for Unit positions."></a>
+                        <a href="NoPositioner$.html" title="Positioner for Unit positions.">NoPositioner</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="trait" href="Positioner.html" title="Indicates the start position and how to increment positions."></a>
+                        <a href="Positioner.html" title="Indicates the start position and how to increment positions.">Positioner</a>
+                      </li><li class="current-entities indented2">
+                        <a class="object" href="Source$.html" title="Builds sources."></a>
+                        <a class="trait" href="Source.html" title="Represents a sequence of characters mutably traversed over."></a>
+                        <a href="Source.html" title="Represents a sequence of characters mutably traversed over.">Source</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="StringPosition.html" title="Position within a string."></a>
+                        <a href="StringPosition.html" title="Position within a string.">StringPosition</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="object" href="StringPositioner$.html" title="Positioner for scallion.input.StringPosition."></a>
+                        <a href="StringPositioner$.html" title="Positioner for scallion.input.StringPosition.">StringPositioner</a>
+                      </li><li name="scallion.lexing" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lexing"></a><a id="lexing:lexing"></a>
+      <span class="permalink">
+      <a href="../scallion/index.html#lexing" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="This package is used to write lexers." href="../lexing/index.html"><span class="name">lexing</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="../lexing/Lexers.html" class="extype" name="scallion.lexing.Lexers">scallion.lexing.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
+
+  <span class="cmt">// Then define your parsers using combinators.</span>
+  <span class="kw">val</span> myLexer = Lexer(...)
+}</pre><p>Additional traits can be mixed-in.
+See for instance <a href="../lexing/CharRegExps.html" class="extype" name="scallion.lexing.CharRegExps">scallion.lexing.CharRegExps</a>
+for regular expressions on <code>Char</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.parsing" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parsing"></a><a id="parsing:parsing"></a>
+      <span class="permalink">
+      <a href="../scallion/index.html#parsing" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="This package is used to write LL(1) parsers." href="../parsing/index.html"><span class="name">parsing</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">This package is used to write LL(1) parsers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write LL(1) parsers.</p><p>To use the package, mix-in the <a href="../parsing/Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a> trait.</p><pre><span class="kw">object</span> MyParsers <span class="kw">extends</span> Parsers[Token, Kind, Position] {
+
+  <span class="cmt">// Define the token kind of tokens.</span>
+  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
+
+  <span class="cmt">// Then define your parsers using combinators.</span>
+  <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
+}</pre><p>Additional traits can be mixed-in.
+See for instance <a href="../parsing/Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="../parsing/visualization/index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="util"></a><a id="util:util"></a>
+      <span class="permalink">
+      <a href="../scallion/index.html#util" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../util/index.html"><span class="name">util</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="package value">
+      <div id="definition">
+        <div class="big-circle package">p</div>
+        <p id="owner"><a href="../index.html" class="extype" name="scallion">scallion</a></p>
+        <h1>input<span class="permalink">
+      <a href="../../scallion/input/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">input</span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This package contains utilities for handling input sources and positions.</p><pre><span class="cmt">// Building a source from a string:</span>
+<span class="kw">val</span> stringSource = Source.fromString(<span class="lit">"[1, 2, 3]"</span>)
+
+<span class="cmt">// Or from a file:</span>
+<span class="kw">val</span> fileSource = Source.fromFile(<span class="lit">"data/clients.json"</span>)
+
+<span class="cmt">// With a custom positioner:</span>
+<span class="kw">val</span> customSource = Source.fromFile(<span class="lit">"data/clients.json"</span>, IndexPositioner)</pre></div><div class="toggleContainer block">
+          <span class="toggle">
+            Linear Supertypes
+          </span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              <li class="group out"><span>Grouped</span></li>
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="scallion.input"><span>input</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="scallion.input.IteratorSource" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="source">
+      <a id="IteratorSource[Character,Position]extendsSource[Character,Position]"></a><a id="IteratorSource[Character,Position]:IteratorSource[Character,Position]"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#IteratorSource[Character,Position]extendsSource[Character,Position]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Source over an iterator." href="IteratorSource.html"><span class="name">IteratorSource</span></a><span class="tparams">[<span name="Character">Character</span>, <span name="Position">Position</span>]</span><span class="result"> extends <a href="Source.html" class="extype" name="scallion.input.Source">Source</a>[<span class="extype" name="scallion.input.IteratorSource.Character">Character</span>, <span class="extype" name="scallion.input.IteratorSource.Position">Position</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Source over an iterator.</p>
+    </li><li name="scallion.input.Positioner" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="positioner">
+      <a id="Positioner[-Character,Position]extendsAnyRef"></a><a id="Positioner[-Character,Position]:Positioner[Character,Position]"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#Positioner[-Character,Position]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates the start position and how to increment positions." href="Positioner.html"><span class="name">Positioner</span></a><span class="tparams">[<span name="Character">-Character</span>, <span name="Position">Position</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates the start position and how to increment positions.</p>
+    </li><li name="scallion.input.Source" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="source">
+      <a id="Source[Character,Position]extendsAnyRef"></a><a id="Source[Character,Position]:Source[Character,Position]"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#Source[Character,Position]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Represents a sequence of characters mutably traversed over." href="Source.html"><span class="name">Source</span></a><span class="tparams">[<span name="Character">Character</span>, <span name="Position">Position</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Represents a sequence of characters mutably traversed over.</p><div class="fullcomment"><div class="comment cmt"><p>Represents a sequence of characters mutably traversed over.</p><p>The sequence can be traversed only once, but arbitrary long lookaheads are supported.</p><p>Sources conceptually contain two mutable pointers:
+- The base pointer, which points past the fully traversed portion of the sequence.
+- The lookahead pointer, which can point arbitrarily past the base pointer.</p><p>The base pointer can be advanced all the way through the lookahead pointer using <code>consume()</code>.
+The sequence of characters advanced over are returned.</p><p>The lookahead pointer can be advanced by one character at the time using <code>ahead()</code>,
+and can be reset to the base pointer by a call to <code>back()</code>.
+</p></div></div>
+    </li><li name="scallion.input.StringPosition" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="position">
+      <a id="StringPositionextendsProductwithSerializable"></a><a id="StringPosition:StringPosition"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#StringPositionextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Position within a string." href="StringPosition.html"><span class="name">StringPosition</span></a><span class="params">(<span name="index">index: <span class="extype" name="scala.Int">Int</span></span>, <span name="line">line: <span class="extype" name="scala.Int">Int</span></span>, <span name="column">column: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Position within a string.</p><div class="fullcomment"><div class="comment cmt"><p>Position within a string.
+</p></div><dl class="paramcmts block"><dt class="param">index</dt><dd class="cmt"><p>The index in the string. Zero-based.</p></dd><dt class="param">line</dt><dd class="cmt"><p>The line number. Zero-based.</p></dd><dt class="param">column</dt><dd class="cmt"><p>The column number. Zero-based.</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>See <a href="StringPositioner$.html" class="extype" name="scallion.input.StringPositioner">scallion.input.StringPositioner</a> for the corresponding positioner.</p></span></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div class="values members">
+              <h3>Value Members</h3>
+              <ol>
+                <li name="scallion.input.IndexPositioner" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="positioner">
+      <a id="IndexPositioner"></a><a id="IndexPositioner:IndexPositioner"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#IndexPositioner" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="General index-based positioner." href="IndexPositioner$.html"><span class="name">IndexPositioner</span></a><span class="result"> extends <a href="Positioner.html" class="extype" name="scallion.input.Positioner">Positioner</a>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">General index-based positioner.</p>
+    </li><li name="scallion.input.NoPositioner" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="positioner">
+      <a id="NoPositioner"></a><a id="NoPositioner:NoPositioner"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#NoPositioner" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Positioner for Unit positions." href="NoPositioner$.html"><span class="name">NoPositioner</span></a><span class="result"> extends <a href="Positioner.html" class="extype" name="scallion.input.Positioner">Positioner</a>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Positioner for <code>Unit</code> positions.</p>
+    </li><li name="scallion.input.Source" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="source">
+      <a id="Source"></a><a id="Source:Source"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#Source" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Builds sources." href="Source$.html"><span class="name">Source</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Builds sources.</p>
+    </li><li name="scallion.input.StringPositioner" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="positioner">
+      <a id="StringPositioner"></a><a id="StringPositioner:StringPositioner"></a>
+      <span class="permalink">
+      <a href="../../scallion/input/index.html#StringPositioner" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Positioner for scallion.input.StringPosition." href="StringPositioner$.html"><span class="name">StringPositioner</span></a><span class="result"> extends <a href="Positioner.html" class="extype" name="scallion.input.Positioner">Positioner</a>[<span class="extype" name="scala.Char">Char</span>, <a href="StringPosition.html" class="extype" name="scallion.input.StringPosition">StringPosition</a>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Positioner for <a href="StringPosition.html" class="extype" name="scallion.input.StringPosition">scallion.input.StringPosition</a>.</p>
+    </li>
+              </ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="source">
+              <h3>Sources</h3>
+              
+            </div><div class="group" name="position">
+              <h3>Positions</h3>
+              
+            </div><div class="group" name="positioner">
+              <h3>Positioners</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
+    </body>
+      </html>
