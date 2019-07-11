@@ -580,12 +580,12 @@ trait Parsers[Token, Kind] {
       }
     }
 
-    def disjuncts(parser: Parser[Any]): Seq[Parser[Any]] = parser match {
+    private def disjuncts(parser: Parser[Any]): Seq[Parser[Any]] = parser match {
       case Disjunction(lhs, rhs) => disjuncts(lhs) ++ disjuncts(rhs)
       case _ => Seq(parser)
     }
 
-    def sequents(parser: Parser[Any]): Seq[Parser[Any]] =
+    private def sequents(parser: Parser[Any]): Seq[Parser[Any]] =
       if (parser.isInstanceOf[SequenceLike[_, _]]) {
         val seqLike = parser.asInstanceOf[SequenceLike[Any, Any]]
 
