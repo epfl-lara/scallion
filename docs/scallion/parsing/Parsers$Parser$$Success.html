@@ -1149,9 +1149,10 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> parser is n
         <span class="name">shouldNotFollow</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>, <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns the set of tokens that should not be accepted
-as the next token by a subsequent parser.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of tokens that should not be accepted
-as the next token by a subsequent parser.
+      <p class="shortcomment cmt">Returns all of kinds that should not be accepted
+as the next token by a subsequent parser.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all of kinds that should not be accepted
+as the next token by a subsequent parser.</p><p>The value associated to the kind is a parser that accepts
+all up until that kind.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
