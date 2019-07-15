@@ -1013,10 +1013,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     assert(conflicts.size == 1)
 
     inside(conflicts(0)) {
-      case FirstConflict(ambiguities, left, right) => {
+      case FirstConflict(prefix, ambiguities, source) => {
         assert(ambiguities == Set(BoolClass))
-        assert(left == elem(BoolClass))
-        assert(right == (elem(BoolClass) ~<~ elem(NumClass)))
+        assert(source == parser)
       }
     }
   }
@@ -1034,7 +1033,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     assert(conflicts.size == 1)
 
     inside(conflicts(0)) {
-      case NullableConflict(problematic) => {
+      case NullableConflict(prefix, problematic) => {
         assert(problematic == parser)
       }
     }
@@ -1064,7 +1063,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     assert(conflicts.size == 1)
 
     inside(conflicts(0)) {
-      case LeftRecursiveConflict(problematic) => {
+      case LeftRecursiveConflict(prefix, problematic) => {
         assert(problematic == parser)
       }
     }
@@ -1079,13 +1078,13 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       plusExpr | opt(elem(OperatorClass('+'))) ~>~ literal
     }
 
-    lazy val plusExpr: Parser[Int] = (expr ~ opt(elem(OperatorClass('+'))) ~ expr).map {
-      case lhs ~ _ ~ rhs => lhs + rhs
+    lazy val plusExpr: Parser[Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {
+      case _ ~ rhs => rhs
     }
 
     val cs = expr.conflicts.toSeq
 
-    assert(cs.size == 5)
+    assert(cs.size == 4)
 
     val firstConflicts = cs.collect {
       case c: FirstConflict => c
@@ -1106,11 +1105,11 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       case c: FollowConflict => c
     }
 
-    // In expr ~ opt(+), expr is nullable and can start with '+' and is followed by '+'.
-    // Also, in opt(+) ~ expr, opt('+') is nullable and starts with '+' and is followed by '+'.
-    assert(followConflicts.size == 2)
+
+    // In plusExpr, left hand side can not be followed by "+",
+    // but expr can start with "+".
+    assert(followConflicts.size == 1)
     assert(followConflicts(0).ambiguities == Set(OperatorClass('+')))
-    assert(followConflicts(1).ambiguities == Set(OperatorClass('+')))
 
     val leftRecursiveConflicts = cs.collect {
       case c: LeftRecursiveConflict => c

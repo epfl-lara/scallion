@@ -118,12 +118,15 @@ trait Parsers[Token, Kind] {
       */
     @inline def first: Set[Kind] = collectFirst(ListSet())
 
-    /** Returns the set of tokens that should not be accepted
+    /** Returns all of kinds that should not be accepted
       * as the next token by a subsequent parser.
+      *
+      * The value associated to the kind is a parser that accepts
+      * all up until that kind.
       *
       * @group property
       */
-    @inline def shouldNotFollow: Set[Kind] = collectShouldNotFollow(ListSet())
+    @inline def shouldNotFollow: Map[Kind, Parser[Any]] = collectShouldNotFollow(ListSet())
 
     /** Checks if a `Recursive` parser can be entered without consuming input first.
       *
@@ -172,7 +175,7 @@ trait Parsers[Token, Kind] {
 
     protected def collectNullable(recs: Set[AnyRef]): Option[A]
     protected def collectFirst(recs: Set[AnyRef]): Set[Kind]
-    protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind]
+    protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]]
     protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean
     protected def collectIsProductive(recs: Set[AnyRef]): Boolean
     protected def collectIsLL1(recs: Set[AnyRef]): Boolean
@@ -411,7 +414,14 @@ trait Parsers[Token, Kind] {
     *
     * @group conflict
     */
-  sealed trait LL1Conflict
+  sealed trait LL1Conflict {
+    val source: Parser[Any]
+    val prefix: Parser[Any]
+
+    private[parsing] def addPrefix(parser: Parser[Any]): LL1Conflict
+
+    def trails: Iterator[Trail] = prefix.trails
+  }
 
   /** Contains the description of the various LL(1) conflicts.
     *
@@ -420,16 +430,42 @@ trait Parsers[Token, Kind] {
   object LL1Conflict {
 
     /** Indicates that both branches of a disjunction are nullable. */
-    case class NullableConflict(parser: Disjunction[Any]) extends LL1Conflict
+    case class NullableConflict(
+        prefix: Parser[Any],
+        source: Disjunction[Any]) extends LL1Conflict {
+
+      override private[parsing] def addPrefix(start: Parser[Any]): NullableConflict =
+        this.copy(prefix = start ~ prefix)
+    }
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
-    case class FirstConflict(ambiguities: Set[Kind], first: Parser[Any], second: Parser[Any]) extends LL1Conflict
+    case class FirstConflict(
+        prefix: Parser[Any],
+        ambiguities: Set[Kind],
+        source: Disjunction[Any]) extends LL1Conflict {
+
+      override private[parsing] def addPrefix(start: Parser[Any]): FirstConflict =
+        this.copy(prefix = start ~ prefix)
+    }
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
-    case class FollowConflict(ambiguities: Set[Kind], left: Parser[Any], second: Parser[Any]) extends LL1Conflict
+    case class FollowConflict(
+        prefix: Parser[Any],
+        ambiguities: Set[Kind],
+        source: Parser[Any] with SequenceLike[Any, Any]) extends LL1Conflict {
+
+      override private[parsing] def addPrefix(start: Parser[Any]): FollowConflict =
+        this.copy(prefix = start ~ prefix)
+    }
 
     /** Indicates that the parser recursively calls itself in a left position. */
-    case class LeftRecursiveConflict(parser: Recursive[Any]) extends LL1Conflict
+    case class LeftRecursiveConflict(
+        prefix: Parser[Any],
+        source: Recursive[Any]) extends LL1Conflict {
+
+      override private[parsing] def addPrefix(start: Parser[Any]): LeftRecursiveConflict =
+        this.copy(prefix = start ~ prefix)
+    }
   }
 
   import LL1Conflict._
@@ -446,7 +482,7 @@ trait Parsers[Token, Kind] {
       override val isProductive: Boolean = true
       override protected def collectNullable(recs: Set[AnyRef]): Option[A] = Some(value)
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] = ListSet()
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = ListSet()
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = Map.empty
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
@@ -465,7 +501,7 @@ trait Parsers[Token, Kind] {
       override val isProductive: Boolean = false
       override protected def collectNullable(recs: Set[AnyRef]): Option[Nothing] = None
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] = ListSet()
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = ListSet()
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = Map.empty
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
@@ -484,7 +520,7 @@ trait Parsers[Token, Kind] {
       override val isProductive: Boolean = true
       override protected def collectNullable(recs: Set[AnyRef]): Option[Token] = None
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] = Set(kind)
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = ListSet()
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = Map.empty
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = false
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
@@ -504,7 +540,7 @@ trait Parsers[Token, Kind] {
       override lazy val isProductive: Boolean = inner.isProductive
       override protected def collectNullable(recs: Set[AnyRef]): Option[B] = inner.collectNullable(recs).map(function)
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] = inner.collectFirst(recs)
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = inner.collectShouldNotFollow(recs)
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = inner.collectShouldNotFollow(recs)
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = inner.collectCalledLeft(id, recs)
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = inner.collectIsLL1(recs)
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = inner.collectLL1Conflicts(recs)
@@ -531,27 +567,45 @@ trait Parsers[Token, Kind] {
         case Some(_) => left.collectFirst(recs) ++ right.collectFirst(recs)
         case None => left.collectFirst(recs)
       }
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = right.nullable match {
-        case Some(_) => right.collectShouldNotFollow(recs) ++ left.collectShouldNotFollow(recs)
-        case None => right.collectShouldNotFollow(recs)
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = right.nullable match {
+        case Some(_) => combineSNF(
+          left.collectShouldNotFollow(recs),
+          right.collectShouldNotFollow(recs).map {
+            case (k, v) => k -> left ~ v
+          }
+        )
+        case None => right.collectShouldNotFollow(recs).map {
+          case (k, v) => k -> left ~ v
+        }
       }
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean = {
         left.collectCalledLeft(id, recs) || (left.nullable.nonEmpty && right.collectCalledLeft(id, recs))
       }
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = {
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
-        (left.shouldNotFollow & right.first).isEmpty
+        (left.shouldNotFollow.keySet & right.first).isEmpty
       }
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
-        val ss = sequents(this)
 
-        val followConflicts: Seq[LL1Conflict] = for {
-          (lhs, rhs) <- ss.zip(ss.tail)
-          ambiguities = lhs.shouldNotFollow & rhs.first
-          if ambiguities.nonEmpty
-        } yield FollowConflict(ambiguities, lhs, rhs)
+        val leftSNF = left.shouldNotFollow
 
-        ss.flatMap(_.collectLL1Conflicts(recs)).toSet union followConflicts.toSet
+        val problematicKinds = (leftSNF.keySet & right.first)
+
+        val followConflicts: Set[LL1Conflict] =
+          if (problematicKinds.isEmpty) {
+            ListSet()
+          }
+          else {
+            problematicKinds.map { kind =>
+              FollowConflict(leftSNF(kind), problematicKinds, this)
+            }
+          }
+
+        val baseConflicts: Set[LL1Conflict] =
+          left.collectLL1Conflicts(recs) union
+          right.collectLL1Conflicts(recs).map(_.addPrefix(left))
+
+        baseConflicts union followConflicts
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
@@ -650,11 +704,30 @@ trait Parsers[Token, Kind] {
         left.collectNullable(recs) orElse right.collectNullable(recs)
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] =
         left.collectFirst(recs) ++ right.collectFirst(recs)
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] = {
-        val fromLeft: Set[Kind] = if (right.nullable.nonEmpty) left.first else ListSet()
-        val fromRight: Set[Kind] = if (left.nullable.nonEmpty) right.first else ListSet()
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] = {
+        val fromLeft: Map[Kind, Parser[Any]] =
+          if (right.nullable.nonEmpty) {
+            left.first.toSeq.map {
+              kind => kind -> Success(())
+            }.toMap
+          }
+          else {
+            Map.empty
+          }
+        val fromRight: Map[Kind, Parser[Any]] =
+          if (left.nullable.nonEmpty) {
+            right.first.toSeq.map {
+              kind => kind -> Success(())
+            }.toMap
+          }
+          else {
+            Map.empty
+          }
 
-        fromRight ++ fromLeft ++ left.collectShouldNotFollow(recs) ++ right.collectShouldNotFollow(recs)
+        val baseSNF = combineSNF(left.collectShouldNotFollow(recs), right.collectShouldNotFollow(recs))
+        val addedSNF = combineSNF(fromLeft, fromRight)
+
+        combineSNF(baseSNF, addedSNF)
       }
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean =
         left.collectCalledLeft(id, recs) || right.collectCalledLeft(id, recs)
@@ -663,21 +736,29 @@ trait Parsers[Token, Kind] {
         (left.nullable.isEmpty || right.nullable.isEmpty) &&
         (left.first & right.first).isEmpty
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = {
-        val ds = disjuncts(this)
 
-        val firstConflicts: Seq[LL1Conflict] = for {
-          i <- 0 until (ds.size - 1)
-          j <- (i + 1) until ds.size
-          lhs = ds(i)
-          rhs = ds(j)
-          ambiguities = lhs.first & rhs.first
-          if ambiguities.nonEmpty
-        } yield FirstConflict(ambiguities, lhs, rhs)
+        val problematicKinds = (left.first & right.first)
+
+        val firstConflicts: Set[LL1Conflict] =
+          if (problematicKinds.isEmpty) {
+            ListSet()
+          }
+          else {
+            ListSet(FirstConflict(Success(()), problematicKinds, this))
+          }
 
         val nullableConflicts: Set[LL1Conflict] =
-          if (ds.count(_.nullable.nonEmpty) > 1) Set(NullableConflict(this)) else Set()
+          if (left.nullable.isEmpty || right.nullable.isEmpty) {
+            ListSet()
+          }
+          else {
+            ListSet(NullableConflict(Success(()), this))
+          }
 
-        ds.flatMap(_.collectLL1Conflicts(recs)).toSet union firstConflicts.toSet union nullableConflicts
+        val baseConflicts: Set[LL1Conflict] =
+          left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
+
+        baseConflicts union firstConflicts union nullableConflicts
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) || right.collectIsProductive(recs)
@@ -719,8 +800,8 @@ trait Parsers[Token, Kind] {
         if (recs.contains(this)) None else inner.collectNullable(recs + this)
       override protected def collectFirst(recs: Set[AnyRef]): Set[Kind] =
         if (recs.contains(this)) ListSet() else inner.collectFirst(recs + this)
-      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Set[Kind] =
-        if (recs.contains(this)) ListSet() else inner.collectShouldNotFollow(recs + this)
+      override protected def collectShouldNotFollow(recs: Set[AnyRef]): Map[Kind, Parser[Any]] =
+        if (recs.contains(this)) Map.empty else inner.collectShouldNotFollow(recs + this)
       override protected def collectCalledLeft(id: AnyRef, recs: Set[AnyRef]): Boolean =
         if (recs.contains(this)) false else (this eq id) || inner.collectCalledLeft(id, recs + this)
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean =
@@ -730,7 +811,7 @@ trait Parsers[Token, Kind] {
           val base = inner.collectLL1Conflicts(recs + this)
 
           if (inner.calledLeft(this)) {
-            base + LeftRecursiveConflict(this)
+            base + LeftRecursiveConflict(Success(()), this)
           }
           else {
             base
@@ -773,20 +854,15 @@ trait Parsers[Token, Kind] {
       }
     }
 
-    private def disjuncts(parser: Parser[Any]): Seq[Parser[Any]] = parser match {
-      case Disjunction(lhs, rhs) => disjuncts(lhs) ++ disjuncts(rhs)
-      case _ => Seq(parser)
-    }
-
-    private def sequents(parser: Parser[Any]): Seq[Parser[Any]] =
-      if (parser.isInstanceOf[SequenceLike[_, _]]) {
-        val seqLike = parser.asInstanceOf[SequenceLike[Any, Any]]
-
-        sequents(seqLike.left) ++ sequents(seqLike.right)
+    private def combine[K, V](merge: (V, V) => V)(left: Map[K, V], right: Map[K, V]): Map[K, V] =
+      right.foldLeft(left) {
+        case (acc, (key, value)) => acc + (key -> left.get(key).map(merge(_, value)).getOrElse(value))
       }
-      else {
-        Seq(parser)
-      }
+
+    private def combineSNF(
+        left: Map[Kind, Parser[Any]],
+        right: Map[Kind, Parser[Any]]): Map[Kind, Parser[Any]] =
+      combine((p1: Parser[Any], p2: Parser[Any]) => p1 | p2)(left, right)
   }
 
   /** Parser that accepts tokens of the provided `kind`.

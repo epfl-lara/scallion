@@ -330,7 +330,7 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">FirstConflict</span><span class="params">(<span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>, <span name="first">first: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="second">second: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result"> extends <a href="Parsers$LL1Conflict.html" class="extype" name="scallion.parsing.Parsers.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">FirstConflict</span><span class="params">(<span name="prefix">prefix: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>, <span name="source">source: <a href="Parsers$Parser$$Disjunction.html" class="extype" name="scallion.parsing.Parsers.Parser.Disjunction">Disjunction</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result"> extends <a href="Parsers$LL1Conflict.html" class="extype" name="scallion.parsing.Parsers.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -386,9 +386,9 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scallion.parsing.Parsers.LL1Conflict.FirstConflict#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(ambiguities:Set[Kind],first:Parsers.this.Parser[Any],second:Parsers.this.Parser[Any]):scallion.parsing.Parsers.LL1Conflict.FirstConflict"></a><a id="&lt;init&gt;:FirstConflict"></a>
+      <a id="&lt;init&gt;(prefix:Parsers.this.Parser[Any],ambiguities:Set[Kind],source:Parsers.this.Parser.Disjunction[Any]):scallion.parsing.Parsers.LL1Conflict.FirstConflict"></a><a id="&lt;init&gt;:FirstConflict"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#&lt;init&gt;(ambiguities:Set[Kind],first:Parsers.this.Parser[Any],second:Parsers.this.Parser[Any]):scallion.parsing.Parsers.LL1Conflict.FirstConflict" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#&lt;init&gt;(prefix:Parsers.this.Parser[Any],ambiguities:Set[Kind],source:Parsers.this.Parser.Disjunction[Any]):scallion.parsing.Parsers.LL1Conflict.FirstConflict" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -397,7 +397,7 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">FirstConflict</span><span class="params">(<span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>, <span name="first">first: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="second">second: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span>
+        <span class="name">FirstConflict</span><span class="params">(<span name="prefix">prefix: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>, <span name="source">source: <a href="Parsers$Parser$$Disjunction.html" class="extype" name="scallion.parsing.Parsers.Parser.Disjunction">Disjunction</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span>
       </span>
       
       
@@ -553,22 +553,6 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.LL1Conflict.FirstConflict#first" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="first:Parsers.this.Parser[Any]"></a><a id="first:Parser[Any]"></a>
-      <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#first:Parsers.this.Parser[Any]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">first</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
@@ -658,10 +642,10 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.LL1Conflict.FirstConflict#second" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="second:Parsers.this.Parser[Any]"></a><a id="second:Parser[Any]"></a>
+    </li><li name="scallion.parsing.Parsers.LL1Conflict.FirstConflict#prefix" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prefix:Parsers.this.Parser[Any]"></a><a id="prefix:Parser[Any]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#second:Parsers.this.Parser[Any]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#prefix:Parsers.this.Parser[Any]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -670,10 +654,26 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">second</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>
+        <span class="name">prefix</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>
       </span>
       
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.LL1Conflict.FirstConflict">FirstConflict</a> → <a href="Parsers$LL1Conflict.html" class="extype" name="scallion.parsing.Parsers.LL1Conflict">LL1Conflict</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.LL1Conflict.FirstConflict#source" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="source:Parsers.this.Parser.Disjunction[Any]"></a><a id="source:Disjunction[Any]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#source:Parsers.this.Parser.Disjunction[Any]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">source</span><span class="result">: <a href="Parsers$Parser$$Disjunction.html" class="extype" name="scallion.parsing.Parsers.Parser.Disjunction">Disjunction</a>[<span class="extype" name="scala.Any">Any</span>]</span>
+      </span>
       
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.LL1Conflict.FirstConflict">FirstConflict</a> → <a href="Parsers$LL1Conflict.html" class="extype" name="scallion.parsing.Parsers.LL1Conflict">LL1Conflict</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -690,6 +690,22 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.LL1Conflict#trails" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trails:Iterator[Parsers.this.Trail]"></a><a id="trails:Iterator[Trail]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$LL1Conflict$$FirstConflict.html#trails:Iterator[Parsers.this.Trail]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trails</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="Parsers.html#Trail=Seq[Kind]" class="extmbr" name="scallion.parsing.Parsers.Trail">Trail</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$LL1Conflict.html" class="extype" name="scallion.parsing.Parsers.LL1Conflict">LL1Conflict</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
