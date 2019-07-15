@@ -546,6 +546,7 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       </span>
       
       <p class="shortcomment cmt">Consumes a sequence of tokens and parses into a value.</p><div class="fullcomment"><div class="comment cmt"><p>Consumes a sequence of tokens and parses into a value.
+When <code>this</code> parser is not LL(1), the result is unspecified.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -671,6 +672,22 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Parsers$Parser$$SequenceLike.html" class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike">SequenceLike</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.SequenceLike#collectKinds" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="collectKinds(recs:Set[AnyRef]):Set[Kind]"></a><a id="collectKinds(Set[AnyRef]):Set[Kind]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Concat.html#collectKinds(recs:Set[AnyRef]):Set[Kind]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectKinds</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Parsers$Parser$$SequenceLike.html" class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike">SequenceLike</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser.SequenceLike#collectLL1Conflicts" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="collectLL1Conflicts(recs:Set[AnyRef]):Set[Parsers.this.LL1Conflict]"></a><a id="collectLL1Conflicts(Set[AnyRef]):Set[LL1Conflict]"></a>
       <span class="permalink">
@@ -700,6 +717,22 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       </span>
       <span class="symbol">
         <span class="name">collectNullable</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser.Concat">Concat</a> → <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Concat#collectReject" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="collectReject(kinds:Set[Kind],recs:Map[AnyRef,Parsers.this.Parser[Any]]):Parsers.this.Parser[Seq[A]]"></a><a id="collectReject(Set[Kind],Map[AnyRef,Parser[Any]]):Parser[Seq[A]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Concat.html#collectReject(kinds:Set[Kind],recs:Map[AnyRef,Parsers.this.Parser[Any]]):Parsers.this.Parser[Seq[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectReject</span><span class="params">(<span name="kinds">kinds: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser.Concat">Concat</a> → <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
@@ -752,7 +785,7 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       
       <p class="shortcomment cmt">Returns the smallest completion of <code>this</code> parser that can
 be obtained using the partial <code>toToken</code> function, if any.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the smallest completion of <code>this</code> parser that can
-be obtained using the partial <code>toToken</code> function, if any.
+be obtained using the partial <code>toToken</code> function, if any.</p><p>When <code>this</code> parser is not LL(1), the result is unspecified.
 </p></div><dl class="paramcmts block"><dt class="param">toToken</dt><dd class="cmt"><p>Computes the preferred token of the given class, if any.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#completions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
       <a id="completions(toTokens:Kind=&gt;Seq[Token]):Iterator[A]"></a><a id="completions((Kind)⇒Seq[Token]):Iterator[Seq[A]]"></a>
@@ -771,7 +804,7 @@ be obtained using the partial <code>toToken</code> function, if any.
       
       <p class="shortcomment cmt">Returns all possible completions of <code>this</code> parser,
 ordered by increasing number of tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible completions of <code>this</code> parser,
-ordered by increasing number of tokens.
+ordered by increasing number of tokens.</p><p>When <code>this</code> parser is not LL(1), the result is unspecified.
 </p></div><dl class="paramcmts block"><dt class="param">toTokens</dt><dd class="cmt"><p>Computes the possible tokens for a given kind.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#conflicts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="conflicts:Set[Parsers.this.LL1Conflict]"></a><a id="conflicts:Set[LL1Conflict]"></a>
@@ -940,6 +973,26 @@ ordered by increasing number of tokens.
       
       <p class="shortcomment cmt">Indicates if there exists a sequence of tokens that the parser can accept.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates if there exists a sequence of tokens that the parser can accept.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser.Concat">Concat</a> → <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#kinds" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
+      <a id="kinds:Set[Kind]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Concat.html#kinds:Set[Kind]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">kinds</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns the set of all kinds that appear somewhere in <code>this</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of all kinds that appear somewhere in <code>this</code> parser.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser.Concat#left" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="left:Parsers.this.Parser[Seq[A]]"></a><a id="left:Parser[Seq[A]]"></a>
       <span class="permalink">
@@ -1061,6 +1114,26 @@ ordered by increasing number of tokens.
       
       <p class="shortcomment cmt">Makes the parser nullable.</p><div class="fullcomment"><div class="comment cmt"><p>Makes the parser nullable.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#reject" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="reject(kinds:Set[Kind]):Parsers.this.Parser[A]"></a><a id="reject(Set[Kind]):Parser[Seq[A]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Concat.html#reject(kinds:Set[Kind]):Parsers.this.Parser[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reject</span><span class="params">(<span name="kinds">kinds: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a parser that behaves like <code>this</code> parser but rejects all tokens of the given <code>kinds</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a parser that behaves like <code>this</code> parser but rejects all tokens of the given <code>kinds</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser.Concat#repr" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="repr(level:Int,recs:Map[AnyRef,String]):String"></a><a id="repr(Int,Map[AnyRef,String]):String"></a>
       <span class="permalink">

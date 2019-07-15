@@ -151,6 +151,18 @@ trait Parsers[Token, Kind] {
       */
     @inline def trails: Iterator[Trail] = collectTrails(Map.empty).toIterator
 
+    /** Returns a parser that behaves like `this` parser but rejects all tokens of the given `kinds`.
+      *
+      * @group combinator
+      */
+    @inline def reject(kinds: Set[Kind]): Parser[A] = collectReject(kinds, Map.empty)
+
+    /** Returns the set of all kinds that appear somewhere in `this` parser.
+      *
+      * @group property
+      */
+    @inline def kinds: Set[Kind] = collectKinds(ListSet())
+
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` parser on which the call
     // was already performed.
@@ -166,6 +178,8 @@ trait Parsers[Token, Kind] {
     protected def collectIsLL1(recs: Set[AnyRef]): Boolean
     protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict]
     protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail]
+    protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[A]
+    protected def collectKinds(recs: Set[AnyRef]): Set[Kind]
 
     /** Feeds a token to the parser and obtain a parser for the rest of input.
       *
@@ -269,11 +283,11 @@ trait Parsers[Token, Kind] {
     def opt: Parser[Option[A]] = this.map(Some(_)) | epsilon(None)
 
     /** Consumes a sequence of tokens and parses into a value.
+      * When `this` parser is not LL(1), the result is unspecified.
       *
       * @group parsing
       */
     def apply(it: Iterator[Token]): ParseResult[A] = {
-      //require(isLL1, "The parser is not LL(1).")
 
       var parser: Parser[A] = this
       while (it.hasNext) {
@@ -293,13 +307,30 @@ trait Parsers[Token, Kind] {
     /** Returns all possible completions of `this` parser,
       * ordered by increasing number of tokens.
       *
+      * When `this` parser is not LL(1), the result is unspecified.
+      *
       * @param toTokens Computes the possible tokens for a given kind.
       *
       * @group complete
       */
     def completions(toTokens: Kind => Seq[Token]): Iterator[A] = {
-      trails.flatMap { kinds =>
-        val choices = kinds.map(toTokens)
+
+      val kindTokens: Map[Kind, Seq[Token]] =
+        kinds.toSeq.map(kind => kind -> toTokens(kind)).toMap
+
+      val unwantedKinds: Set[Kind] =
+        kindTokens.filter(_._2.isEmpty).keySet
+
+      val cleanedParser =
+        if (unwantedKinds.isEmpty) {
+          this
+        }
+        else {
+          this.reject(unwantedKinds)
+        }
+
+      cleanedParser.trails.flatMap { kinds =>
+        val choices = kinds.map(kindTokens)
 
         def go(elems: Seq[Seq[Token]]): Seq[List[Token]] =
           if (elems.isEmpty) {
@@ -318,6 +349,8 @@ trait Parsers[Token, Kind] {
 
     /** Returns the smallest completion of `this` parser that can
       * be obtained using the partial `toToken` function, if any.
+      *
+      * When `this` parser is not LL(1), the result is unspecified.
       *
       * @param toToken Computes the preferred token of the given class, if any.
       *
@@ -420,6 +453,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
         Producer.single(Trail.empty)
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[A] = this
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] = ListSet()
       override def derive(token: Token, kind: Kind): Parser[A] = Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "epsilon(" + value.toString + ")"
     }
@@ -437,6 +472,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = false
       override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
         Producer.empty
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[Nothing] = this
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] = ListSet()
       override def derive(token: Token, kind: Kind): Parser[Nothing] = Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "failure"
     }
@@ -454,6 +491,9 @@ trait Parsers[Token, Kind] {
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = true
       override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
         Producer.single(Trail.single(kind))
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[Token] =
+        if (kinds.contains(kind)) Failure else this
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] = ListSet(kind)
       override def derive(token: Token, tokenKind: Kind): Parser[Token] = if (tokenKind == kind) Success(token) else Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "elem(" + kind + ")"
     }
@@ -471,6 +511,9 @@ trait Parsers[Token, Kind] {
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
       override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
         inner.collectTrails(recs)
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[B] =
+        inner.collectReject(kinds, recs).map(function)
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] = inner.collectKinds(recs)
       override def derive(token: Token, kind: Kind): Parser[B] = inner.derive(token, kind).map(function)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = inner.repr(10, recs) + ".map(<function>)"
     }
@@ -514,6 +557,8 @@ trait Parsers[Token, Kind] {
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
       override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
         trailOps.product(left.collectTrails(recs), right.collectTrails(recs))
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] =
+        left.collectKinds(recs) union right.collectKinds(recs)
     }
 
     /** Parser that sequences the `left` and `right` parsers and groups the results. */
@@ -527,6 +572,8 @@ trait Parsers[Token, Kind] {
         leftValue <- left.collectNullable(recs)
         rightValue <- right.collectNullable(recs)
       } yield scallion.parsing.~(leftValue, rightValue)
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[A ~ B] =
+        left.collectReject(kinds, recs) ~ right.collectReject(kinds, recs)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = {
         val l = left.repr(9, recs)
         val r = right.repr(10, recs)
@@ -564,6 +611,8 @@ trait Parsers[Token, Kind] {
         leftValue <- left.collectNullable(recs)
         rightValue <- right.collectNullable(recs)
       } yield leftValue ++ rightValue
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[Seq[A]] =
+        left.collectReject(kinds, recs) ++ right.collectReject(kinds, recs)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = {
         val l = left.repr(7, recs)
         val r = right.repr(8, recs)
@@ -642,6 +691,10 @@ trait Parsers[Token, Kind] {
           order._2.derive(token, kind)
         }
       }
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[A] =
+        left.collectReject(kinds, recs) | right.collectReject(kinds, recs)
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] =
+        left.collectKinds(recs) union right.collectKinds(recs)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = {
         val l = left.repr(1, recs)
         val r = right.repr(2, recs)
@@ -698,6 +751,17 @@ trait Parsers[Token, Kind] {
           }
           case Some(createProducer) => createProducer()
         }
+      override protected def collectReject(kinds: Set[Kind], recs: Map[AnyRef, Parser[Any]]): Parser[A] = {
+        recs.get(this) match {
+          case None => {
+            lazy val rec: Parser[A] = recursive(inner.collectReject(kinds, recs + (this -> rec)))
+            rec
+          }
+          case Some(rec) => rec.asInstanceOf[Parser[A]]
+        }
+      }
+      override protected def collectKinds(recs: Set[AnyRef]): Set[Kind] =
+        if (recs.contains(this)) ListSet() else inner.collectKinds(recs + this)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = {
         recs.get(this) match {
           case None => {
