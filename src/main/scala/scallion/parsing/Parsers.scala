@@ -415,12 +415,17 @@ trait Parsers[Token, Kind] {
     * @group conflict
     */
   sealed trait LL1Conflict {
+
+    /** Source of the conflict. */
     val source: Parser[Any]
+
+    /** Parser for a prefix before the conflict occurs. */
     val prefix: Parser[Any]
 
     private[parsing] def addPrefix(parser: Parser[Any]): LL1Conflict
 
-    def trails: Iterator[Trail] = prefix.trails
+    /** Returns trails that witness the conflict. */
+    def witnesses: Iterator[Trail]
   }
 
   /** Contains the description of the various LL(1) conflicts.
@@ -436,6 +441,8 @@ trait Parsers[Token, Kind] {
 
       override private[parsing] def addPrefix(start: Parser[Any]): NullableConflict =
         this.copy(prefix = start ~ prefix)
+
+      override def witnesses: Iterator[Trail] = prefix.trails
     }
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
@@ -446,6 +453,11 @@ trait Parsers[Token, Kind] {
 
       override private[parsing] def addPrefix(start: Parser[Any]): FirstConflict =
         this.copy(prefix = start ~ prefix)
+
+      override def witnesses: Iterator[Trail] = for {
+        trail <- prefix.trails
+        kind <- ambiguities
+      } yield trail :+ kind
     }
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
@@ -456,6 +468,11 @@ trait Parsers[Token, Kind] {
 
       override private[parsing] def addPrefix(start: Parser[Any]): FollowConflict =
         this.copy(prefix = start ~ prefix)
+
+      override def witnesses: Iterator[Trail] = for {
+        trail <- prefix.trails
+        kind <- ambiguities
+      } yield trail :+ kind
     }
 
     /** Indicates that the parser recursively calls itself in a left position. */
@@ -465,6 +482,8 @@ trait Parsers[Token, Kind] {
 
       override private[parsing] def addPrefix(start: Parser[Any]): LeftRecursiveConflict =
         this.copy(prefix = start ~ prefix)
+
+      override def witnesses: Iterator[Trail] = prefix.trails
     }
   }
 
