@@ -94,7 +94,7 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
   }
 
   val div = accept(OperatorClass('/')) {
-    case _ => (x: Int, y: Int) => x / y
+    case _ => (x: Int, y: Int) => if (y == 0) 0 else x / y
   }
 
   val fac = accept(OperatorClass('!')) {
@@ -114,8 +114,15 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
 
   lazy val basic: Parser[Int] = number | open ~>~ value ~<~ close
 
+  lazy val postfixed: Parser[Int] = postfixes(basic, fac)
+
+  lazy val prefixed: Parser[Int] = opt(uPlus | uMinus) ~ postfixed map {
+    case Some(f) ~ x => f(x)
+    case None ~ x => x
+  }
+
   lazy val value: Parser[Int] = recursive {
-    operators(prefixes(uPlus | uMinus, postfixes(basic, fac)))(
+    operators(prefixed)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)
   }

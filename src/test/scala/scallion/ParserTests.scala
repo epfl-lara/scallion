@@ -1119,4 +1119,74 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     // expr is left recursive.
     assert(leftRecursiveConflicts.size == 1)
   }
+
+
+  "Trails" should "return correct results for basic parsers" in {
+    assert(elem(NumClass).trails.toSeq == Seq(Seq(NumClass)))
+    assert(epsilon(0).trails.toSeq == Seq(Seq()))
+    assert(failure[Nothing].trails.toSeq == Seq())
+  }
+
+  it should "work for basic sequencing" in {
+    assert((elem(NumClass) ~ elem(BoolClass)).trails.toSeq == Seq(Seq(NumClass, BoolClass)))
+  }
+
+  it should "work for basic disjunction" in {
+    assert((elem(NumClass) | elem(BoolClass)).trails.toSeq == Seq(Seq(NumClass), Seq(BoolClass)))
+  }
+
+  it should "return elements in increasing order" in {
+    val one = elem(BoolClass)
+    val two = elem(NumClass) ~ elem(NumClass)
+    val five = two ~ one ~ two
+
+    val parser = (one ~ opt(five) | five | two ~ opt(two))
+
+    val trails = parser.trails.toSeq
+
+    assert(trails.size == 5)
+    assert(trails(0) == Seq(BoolClass))
+    assert(trails(1) == Seq(NumClass, NumClass))
+    assert(trails(2) == Seq(NumClass, NumClass, NumClass, NumClass))
+    assert(trails(3) == Seq(NumClass, NumClass, BoolClass, NumClass, NumClass))
+    assert(trails(4) == Seq(BoolClass, NumClass, NumClass, BoolClass, NumClass, NumClass))
+  }
+
+  it should "work for simple recursive parsers" in {
+    lazy val parser: Parser[Any] = recursive(elem(BoolClass) | elem(NumClass) ~ parser)
+
+    val trails = parser.trails
+
+    assert(trails.next() == Seq(BoolClass))
+    assert(trails.next() == Seq(NumClass, BoolClass))
+    assert(trails.next() == Seq(NumClass, NumClass, BoolClass))
+  }
+
+  it should "work for intricate, non-LL(1), recursive parsers" in {
+    lazy val parser: Parser[Any] =
+      many(elem(OperatorClass('+')))      |
+      recursive(parser ~ elem(BoolClass)) |
+      recursive(parser ~ elem(NumClass) ~ parser)
+
+    val trails = parser.trails
+
+    assert(trails.next() == Seq())
+    assert(trails.next() == Seq(OperatorClass('+')))
+    assert(trails.next() == Seq(BoolClass))
+    assert(trails.next() == Seq(NumClass))
+    assert(trails.next() == Seq(OperatorClass('+'), OperatorClass('+')))
+    assert(trails.next() == Seq(OperatorClass('+'), BoolClass))
+    assert(trails.next() == Seq(BoolClass, BoolClass))
+    assert(trails.next() == Seq(NumClass, BoolClass))
+    assert(trails.next() == Seq(NumClass, OperatorClass('+')))
+    assert(trails.next() == Seq(NumClass, BoolClass))
+    assert(trails.next() == Seq(NumClass, NumClass))
+
+    // Check that for the next 10000 elements all sequences appear in order.
+    var previous = 2
+    trails.take(10000).foreach { trail =>
+      assert(trail.size >= previous)
+      previous = trail.size
+    }
+  }
 }

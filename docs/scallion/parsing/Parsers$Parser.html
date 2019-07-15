@@ -292,6 +292,10 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
                         <a href="" title="Consumes a stream of tokens and tries to produces a value of type A.">Parser</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
+                        <a class="object" href="Parsers$Trail$.html" title="Contains utilities to build trails."></a>
+                        <a href="Parsers$Trail$.html" title="Contains utilities to build trails.">Trail</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
                         <a class="class" href="Parsers$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered."></a>
                         <a href="Parsers$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered.">UnexpectedEnd</a>
                       </li><li class="current-entities indented3">
@@ -497,6 +501,22 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
       </span>
       <span class="symbol">
         <span class="name">collectShouldNotFollow</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#collectTrails" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="collectTrails(recs:Map[AnyRef,()=&gt;scallion.util.internal.Producer[Parsers.this.Trail]]):scallion.util.internal.Producer[Parsers.this.Trail]"></a><a id="collectTrails(Map[AnyRef,()⇒Producer[Trail]]):Producer[Trail]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser.html#collectTrails(recs:Map[AnyRef,()=&gt;scallion.util.internal.Producer[Parsers.this.Trail]]):scallion.util.internal.Producer[Parsers.this.Trail]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<a href="Parsers.html#Trail=Seq[Kind]" class="extmbr" name="scallion.parsing.Parsers.Trail">Trail</a>]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<a href="Parsers.html#Trail=Seq[Kind]" class="extmbr" name="scallion.parsing.Parsers.Trail">Trail</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -745,6 +765,44 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#complete" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
+      <a id="complete(toToken:PartialFunction[Kind,Token]):Option[A]"></a><a id="complete(PartialFunction[Kind,Token]):Option[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser.html#complete(toToken:PartialFunction[Kind,Token]):Option[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">complete</span><span class="params">(<span name="toToken">toToken: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>, <span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns the smallest completion of <code>this</code> parser that can
+be obtained using the partial <code>toToken</code> function, if any.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the smallest completion of <code>this</code> parser that can
+be obtained using the partial <code>toToken</code> function, if any.
+</p></div><dl class="paramcmts block"><dt class="param">toToken</dt><dd class="cmt"><p>Computes the preferred token of the given class, if any.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#completions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
+      <a id="completions(toTokens:Kind=&gt;Seq[Token]):Iterator[A]"></a><a id="completions((Kind)⇒Seq[Token]):Iterator[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser.html#completions(toTokens:Kind=&gt;Seq[Token]):Iterator[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">completions</span><span class="params">(<span name="toTokens">toTokens: (<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns all possible completions of <code>this</code> parser,
+ordered by increasing number of tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible completions of <code>this</code> parser,
+ordered by increasing number of tokens.
+</p></div><dl class="paramcmts block"><dt class="param">toTokens</dt><dd class="cmt"><p>Computes the possible tokens for a given kind.</p></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#conflicts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="conflicts:Set[Parsers.this.LL1Conflict]"></a><a id="conflicts:Set[LL1Conflict]"></a>
       <span class="permalink">
@@ -1037,7 +1095,7 @@ as the next token by a subsequent parser.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.Parser#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.parsing.Parsers.Parser#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="other">
       <a id="toString():String"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser.html#toString():String" title="Permalink">
@@ -1052,7 +1110,28 @@ as the next token by a subsequent parser.
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">String representation of the parser.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of the parser.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a> → AnyRef → Any</dd></dl></div>
+      <p class="shortcomment cmt">String representation of the parser.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of the parser.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#trails" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
+      <a id="trails:Iterator[Parsers.this.Trail]"></a><a id="trails:Iterator[Trail]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser.html#trails:Iterator[Parsers.this.Trail]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trails</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="Parsers.html#Trail=Seq[Kind]" class="extmbr" name="scallion.parsing.Parsers.Trail">Trail</a>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns all possible sequences of accepted token kinds in increasing size.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible sequences of accepted token kinds in increasing size.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -1231,8 +1310,14 @@ The value is tagged to indicate the side which produced it.
             </div><div class="group" name="parsing">
               <h3>Parsing</h3>
               
+            </div><div class="group" name="complete">
+              <h3>Completions</h3>
+              
             </div><div class="group" name="property">
               <h3>Properties</h3>
+              
+            </div><div class="group" name="other">
+              <h3>Others</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>

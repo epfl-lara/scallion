@@ -17,6 +17,8 @@ package scallion.parsing
 
 import scala.collection.immutable.ListSet
 
+import scallion.util.internal.{Producer, ProducerOps}
+
 /** Contains definitions relating to parsers.
   *
   * @see See trait [[scallion.parsing.Operators]] for useful combinators
@@ -38,6 +40,9 @@ import scala.collection.immutable.ListSet
   *
   * @groupprio conflict 4
   * @groupname conflict LL(1) Conflicts
+  *
+  * @groupprio other 100
+  * @groupname other Others
   */
 trait Parsers[Token, Kind] {
 
@@ -49,6 +54,37 @@ trait Parsers[Token, Kind] {
     */
   def getKind(token: Token): Kind
 
+  /** Sequence of token kinds.
+    *
+    * @group other
+    */
+  type Trail = Seq[Kind]
+
+  /** Contains utilities to build trails.
+    *
+    * @group other
+    */
+  object Trail {
+
+    /** The empty trail. */
+    val empty: Trail = Vector()
+
+    /** Returns a trail containing a single `kind`. */
+    def single(kind: Kind): Trail = Vector(kind)
+  }
+
+  /** Contains utilies to produce trails. */
+  private object trailOps extends ProducerOps[Trail] {
+
+    /** Concatenation of trails. */
+    override def join(left: Trail, right: Trail): Trail =
+      left ++ right
+
+    /** Comparison of trails by size. */
+    override def lessEquals(left: Trail, right: Trail): Boolean =
+      left.size <= right.size
+  }
+
   /** Consumes a stream of tokens and tries to produces a value of type `A`.
     *
     * @group parser
@@ -56,7 +92,10 @@ trait Parsers[Token, Kind] {
     * @groupprio parsing 5
     * @groupname parsing Parsing
     *
-    * @groupprio property 6
+    * @groupprio complete 6
+    * @groupname complete Completions
+    *
+    * @groupprio property 7
     * @groupname property Properties
     */
   sealed trait Parser[+A] {
@@ -106,6 +145,12 @@ trait Parsers[Token, Kind] {
       */
     @inline def conflicts: Set[LL1Conflict] = collectLL1Conflicts(ListSet())
 
+    /** Returns all possible sequences of accepted token kinds in increasing size.
+      *
+      * @group property
+      */
+    @inline def trails: Iterator[Trail] = collectTrails(Map.empty).toIterator
+
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` parser on which the call
     // was already performed.
@@ -120,6 +165,7 @@ trait Parsers[Token, Kind] {
     protected def collectIsProductive(recs: Set[AnyRef]): Boolean
     protected def collectIsLL1(recs: Set[AnyRef]): Boolean
     protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict]
+    protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail]
 
     /** Feeds a token to the parser and obtain a parser for the rest of input.
       *
@@ -127,7 +173,10 @@ trait Parsers[Token, Kind] {
       */
     def derive(token: Token, kind: Kind): Parser[A]
 
-    /** String representation of the parser. */
+    /** String representation of the parser.
+      *
+      * @group other
+      */
     override def toString = repr(0, Map.empty)
 
     /** Computes a friendlier string representation for the parser. */
@@ -240,6 +289,49 @@ trait Parsers[Token, Kind] {
         case Some(value) => Parsed(value, parser)
       }
     }
+
+    /** Returns all possible completions of `this` parser,
+      * ordered by increasing number of tokens.
+      *
+      * @param toTokens Computes the possible tokens for a given kind.
+      *
+      * @group complete
+      */
+    def completions(toTokens: Kind => Seq[Token]): Iterator[A] = {
+      trails.flatMap { kinds =>
+        val choices = kinds.map(toTokens)
+
+        def go(elems: Seq[Seq[Token]]): Seq[List[Token]] =
+          if (elems.isEmpty) {
+            Seq(List())
+          }
+          else for {
+            token <- elems.head
+            rest <- go(elems.tail)
+          } yield token :: rest
+
+        go(choices).flatMap { tokens =>
+          apply(tokens.toIterator).getValue
+        }
+      }
+    }
+
+    /** Returns the smallest completion of `this` parser that can
+      * be obtained using the partial `toToken` function, if any.
+      *
+      * @param toToken Computes the preferred token of the given class, if any.
+      *
+      * @group complete
+      */
+    def complete(toToken: PartialFunction[Kind, Token]): Option[A] = {
+      val it = completions(kind => toToken.lift(kind).toSeq)
+      if (it.hasNext) {
+        Some(it.next())
+      }
+      else {
+        None
+      }
+    }
   }
 
   /** Result of running a `Parser`.
@@ -250,6 +342,12 @@ trait Parsers[Token, Kind] {
 
     /** Parser for the rest of input. */
     val parser: Parser[A]
+
+    /** Returns the parsed value, if any. */
+    def getValue: Option[A] = this match {
+      case Parsed(value, _) => Some(value)
+      case _ => None
+    }
   }
 
   /** Indicates that the input has been fully processed, resulting in a `value`.
@@ -320,6 +418,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = true
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        Producer.single(Trail.empty)
       override def derive(token: Token, kind: Kind): Parser[A] = Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "epsilon(" + value.toString + ")"
     }
@@ -335,6 +435,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = false
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        Producer.empty
       override def derive(token: Token, kind: Kind): Parser[Nothing] = Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "failure"
     }
@@ -350,6 +452,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = true
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = ListSet()
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = true
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        Producer.single(Trail.single(kind))
       override def derive(token: Token, tokenKind: Kind): Parser[Token] = if (tokenKind == kind) Success(token) else Failure
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = "elem(" + kind + ")"
     }
@@ -365,6 +469,8 @@ trait Parsers[Token, Kind] {
       override protected def collectIsLL1(recs: Set[AnyRef]): Boolean = inner.collectIsLL1(recs)
       override protected def collectLL1Conflicts(recs: Set[AnyRef]): Set[LL1Conflict] = inner.collectLL1Conflicts(recs)
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean = inner.collectIsProductive(recs)
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        inner.collectTrails(recs)
       override def derive(token: Token, kind: Kind): Parser[B] = inner.derive(token, kind).map(function)
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = inner.repr(10, recs) + ".map(<function>)"
     }
@@ -406,6 +512,8 @@ trait Parsers[Token, Kind] {
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        trailOps.product(left.collectTrails(recs), right.collectTrails(recs))
     }
 
     /** Parser that sequences the `left` and `right` parsers and groups the results. */
@@ -524,6 +632,8 @@ trait Parsers[Token, Kind] {
       }
       override protected def collectIsProductive(recs: Set[AnyRef]): Boolean =
         left.collectIsProductive(recs) || right.collectIsProductive(recs)
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        trailOps.union(left.collectTrails(recs), right.collectTrails(recs))
       override def derive(token: Token, kind: Kind): Parser[A] = {
         if (firstFirst.contains(kind)) {
           order._1.derive(token, kind)
@@ -577,6 +687,17 @@ trait Parsers[Token, Kind] {
         if (recs.contains(this)) false else inner.collectIsProductive(recs + this)
       override def derive(token: Token, kind: Kind): Parser[A] =
         inner.derive(token, kind)
+      override protected def collectTrails(recs: Map[AnyRef, () => Producer[Trail]]): Producer[Trail] =
+        recs.get(this) match {
+          case None => {
+            lazy val pair: (Producer[Trail], () => Producer[Trail]) =
+              Producer.duplicate(Producer.lazily {
+                inner.collectTrails(recs + (this -> pair._2))
+              })
+            pair._1
+          }
+          case Some(createProducer) => createProducer()
+        }
       override protected def repr(level: Int, recs: Map[AnyRef, String]): String = {
         recs.get(this) match {
           case None => {
