@@ -19,7 +19,7 @@ package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
-/** Contains utilities to vizualize parsers as BNF grammars.
+/** Contains utilities to visualize parsers as BNF grammars.
   *
   * @groupprio grammar 1
   * @groupname grammar Grammar
@@ -29,7 +29,7 @@ import scala.collection.mutable.{Queue, StringBuilder}
   */
 trait Grammars[Kind] { self: Parsers[_, Kind] =>
 
-  /** Contains utilities to vizualize parsers as BNF grammars.
+  /** Contains utilities to visualize parsers as BNF grammars.
     *
     * @group visualization
     */

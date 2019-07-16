@@ -19,10 +19,10 @@ package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
-/** Contains utilities to vizualize parsers as graphs using Graphviz. */
+/** Contains utilities to visualize parsers as graphs using Graphviz. */
 trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
-  /** Contains utilities to vizualize parsers as graphs using Graphviz.
+  /** Contains utilities to visualize parsers as graphs using Graphviz.
     *
     * @group visualization
     */
