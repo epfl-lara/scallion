@@ -10,7 +10,8 @@ lazy val scallion = project
 
     scalacOptions ++= Seq(
       "-deprecation",
-      "-feature"
+      "-feature",
+      "-unchecked"
     ),
 
     Compile / doc / scalacOptions ++= Seq(
