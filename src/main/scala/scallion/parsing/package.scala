@@ -20,7 +20,7 @@ package scallion
   * To use the package, mix-in the [[scallion.parsing.Parsers]] trait.
   *
   * {{{
-  * object MyParsers extends Parsers[Token, Kind, Position] {
+  * object MyParsers extends Parsers[Token, Kind] {
   *
   *   // Define the token kind of tokens.
   *   override def getKind(token: Token): Kind = ...

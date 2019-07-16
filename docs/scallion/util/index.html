@@ -292,7 +292,7 @@ for regular expressions on <code>Char</code>.
         <a title="This package is used to write LL(1) parsers." href="../parsing/index.html"><span class="name">parsing</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to write LL(1) parsers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write LL(1) parsers.</p><p>To use the package, mix-in the <a href="../parsing/Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a> trait.</p><pre><span class="kw">object</span> MyParsers <span class="kw">extends</span> Parsers[Token, Kind, Position] {
+      <p class="shortcomment cmt">This package is used to write LL(1) parsers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write LL(1) parsers.</p><p>To use the package, mix-in the <a href="../parsing/Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a> trait.</p><pre><span class="kw">object</span> MyParsers <span class="kw">extends</span> Parsers[Token, Kind] {
 
   <span class="cmt">// Define the token kind of tokens.</span>
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
