@@ -149,8 +149,8 @@ trait Grammars[Kind] { self: Parsers[_, Kind] =>
           val id = inspect(d)
           Seq(NonTerminal(id))
         }
-        case r@Recursive(_) => {
-          val id = inspect(r.inner)
+        case Recursive(inner) => {
+          val id = inspect(inner)
           Seq(NonTerminal(id))
         }
       }

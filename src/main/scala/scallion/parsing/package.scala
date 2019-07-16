@@ -39,7 +39,10 @@ package scallion
   * @groupprio result 2
   * @groupname result Parse Results
   *
-  * @groupprio combinator 3
+  * @groupprio basic 3
+  * @groupname basic Basic Parsers
+  *
+  * @groupprio combinator 4
   * @groupname combinator Combinators
   *
   * @groupprio conflict 10

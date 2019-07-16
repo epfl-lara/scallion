@@ -87,8 +87,8 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
             ("map", Seq(innerId))
           }
-          case r@Recursive(_) => {
-            val innerId = inspect(r.inner)
+          case Recursive(inner) => {
+            val innerId = inspect(inner)
 
             ("rec", Seq(innerId))
           }

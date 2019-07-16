@@ -285,13 +285,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a class="class" href="Parsers$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value."></a>
                         <a href="Parsers$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value.">Parsed</a>
                       </li><li class="current-entities indented3">
-                        <a class="object" href="" title="Contains primitive parser combinators."></a>
+                        <a class="object" href="" title="Contains primitive basic parsers and parser combinators."></a>
                         <a class="trait" href="Parsers$Parser.html" title="Consumes a stream of tokens and tries to produces a value of type A."></a>
                         <a href="Parsers$Parser.html" title="Consumes a stream of tokens and tries to produces a value of type A.">Parser</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="object" href="Parsers$Trail$.html" title="Contains utilities to build trails."></a>
-                        <a href="Parsers$Trail$.html" title="Contains utilities to build trails.">Trail</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="Parsers$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered."></a>
@@ -338,7 +334,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains primitive parser combinators.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains primitive basic parsers and parser combinators.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/Parsers.scala" target="_blank">Parsers.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -360,7 +356,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -391,7 +387,23 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.parsing.Parsers.Parser.Concat" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scallion.parsing.Parsers.Parser.Binary" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="combinator">
+      <a id="Binary[+A,+B]extendsAnyRef"></a><a id="Binary[+A,+B]:Binary[A,B]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Binary[+A,+B]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Binary combinator." href="Parsers$Parser$$Binary.html"><span class="name">Binary</span></a><span class="tparams">[<span name="A">+A</span>, <span name="B">+B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Binary combinator.</p>
+    </li><li name="scallion.parsing.Parsers.Parser.Concat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="Concat[+A]extendsParsers.this.Parser[Seq[A]]withParsers.Parser.SequenceLike[Seq[A],Seq[A]]withProductwithSerializable"></a><a id="Concat[+A]:Concat[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser$.html#Concat[+A]extendsParsers.this.Parser[Seq[A]]withParsers.Parser.SequenceLike[Seq[A],Seq[A]]withProductwithSerializable" title="Permalink">
@@ -406,11 +418,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="Parser that sequences the left and right parsers and concatenates the results." href="Parsers$Parser$$Concat.html"><span class="name">Concat</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="left">left: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]]</span>, <span name="right">right: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]] with <a href="Parsers$Parser$$SequenceLike.html" class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike">SequenceLike</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Concat.A">A</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that sequences the <code>left</code> and <code>right</code> parsers and concatenates the results.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Disjunction" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Disjunction[+A]extendsParsers.this.Parser[A]withProductwithSerializable"></a><a id="Disjunction[+A]:Disjunction[A]"></a>
+      <p class="shortcomment cmt">Parser that sequences the <code>left</code> and <code>right</code> parsers and concatenates the results.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that sequences the <code>left</code> and <code>right</code> parsers and concatenates the results.
+</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>The parser for the prefix.</p></dd><dt class="param">right</dt><dd class="cmt"><p>The parser for the suffix.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Disjunction" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="Disjunction[+A]extendsParsers.this.Parser[A]withParsers.Parser.Binary[A,A]withProductwithSerializable"></a><a id="Disjunction[+A]:Disjunction[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$.html#Disjunction[+A]extendsParsers.this.Parser[A]withProductwithSerializable" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Disjunction[+A]extendsParsers.this.Parser[A]withParsers.Parser.Binary[A,A]withProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -419,11 +432,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Parser that acts either as the disjunction of the left and right parsers." href="Parsers$Parser$$Disjunction.html"><span class="name">Disjunction</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="left">left: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>, <span name="right">right: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Parser that acts either as the disjunction of the left and right parsers." href="Parsers$Parser$$Disjunction.html"><span class="name">Disjunction</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="left">left: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>, <span name="right">right: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>] with <a href="Parsers$Parser$$Binary.html" class="extype" name="scallion.parsing.Parsers.Parser.Binary">Binary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>, <span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that acts either as the disjunction of the <code>left</code> and <code>right</code> parsers.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Parser that acts either as the disjunction of the <code>left</code> and <code>right</code> parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that acts either as the disjunction of the <code>left</code> and <code>right</code> parsers.
+</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>The parser for the first alternative.</p></dd><dt class="param">right</dt><dd class="cmt"><p>The parser for the second alternative.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
       <a id="ElemextendsParsers.this.Parser[Token]withProductwithSerializable"></a><a id="Elem:Elem"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser$.html#ElemextendsParsers.this.Parser[Token]withProductwithSerializable" title="Permalink">
@@ -438,24 +452,41 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="Parser that consumes tokens of the given kind." href="Parsers$Parser$$Elem.html"><span class="name">Elem</span></a><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span></span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that consumes tokens of the given <code>kind</code>.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Recursive" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Recursive[+A]extendsParsers.this.Parser[A]withProductwithSerializable"></a><a id="Recursive[+A]:Recursive[A]"></a>
+      <p class="shortcomment cmt">Parser that consumes tokens of the given <code>kind</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that consumes tokens of the given <code>kind</code>.
+</p></div><dl class="paramcmts block"><dt class="param">kind</dt><dd class="cmt"><p>The kind accepted by the parser.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.RecId" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RecId=Int"></a><a id="RecId:RecId"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$.html#Recursive[+A]extendsParsers.this.Parser[A]withProductwithSerializable" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#RecId=Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <a title="Parser that may recursively call itself." href="Parsers$Parser$$Recursive.html"><span class="name">Recursive</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="computation">computation: () ⇒ <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Recursive.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Recursive.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">RecId</span><span class="result alias"> = <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Identifier for Recursive.</p><div class="fullcomment"><div class="comment cmt"><p>Identifier for Recursive.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Recursive" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="combinator">
+      <a id="Recursive[+A]extendsParsers.this.Parser[A]withParsers.Parser.Unary[A]"></a><a id="Recursive[+A]:Recursive[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Recursive[+A]extendsParsers.this.Parser[A]withParsers.Parser.Unary[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Parser that may recursively call itself." href="Parsers$Parser$$Recursive.html"><span class="name">Recursive</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Recursive.A">A</span>] with <a href="Parsers$Parser$$Unary.html" class="extype" name="scallion.parsing.Parsers.Parser.Unary">Unary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Recursive.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that may recursively call itself.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Sequence" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.parsing.Parsers.Parser.Sequence" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="Sequence[+A,+B]extendsParsers.this.Parser[A~B]withParsers.Parser.SequenceLike[A,B]withProductwithSerializable"></a><a id="Sequence[+A,+B]:Sequence[A,B]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser$.html#Sequence[+A,+B]extendsParsers.this.Parser[A~B]withParsers.Parser.SequenceLike[A,B]withProductwithSerializable" title="Permalink">
@@ -470,11 +501,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="Parser that sequences the left and right parsers and groups the results." href="Parsers$Parser$$Sequence.html"><span class="name">Sequence</span></a><span class="tparams">[<span name="A">+A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="left">left: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.A">A</span>]</span>, <span name="right">right: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.B">B</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<a href="package$$$tilde.html" class="extype" name="scallion.parsing.~">~</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.A">A</span>, <span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.B">B</span>]] with <a href="Parsers$Parser$$SequenceLike.html" class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike">SequenceLike</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.A">A</span>, <span class="extype" name="scallion.parsing.Parsers.Parser.Sequence.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that sequences the <code>left</code> and <code>right</code> parsers and groups the results.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.SequenceLike" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SequenceLike[+A,+B]extendsAnyRef"></a><a id="SequenceLike[+A,+B]:SequenceLike[A,B]"></a>
+      <p class="shortcomment cmt">Parser that sequences the <code>left</code> and <code>right</code> parsers and groups the results.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that sequences the <code>left</code> and <code>right</code> parsers and groups the results.
+</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>The parser for the prefix.</p></dd><dt class="param">right</dt><dd class="cmt"><p>The parser for the suffix.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.SequenceLike" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="combinator">
+      <a id="SequenceLike[+A,+B]extendsParsers.Parser.Binary[A,B]"></a><a id="SequenceLike[+A,+B]:SequenceLike[A,B]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$.html#SequenceLike[+A,+B]extendsAnyRef" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#SequenceLike[+A,+B]extendsParsers.Parser.Binary[A,B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -483,11 +515,11 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Parser that sequences the left and right parsers." href="Parsers$Parser$$SequenceLike.html"><span class="name">SequenceLike</span></a><span class="tparams">[<span name="A">+A</span>, <span name="B">+B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Parser that sequences the left and right parsers." href="Parsers$Parser$$SequenceLike.html"><span class="name">SequenceLike</span></a><span class="tparams">[<span name="A">+A</span>, <span name="B">+B</span>]</span><span class="result"> extends <a href="Parsers$Parser$$Binary.html" class="extype" name="scallion.parsing.Parsers.Parser.Binary">Binary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike.A">A</span>, <span class="extype" name="scallion.parsing.Parsers.Parser.SequenceLike.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that sequences the <code>left</code> and <code>right</code> parsers.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Success" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.parsing.Parsers.Parser.Success" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
       <a id="Success[+A]extendsParsers.this.Parser[A]withProductwithSerializable"></a><a id="Success[+A]:Success[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser$.html#Success[+A]extendsParsers.this.Parser[A]withProductwithSerializable" title="Permalink">
@@ -502,11 +534,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="Parser that produces value without consuming input tokens." href="Parsers$Parser$$Success.html"><span class="name">Success</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.parsing.Parsers.Parser.Success.A">A</span></span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Success.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that produces <code>value</code> without consuming input tokens.</p>
-    </li><li name="scallion.parsing.Parsers.Parser.Transform" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Transform[A,+B]extendsParsers.this.Parser[B]withProductwithSerializable"></a><a id="Transform[A,+B]:Transform[A,B]"></a>
+      <p class="shortcomment cmt">Parser that produces <code>value</code> without consuming input tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that produces <code>value</code> without consuming input tokens.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced by the parser.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Transform" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="Transform[A,+B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable"></a><a id="Transform[A,+B]:Transform[A,B]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$.html#Transform[A,+B]extendsParsers.this.Parser[B]withProductwithSerializable" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Transform[A,+B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -515,10 +548,27 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Parser that applies a function on the parsed value of the inner parser." href="Parsers$Parser$$Transform.html"><span class="name">Transform</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span></span>, <span name="inner">inner: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Parser that applies a function on the parsed value of the inner parser." href="Parsers$Parser$$Transform.html"><span class="name">Transform</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span></span>, <span name="inner">inner: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span>] with <a href="Parsers$Parser$$Unary.html" class="extype" name="scallion.parsing.Parsers.Parser.Unary">Unary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Parser that applies a <code>function</code> on the parsed value of the <code>inner</code> parser.</p>
+      <p class="shortcomment cmt">Parser that applies a <code>function</code> on the parsed value of the <code>inner</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that applies a <code>function</code> on the parsed value of the <code>inner</code> parser.
+</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to apply on produced values.</p></dd><dt class="param">inner</dt><dd class="cmt"><p>The inner parser.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Unary" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="combinator">
+      <a id="Unary[+A]extendsAnyRef"></a><a id="Unary[+A]:Unary[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Unary[+A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Unary combinator." href="Parsers$Parser$$Unary.html"><span class="name">Unary</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Unary combinator.</p>
     </li></ol>
             </div>
 
@@ -877,7 +927,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.Parser.Failure" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.parsing.Parsers.Parser.Failure" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="Failure"></a><a id="Failure:Failure"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers$Parser$.html#Failure" title="Permalink">
@@ -893,6 +943,22 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Parser that produces <code>value</code> without consuming input tokens.</p>
+    </li><li name="scallion.parsing.Parsers.Parser.Recursive" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+      <a id="Recursive"></a><a id="Recursive:Recursive"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Recursive" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Companion object of Recursive." href="Parsers$Parser$$Recursive$.html"><span class="name">Recursive</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Companion object of <code>Recursive</code>.</p>
     </li>
               </ol>
             </div>
@@ -912,7 +978,13 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="basic">
+              <h3>Basic Parsers</h3>
+              
+            </div><div class="group" name="combinator">
+              <h3>Combinators</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

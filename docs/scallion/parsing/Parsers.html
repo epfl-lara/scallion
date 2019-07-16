@@ -554,7 +554,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.parsing.Parsers#accept" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+    </li><li name="scallion.parsing.Parsers#accept" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
       <a id="accept[A](kind:Kind)(function:PartialFunction[Token,A]):Parsers.this.Parser[A]"></a><a id="accept[A](Kind)(PartialFunction[Token,A]):Parser[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers.html#accept[A](kind:Kind)(function:PartialFunction[Token,A]):Parsers.this.Parser[A]" title="Permalink">
@@ -612,7 +612,7 @@ A function directly is applied on the successfully matched token.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers#elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+    </li><li name="scallion.parsing.Parsers#elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="elem(kind:Kind):Parsers.this.Parser[Token]"></a><a id="elem(Kind):Parser[Token]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers.html#elem(kind:Kind):Parsers.this.Parser[Token]" title="Permalink">
@@ -628,7 +628,7 @@ A function directly is applied on the successfully matched token.
       </span>
       
       <p class="shortcomment cmt">Parser that accepts tokens of the provided <code>kind</code>.</p>
-    </li><li name="scallion.parsing.Parsers#epsilon" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+    </li><li name="scallion.parsing.Parsers#epsilon" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="epsilon[A](value:A):Parsers.this.Parser[A]"></a><a id="epsilon[A](A):Parser[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers.html#epsilon[A](value:A):Parsers.this.Parser[A]" title="Permalink">
@@ -676,7 +676,7 @@ A function directly is applied on the successfully matched token.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.parsing.Parsers#failure" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+    </li><li name="scallion.parsing.Parsers#failure" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="failure[A]:Parsers.this.Parser[A]"></a><a id="failure[A]:Parser[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers.html#failure[A]:Parsers.this.Parser[A]" title="Permalink">
@@ -1062,26 +1062,10 @@ A function directly is applied on the successfully matched token.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Contains primitive parser combinators." href="Parsers$Parser$.html"><span class="name">Parser</span></a>
+        <a title="Contains primitive basic parsers and parser combinators." href="Parsers$Parser$.html"><span class="name">Parser</span></a>
       </span>
       
-      <p class="shortcomment cmt">Contains primitive parser combinators.</p>
-    </li><li name="scallion.parsing.Parsers.Trail" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="other">
-      <a id="Trail"></a><a id="Trail:Trail"></a>
-      <span class="permalink">
-      <a href="../../scallion/parsing/Parsers.html#Trail" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Contains utilities to build trails." href="Parsers$Trail$.html"><span class="name">Trail</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Contains utilities to build trails.</p>
+      <p class="shortcomment cmt">Contains primitive basic parsers and parser combinators.</p>
     </li><li name="scallion.parsing.visualization.Grammars.grammars" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="visualization">
       <a id="grammars"></a><a id="grammars:grammars"></a>
       <span class="permalink">
@@ -1147,6 +1131,9 @@ A function directly is applied on the successfully matched token.
               
             </div><div class="group" name="result">
               <h3>Parse Results</h3>
+              
+            </div><div class="group" name="basic">
+              <h3>Basic Parsers</h3>
               
             </div><div class="group" name="combinator">
               <h3>Combinators</h3>
