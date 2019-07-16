@@ -138,8 +138,14 @@ class JSONParserTests extends FlatSpec with Inside {
   it should "work even after errors" in {
 
     val erroneous = rest("[1,}")
+    // Parser should fail:   ^ here
 
     assert(erroneous.nullable.isEmpty)
+
+    val smallTrails = erroneous.trails.takeWhile(_.size <= 2).toList
+    assert(smallTrails.contains(Seq(StringClass, SeparatorClass(']'))))
+    assert(smallTrails.contains(Seq(NumberClass, SeparatorClass(']'))))
+    assert(smallTrails.contains(Seq(NullClass, SeparatorClass(']'))))
 
     val completed = erroneous.complete {
       case StringClass => StringToken("XXX", (0, 0))
