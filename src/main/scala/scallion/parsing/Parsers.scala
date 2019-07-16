@@ -369,7 +369,7 @@ trait Parsers[Token, Kind]
       *
       * @group complete
       */
-    def completions(toTokens: Kind => Seq[Token]): Iterator[A] = {
+    def completions(toTokens: Kind => Seq[Token]): Iterator[Parser[A]] = {
 
       val kindTokens: Map[Kind, Seq[Token]] =
         kinds.toSeq.map(kind => kind -> toTokens(kind)).toMap
@@ -397,8 +397,8 @@ trait Parsers[Token, Kind]
             rest <- go(elems.tail)
           } yield token :: rest
 
-        go(choices).flatMap { tokens =>
-          apply(tokens.toIterator).getValue
+        go(choices).map { tokens =>
+          apply(tokens.toIterator).parser
         }
       }
     }
@@ -412,13 +412,13 @@ trait Parsers[Token, Kind]
       *
       * @group complete
       */
-    def complete(toToken: PartialFunction[Kind, Token]): Option[A] = {
+    def complete(toToken: PartialFunction[Kind, Token]): Parser[A] = {
       val it = completions(kind => toToken.lift(kind).toSeq)
       if (it.hasNext) {
-        Some(it.next())
+        it.next()
       }
       else {
-        None
+        Failure
       }
     }
   }
