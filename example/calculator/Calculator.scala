@@ -89,7 +89,7 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
     case _ => (x: Int, y: Int) => x - y
   }
 
-  val times = accept(OperatorClass('*')) {
+  val times = elem(OperatorClass('*')).map {
     case _ => (x: Int, y: Int) => x * y
   }
 

@@ -253,9 +253,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
-}</pre><p>Additional traits can be mixed-in.
-See for instance <a href="../Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.parsing.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="visualization"></a><a id="visualization:visualization"></a>
       <span class="permalink">
@@ -309,13 +307,17 @@ See for instance <a href="../Operators.html" class="extype" name="scallion.parsi
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains utilities to vizualize parsers as BNF grammars.
-Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a>.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.parsing.visualization.Grammars.Kind">Kind</span>] with <a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, <span class="extype" name="scallion.parsing.visualization.Grammars.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/visualization/Grammars.scala" target="_blank">Grammars.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, <span class="extype" name="scallion.parsing.visualization.Grammars.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/visualization/Grammars.scala" target="_blank">Grammars.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -360,92 +362,7 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="scallion.parsing.visualization.Grammars.Grammar" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="grammar">
-      <a id="GrammarextendsProductwithSerializable"></a><a id="Grammar:(Grammars.this)#Grammar"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#GrammarextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Sequence of rules." href="Grammars$Grammar.html"><span class="name">Grammar</span></a><span class="params">(<span name="rules">rules: <span class="extype" name="scala.Seq">Seq</span>[(<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Rule">Rule</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Sequence of rules.</p>
-    </li><li name="scallion.parsing.visualization.Grammars.NonTerminal" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="symbol">
-      <a id="NonTerminalextendsGrammars.this.SymbolwithProductwithSerializable"></a><a id="NonTerminal:(Grammars.this)#NonTerminal"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#NonTerminalextendsGrammars.this.SymbolwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Non-terminal symbol." href="Grammars$NonTerminal.html"><span class="name">NonTerminal</span></a><span class="params">(<span name="id">id: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Symbol">Symbol</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Non-terminal symbol.</p><div class="fullcomment"><div class="comment cmt"><p>Non-terminal symbol.
-</p></div><dl class="paramcmts block"><dt class="param">id</dt><dd class="cmt"><p>Index of the rule in the grammar.</p></dd></dl></div>
-    </li><li name="scallion.parsing.visualization.Grammars.Rule" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="grammar">
-      <a id="RuleextendsProductwithSerializable"></a><a id="Rule:(Grammars.this)#Rule"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#RuleextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Disjunction between various sequences of symbols." href="Grammars$Rule.html"><span class="name">Rule</span></a><span class="params">(<span name="sequences">sequences: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Seq">Seq</span>[(<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Symbol">Symbol</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Disjunction between various sequences of symbols.</p>
-    </li><li name="scallion.parsing.visualization.Grammars.Symbol" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="symbol">
-      <a id="SymbolextendsAnyRef"></a><a id="Symbol:(Grammars.this)#Symbol"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#SymbolextendsAnyRef" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a title="Grammar symbol." href="Grammars$Symbol.html"><span class="name">Symbol</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Grammar symbol.</p>
-    </li><li name="scallion.parsing.visualization.Grammars.Terminal" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="symbol">
-      <a id="TerminalextendsGrammars.this.SymbolwithProductwithSerializable"></a><a id="Terminal:(Grammars.this)#Terminal"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#TerminalextendsGrammars.this.SymbolwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Terminal symbol." href="Grammars$Terminal.html"><span class="name">Terminal</span></a><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.parsing.visualization.Grammars.Kind">Kind</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Symbol">Symbol</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Terminal symbol.</p><div class="fullcomment"><div class="comment cmt"><p>Terminal symbol.
-</p></div><dl class="paramcmts block"><dt class="param">kind</dt><dd class="cmt"><p>Kind of tokens represented by the terminal.</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         
 
@@ -613,22 +530,6 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.visualization.Grammars#getGrammar" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="grammar">
-      <a id="getGrammar(parser:Grammars.this.Parser[Any]):Grammars.this.Grammar"></a><a id="getGrammar((Grammars.this)#Parser[Any]):(Grammars.this)#Grammar"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#getGrammar(parser:Grammars.this.Parser[Any]):Grammars.this.Grammar" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getGrammar</span><span class="params">(<span name="parser">parser: (<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Grammar">Grammar</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Computes the grammar associated with a <code>parser</code>.</p>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
@@ -818,10 +719,10 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.visualization.Grammars.Epsilon" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="symbol">
-      <a id="Epsilon"></a><a id="Epsilon:Epsilon"></a>
+    </li><li name="scallion.parsing.visualization.Grammars.grammars" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="visualization">
+      <a id="grammars"></a><a id="grammars:grammars"></a>
       <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Grammars.html#Epsilon" title="Permalink">
+      <a href="../../../scallion/parsing/visualization/Grammars.html#grammars" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -830,10 +731,10 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Empty symbol." href="Grammars$Epsilon$.html"><span class="name">Epsilon</span></a><span class="result"> extends (<a href="" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>.this)#<span class="extype" name="scallion.parsing.visualization.Grammars.Symbol">Symbol</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Contains utilities to vizualize parsers as BNF grammars." href="Grammars$grammars$.html"><span class="name">grammars</span></a>
       </span>
       
-      <p class="shortcomment cmt">Empty symbol.</p>
+      <p class="shortcomment cmt">Contains utilities to vizualize parsers as BNF grammars.</p>
     </li>
               </ol>
             </div>
@@ -853,11 +754,8 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="grammar">
-              <h3>Grammar</h3>
-              
-            </div><div class="group" name="symbol">
-              <h3>Symbols</h3>
+        <div class="group" name="visualization">
+              <h3>Visualization</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>

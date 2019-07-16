@@ -253,9 +253,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
-}</pre><p>Additional traits can be mixed-in.
-See for instance <a href="../Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.parsing.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="visualization"></a><a id="visualization:visualization"></a>
       <span class="permalink">
@@ -308,13 +306,17 @@ See for instance <a href="../Operators.html" class="extype" name="scallion.parsi
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains utilities to vizualize parsers as graphs using Graphviz.
-Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a>.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.parsing.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.parsing.visualization.Graphs.Kind">Kind</span>] with <a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, <span class="extype" name="scallion.parsing.visualization.Graphs.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/visualization/Graphs.scala" target="_blank">Graphs.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains utilities to vizualize parsers as graphs using Graphviz.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, <span class="extype" name="scallion.parsing.visualization.Graphs.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/visualization/Graphs.scala" target="_blank">Graphs.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="../Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -330,7 +332,7 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -616,23 +618,6 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.visualization.Graphs#outputGraph" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputGraph(parser:Graphs.this.Parser[Any],location:String,name:String):Unit"></a><a id="outputGraph((Graphs.this)#Parser[Any],String,String):Unit"></a>
-      <span class="permalink">
-      <a href="../../../scallion/parsing/visualization/Graphs.html#outputGraph(parser:Graphs.this.Parser[Any],location:String,name:String):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputGraph</span><span class="params">(<span name="parser">parser: (<a href="" class="extype" name="scallion.parsing.visualization.Graphs">Graphs</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Produces a graph representation of the parser as a PDF file using <code>dot</code> from Graphviz.</p><div class="fullcomment"><div class="comment cmt"><p>Produces a graph representation of the parser as a PDF file using <code>dot</code> from Graphviz.
-</p></div><dl class="paramcmts block"><dt class="param">parser</dt><dd class="cmt"><p>The parser to display.</p></dd><dt class="param">location</dt><dd class="cmt"><p>The directory in which to save the files.</p></dd><dt class="param">name</dt><dd class="cmt"><p>The name of the files. Will be postfixed by respectively <code>.dot</code> and <code>.pdf</code>.</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -733,6 +718,22 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.parsing.visualization.Graphs.graphs" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="visualization">
+      <a id="graphs"></a><a id="graphs:graphs"></a>
+      <span class="permalink">
+      <a href="../../../scallion/parsing/visualization/Graphs.html#graphs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains utilities to vizualize parsers as graphs using Graphviz." href="Graphs$graphs$.html"><span class="name">graphs</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains utilities to vizualize parsers as graphs using Graphviz.</p>
     </li>
               </ol>
             </div>
@@ -752,7 +753,10 @@ Expected to be mixed-in <a href="../Parsers.html" class="extype" name="scallion.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="visualization">
+              <h3>Visualization</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

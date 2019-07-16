@@ -253,9 +253,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
-}</pre><p>Additional traits can be mixed-in.
-See for instance <a href="" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="visualization/index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.parsing.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="visualization"></a><a id="visualization:visualization"></a>
       <span class="permalink">
@@ -314,7 +312,7 @@ See for instance <a href="" class="extype" name="scallion.parsing.Operators">sca
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains utilities to write parsers with infix, prefix and postfix operators.
 Expected to be mixed-in to <code>Parsers</code>.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.parsing.Operators">Operators</a> with <a href="Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, _]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/Parsers.scala" target="_blank">Parsers.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.parsing.Operators">Operators</a> with <a href="Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a>[_, _]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/Operators.scala" target="_blank">Operators.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -399,7 +397,7 @@ Expected to be mixed-in to <code>Parsers</code>.
       
       <p class="shortcomment cmt">Represents a precedence level with a parser for the various <code>operator</code>s of that level
 and an associativity.</p>
-    </li><li name="scallion.parsing.Operators.LevelDecorator" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="level">
+    </li><li name="scallion.parsing.Operators.LevelDecorator" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="level">
       <a id="LevelDecorator[A]extendsAnyRef"></a><a id="LevelDecorator[A]:(Operators.this)#LevelDecorator[A]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Operators.html#LevelDecorator[A]extendsAnyRef" title="Permalink">
@@ -415,7 +413,8 @@ and an associativity.</p>
       </span>
       
       <p class="shortcomment cmt">Implicitly decorates an <code>operator</code> parser to add an <code>is</code> methods
-that indicates the associativity of the parser.</p>
+that indicates the associativity of the parser.</p><div class="fullcomment"><div class="comment cmt"><p>Implicitly decorates an <code>operator</code> parser to add an <code>is</code> methods
+that indicates the associativity of the parser.</p><pre><span class="kw">val</span> level = div | times is LeftAssociative</pre></div></div>
     </li></ol>
             </div>
 
@@ -725,8 +724,10 @@ The value returned is reduced right-to-left.
         <span class="name">operators</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>)</span><span class="params">(<span name="levels">levels: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Operators.Level">Level</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]*</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><p>The operators in earlier levels are considered to bind tighter than those in later levels.
-</p></div></div>
+      <p class="shortcomment cmt">Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><p>The operators in earlier levels are considered to bind tighter than those in later levels.</p><pre><span class="kw">val</span> boolExpr = operators(basicBoolExpr)(
+  andOp is LeftAssociative,
+  orOp is LeftAssociative,
+  implyOp is RightAssociative)</pre></div></div>
     </li><li name="scallion.parsing.Operators#postfixes" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="postfixes[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[A=&gt;A]):Operators.this.Parser[A]"></a><a id="postfixes[A]((Operators.this)#Parser[A],(Operators.this)#Parser[(A)⇒A]):(Operators.this)#Parser[A]"></a>
       <span class="permalink">
@@ -742,7 +743,7 @@ The value returned is reduced right-to-left.
         <span class="name">postfixes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Parser that parses <code>elem</code> postfixed by an number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> postfixed by an number of <code>op</code>.</p><p>Operators are applied left-to-right.
+      <p class="shortcomment cmt">Parser that parses <code>elem</code> postfixed by any number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> postfixed by any number of <code>op</code>.</p><p>Operators are applied left-to-right.
 </p></div></div>
     </li><li name="scallion.parsing.Operators#prefixes" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="prefixes[A](op:Operators.this.Parser[A=&gt;A],elem:Operators.this.Parser[A]):Operators.this.Parser[A]"></a><a id="prefixes[A]((Operators.this)#Parser[(A)⇒A],(Operators.this)#Parser[A]):(Operators.this)#Parser[A]"></a>
@@ -759,7 +760,7 @@ The value returned is reduced right-to-left.
         <span class="name">prefixes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>, <span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Parser that parses <code>elem</code> prefixed by an number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> prefixed by an number of <code>op</code>.</p><p>Operators are applied right-to-left.
+      <p class="shortcomment cmt">Parser that parses <code>elem</code> prefixed by any number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> prefixed by any number of <code>op</code>.</p><p>Operators are applied right-to-left.
 </p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
@@ -912,15 +913,15 @@ The value returned is reduced right-to-left.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="assoc">
-              <h3>Associativity</h3>
+        <div class="group" name="combinator">
+              <h3>Combinators</h3>
               
             </div><div class="group" name="level">
               <h3>Priority Levels</h3>
-              
-            </div><div class="group" name="combinator">
-              <h3>Combinators</h3>
-              
+              <div class="comment cmt"><p>Priority levels for the <code>operators</code> combinator.</p></div>
+            </div><div class="group" name="assoc">
+              <h3>Associativity</h3>
+              <div class="comment cmt"><p>Associativity for priority levels.</p></div>
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               

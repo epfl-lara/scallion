@@ -30,8 +30,26 @@ package scallion
   * }
   * }}}
   *
-  * Additional traits can be mixed-in.
-  * See for instance [[scallion.parsing.Operators]] or [[scallion.parsing.visualization]].
+  * @groupprio abstract
+  * @groupname abstract Abstract Members
+  *
+  * @groupprio parser 1
+  * @groupname parser Parser
+  *
+  * @groupprio result 2
+  * @groupname result Parse Results
+  *
+  * @groupprio combinator 3
+  * @groupname combinator Combinators
+  *
+  * @groupprio conflict 10
+  * @groupname conflict LL(1) Conflicts
+  *
+  * @groupprio visualization 20
+  * @groupname visualization Visualization
+  *
+  * @groupprio other 100
+  * @groupname other Others
   */
 package object parsing {
 

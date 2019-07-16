@@ -20,7 +20,6 @@ package visualization
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to vizualize parsers as BNF grammars.
-  * Expected to be mixed-in [[scallion.parsing.Parsers]].
   *
   * @groupprio grammar 1
   * @groupname grammar Grammar
@@ -30,131 +29,138 @@ import scala.collection.mutable.{Queue, StringBuilder}
   */
 trait Grammars[Kind] { self: Parsers[_, Kind] =>
 
-  /** Grammar symbol.
+  /** Contains utilities to vizualize parsers as BNF grammars.
     *
-    * @group symbol
+    * @group visualization
     */
-  sealed trait Symbol {
+  object grammars {
 
-    /** Returns a pretty description of the symbol.
-      * The `toString` method is used for token kinds.
+    /** Grammar symbol.
       *
-      * @param names Names of non-terminals.
+      * @group symbol
       */
-    def pretty(names: Int => String): String = this match {
-      case NonTerminal(id) => names(id)
-      case Terminal(kind) => kind.toString
-      case Epsilon => "𝛆"
+    sealed trait Symbol {
+
+      /** Returns a pretty description of the symbol.
+        * The `toString` method is used for token kinds.
+        *
+        * @param names Names of non-terminals.
+        */
+      def pretty(names: Int => String): String = this match {
+        case NonTerminal(id) => names(id)
+        case Terminal(kind) => kind.toString
+        case Epsilon => "𝛆"
+      }
     }
-  }
 
-  /** Non-terminal symbol.
-    *
-    * @param id Index of the rule in the grammar.
-    *
-    * @group symbol
-    */
-  case class NonTerminal(id: Int) extends Symbol
-
-  /** Terminal symbol.
-    *
-    * @param kind Kind of tokens represented by the terminal.
-    *
-    * @group symbol
-    */
-  case class Terminal(kind: Kind) extends Symbol
-
-  /** Empty symbol.
-    *
-    * @group symbol
-    */
-  case object Epsilon extends Symbol
-
-  /** Disjunction between various sequences of symbols.
-    *
-    * @group grammar
-    */
-  case class Rule(sequences: Seq[Seq[Symbol]]) {
-
-    /** Returns a pretty description of the rule.
+    /** Non-terminal symbol.
       *
-      * @param id    Index of this rule.
-      * @param names Names of non-terminals.
-      */
-    def pretty(id: Int, names: Int => String): String = names(id) + " ::= " +
-      sequences.map(xs => xs.map(_.pretty(names)).mkString(" ")).mkString(" | ")
-  }
-
-  /** Sequence of rules.
-    *
-    * @group grammar
-    */
-  case class Grammar(rules: Seq[Rule]) {
-
-    /** Returns a pretty description of the grammar.
+      * @param id Index of the rule in the grammar.
       *
-      * @param names Names of non-terminals. By default, the index of the rule is displayed.
+      * @group symbol
       */
-    def pretty(names: Int => String = _.toString): String =
-      rules.zipWithIndex.map {
-        case (rule, id) => rule.pretty(id, names)
-      }.mkString("\n")
-  }
+    case class NonTerminal(id: Int) extends Symbol
 
-  import Parser._
+    /** Terminal symbol.
+      *
+      * @param kind Kind of tokens represented by the terminal.
+      *
+      * @group symbol
+      */
+    case class Terminal(kind: Kind) extends Symbol
 
-  /** Computes the grammar associated with a `parser`.
-    *
-    * @group grammar
-    */
-  def getGrammar(parser: Parser[Any]): Grammar = {
-    var nextId = 0
-    var rules = Vector[Rule]()
-    val queue = new Queue[Parser[Any]]
-    var ids = Map[Parser[Any], Int]()
+    /** Empty symbol.
+      *
+      * @group symbol
+      */
+    case object Epsilon extends Symbol
 
-    def inspect(next: Parser[Any]): Int = {
-      if (!ids.contains(next)) {
-        val res = nextId
-        nextId += 1
-        ids += next -> res
-        queue.enqueue(next)
-        res
-      }
-      else {
-        ids(next)
-      }
+    /** Disjunction between various sequences of symbols.
+      *
+      * @group grammar
+      */
+    case class Rule(sequences: Seq[Seq[Symbol]]) {
+
+      /** Returns a pretty description of the rule.
+        *
+        * @param id    Index of this rule.
+        * @param names Names of non-terminals.
+        */
+      def pretty(id: Int, names: Int => String): String = names(id) + " ::= " +
+        sequences.map(xs => xs.map(_.pretty(names)).mkString(" ")).mkString(" | ")
     }
 
-    inspect(parser)
+    /** Sequence of rules.
+      *
+      * @group grammar
+      */
+    case class Grammar(rules: Seq[Rule]) {
 
-    def getSymbols(next: Parser[Any]): Seq[Seq[Symbol]] = next match {
-      case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)
-      case _ => Seq(getSequents(next))
+      /** Returns a pretty description of the grammar.
+        *
+        * @param names Names of non-terminals. By default, the index of the rule is displayed.
+        */
+      def pretty(names: Int => String = _.toString): String =
+        rules.zipWithIndex.map {
+          case (rule, id) => rule.pretty(id, names)
+        }.mkString("\n")
     }
 
-    def getSequents(next: Parser[Any]): Seq[Symbol] = next match {
-      case Failure => Seq()
-      case Success(_) => Seq(Epsilon)
-      case Elem(kind) => Seq(Terminal(kind))
-      case Transform(_, inner) => getSequents(inner)
-      case Sequence(left, right) => getSequents(left) ++ getSequents(right)
-      case Concat(left, right) => getSequents(left) ++ getSequents(right)
-      case d@Disjunction(_, _) => {
-        val id = inspect(d)
-        Seq(NonTerminal(id))
+    import Parser._
+
+    /** Computes the grammar associated with a `parser`.
+      *
+      * @group grammar
+      */
+    def getGrammar(parser: Parser[Any]): Grammar = {
+      var nextId = 0
+      var rules = Vector[Rule]()
+      val queue = new Queue[Parser[Any]]
+      var ids = Map[Parser[Any], Int]()
+
+      def inspect(next: Parser[Any]): Int = {
+        if (!ids.contains(next)) {
+          val res = nextId
+          nextId += 1
+          ids += next -> res
+          queue.enqueue(next)
+          res
+        }
+        else {
+          ids(next)
+        }
       }
-      case r@Recursive(_) => {
-        val id = inspect(r.inner)
-        Seq(NonTerminal(id))
+
+      inspect(parser)
+
+      def getSymbols(next: Parser[Any]): Seq[Seq[Symbol]] = next match {
+        case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)
+        case _ => Seq(getSequents(next))
       }
-    }
 
-    while(queue.nonEmpty) {
-      val current = queue.dequeue()
-      rules :+= Rule(getSymbols(current))
-    }
+      def getSequents(next: Parser[Any]): Seq[Symbol] = next match {
+        case Failure => Seq()
+        case Success(_) => Seq(Epsilon)
+        case Elem(kind) => Seq(Terminal(kind))
+        case Transform(_, inner) => getSequents(inner)
+        case Sequence(left, right) => getSequents(left) ++ getSequents(right)
+        case Concat(left, right) => getSequents(left) ++ getSequents(right)
+        case d@Disjunction(_, _) => {
+          val id = inspect(d)
+          Seq(NonTerminal(id))
+        }
+        case r@Recursive(_) => {
+          val id = inspect(r.inner)
+          Seq(NonTerminal(id))
+        }
+      }
 
-    Grammar(rules)
+      while(queue.nonEmpty) {
+        val current = queue.dequeue()
+        rules :+= Rule(getSymbols(current))
+      }
+
+      Grammar(rules)
+    }
   }
 }

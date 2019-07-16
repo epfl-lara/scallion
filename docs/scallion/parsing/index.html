@@ -299,9 +299,7 @@ for regular expressions on <code>Char</code>.
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
-}</pre><p>Additional traits can be mixed-in.
-See for instance <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="visualization/index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.parsing.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="visualization"></a><a id="visualization:visualization"></a>
       <span class="permalink">
@@ -381,9 +379,7 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
-}</pre><p>Additional traits can be mixed-in.
-See for instance <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> or <a href="visualization/index.html" class="extype" name="scallion.parsing.visualization">scallion.parsing.visualization</a>.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
+}</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -418,9 +414,9 @@ See for instance <a href="Operators.html" class="extype" name="scallion.parsing.
 Expected to be mixed-in to <code>Parsers</code>.
 </p></div></div>
     </li><li name="scallion.parsing.Parsers" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="parsing">
-      <a id="Parsers[Token,Kind]extendsAnyRef"></a><a id="Parsers[Token,Kind]:Parsers[Token,Kind]"></a>
+      <a id="Parsers[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]"></a><a id="Parsers[Token,Kind]:Parsers[Token,Kind]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/index.html#Parsers[Token,Kind]extendsAnyRef" title="Permalink">
+      <a href="../../scallion/parsing/index.html#Parsers[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -429,7 +425,7 @@ Expected to be mixed-in to <code>Parsers</code>.
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Contains definitions relating to parsers." href="Parsers.html"><span class="name">Parsers</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Contains definitions relating to parsers." href="Parsers.html"><span class="name">Parsers</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.parsing.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to parsers.
