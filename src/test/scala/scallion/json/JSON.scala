@@ -139,7 +139,7 @@ object JSONParser extends Parsers[Token, TokenClass] {
   val nullValue = accept(NullClass) {
     case NullToken(range) => NullValue(range)
   }
-  implicit def separator(char: Char) = accept(SeparatorClass(char)) {
+  implicit def separator(char: Char): Parser[(Int, Int)] = accept(SeparatorClass(char)) {
     case SeparatorToken(_, range) => range
   }
 

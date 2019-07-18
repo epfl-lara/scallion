@@ -109,8 +109,8 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
     case _ => (x: Int) => x
   }
 
-  val open = elem(ParenthesisClass(true))
-  val close = elem(ParenthesisClass(false))
+  val open = elem(ParenthesisClass(true)).unit(ParenthesisToken(true))
+  val close = elem(ParenthesisClass(false)).unit(ParenthesisToken(false))
 
   lazy val basic: Parser[Int] = number | open ~>~ value ~<~ close
 

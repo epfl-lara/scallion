@@ -139,32 +139,53 @@ object JSONParser extends Parsers[Token, TokenClass] {
 
   val booleanValue = accept(BooleanClass) {
     case BooleanToken(value, range) => BooleanValue(value, range)
-  }
-  val numberValue = accept(NumberClass) {
-    case NumberToken(value, range) => NumberValue(value, range)
-  }
-  val stringValue = accept(StringClass) {
-    case StringToken(value, range) => StringValue(value, range)
-  }
-  val nullValue = accept(NullClass) {
-    case NullToken(range) => NullValue(range)
-  }
-  implicit def separator(char: Char) = accept(SeparatorClass(char)) {
-    case SeparatorToken(_, range) => range
+  } withInverse {
+    case BooleanValue(value, range) => BooleanToken(value, range)
   }
 
+  val numberValue = accept(NumberClass) {
+    case NumberToken(value, range) => NumberValue(value, range)
+  } withInverse {
+    case NumberValue(value, range) => NumberToken(value, range)
+  }
+
+  val stringValue = accept(StringClass) {
+    case StringToken(value, range) => StringValue(value, range)
+  } withInverse {
+    case StringValue(value, range) => StringToken(value, range)
+  }
+
+  val nullValue = accept(NullClass) {
+    case NullToken(range) => NullValue(range)
+  } withInverse {
+    case NullValue(range) => NullToken(range)
+  }
+
+
+  implicit def separator(char: Char): Parser[Token] = elem(SeparatorClass(char))
+
   lazy val arrayValue =
-    ('[' ~ repsep(value, ',') ~ ']').map {
-      case start ~ vs ~ end => ArrayValue(vs, (start._1, end._2))
+    transform('[' ~ repsep(value, ','.unit(SeparatorToken(',', (-1, -1)))) ~ ']') {
+      case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
+    } withInverse {
+      case ArrayValue(vs, (s, e)) => SeparatorToken('[', (s, s + 1)) ~ vs ~ SeparatorToken(']', (e - 1, e))
     }
 
   lazy val binding =
-    (stringValue ~ ':' ~ value).map {
+    transform(stringValue ~ ':' ~ value) {
       case key ~ _ ~ value => (key, value)
+    } withInverse {
+      case (key: StringValue, value: Value) => {
+        val mid = SeparatorToken(':', (key.range._2, key.range._2 + 1))
+        key ~ mid ~ value
+      }
     }
+
   lazy val objectValue =
-    ('{' ~ repsep(binding, ',') ~ '}').map {
-      case start ~ bs ~ end => ObjectValue(bs, (start._1, end._2))
+    transform('{' ~ repsep(binding, ','.unit(SeparatorToken(',', (-1, -1)))) ~ '}') {
+      case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
+    } withInverse {
+      case ObjectValue(bs, (s, e)) => SeparatorToken('{', (s, s + 1)) ~ bs ~ SeparatorToken('}', (e - 1, e))
     }
 
   lazy val value: Parser[Value] = recursive {

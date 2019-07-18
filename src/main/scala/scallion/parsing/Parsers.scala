@@ -15,6 +15,8 @@
 
 package scallion.parsing
 
+import scala.language.implicitConversions
+
 import scala.collection.immutable.ListSet
 
 import scallion.util.internal.{Producer, ProducerOps}
@@ -265,12 +267,33 @@ trait Parsers[Token, Kind]
 
     /** Applies a function to the parsed values.
       *
+      * @see See the [[transform]] combinator for applying inversible functions.
+      *
       * @group combinator
       */
-    def map[B](function: A => B, inverse: Any => Seq[Any] = (x: Any) => Seq()): Parser[B] with AcceptsInverse[B] =
+    def map[B](function: A => B): Parser[B] =
       this match {
         case Failure => Failure
-        case _ => Transform(function, inverse, this)
+        case Success(value) => Success(function(value))
+        case Transform(otherFunction, _, inner) =>
+          Transform(
+            otherFunction andThen function,
+            (z: Any) => Seq(),
+            inner)
+        case inner => Transform(function, (y: Any) => Seq(), inner)
+      }
+
+    // Private version of map which takes as argument an inverse function.
+    private[parsing] def map[B](function: A => B, inverse: Any => Seq[Any]): Parser[B] =
+      this match {
+        case Failure => Failure
+        case Success(value) => Success(function(value))
+        case Transform(otherFunction, otherInverse, inner) =>
+          Transform(
+            otherFunction andThen function,
+            (z: Any) => inverse(z).flatMap((y: Any) => otherInverse(y)),
+            inner)
+        case inner => Transform(function, inverse, inner)
       }
 
     /** Sequences `this` and `that` parser. The parsed values are concatenated.
@@ -292,35 +315,38 @@ trait Parsers[Token, Kind]
       *
       * @group combinator
       */
-    def ~>~[B](that: Parser[B])(implicit ev: A <:< Unit): Parser[B] = this.~(that).map(_._2).withInverse {
-      case x => scallion.parsing.~((), x)
-    }
+    def ~>~[B](that: Parser[B])(implicit ev: A <:< Unit): Parser[B] =
+      this.~(that).map(_._2, {
+      case x => Seq(scallion.parsing.~((), x))
+    })
 
     /** Sequences `this` and `that` parser. The parsed value from `this` is returned.
       *
       * @group combinator
       */
-    def ~<~(that: Parser[Unit]): Parser[A] = this.~(that).map(_._1).withInverse {
-      case x => scallion.parsing.~(x, ())
-    }
+    def ~<~(that: Parser[Unit]): Parser[A] = this.~(that).map(_._1, {
+      case x => Seq(scallion.parsing.~(x, ()))
+    })
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is appended to that from `this`.
       *
       * @group combinator
       */
     def :+[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
-      this ++ that.map(Vector(_)).withInverse {
-        case Seq(x) => x
-      }
+      this ++ that.map(Vector(_), {
+        case Seq(x) => Seq(x)
+        case _ => Seq()
+      })
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is prepended to that from `this`.
       *
       * @group combinator
       */
     def +:[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
-      that.map(Vector(_)).withInverse {
-        case Seq(x) => x
-      } ++ this
+      that.map(Vector(_), {
+        case Seq(x) => Seq(x)
+        case _ => Seq()
+      }) ++ this
 
     /** Sequences `this` and `that` parser. The parsed values are returned as a pair.
       *
@@ -349,26 +375,29 @@ trait Parsers[Token, Kind]
       * @group combinator
       */
     def ||[B](that: Parser[B]): Parser[Either[A, B]] =
-      this.map(Left(_)).withInverse {
-        case Left(x) => x
-      } | that.map(Right(_)).withInverse {
-        case Right(x) => x
-      }
+      this.map(Left(_), {
+        case Left(x) => Seq(x)
+        case _ => Seq()
+      }) | that.map(Right(_), {
+        case Right(x) => Seq(x)
+        case _ => Seq()
+      })
 
     /** Makes the parser nullable.
       *
       * @group combinator
       */
-    def opt: Parser[Option[A]] = this.map(Some(_)).withInverse {
-      case Some(x) => x
-    } | epsilon(None)
+    def opt: Parser[Option[A]] = this.map(Some(_), {
+      case Some(x) => Seq(x)
+      case _ => Seq()
+    }) | epsilon(None)
 
 
     def void: Parser[Unit] = this.map(_ => ())
 
-    def unit(default: Any): Parser[Unit] = this.map(_ => ()).withInverse {
-      case _ => default
-    }
+    def unit(defaults: Any*): Parser[Unit] = this.map(_ => (), {
+      case _ => defaults
+    })
 
     // Parsing.
 
@@ -579,13 +608,6 @@ trait Parsers[Token, Kind]
 
   import LL1Conflict._
 
-  trait AcceptsInverse[+A] { self: Parser[A] =>
-    def withInverse(inverse: PartialFunction[Any, Any]): Parser[A] =
-      withInverses((x: Any) => inverse.lift(x).toSeq)
-
-    def withInverses(inverse: Any => Seq[Any]): Parser[A]
-  }
-
   /** Contains primitive basic parsers and parser combinators.
     *
     * @group parser
@@ -651,9 +673,7 @@ trait Parsers[Token, Kind]
       *
       * @group basic
       */
-    case object Failure extends Parser[Nothing] with AcceptsInverse[Nothing] {
-
-      override def withInverses(inverse: Any => Seq[Any]): Parser[Nothing] = this
+    case object Failure extends Parser[Nothing] {
 
       override val nullable: Option[Nothing] =
         None
@@ -802,10 +822,7 @@ trait Parsers[Token, Kind]
     case class Transform[A, B](
         function: A => B,
         inverse: Any => Seq[Any],
-        inner: Parser[A]) extends Parser[B] with Unary[A] with AcceptsInverse[B] {
-
-      override def withInverses(newInverse: Any => Seq[Any]): Parser[B] =
-        this.copy(inverse = newInverse)
+        inner: Parser[A]) extends Parser[B] with Unary[A] {
 
       override lazy val nullable: Option[B] =
         inner.nullable.map(function)
@@ -1377,8 +1394,8 @@ trait Parsers[Token, Kind]
     *
     * @group basic
     */
-  def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] with AcceptsInverse[A] =
-    elem(kind).map(function)
+  def accept[A : Manifest](kind: Kind)(function: PartialFunction[Token, A]): Backward[Token, A] =
+    transform(elem(kind))(function)
 
   /** Indicates that the parser can be recursively invoke itself.
     *
@@ -1449,5 +1466,60 @@ trait Parsers[Token, Kind]
     }
 
     queue.head
+  }
+
+  /** Skips the inverse function and directly returns a `Parser`.
+    *
+    * @group other
+    */
+  implicit def backwardToParser[A, B](backward: Backward[A, B]): Parser[B] =
+    backward.withInverse(PartialFunction.empty)
+
+  /** Indicates that a forward function is expected next.
+    *
+    * @group other
+    */
+  trait Forward[A] {
+
+    /** Provides the `function`. */
+    def apply[B : Manifest](function: A => B): Backward[A, B]
+  }
+
+  /** Indicates that a backward function is expected next.
+    *
+    * @group other
+    */
+  trait Backward[A, B] {
+
+    /** Provides the `inverse` function, which returns at most one inverse. */
+    def withInverse(inverse: PartialFunction[B, A]): Parser[B] =
+      withInverses(inverse andThen { (x: A) => Seq(x) })
+
+    /** Provides the `inverses` function, which returns all inverses. */
+    def withInverses(inverses: PartialFunction[B, Seq[A]]): Parser[B]
+  }
+
+  /** Apply a function to the parsed values and supply its inverse (for pretty printing).
+    *
+    * {{{
+    * val p1: Parser[Int] = ...
+    * val p2: Parser[(Int, Int)] = transform(p2) {
+    *   case x => (x, x + 1)
+    * } withInverse {
+    *   case (x, y) if (x + 1 == y) => x
+    * }
+    * }}}
+    *
+    * @group combinator
+    */
+  def transform[A](parser: Parser[A]): Forward[A] = new Forward[A] {
+    override def apply[B : Manifest](function: A => B): Backward[A, B] = new Backward[A, B] {
+      override def withInverses(inverses: PartialFunction[B, Seq[A]]): Parser[B] = {
+        parser.map(function, (z: Any) => implicitly[Manifest[B]].unapply(z) match {
+          case Some(y) => inverses.lift(y).getOrElse(Seq())
+          case None => Seq()
+        })
+      }
+    }
   }
 }

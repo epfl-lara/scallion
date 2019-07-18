@@ -768,6 +768,22 @@ When <code>this</code> parser is not LL(1), the result is unspecified.
       
       <p class="shortcomment cmt">Collects the &quot;should-not-follow&quot; set from this parser.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;should-not-follow&quot; set from this parser.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> parsers.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser.Disjunction">Disjunction</a> → <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser.Disjunction#collectTokens" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="collectTokens(value:Any,recs:Map[(scallion.parsing.Parsers.Parser.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]])(implicitev:Manifest[Token]):scallion.util.internal.Producer[Seq[Token]]"></a><a id="collectTokens(Any,Map[(RecId,Any),()⇒Producer[Seq[Token]]])(Manifest[Token]):Producer[Seq[Token]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#collectTokens(value:Any,recs:Map[(scallion.parsing.Parsers.Parser.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]])(implicitev:Manifest[Token]):scallion.util.internal.Producer[Seq[Token]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectTokens</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[(<a href="Parsers$Parser$.html#RecId=Int" class="extmbr" name="scallion.parsing.Parsers.Parser.RecId">RecId</a>, <span class="extype" name="scala.Any">Any</span>), () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.Parser.Disjunction">Disjunction</a> → <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser.Disjunction#collectTrails" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="collectTrails(recs:Map[scallion.parsing.Parsers.Parser.RecId,()=&gt;scallion.util.internal.Producer[Parsers.this.Trail]]):scallion.util.internal.Producer[Parsers.this.Trail]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Trail]]):Producer[Trail]"></a>
       <span class="permalink">
@@ -1065,7 +1081,7 @@ not satisfy the given predicate.
       </span>
       
       <p class="shortcomment cmt">Applies a function to the parsed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a function to the parsed values.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the <a href="Parsers.html#transform[A](parser:Parsers.this.Parser[A]):Parsers.this.Forward[A]" class="extmbr" name="scallion.parsing.Parsers#transform">transform</a> combinator for applying inversible functions.</p></span></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -1243,6 +1259,22 @@ all up until that kind.
       
       <p class="shortcomment cmt">String representation of the parser.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of the parser.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#tokensOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tokensOf(value:Any)(implicitev:Manifest[Token]):Iterator[Seq[Token]]"></a><a id="tokensOf(Any)(Manifest[Token]):Iterator[Seq[Token]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#tokensOf(value:Any)(implicitev:Manifest[Token]):Iterator[Seq[Token]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tokensOf</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#trails" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="trails:Iterator[Parsers.this.Trail]"></a><a id="trails:Iterator[Trail]"></a>
       <span class="permalink">
@@ -1263,6 +1295,38 @@ all up until that kind.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#unit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unit(defaults:Any*):Parsers.this.Parser[Unit]"></a><a id="unit(Any*):Parser[Unit]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#unit(defaults:Any*):Parsers.this.Parser[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unit</span><span class="params">(<span name="defaults">defaults: <span class="extype" name="scala.Any">Any</span>*</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
+    </li><li name="scallion.parsing.Parsers.Parser#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="void:Parsers.this.Parser[Unit]"></a><a id="void:Parser[Unit]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#void:Parsers.this.Parser[Unit]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">void</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -1384,9 +1448,9 @@ The value is tagged to indicate the side which produced it.
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> parser. The parsed values are returned as a pair.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#~&lt;~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="~&lt;~[B](that:Parsers.this.Parser[B]):Parsers.this.Parser[A]"></a><a id="~&lt;~[B](Parser[B]):Parser[A]"></a>
+      <a id="~&lt;~(that:Parsers.this.Parser[Unit]):Parsers.this.Parser[A]"></a><a id="~&lt;~(Parser[Unit]):Parser[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#~&lt;~[B](that:Parsers.this.Parser[B]):Parsers.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#~&lt;~(that:Parsers.this.Parser[Unit]):Parsers.this.Parser[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1395,15 +1459,15 @@ The value is tagged to indicate the side which produced it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde$less$tilde" class="name">~&lt;~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.~&lt;~.B">B</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>
+        <span title="gt4s: $tilde$less$tilde" class="name">~&lt;~</span><span class="params">(<span name="that">that: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> parser. The parsed value from <code>this</code> is returned.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser#~&gt;~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="~&gt;~[B](that:Parsers.this.Parser[B]):Parsers.this.Parser[B]"></a><a id="~&gt;~[B](Parser[B]):Parser[B]"></a>
+      <a id="~&gt;~[B](that:Parsers.this.Parser[B])(implicitev:A&lt;:&lt;Unit):Parsers.this.Parser[B]"></a><a id="~&gt;~[B](Parser[B])(&lt;:&lt;[A,Unit]):Parser[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#~&gt;~[B](that:Parsers.this.Parser[B]):Parsers.this.Parser[B]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$$Disjunction.html#~&gt;~[B](that:Parsers.this.Parser[B])(implicitev:A&lt;:&lt;Unit):Parsers.this.Parser[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1412,7 +1476,7 @@ The value is tagged to indicate the side which produced it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde$greater$tilde" class="name">~&gt;~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.~&gt;~.B">B</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.~&gt;~.B">B</span>]</span>
+        <span title="gt4s: $tilde$greater$tilde" class="name">~&gt;~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.~&gt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scallion.parsing.Parsers.Parser.Disjunction.A">A</span>, <span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.~&gt;~.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> parser. The parsed value from <code>that</code> is returned.

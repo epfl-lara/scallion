@@ -273,6 +273,14 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.parsing">parsing</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Parsers$Backward.html" title="Indicates that a backward function is expected next."></a>
+                        <a href="Parsers$Backward.html" title="Indicates that a backward function is expected next.">Backward</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Parsers$Forward.html" title="Indicates that a forward function is expected next."></a>
+                        <a href="Parsers$Forward.html" title="Indicates that a forward function is expected next.">Forward</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Parsers$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
@@ -537,9 +545,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       <p class="shortcomment cmt">Parser that produces <code>value</code> without consuming input tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that produces <code>value</code> without consuming input tokens.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced by the parser.</p></dd></dl></div>
     </li><li name="scallion.parsing.Parsers.Parser.Transform" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="Transform[A,+B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable"></a><a id="Transform[A,+B]:Transform[A,B]"></a>
+      <a id="Transform[A,B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable"></a><a id="Transform[A,B]:Transform[A,B]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Parser$.html#Transform[A,+B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$Parser$.html#Transform[A,B]extendsParsers.this.Parser[B]withParsers.Parser.Unary[A]withProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -548,7 +556,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Parser that applies a function on the parsed value of the inner parser." href="Parsers$Parser$$Transform.html"><span class="name">Transform</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span></span>, <span name="inner">inner: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span>] with <a href="Parsers$Parser$$Unary.html" class="extype" name="scallion.parsing.Parsers.Parser.Unary">Unary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Parser that applies a function on the parsed value of the inner parser." href="Parsers$Parser$$Transform.html"><span class="name">Transform</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="inner">inner: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.B">B</span>] with <a href="Parsers$Parser$$Unary.html" class="extype" name="scallion.parsing.Parsers.Parser.Unary">Unary</a>[<span class="extype" name="scallion.parsing.Parsers.Parser.Transform.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       <p class="shortcomment cmt">Parser that applies a <code>function</code> on the parsed value of the <code>inner</code> parser.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that applies a <code>function</code> on the parsed value of the <code>inner</code> parser.

@@ -276,6 +276,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Operators.html" title="Contains utilities to write parsers with infix, prefix and postfix operators.">Operators</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
+                        <a class="class" href="package$$PairDecorator.html" title=""></a>
+                        <a href="package$$PairDecorator.html" title="">PairDecorator</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="trait" href="" title="Contains definitions relating to parsers."></a>
                         <a href="" title="Contains definitions relating to parsers.">Parsers</a>
                       </li><li class="current-entities indented2">
@@ -364,7 +368,39 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.parsing.Parsers.LL1Conflict" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="conflict">
+              <ol><li name="scallion.parsing.Parsers.Backward" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="other">
+      <a id="Backward[A,B]extendsAnyRef"></a><a id="Backward[A,B]:Backward[A,B]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers.html#Backward[A,B]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates that a backward function is expected next." href="Parsers$Backward.html"><span class="name">Backward</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that a backward function is expected next.</p>
+    </li><li name="scallion.parsing.Parsers.Forward" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="other">
+      <a id="Forward[A]extendsAnyRef"></a><a id="Forward[A]:Forward[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers.html#Forward[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates that a forward function is expected next." href="Parsers$Forward.html"><span class="name">Forward</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that a forward function is expected next.</p>
+    </li><li name="scallion.parsing.Parsers.LL1Conflict" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="conflict">
       <a id="LL1ConflictextendsAnyRef"></a><a id="LL1Conflict:LL1Conflict"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/Parsers.html#LL1ConflictextendsAnyRef" title="Permalink">
@@ -555,9 +591,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scallion.parsing.Parsers#accept" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
-      <a id="accept[A](kind:Kind)(function:PartialFunction[Token,A]):Parsers.this.Parser[A]"></a><a id="accept[A](Kind)(PartialFunction[Token,A]):Parser[A]"></a>
+      <a id="accept[A](kind:Kind)(function:PartialFunction[Token,A])(implicitevidence$1:Manifest[A]):Parsers.this.Backward[Token,A]"></a><a id="accept[A](Kind)(PartialFunction[Token,A])(Manifest[A]):Backward[Token,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers.html#accept[A](kind:Kind)(function:PartialFunction[Token,A]):Parsers.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers.html#accept[A](kind:Kind)(function:PartialFunction[Token,A])(implicitevidence$1:Manifest[A]):Parsers.this.Backward[Token,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -566,7 +602,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">accept</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span></span>)</span><span class="params">(<span name="function">function: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>, <span class="extype" name="scallion.parsing.Parsers.accept.A">A</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.accept.A">A</span>]</span>
+        <span class="name">accept</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span></span>)</span><span class="params">(<span name="function">function: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>, <span class="extype" name="scallion.parsing.Parsers.accept.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scallion.parsing.Parsers.accept.A">A</span>]</span>)</span><span class="result">: <a href="Parsers$Backward.html" class="extype" name="scallion.parsing.Parsers.Backward">Backward</a>[<span class="extype" name="scallion.parsing.Parsers.Token">Token</span>, <span class="extype" name="scallion.parsing.Parsers.accept.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that accepts tokens of the provided <code>kind</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that accepts tokens of the provided <code>kind</code>.
@@ -588,6 +624,22 @@ A function directly is applied on the successfully matched token.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scallion.parsing.Parsers#backwardToParser" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="other">
+      <a id="backwardToParser[A,B](backward:Parsers.this.Backward[A,B]):Parsers.this.Parser[B]"></a><a id="backwardToParser[A,B](Backward[A,B]):Parser[B]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers.html#backwardToParser[A,B](backward:Parsers.this.Backward[A,B]):Parsers.this.Parser[B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">backwardToParser</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="backward">backward: <a href="Parsers$Backward.html" class="extype" name="scallion.parsing.Parsers.Backward">Backward</a>[<span class="extype" name="scallion.parsing.Parsers.backwardToParser.A">A</span>, <span class="extype" name="scallion.parsing.Parsers.backwardToParser.B">B</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.backwardToParser.B">B</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Skips the inverse function and directly returns a <code>Parser</code>.</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -903,9 +955,9 @@ A function directly is applied on the successfully matched token.
       
       <p class="shortcomment cmt">Indicates that the parser can be recursively invoke itself.</p>
     </li><li name="scallion.parsing.Parsers#rep1sep" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="rep1sep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Any]):Parsers.this.Parser[Seq[A]]"></a><a id="rep1sep[A](Parser[A],Parser[Any]):Parser[Seq[A]]"></a>
+      <a id="rep1sep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Unit]):Parsers.this.Parser[Seq[A]]"></a><a id="rep1sep[A](Parser[A],Parser[Unit]):Parser[Seq[A]]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers.html#rep1sep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Any]):Parsers.this.Parser[Seq[A]]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers.html#rep1sep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Unit]):Parsers.this.Parser[Seq[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -914,14 +966,14 @@ A function directly is applied on the successfully matched token.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.rep1sep.A">A</span>]]</span>
+        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.rep1sep.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that represents 1 or more repetitions of the <code>rep</code> parser, separated by <code>sep</code>.</p>
     </li><li name="scallion.parsing.Parsers#repsep" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="repsep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Any]):Parsers.this.Parser[Seq[A]]"></a><a id="repsep[A](Parser[A],Parser[Any]):Parser[Seq[A]]"></a>
+      <a id="repsep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Unit]):Parsers.this.Parser[Seq[A]]"></a><a id="repsep[A](Parser[A],Parser[Unit]):Parser[Seq[A]]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers.html#repsep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Any]):Parsers.this.Parser[Seq[A]]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers.html#repsep[A](rep:Parsers.this.Parser[A],sep:Parsers.this.Parser[Unit]):Parsers.this.Parser[Seq[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -930,7 +982,7 @@ A function directly is applied on the successfully matched token.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.repsep.A">A</span>]]</span>
+        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.repsep.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that represents 0 or more repetitions of the <code>rep</code> parser, separated by <code>sep</code>.</p>
@@ -966,6 +1018,27 @@ A function directly is applied on the successfully matched token.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.parsing.Parsers#transform" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="transform[A](parser:Parsers.this.Parser[A]):Parsers.this.Forward[A]"></a><a id="transform[A](Parser[A]):Forward[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Parsers.html#transform[A](parser:Parsers.this.Parser[A]):Parsers.this.Forward[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">transform</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="parser">parser: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.transform.A">A</span>]</span>)</span><span class="result">: <a href="Parsers$Forward.html" class="extype" name="scallion.parsing.Parsers.Forward">Forward</a>[<span class="extype" name="scallion.parsing.Parsers.transform.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Apply a function to the parsed values and supply its inverse (for pretty printing).</p><div class="fullcomment"><div class="comment cmt"><p>Apply a function to the parsed values and supply its inverse (for pretty printing).</p><pre><span class="kw">val</span> p1: Parser[<span class="std">Int</span>] = ...
+<span class="kw">val</span> p2: Parser[(<span class="std">Int</span>, <span class="std">Int</span>)] = transform(p2) {
+  <span class="kw">case</span> x <span class="kw">=&gt;</span> (x, x + <span class="num">1</span>)
+} withInverse {
+  <span class="kw">case</span> (x, y) <span class="kw">if</span> (x + <span class="num">1</span> == y) <span class="kw">=&gt;</span> x
+}</pre></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

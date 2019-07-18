@@ -116,7 +116,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "not parse tokens from different classes" in {
-    val parser = accept(NumClass) {
+    val parser: Parser[Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
@@ -129,7 +129,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "correctly fail at the end of input" in {
-    val parser = accept(NumClass) {
+    val parser: Parser[Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
