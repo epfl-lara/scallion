@@ -284,7 +284,7 @@ trait Parsers[Token, Kind]
       }
 
     // Private version of map which takes as argument an inverse function.
-    private[parsing] def map[B](function: A => B, inverse: Any => Seq[Any]): Parser[B] =
+    def map[B](function: A => B, inverse: Any => Seq[Any]): Parser[B] =
       this match {
         case Failure => Failure
         case Success(value) => Success(function(value))
