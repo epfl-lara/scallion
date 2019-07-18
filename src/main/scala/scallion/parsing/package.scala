@@ -30,7 +30,7 @@ package scallion
   * }
   * }}}
   *
-  * @groupprio abstract
+  * @groupprio abstract 0
   * @groupname abstract Abstract Members
   *
   * @groupprio parser 1
@@ -51,6 +51,9 @@ package scallion
   * @groupprio visualization 20
   * @groupname visualization Visualization
   *
+  * @groupprio pairs 30
+  * @groupname pairs Pairs
+  *
   * @groupprio other 100
   * @groupname other Others
   */
@@ -59,12 +62,22 @@ package object parsing {
   /** Simply a pair.
     *
     * Can be used in infix position in pattern matching.
+    *
+    * @param _1 First element.
+    * @param _2 Second element.
+    *
+    * @group pairs
     */
   case class ~[+A, +B](_1: A, _2: B) {
+
+    /* Builds a pair. */
     def ~[C](next: C): (A ~ B) ~ C = parsing.~(this, next)
   }
 
+  /** Adds an `~` methods to build pairs. */
   implicit class PairDecorator[A](first: A) {
+
+    /** Builds a pair. */
     def ~[B](second: B): A ~ B = parsing.~(first, second)
   }
 }

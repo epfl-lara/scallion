@@ -44,7 +44,7 @@ trait Parsers[Token, Kind]
     *
     * @group other
     */
-  type Trail = Seq[Kind]
+  protected type Trail = Seq[Kind]
 
   /** Contains utilities to build trails.
     *
@@ -152,7 +152,7 @@ trait Parsers[Token, Kind]
       *
       * @group property
       */
-    @inline def trails: Iterator[Trail] = collectTrails(Map.empty).toIterator
+    @inline def trails: Iterator[Seq[Kind]] = collectTrails(Map.empty).toIterator
 
     /** Returns a parser that behaves like `this` parser but rejects all tokens whose kind does
       * not satisfy the given predicate.
@@ -1392,6 +1392,22 @@ trait Parsers[Token, Kind]
   /** Parser that accepts tokens of the provided `kind`.
     * A function directly is applied on the successfully matched token.
     *
+    * {{{
+    * accept(MyKind) {
+    *   case MyToken(x) => x
+    * }.oneWay
+    * }}}
+    *
+    * An inverse can also be provided:
+    *
+    * {{{
+    * accept(MyKind) {
+    *   case MyToken(x) => x
+    * } withInverse {
+    *   case x => MyToken(x)
+    * }
+    * }}}
+    *
     * @group basic
     */
   def accept[A : Manifest](kind: Kind)(function: PartialFunction[Token, A]): Backward[Token, A] =
@@ -1473,7 +1489,7 @@ trait Parsers[Token, Kind]
     * @group other
     */
   implicit def backwardToParser[A, B](backward: Backward[A, B]): Parser[B] =
-    backward.withInverse(PartialFunction.empty)
+    backward.oneWay
 
   /** Indicates that a forward function is expected next.
     *
@@ -1491,12 +1507,15 @@ trait Parsers[Token, Kind]
     */
   trait Backward[A, B] {
 
+    /** Provides the `inverses` function, which returns all inverses. */
+    def withInverses(inverses: PartialFunction[B, Seq[A]]): Parser[B]
+
     /** Provides the `inverse` function, which returns at most one inverse. */
     def withInverse(inverse: PartialFunction[B, A]): Parser[B] =
       withInverses(inverse andThen { (x: A) => Seq(x) })
 
-    /** Provides the `inverses` function, which returns all inverses. */
-    def withInverses(inverses: PartialFunction[B, Seq[A]]): Parser[B]
+    /** Provides no inverse function. */
+    lazy val oneWay: Parser[B] = withInverses(PartialFunction.empty)
   }
 
   /** Apply a function to the parsed values and supply its inverse (for pretty printing).

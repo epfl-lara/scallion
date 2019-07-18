@@ -25,6 +25,8 @@ package scallion.parsing
   * @groupprio assoc 8
   * @groupname assoc Associativity
   * @groupdesc assoc Associativity for priority levels.
+  *
+  * @group parsing
   */
 trait Operators { self: Parsers[_, _] =>
 

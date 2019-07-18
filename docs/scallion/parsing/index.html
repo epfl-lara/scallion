@@ -322,8 +322,8 @@ for regular expressions on <code>Char</code>.
                         <a href="Operators.html" title="Contains utilities to write parsers with infix, prefix and postfix operators.">Operators</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="package$$PairDecorator.html" title=""></a>
-                        <a href="package$$PairDecorator.html" title="">PairDecorator</a>
+                        <a class="class" href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs."></a>
+                        <a href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs.">PairDecorator</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parsers.html" title="Contains definitions relating to parsers."></a>
@@ -399,7 +399,7 @@ for regular expressions on <code>Char</code>.
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.parsing.Operators" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="scallion.parsing.Operators" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="parsing">
       <a id="OperatorsextendsAnyRef"></a><a id="Operators:Operators"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/index.html#OperatorsextendsAnyRef" title="Permalink">
@@ -429,10 +429,10 @@ Expected to be mixed-in to <code>Parsers</code>.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="package$$PairDecorator.html"><span class="name">PairDecorator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Adds an ~ methods to build pairs." href="package$$PairDecorator.html"><span class="name">PairDecorator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      
+      <p class="shortcomment cmt">Adds an <code>~</code> methods to build pairs.</p>
     </li><li name="scallion.parsing.Parsers" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="parsing">
       <a id="Parsers[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]"></a><a id="Parsers[Token,Kind]:Parsers[Token,Kind]"></a>
       <span class="permalink">
@@ -451,7 +451,7 @@ Expected to be mixed-in to <code>Parsers</code>.
       <p class="shortcomment cmt">Contains definitions relating to parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to parsers.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
-    </li><li name="scallion.parsing.~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.parsing.~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="pairs">
       <a id="~[+A,+B]extendsProductwithSerializable"></a><a id="~[+A,+B]:~[A,B]"></a>
       <span class="permalink">
       <a href="../../scallion/parsing/index.html#~[+A,+B]extendsProductwithSerializable" title="Permalink">
@@ -467,7 +467,7 @@ Expected to be mixed-in to <code>Parsers</code>.
       </span>
       
       <p class="shortcomment cmt">Simply a pair.</p><div class="fullcomment"><div class="comment cmt"><p>Simply a pair.</p><p>Can be used in infix position in pattern matching.
-</p></div></div>
+</p></div><dl class="paramcmts block"><dt class="param">_1</dt><dd class="cmt"><p>First element.</p></dd><dt class="param">_2</dt><dd class="cmt"><p>Second element.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -492,6 +492,9 @@ Expected to be mixed-in to <code>Parsers</code>.
         <div id="groupedMembers">
         <div class="group" name="parsing">
               <h3>parsing</h3>
+              
+            </div><div class="group" name="pairs">
+              <h3>Pairs</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
