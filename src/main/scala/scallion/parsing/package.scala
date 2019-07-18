@@ -60,6 +60,11 @@ package object parsing {
     *
     * Can be used in infix position in pattern matching.
     */
-  case class ~[+A, +B](_1: A, _2: B)
+  case class ~[+A, +B](_1: A, _2: B) {
+    def ~[C](next: C): (A ~ B) ~ C = parsing.~(this, next)
+  }
 
+  implicit class PairDecorator[A](first: A) {
+    def ~[B](second: B): A ~ B = parsing.~(first, second)
+  }
 }

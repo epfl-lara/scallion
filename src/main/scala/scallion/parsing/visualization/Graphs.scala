@@ -82,7 +82,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
             ("++", Seq(leftId, rightId))
           }
-          case Transform(_, inner) => {
+          case Transform(_, _, inner) => {
             val innerId = inspect(inner)
 
             ("map", Seq(innerId))

@@ -69,6 +69,17 @@ trait Parsers[Token, Kind]
       left.size <= right.size
   }
 
+  private object tokenSeqOps extends ProducerOps[Seq[Token]] {
+
+    /** Concatenation of token sequences. */
+    override def join(left: Seq[Token], right: Seq[Token]): Seq[Token] =
+      left ++ right
+
+    /** Comparison of trails by size. */
+    override def lessEquals(left: Seq[Token], right: Seq[Token]): Boolean =
+      left.size <= right.size
+  }
+
   /** Consumes a stream of tokens and tries to produces a value of type `A`.
     *
     * @group parser
@@ -156,7 +167,8 @@ trait Parsers[Token, Kind]
       */
     @inline def kinds: Set[Kind] = collectKinds(ListSet())
 
-
+    def tokensOf(value: Any)(implicit ev: Manifest[Token]): Iterator[Seq[Token]] =
+      collectTokens(value, Map.empty).toIterator
 
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` parser on which the call
@@ -229,6 +241,9 @@ trait Parsers[Token, Kind]
     protected def collectKinds(recs: Set[RecId]): Set[Kind]
 
 
+    protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+      (implicit ev: Manifest[Token]): Producer[Seq[Token]]
+
     /** Feeds a token to the parser and obtain a parser for the rest of input.
       *
       * @group parsing
@@ -252,12 +267,11 @@ trait Parsers[Token, Kind]
       *
       * @group combinator
       */
-    def map[B](function: A => B): Parser[B] = this match {
-      case Failure => Failure
-      case Success(value) => Success(function(value))
-      case Transform(other, inner) => Transform(other andThen function, inner)
-      case _ => Transform(function, this)
-    }
+    def map[B](function: A => B, inverse: Any => Seq[Any] = (x: Any) => Seq()): Parser[B] with AcceptsInverse[B] =
+      this match {
+        case Failure => Failure
+        case _ => Transform(function, inverse, this)
+      }
 
     /** Sequences `this` and `that` parser. The parsed values are concatenated.
       *
@@ -278,27 +292,35 @@ trait Parsers[Token, Kind]
       *
       * @group combinator
       */
-    def ~>~[B](that: Parser[B]): Parser[B] = this.~(that).map(_._2)
+    def ~>~[B](that: Parser[B])(implicit ev: A <:< Unit): Parser[B] = this.~(that).map(_._2).withInverse {
+      case x => scallion.parsing.~((), x)
+    }
 
     /** Sequences `this` and `that` parser. The parsed value from `this` is returned.
       *
       * @group combinator
       */
-    def ~<~[B](that: Parser[B]): Parser[A] = this.~(that).map(_._1)
+    def ~<~(that: Parser[Unit]): Parser[A] = this.~(that).map(_._1).withInverse {
+      case x => scallion.parsing.~(x, ())
+    }
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is appended to that from `this`.
       *
       * @group combinator
       */
     def :+[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
-      this ++ that.map(Vector(_))
+      this ++ that.map(Vector(_)).withInverse {
+        case Seq(x) => x
+      }
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is prepended to that from `this`.
       *
       * @group combinator
       */
     def +:[B](that: Parser[B])(implicit ev1: Parser[A] <:< Parser[Seq[B]], ev2: A <:< Seq[B]): Parser[Seq[B]] =
-      that.map(Vector(_)) ++ this
+      that.map(Vector(_)).withInverse {
+        case Seq(x) => x
+      } ++ this
 
     /** Sequences `this` and `that` parser. The parsed values are returned as a pair.
       *
@@ -327,14 +349,26 @@ trait Parsers[Token, Kind]
       * @group combinator
       */
     def ||[B](that: Parser[B]): Parser[Either[A, B]] =
-      this.map(Left(_)) | that.map(Right(_))
+      this.map(Left(_)).withInverse {
+        case Left(x) => x
+      } | that.map(Right(_)).withInverse {
+        case Right(x) => x
+      }
 
     /** Makes the parser nullable.
       *
       * @group combinator
       */
-    def opt: Parser[Option[A]] = this.map(Some(_)) | epsilon(None)
+    def opt: Parser[Option[A]] = this.map(Some(_)).withInverse {
+      case Some(x) => x
+    } | epsilon(None)
 
+
+    def void: Parser[Unit] = this.map(_ => ())
+
+    def unit(default: Any): Parser[Unit] = this.map(_ => ()).withInverse {
+      case _ => default
+    }
 
     // Parsing.
 
@@ -545,6 +579,13 @@ trait Parsers[Token, Kind]
 
   import LL1Conflict._
 
+  trait AcceptsInverse[+A] { self: Parser[A] =>
+    def withInverse(inverse: PartialFunction[Any, Any]): Parser[A] =
+      withInverses((x: Any) => inverse.lift(x).toSeq)
+
+    def withInverses(inverse: Any => Seq[Any]): Parser[A]
+  }
+
   /** Contains primitive basic parsers and parser combinators.
     *
     * @group parser
@@ -595,6 +636,10 @@ trait Parsers[Token, Kind]
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
+      override protected def collectTokens(other: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+        if (value == other) Producer.single(Vector()) else Producer.empty
+
       override def derive(token: Token, kind: Kind): Parser[A] =
         Failure
 
@@ -606,7 +651,9 @@ trait Parsers[Token, Kind]
       *
       * @group basic
       */
-    case object Failure extends Parser[Nothing] {
+    case object Failure extends Parser[Nothing] with AcceptsInverse[Nothing] {
+
+      override def withInverses(inverse: Any => Seq[Any]): Parser[Nothing] = this
 
       override val nullable: Option[Nothing] =
         None
@@ -643,6 +690,10 @@ trait Parsers[Token, Kind]
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet()
+
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+        Producer.empty
 
       override def derive(token: Token, kind: Kind): Parser[Nothing] =
         Failure
@@ -695,6 +746,13 @@ trait Parsers[Token, Kind]
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet(kind)
 
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+        ev.unapply(value) match {
+          case Some(token) if (getKind(token) == kind) => Producer.single(Vector(token))
+          case _ => Producer.empty
+        }
+
       override def derive(token: Token, tokenKind: Kind): Parser[Token] =
         if (tokenKind == kind) Success(token) else Failure
 
@@ -741,7 +799,13 @@ trait Parsers[Token, Kind]
       *
       * @group combinator
       */
-    case class Transform[A, +B](function: A => B, inner: Parser[A]) extends Parser[B] with Unary[A] {
+    case class Transform[A, B](
+        function: A => B,
+        inverse: Any => Seq[Any],
+        inner: Parser[A]) extends Parser[B] with Unary[A] with AcceptsInverse[B] {
+
+      override def withInverses(newInverse: Any => Seq[Any]): Parser[B] =
+        this.copy(inverse = newInverse)
 
       override lazy val nullable: Option[B] =
         inner.nullable.map(function)
@@ -774,13 +838,26 @@ trait Parsers[Token, Kind]
         inner.collectTrails(recs)
 
       override protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Parser[Any]]): Parser[B] =
-        inner.collectFilter(predicate, recs).map(function)
+        inner.collectFilter(predicate, recs).map(function, inverse)
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         inner.collectKinds(recs)
 
       override def derive(token: Token, kind: Kind): Parser[B] =
-        inner.derive(token, kind).map(function)
+        inner.derive(token, kind).map(function, inverse)
+
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] = {
+
+        val producers = inverse(value).map(inversed => inner.collectTokens(inversed, recs))
+
+        if (producers.isEmpty) {
+          Producer.empty
+        }
+        else {
+          producers.reduceLeft(tokenSeqOps.union(_, _))
+        }
+      }
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         inner.repr(10, recs) + ".map(<function>)"
@@ -891,6 +968,14 @@ trait Parsers[Token, Kind]
         }
       }
 
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+
+        value match {
+          case a ~ b => tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
+          case _ => Producer.empty
+        }
+
       override def derive(token: Token, kind: Kind): Parser[A ~ B] = {
         val derived = left.derive(token, kind)
 
@@ -957,6 +1042,26 @@ trait Parsers[Token, Kind]
           derived ++ right
         }
       }
+
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+
+        value match {
+          case Seq(xs @ _*) => {
+            val producers = for {
+              i <- 0 to xs.size
+              (a, b) = xs.splitAt(i)
+            } yield tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
+
+            if (producers.isEmpty) {
+              Producer.empty
+            }
+            else {
+              producers.reduceLeft(tokenSeqOps.union(_, _))
+            }
+          }
+          case _ => Producer.empty
+        }
     }
 
     /** Parser that acts either as the disjunction of the `left` and `right` parsers.
@@ -1063,6 +1168,10 @@ trait Parsers[Token, Kind]
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         left.collectKinds(recs) union right.collectKinds(recs)
+
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+        tokenSeqOps.union(left.collectTokens(value, recs), right.collectTokens(value, recs))
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
         val l = left.repr(1, recs)
@@ -1199,6 +1308,20 @@ trait Parsers[Token, Kind]
           case Some(createProducer) => createProducer()
         }
 
+      override protected def collectTokens(value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]])
+          (implicit ev: Manifest[Token]): Producer[Seq[Token]] =
+
+        recs.get((this.id, value)) match {
+          case None => {
+            lazy val pair: (Producer[Seq[Token]], () => Producer[Seq[Token]]) =
+              Producer.duplicate(Producer.lazily {
+                inner.collectTokens(value, recs + ((this.id, value) -> pair._2))
+              })
+            pair._1
+          }
+          case Some(createProducer) => createProducer()
+        }
+
       override protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Parser[Any]]): Parser[A] = {
         recs.get(this.id) match {
           case None => {
@@ -1254,7 +1377,8 @@ trait Parsers[Token, Kind]
     *
     * @group basic
     */
-  def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] = elem(kind).map(function)
+  def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Parser[A] with AcceptsInverse[A] =
+    elem(kind).map(function)
 
   /** Indicates that the parser can be recursively invoke itself.
     *
@@ -1299,13 +1423,13 @@ trait Parsers[Token, Kind]
     *
     * @group combinator
     */
-  def repsep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = rep1sep(rep, sep) | epsilon(Vector())
+  def repsep[A](rep: Parser[A], sep: Parser[Unit]): Parser[Seq[A]] = rep1sep(rep, sep) | epsilon(Vector())
 
   /** Parser that represents 1 or more repetitions of the `rep` parser, separated by `sep`.
     *
     * @group combinator
     */
-  def rep1sep[A](rep: Parser[A], sep: Parser[Any]): Parser[Seq[A]] = {
+  def rep1sep[A](rep: Parser[A], sep: Parser[Unit]): Parser[Seq[A]] = {
     lazy val rest: Parser[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
   }

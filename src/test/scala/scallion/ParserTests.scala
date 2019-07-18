@@ -1005,7 +1005,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   import LL1Conflict._
 
   "LL1 conflicts" should "catch ambiguous first kinds" in {
-    val parser = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass)
+    val parser = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass).void
 
     assert(!parser.isLL1)
 
@@ -1075,7 +1075,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     } | epsilon(0)
 
     lazy val expr: Parser[Int] = recursive {
-      plusExpr | opt(elem(OperatorClass('+'))) ~>~ literal
+      plusExpr | opt(elem(OperatorClass('+'))).void ~>~ literal
     }
 
     lazy val plusExpr: Parser[Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {

@@ -144,7 +144,7 @@ object JSONParser extends Parsers[Token, TokenClass] {
   }
 
   lazy val arrayValue =
-    ('[' ~ repsep(value, ',') ~ ']').map {
+    ('[' ~ repsep(value, ','.void) ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start._1, end._2))
     }
 
@@ -153,7 +153,7 @@ object JSONParser extends Parsers[Token, TokenClass] {
       case key ~ _ ~ value => (key, value)
     }
   lazy val objectValue =
-    ('{' ~ repsep(binding, ',') ~ '}').map {
+    ('{' ~ repsep(binding, ','.void) ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start._1, end._2))
     }
 
