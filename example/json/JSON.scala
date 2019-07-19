@@ -140,7 +140,7 @@ object JSONParser extends Parsers[Token, TokenClass] {
     case StringToken(value, range) => StringValue(value, range)
   }
 
-  val nullValue: P[Value] = accept(NullClass) {
+  val nullValue: P[NullValue] = accept(NullClass) {
     case NullToken(range) => NullValue(range)
   }
 

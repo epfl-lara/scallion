@@ -166,8 +166,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 <span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
-    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
 
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
     <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
@@ -178,41 +177,46 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
   }
 
-  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+  <span class="kw">type</span> P[A] = Parser[_, A]
+
+  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
     <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
   }
-  <span class="kw">val</span> numberValue = accept(NumberClass) {
+
+  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
     <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
   }
-  <span class="kw">val</span> stringValue = accept(StringClass) {
+
+  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
     <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
   }
-  <span class="kw">val</span> nullValue = accept(NullClass) {
+
+  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
     <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
   }
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
-    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
-  }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
     (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
     (stringValue ~ <span class="lit">':'</span> ~ value).map {
       <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
     }
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
     (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>

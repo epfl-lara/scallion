@@ -166,8 +166,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 <span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
-    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
 
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
     <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
@@ -178,41 +177,46 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
   }
 
-  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+  <span class="kw">type</span> P[A] = Parser[_, A]
+
+  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
     <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
   }
-  <span class="kw">val</span> numberValue = accept(NumberClass) {
+
+  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
     <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
   }
-  <span class="kw">val</span> stringValue = accept(StringClass) {
+
+  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
     <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
   }
-  <span class="kw">val</span> nullValue = accept(NullClass) {
+
+  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
     <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
   }
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
-    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
-  }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
     (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
     (stringValue ~ <span class="lit">':'</span> ~ value).map {
       <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
     }
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
     (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -330,6 +334,10 @@ for regular expressions on <code>Char</code>.
                         <a href="Parsers.html" title="Contains definitions relating to parsers.">Parsers</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
+                        <a class="object" href="Unfolds$.html" title="Contains functions to unfold values."></a>
+                        <a href="Unfolds$.html" title="Contains functions to unfold values.">Unfolds</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="class" href="package$$$tilde.html" title="Simply a pair."></a>
                         <a href="package$$$tilde.html" title="Simply a pair.">~</a>
                       </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -391,7 +399,43 @@ for regular expressions on <code>Char</code>.
         </div></div>
         
 
-      
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              <li class="group out"><span>Grouped</span></li>
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="scallion.parsing"><span>parsing</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
 
       <div id="template">
         <div id="allMembers">
@@ -473,7 +517,28 @@ Expected to be mixed-in to <code>Parsers</code>.
 
         
 
-        
+        <div class="values members">
+              <h3>Value Members</h3>
+              <ol>
+                <li name="scallion.parsing.Unfolds" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Unfolds"></a><a id="Unfolds:Unfolds"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/index.html#Unfolds" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains functions to unfold values." href="Unfolds$.html"><span class="name">Unfolds</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains functions to unfold values.</p>
+    </li>
+              </ol>
+            </div>
 
         
 

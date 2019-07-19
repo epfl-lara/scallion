@@ -35,6 +35,10 @@ trait Parsers[Token, Kind]
 
   import Parser._
 
+  /** Type of parsers that can be inversed.
+    *
+    * @group parser
+    */
   type InvParser[A] = Parser[A, A]
 
   /** Returns the kind associated with `token`.
@@ -269,8 +273,6 @@ trait Parsers[Token, Kind]
 
     /** Applies a function to the parsed values.
       *
-      * @see See the [[transform]] combinator for applying inversible functions.
-      *
       * @group combinator
       */
     def map[B](function: A => B): Parser[V, B] =
@@ -285,6 +287,10 @@ trait Parsers[Token, Kind]
         case inner => Transform(function, (v: V) => Seq(v), inner)
       }
 
+    /** Specifies the inverse of the applied function.
+      *
+      * @group combinator
+      */
     def contramap[W](inverse: W => Seq[V]): Parser[W, A] =
       this match {
         case Failure => Failure
@@ -297,6 +303,10 @@ trait Parsers[Token, Kind]
         case inner => Transform((x: A) => x, inverse, inner)
       }
 
+    /** Applies a function to the parsed values and specifies its inverse.
+      *
+      * @group combinator
+      */
     def bimap[W, B](function: A => B, inverse: W => Seq[V]): Parser[W, B] =
       this match {
         case Failure => Failure
@@ -419,14 +429,26 @@ trait Parsers[Token, Kind]
       }
     }) | epsilon(None)
 
+    /** Informs the parser of the values that can be produced.
+      *
+      * @group combinator
+      */
     def unit(defaults: V*): Parser[Unit, A] = this.contramap {
       (_: Unit) => defaults
     }
 
+    /** Informs the parser of the values that can be produced.
+      *
+      * @group combinator
+      */
     def always(defaults: V*): Parser[Unit, Unit] = this.bimap(_ => (), {
       case () => defaults
     })
 
+    /** Prevents token generation.
+      *
+      * @group combinator
+      */
     def void[W]: Parser[W, A] = this.contramap {
       (_: W) => Seq()
     }

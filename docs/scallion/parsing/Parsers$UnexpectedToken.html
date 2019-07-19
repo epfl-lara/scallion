@@ -166,8 +166,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 <span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
-    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
 
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
     <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
@@ -178,41 +177,46 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
   }
 
-  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+  <span class="kw">type</span> P[A] = Parser[_, A]
+
+  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
     <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
   }
-  <span class="kw">val</span> numberValue = accept(NumberClass) {
+
+  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
     <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
   }
-  <span class="kw">val</span> stringValue = accept(StringClass) {
+
+  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
     <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
   }
-  <span class="kw">val</span> nullValue = accept(NullClass) {
+
+  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
     <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
   }
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
-    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
-  }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
     (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
     (stringValue ~ <span class="lit">':'</span> ~ value).map {
       <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
     }
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
     (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -273,14 +277,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.parsing">parsing</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="trait" href="Parsers$Backward.html" title="Indicates that a backward function is expected next."></a>
-                        <a href="Parsers$Backward.html" title="Indicates that a backward function is expected next.">Backward</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="trait" href="Parsers$Forward.html" title="Indicates that a forward function is expected next."></a>
-                        <a href="Parsers$Forward.html" title="Indicates that a forward function is expected next.">Forward</a>
-                      </li><li class="current-entities indented3">
                         <a class="object" href="Parsers$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
@@ -335,7 +331,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">UnexpectedToken</span><span class="tparams">[<span name="A">+A</span>]</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.parsing.Parsers.Token">Token</span></span>, <span name="parser">parser: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">UnexpectedToken</span><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.parsing.Parsers.Token">Token</span></span>, <span name="parser">parser: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -345,7 +341,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -392,9 +388,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scallion.parsing.Parsers.UnexpectedToken#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(token:Token,parser:Parsers.this.Parser[A]):Parsers.this.UnexpectedToken[A]"></a><a id="&lt;init&gt;:UnexpectedToken[A]"></a>
+      <a id="&lt;init&gt;(token:Token,parser:Parsers.this.Parser[V,A]):Parsers.this.UnexpectedToken[V,A]"></a><a id="&lt;init&gt;:UnexpectedToken[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$UnexpectedToken.html#&lt;init&gt;(token:Token,parser:Parsers.this.Parser[A]):Parsers.this.UnexpectedToken[A]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$UnexpectedToken.html#&lt;init&gt;(token:Token,parser:Parsers.this.Parser[V,A]):Parsers.this.UnexpectedToken[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -403,7 +399,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">UnexpectedToken</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.parsing.Parsers.Token">Token</span></span>, <span name="parser">parser: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>)</span>
+        <span class="name">UnexpectedToken</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.parsing.Parsers.Token">Token</span></span>, <span name="parser">parser: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>)</span>
       </span>
       
       
@@ -649,9 +645,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
               
         </dd></dl></div>
     </li><li name="scallion.parsing.Parsers.UnexpectedToken#parser" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parser:Parsers.this.Parser[A]"></a><a id="parser:Parser[A]"></a>
+      <a id="parser:Parsers.this.Parser[V,A]"></a><a id="parser:Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$UnexpectedToken.html#parser:Parsers.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Parsers$UnexpectedToken.html#parser:Parsers.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -660,7 +656,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">parser</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>
+        <span class="name">parser</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Parser for the rest of input.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.parsing.Parsers.UnexpectedToken">UnexpectedToken</a> → <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a></dd></dl></div>
@@ -783,7 +779,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="scallion.parsing.Parsers.ParseResult">
-              <h3>Inherited from <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</h3>
+              <h3>Inherited from <a href="Parsers$ParseResult.html" class="extype" name="scallion.parsing.Parsers.ParseResult">ParseResult</a>[<span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.parsing.Parsers.UnexpectedToken.A">A</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

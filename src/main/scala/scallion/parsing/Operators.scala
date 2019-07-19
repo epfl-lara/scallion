@@ -15,7 +15,7 @@
 
 package scallion.parsing
 
-import scallion.parsing.unfolds._
+import scallion.parsing.Unfolds._
 
 /** Contains utilities to write parsers with infix, prefix and postfix operators.
   * Expected to be mixed-in to `Parsers`.

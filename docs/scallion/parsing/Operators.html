@@ -166,8 +166,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 <span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
-    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
 
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
     <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
@@ -178,41 +177,46 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
   }
 
-  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+  <span class="kw">type</span> P[A] = Parser[_, A]
+
+  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
     <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
   }
-  <span class="kw">val</span> numberValue = accept(NumberClass) {
+
+  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
     <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
   }
-  <span class="kw">val</span> stringValue = accept(StringClass) {
+
+  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
     <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
   }
-  <span class="kw">val</span> nullValue = accept(NullClass) {
+
+  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
     <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
   }
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
-    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
-  }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
     (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
     (stringValue ~ <span class="lit">':'</span> ~ value).map {
       <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
     }
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
     (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -282,6 +286,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <span class="separator"></span>
                         <a class="trait" href="Parsers.html" title="Contains definitions relating to parsers."></a>
                         <a href="Parsers.html" title="Contains definitions relating to parsers.">Parsers</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="object" href="Unfolds$.html" title="Contains functions to unfold values."></a>
+                        <a href="Unfolds$.html" title="Contains functions to unfold values.">Unfolds</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="class" href="package$$$tilde.html" title="Simply a pair."></a>
@@ -385,9 +393,9 @@ Expected to be mixed-in to <code>Parsers</code>.
       
       <p class="shortcomment cmt">Associativity of an operator.</p>
     </li><li name="scallion.parsing.Operators.Level" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="level">
-      <a id="Level[A]extendsProductwithSerializable"></a><a id="Level[A]:(Operators.this)#Level[A]"></a>
+      <a id="Level[-V,A]extendsProductwithSerializable"></a><a id="Level[-V,A]:(Operators.this)#Level[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#Level[A]extendsProductwithSerializable" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#Level[-V,A]extendsProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -396,15 +404,15 @@ Expected to be mixed-in to <code>Parsers</code>.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Represents a precedence level with a parser for the various operators of that level and an associativity." href="Operators$Level.html"><span class="name">Level</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="operator">operator: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.Level.A">A</span>, <span class="extype" name="scallion.parsing.Operators.Level.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.Level.A">A</span>]</span>, <span name="associativity">associativity: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Operators.Associativity">Associativity</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Represents a precedence level with a parser for the various operators of that level and an associativity." href="Operators$Level.html"><span class="name">Level</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">A</span>]</span><span class="params">(<span name="operator">operator: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.Level.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.Level.A">A</span>, <span class="extype" name="scallion.parsing.Operators.Level.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.Level.A">A</span>]</span>, <span name="associativity">associativity: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Operators.Associativity">Associativity</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       <p class="shortcomment cmt">Represents a precedence level with a parser for the various <code>operator</code>s of that level
 and an associativity.</p>
     </li><li name="scallion.parsing.Operators.LevelDecorator" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="level">
-      <a id="LevelDecorator[A]extendsAnyRef"></a><a id="LevelDecorator[A]:(Operators.this)#LevelDecorator[A]"></a>
+      <a id="LevelDecorator[-V,A]extendsAnyRef"></a><a id="LevelDecorator[-V,A]:(Operators.this)#LevelDecorator[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#LevelDecorator[A]extendsAnyRef" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#LevelDecorator[-V,A]extendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -413,7 +421,7 @@ and an associativity.</p>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Implicitly decorates an operator parser to add an is methods that indicates the associativity of the parser." href="Operators$LevelDecorator.html"><span class="name">LevelDecorator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Implicitly decorates an operator parser to add an is methods that indicates the associativity of the parser." href="Operators$LevelDecorator.html"><span class="name">LevelDecorator</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
       <p class="shortcomment cmt">Implicitly decorates an <code>operator</code> parser to add an <code>is</code> methods
@@ -608,9 +616,9 @@ that indicates the associativity of the parser.</p><pre><span class="kw">val</sp
               
         </dd></dl></div>
     </li><li name="scallion.parsing.Operators#infixLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="infixLeft[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[(A,A)=&gt;A]):Operators.this.Parser[A]"></a><a id="infixLeft[A]((Operators.this)#Parser[A],(Operators.this)#Parser[(A,A)⇒A]):(Operators.this)#Parser[A]"></a>
+      <a id="infixLeft[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,(A,A)=&gt;A],rev:PartialFunction[V,(V,W,V)]):Operators.this.Parser[V,A]"></a><a id="infixLeft[V,W,A]((Operators.this)#Parser[V,A],(Operators.this)#Parser[W,(A,A)⇒A],PartialFunction[V,(V,W,V)]):(Operators.this)#Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#infixLeft[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[(A,A)=&gt;A]):Operators.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#infixLeft[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,(A,A)=&gt;A],rev:PartialFunction[V,(V,W,V)]):Operators.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -619,16 +627,16 @@ that indicates the associativity of the parser.</p><pre><span class="kw">val</sp
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">infixLeft</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>
+        <span class="name">infixLeft</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.W">W</span>, (<span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>, <span name="rev">rev: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.infixLeft.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.W">W</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.V">V</span>)]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixLeft.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixLeft.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that accepts repetitions of <code>elem</code> separated by left-associative <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that accepts repetitions of <code>elem</code> separated by left-associative <code>op</code>.
 The value returned is reduced left-to-right.
 </p></div></div>
     </li><li name="scallion.parsing.Operators#infixRight" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="infixRight[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[(A,A)=&gt;A]):Operators.this.Parser[A]"></a><a id="infixRight[A]((Operators.this)#Parser[A],(Operators.this)#Parser[(A,A)⇒A]):(Operators.this)#Parser[A]"></a>
+      <a id="infixRight[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,(A,A)=&gt;A],rev:PartialFunction[V,(V,W,V)]):Operators.this.Parser[V,A]"></a><a id="infixRight[V,W,A]((Operators.this)#Parser[V,A],(Operators.this)#Parser[W,(A,A)⇒A],PartialFunction[V,(V,W,V)]):(Operators.this)#Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#infixRight[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[(A,A)=&gt;A]):Operators.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#infixRight[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,(A,A)=&gt;A],rev:PartialFunction[V,(V,W,V)]):Operators.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -637,7 +645,7 @@ The value returned is reduced left-to-right.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">infixRight</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>
+        <span class="name">infixRight</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.W">W</span>, (<span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>, <span name="rev">rev: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.infixRight.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.W">W</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.V">V</span>)]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.infixRight.V">V</span>, <span class="extype" name="scallion.parsing.Operators.infixRight.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that accepts repetitions of <code>elem</code> separated by right-associative <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that accepts repetitions of <code>elem</code> separated by right-associative <code>op</code>.
@@ -714,9 +722,9 @@ The value returned is reduced right-to-left.
               
         </dd></dl></div>
     </li><li name="scallion.parsing.Operators#operators" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="operators[A](elem:Operators.this.Parser[A])(levels:Operators.this.Level[A]*):Operators.this.Parser[A]"></a><a id="operators[A]((Operators.this)#Parser[A])((Operators.this)#Level[A]*):(Operators.this)#Parser[A]"></a>
+      <a id="operators[V,W,A](elem:Operators.this.Parser[V,A],rev:PartialFunction[V,(V,W,V)])(levels:Operators.this.Level[W,A]*):Operators.this.Parser[V,A]"></a><a id="operators[V,W,A]((Operators.this)#Parser[V,A],PartialFunction[V,(V,W,V)])((Operators.this)#Level[W,A]*):(Operators.this)#Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#operators[A](elem:Operators.this.Parser[A])(levels:Operators.this.Level[A]*):Operators.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#operators[V,W,A](elem:Operators.this.Parser[V,A],rev:PartialFunction[V,(V,W,V)])(levels:Operators.this.Level[W,A]*):Operators.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -725,17 +733,15 @@ The value returned is reduced right-to-left.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">operators</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>)</span><span class="params">(<span name="levels">levels: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Operators.Level">Level</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]*</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>
+        <span class="name">operators</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.V">V</span>, <span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>, <span name="rev">rev: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Operators.operators.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.operators.V">V</span>, <span class="extype" name="scallion.parsing.Operators.operators.W">W</span>, <span class="extype" name="scallion.parsing.Operators.operators.V">V</span>)]</span>)</span><span class="params">(<span name="levels">levels: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Operators.Level">Level</span>[<span class="extype" name="scallion.parsing.Operators.operators.W">W</span>, <span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]*</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.operators.V">V</span>, <span class="extype" name="scallion.parsing.Operators.operators.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><p>The operators in earlier levels are considered to bind tighter than those in later levels.</p><pre><span class="kw">val</span> boolExpr = operators(basicBoolExpr)(
-  andOp is LeftAssociative,
-  orOp is LeftAssociative,
-  implyOp is RightAssociative)</pre></div></div>
+      <p class="shortcomment cmt">Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses repetitions of <code>elem</code> separated by infix operators.</p><p>The operators in earlier levels are considered to bind tighter than those in later levels.
+</p></div></div>
     </li><li name="scallion.parsing.Operators#postfixes" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="postfixes[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[A=&gt;A]):Operators.this.Parser[A]"></a><a id="postfixes[A]((Operators.this)#Parser[A],(Operators.this)#Parser[(A)⇒A]):(Operators.this)#Parser[A]"></a>
+      <a id="postfixes[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,A=&gt;A],rev:PartialFunction[V,(V,W)]):Operators.this.Parser[V,A]"></a><a id="postfixes[V,W,A]((Operators.this)#Parser[V,A],(Operators.this)#Parser[W,(A)⇒A],PartialFunction[V,(V,W)]):(Operators.this)#Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#postfixes[A](elem:Operators.this.Parser[A],op:Operators.this.Parser[A=&gt;A]):Operators.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#postfixes[V,W,A](elem:Operators.this.Parser[V,A],op:Operators.this.Parser[W,A=&gt;A],rev:PartialFunction[V,(V,W)]):Operators.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -744,15 +750,15 @@ The value returned is reduced right-to-left.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">postfixes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>
+        <span class="name">postfixes</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>]</span><span class="params">(<span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.V">V</span>, <span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>, <span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.W">W</span>, (<span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>, <span name="rev">rev: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.postfixes.V">V</span>, <span class="extype" name="scallion.parsing.Operators.postfixes.W">W</span>)]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.postfixes.V">V</span>, <span class="extype" name="scallion.parsing.Operators.postfixes.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that parses <code>elem</code> postfixed by any number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> postfixed by any number of <code>op</code>.</p><p>Operators are applied left-to-right.
 </p></div></div>
     </li><li name="scallion.parsing.Operators#prefixes" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="prefixes[A](op:Operators.this.Parser[A=&gt;A],elem:Operators.this.Parser[A]):Operators.this.Parser[A]"></a><a id="prefixes[A]((Operators.this)#Parser[(A)⇒A],(Operators.this)#Parser[A]):(Operators.this)#Parser[A]"></a>
+      <a id="prefixes[V,W,A](op:Operators.this.Parser[W,A=&gt;A],elem:Operators.this.Parser[V,A],rev:PartialFunction[V,(W,V)]):Operators.this.Parser[V,A]"></a><a id="prefixes[V,W,A]((Operators.this)#Parser[W,(A)⇒A],(Operators.this)#Parser[V,A],PartialFunction[V,(W,V)]):(Operators.this)#Parser[V,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Operators.html#prefixes[A](op:Operators.this.Parser[A=&gt;A],elem:Operators.this.Parser[A]):Operators.this.Parser[A]" title="Permalink">
+      <a href="../../scallion/parsing/Operators.html#prefixes[V,W,A](op:Operators.this.Parser[W,A=&gt;A],elem:Operators.this.Parser[V,A],rev:PartialFunction[V,(W,V)]):Operators.this.Parser[V,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -761,7 +767,7 @@ The value returned is reduced right-to-left.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">prefixes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[(<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>, <span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>
+        <span class="name">prefixes</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>]</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.W">W</span>, (<span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>) ⇒ <span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>, <span name="elem">elem: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.V">V</span>, <span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>, <span name="rev">rev: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.V">V</span>, (<span class="extype" name="scallion.parsing.Operators.prefixes.W">W</span>, <span class="extype" name="scallion.parsing.Operators.prefixes.V">V</span>)]</span>)</span><span class="result">: (<a href="" class="extype" name="scallion.parsing.Operators">Operators</a>.this)#<span class="extype" name="scallion.parsing.Parsers.Parser">Parser</span>[<span class="extype" name="scallion.parsing.Operators.prefixes.V">V</span>, <span class="extype" name="scallion.parsing.Operators.prefixes.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Parser that parses <code>elem</code> prefixed by any number of <code>op</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parser that parses <code>elem</code> prefixed by any number of <code>op</code>.</p><p>Operators are applied right-to-left.

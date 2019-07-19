@@ -166,8 +166,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 <span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
 <span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass]
-    <span class="kw">with</span> Graphs[TokenClass] <span class="kw">with</span> Grammars[TokenClass] {
+<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
 
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
     <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
@@ -178,41 +177,46 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
   }
 
-  <span class="kw">val</span> booleanValue = accept(BooleanClass) {
+  <span class="kw">type</span> P[A] = Parser[_, A]
+
+  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
     <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
   }
-  <span class="kw">val</span> numberValue = accept(NumberClass) {
+
+  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
     <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
   }
-  <span class="kw">val</span> stringValue = accept(StringClass) {
+
+  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
     <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
   }
-  <span class="kw">val</span> nullValue = accept(NullClass) {
+
+  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
     <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
   }
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>) = accept(SeparatorClass(char)) {
-    <span class="kw">case</span> SeparatorToken(_, range) <span class="kw">=&gt;</span> range
-  }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue =
+  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
+
+  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
     (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start._1, end._2))
+      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> binding =
+  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
     (stringValue ~ <span class="lit">':'</span> ~ value).map {
       <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
     }
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue =
+
+  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
     (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start._1, end._2))
+      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  <span class="kw">lazy</span> <span class="kw">val</span> value: Parser[Value] = recursive {
+  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  <span class="kw">def</span> apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -254,75 +258,53 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li name="scallion.parsing.Parsers" visbl="pub" class="indented3 " data-isabs="true" fullComment="yes" group="parsing">
-      <a id="Parsers[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]"></a><a id="Parsers[Token,Kind]:Parsers[Token,Kind]"></a>
+    </li><li name="scallion.parsing.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="visualization"></a><a id="visualization:visualization"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/index.html#Parsers[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]" title="Permalink">
+      <a href="../../scallion/parsing/index.html#visualization" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Contains definitions relating to parsers." href="Parsers.html"><span class="name">Parsers</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.parsing.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.parsing.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.parsing.Parsers.Kind">Kind</span>]</span>
+        <a title="" href="visualization/index.html"><span class="name">visualization</span></a>
       </span>
       
-      <p class="shortcomment cmt">Contains definitions relating to parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to parsers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.parsing">parsing</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.parsing.Operators">scallion.parsing.Operators</a> for useful combinators
-     to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
-    </li><li class="current-entities indented3">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.parsing">parsing</a></dd></dl></div>
+    </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="trait" href="" title="Indicates that a backward function is expected next."></a>
-                        <a href="" title="Indicates that a backward function is expected next.">Backward</a>
-                      </li><li class="current-entities indented3">
+                        <a class="trait" href="Operators.html" title="Contains utilities to write parsers with infix, prefix and postfix operators."></a>
+                        <a href="Operators.html" title="Contains utilities to write parsers with infix, prefix and postfix operators.">Operators</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="trait" href="Parsers$Forward.html" title="Indicates that a forward function is expected next."></a>
-                        <a href="Parsers$Forward.html" title="Indicates that a forward function is expected next.">Forward</a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="Parsers$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
-                        <a class="trait" href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
-                        <a href="Parsers$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
-                      </li><li class="current-entities indented3">
+                        <a class="class" href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs."></a>
+                        <a href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs.">PairDecorator</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="trait" href="Parsers$ParseResult.html" title="Result of running a Parser."></a>
-                        <a href="Parsers$ParseResult.html" title="Result of running a Parser.">ParseResult</a>
-                      </li><li class="current-entities indented3">
+                        <a class="trait" href="Parsers.html" title="Contains definitions relating to parsers."></a>
+                        <a href="Parsers.html" title="Contains definitions relating to parsers.">Parsers</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="Parsers$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value."></a>
-                        <a href="Parsers$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value.">Parsed</a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="Parsers$Parser$.html" title="Contains primitive basic parsers and parser combinators."></a>
-                        <a class="trait" href="Parsers$Parser.html" title="Consumes a stream of tokens and tries to produces a value of type A."></a>
-                        <a href="Parsers$Parser.html" title="Consumes a stream of tokens and tries to produces a value of type A.">Parser</a>
-                      </li><li class="current-entities indented3">
+                        <a class="object" href="" title="Contains functions to unfold values."></a>
+                        <a href="" title="Contains functions to unfold values.">Unfolds</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="Parsers$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered."></a>
-                        <a href="Parsers$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered.">UnexpectedEnd</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsers$UnexpectedToken.html" title="Indicates that the provided token was not expected at that point."></a>
-                        <a href="Parsers$UnexpectedToken.html" title="Indicates that the provided token was not expected at that point.">UnexpectedToken</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="object" href="visualization/Grammars$grammars$.html" title="Contains utilities to visualize parsers as BNF grammars."></a>
-                        <a href="visualization/Grammars$grammars$.html" title="Contains utilities to visualize parsers as BNF grammars.">grammars</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="object" href="visualization/Graphs$graphs$.html" title="Contains utilities to visualize parsers as graphs using Graphviz."></a>
-                        <a href="visualization/Graphs$graphs$.html" title="Contains utilities to visualize parsers as graphs using Graphviz.">graphs</a>
+                        <a class="class" href="package$$$tilde.html" title="Simply a pair."></a>
+                        <a href="package$$$tilde.html" title="Simply a pair.">~</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="trait type">
+            <body class="object value">
       <div id="definition">
-        <div class="big-circle trait">t</div>
-        <p id="owner"><a href="../index.html" class="extype" name="scallion">scallion</a>.<a href="index.html" class="extype" name="scallion.parsing">parsing</a>.<a href="Parsers.html" class="extype" name="scallion.parsing.Parsers">Parsers</a></p>
-        <h1>Backward<span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html" title="Permalink">
+        <div class="big-circle object">o</div>
+        <p id="owner"><a href="../index.html" class="extype" name="scallion">scallion</a>.<a href="index.html" class="extype" name="scallion.parsing">parsing</a></p>
+        <h1>Unfolds<span class="permalink">
+      <a href="../../scallion/parsing/Unfolds$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -332,16 +314,15 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Backward</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Unfolds</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Indicates that a backward function is expected next.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/Parsers.scala" target="_blank">Parsers.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains functions to unfold values.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/parsing/Unfolds.scala" target="_blank">Unfolds.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -371,7 +352,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.parsing.Parsers.Backward"><span>Backward</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.parsing.Unfolds"><span>Unfolds</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -393,34 +374,15 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         
 
-        <div class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="scallion.parsing.Parsers.Backward#withInverses" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="withInverses(inverses:PartialFunction[B,Seq[A]]):Parsers.this.Parser[B]"></a><a id="withInverses(PartialFunction[B,Seq[A]]):Parser[B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#withInverses(inverses:PartialFunction[B,Seq[A]]):Parsers.this.Parser[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withInverses</span><span class="params">(<span name="inverses">inverses: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Parsers.Backward.B">B</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Parsers.Backward.A">A</span>]]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Backward.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Provides the <code>inverses</code> function, which returns all inverses.</p>
-    </li></ol>
-            </div>
+        
 
         <div class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -436,7 +398,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html###():Int" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -452,7 +414,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -468,7 +430,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -484,7 +446,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#clone():Object" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -508,7 +470,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -524,7 +486,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -540,7 +502,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#finalize():Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -562,7 +524,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#getClass():Class[_]" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -581,7 +543,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#hashCode():Int" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -600,7 +562,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -616,7 +578,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -632,7 +594,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#notify():Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -651,7 +613,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#notifyAll():Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -667,26 +629,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.Backward#oneWay" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="oneWay:Parsers.this.Parser[B]"></a><a id="oneWay:Parser[B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#oneWay:Parsers.this.Parser[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">oneWay</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Backward.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Provides no inverse function.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -702,7 +648,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#toString():String" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -715,10 +661,78 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.parsing.Unfolds#unfoldLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unfoldLeft[A,B](f:PartialFunction[B,(B,A)]):B=&gt;Seq[B~Seq[A]]"></a><a id="unfoldLeft[A,B](PartialFunction[B,(B,A)]):(B)⇒Seq[~[B,Seq[A]]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#unfoldLeft[A,B](f:PartialFunction[B,(B,A)]):B=&gt;Seq[B~Seq[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unfoldLeft</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="f">f: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.B">B</span>, (<span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.B">B</span>, <span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.A">A</span>)]</span>)</span><span class="result">: (<span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$$tilde.html" class="extype" name="scallion.parsing.~">~</a>[<span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.B">B</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Unfolds.unfoldLeft.A">A</span>]]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Unapplies a <code>foldLeft</code> operation.</p><div class="fullcomment"><div class="comment cmt"><p>Unapplies a <code>foldLeft</code> operation.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>Computes how to un-merge two elements.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Unfolds#unfoldRight" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unfoldRight[A,B](f:PartialFunction[B,(A,B)]):B=&gt;Seq[Seq[A]~B]"></a><a id="unfoldRight[A,B](PartialFunction[B,(A,B)]):(B)⇒Seq[~[Seq[A],B]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#unfoldRight[A,B](f:PartialFunction[B,(A,B)]):B=&gt;Seq[Seq[A]~B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unfoldRight</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="f">f: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Unfolds.unfoldRight.B">B</span>, (<span class="extype" name="scallion.parsing.Unfolds.unfoldRight.A">A</span>, <span class="extype" name="scallion.parsing.Unfolds.unfoldRight.B">B</span>)]</span>)</span><span class="result">: (<span class="extype" name="scallion.parsing.Unfolds.unfoldRight.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$$tilde.html" class="extype" name="scallion.parsing.~">~</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Unfolds.unfoldRight.A">A</span>], <span class="extype" name="scallion.parsing.Unfolds.unfoldRight.B">B</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Unapplies a <code>foldRight</code> operation.</p><div class="fullcomment"><div class="comment cmt"><p>Unapplies a <code>foldRight</code> operation.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>Computes how to un-merge two elements.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Unfolds#unreduceLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unreduceLeft[A](f:PartialFunction[A,(A,A)]):A=&gt;Seq[Seq[A]]"></a><a id="unreduceLeft[A](PartialFunction[A,(A,A)]):(A)⇒Seq[Seq[A]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#unreduceLeft[A](f:PartialFunction[A,(A,A)]):A=&gt;Seq[Seq[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unreduceLeft</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Unfolds.unreduceLeft.A">A</span>, (<span class="extype" name="scallion.parsing.Unfolds.unreduceLeft.A">A</span>, <span class="extype" name="scallion.parsing.Unfolds.unreduceLeft.A">A</span>)]</span>)</span><span class="result">: (<span class="extype" name="scallion.parsing.Unfolds.unreduceLeft.A">A</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Unfolds.unreduceLeft.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Unapplies a <code>reduceLeft</code> operation.</p><div class="fullcomment"><div class="comment cmt"><p>Unapplies a <code>reduceLeft</code> operation.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>Computes how to un-merge two elements.</p></dd></dl></div>
+    </li><li name="scallion.parsing.Unfolds#unreduceRight" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unreduceRight[A](f:PartialFunction[A,(A,A)]):A=&gt;Seq[Seq[A]]"></a><a id="unreduceRight[A](PartialFunction[A,(A,A)]):(A)⇒Seq[Seq[A]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#unreduceRight[A](f:PartialFunction[A,(A,A)]):A=&gt;Seq[Seq[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unreduceRight</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Unfolds.unreduceRight.A">A</span>, (<span class="extype" name="scallion.parsing.Unfolds.unreduceRight.A">A</span>, <span class="extype" name="scallion.parsing.Unfolds.unreduceRight.A">A</span>)]</span>)</span><span class="result">: (<span class="extype" name="scallion.parsing.Unfolds.unreduceRight.A">A</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.parsing.Unfolds.unreduceRight.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Unapplies a <code>reduceRight</code> operation.</p><div class="fullcomment"><div class="comment cmt"><p>Unapplies a <code>reduceRight</code> operation.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>Computes how to un-merge two elements.</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#wait():Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -740,7 +754,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -762,7 +776,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../scallion/parsing/Unfolds$.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -783,22 +797,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.parsing.Parsers.Backward#withInverse" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="withInverse(inverse:PartialFunction[B,A]):Parsers.this.Parser[B]"></a><a id="withInverse(PartialFunction[B,A]):Parser[B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/parsing/Parsers$Backward.html#withInverse(inverse:PartialFunction[B,A]):Parsers.this.Parser[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withInverse</span><span class="params">(<span name="inverse">inverse: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.parsing.Parsers.Backward.B">B</span>, <span class="extype" name="scallion.parsing.Parsers.Backward.A">A</span>]</span>)</span><span class="result">: <a href="Parsers$Parser.html" class="extype" name="scallion.parsing.Parsers.Parser">Parser</a>[<span class="extype" name="scallion.parsing.Parsers.Backward.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Provides the <code>inverse</code> function, which returns at most one inverse.</p>
     </li>
               </ol>
             </div>

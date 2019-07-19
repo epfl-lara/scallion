@@ -18,7 +18,7 @@ package example.lambda
 import scallion.input._
 import scallion.lexing._
 import scallion.parsing._
-import scallion.parsing.unfolds._
+import scallion.parsing.Unfolds._
 
 sealed trait Token
 case object LambdaToken extends Token
