@@ -85,34 +85,34 @@ object LambdaParser extends Parsers[Token, TokenClass] {
     case _ => OtherClass
   }
 
-  val name: InvParser[String] = accept(IdentifierClass) {
+  val name: Syntax[String] = accept(IdentifierClass) {
     case IdentifierToken(n) => n
   } contramap {
     case n => Seq(IdentifierToken(n))
   }
 
-  val lambda: InvParser[Unit] = elem(LambdaClass).always(LambdaToken)
+  val lambda: Syntax[Unit] = elem(LambdaClass).always(LambdaToken)
 
-  val dot: InvParser[Unit] = elem(DotClass).always(DotToken)
+  val dot: Syntax[Unit] = elem(DotClass).always(DotToken)
 
-  def parens(isOpen: Boolean): InvParser[Unit] =
+  def parens(isOpen: Boolean): Syntax[Unit] =
     elem(ParenthesisClass(isOpen)).always(ParenthesisToken(isOpen))
 
   val open = parens(true)
   val close = parens(false)
 
-  lazy val variable: InvParser[Expr] = name.map {
+  lazy val variable: Syntax[Expr] = name.map {
     case n => Var(n)
   } contramap {
     case Var(n) => Seq(n)
     case _ => Seq()
   }
 
-  lazy val expr: InvParser[Expr] = recursive(lambdaExpr | appExpr)
+  lazy val expr: Syntax[Expr] = recursive(lambdaExpr | appExpr)
 
-  lazy val basic: InvParser[Expr] = variable | open ~>~ expr ~<~ close
+  lazy val basic: Syntax[Expr] = variable | open ~>~ expr ~<~ close
 
-  lazy val lambdaExpr: InvParser[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
+  lazy val lambdaExpr: Syntax[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
     case ns ~ e => ns.foldRight(e) {
       case (n, acc) => Abs(n, acc)
     }
@@ -125,7 +125,7 @@ object LambdaParser extends Parsers[Token, TokenClass] {
     case _ => Seq()
   }
 
-  lazy val appExpr: InvParser[Expr] = many1(basic).map {
+  lazy val appExpr: Syntax[Expr] = many1(basic).map {
     xs => xs.reduceLeft(App(_, _))
   } contramap {
     acc => {

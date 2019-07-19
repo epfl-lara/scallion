@@ -39,7 +39,7 @@ trait Parsers[Token, Kind]
     *
     * @group parser
     */
-  type InvParser[A] = Parser[A, A]
+  type Syntax[A] = Parser[A, A]
 
   /** Returns the kind associated with `token`.
     *

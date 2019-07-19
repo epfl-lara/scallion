@@ -82,7 +82,7 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
     case _ => OtherClass
   }
 
-  val number: InvParser[Expr] = accept(NumberClass) {
+  val number: Syntax[Expr] = accept(NumberClass) {
     case NumberToken(n) => LitExpr(n)
   } contramap {
     case LitExpr(n) => Seq(NumberToken(n))
@@ -115,9 +115,9 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: InvParser[Expr] = number | open ~>~ value ~<~ close
+  lazy val basic: Syntax[Expr] = number | open ~>~ value ~<~ close
 
-  lazy val postfixed: InvParser[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
+  lazy val postfixed: Syntax[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
     case UnaryExpr(op, e) => (e, op)
   })
 
@@ -125,7 +125,7 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
     case BinaryExpr(op, l, r) => (l, op, r)
   }
 
-  lazy val value: InvParser[Expr] = recursive {
+  lazy val value: Syntax[Expr] = recursive {
     operators(postfixed, reverses)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)
