@@ -85,52 +85,81 @@ object LambdaParser extends Parsers[Token, TokenClass] {
     case _ => OtherClass
   }
 
+  // Accept any token of the kind IdentifierClass,
   val name: Syntax[String] = accept(IdentifierClass) {
+    // Extract the string from them.
     case IdentifierToken(n) => n
   } contramap {
+    // Generates all tokens which could have led the the sting.
+    // (In this case, only one.)
     case n => Seq(IdentifierToken(n))
   }
 
+  // Accept any token of the kind LambdaClass, which will always be LambdaToken.
   val lambda: Syntax[Unit] = elem(LambdaClass).always(LambdaToken)
 
+  // Accept any token of the kind DotClass, which will always be DotToken.
   val dot: Syntax[Unit] = elem(DotClass).always(DotToken)
 
+  // Accepts an open or a close parenthesis.
   def parens(isOpen: Boolean): Syntax[Unit] =
     elem(ParenthesisClass(isOpen)).always(ParenthesisToken(isOpen))
 
+  // Open parenthesis.
   val open = parens(true)
+
+  // Close parenthesis.
   val close = parens(false)
 
-  lazy val variable: Syntax[Expr] = name.map {
+  // Turn a name into an expression.
+  val variable: Syntax[Expr] = name.map {
+    // Turn the string into a variable.
     case n => Var(n)
   } contramap {
+    // Turn the expression into all strings that could have generated it.
     case Var(n) => Seq(n)
     case _ => Seq()
   }
 
-  lazy val expr: Syntax[Expr] = recursive(lambdaExpr | appExpr)
+  // The syntax for expressions, which is the main syntax.
+  lazy val expr: Syntax[Expr] = recursive {
+    // Accepts either a lambda expression or an application.
+    lambdaExpr | appExpr
+  }
 
+  // Basic expressions. Simply a variable or an expression in parenthesis.
   lazy val basic: Syntax[Expr] = variable | open ~>~ expr ~<~ close
 
+  // Lambda expression.
   lazy val lambdaExpr: Syntax[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
-    case ns ~ e => ns.foldRight(e) {
-      case (n, acc) => Abs(n, acc)
+    // Given a sequence of names and the expression body, we create the corresponding lambda.
+    case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
+      case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.
     }
   } contramap {
+    // We provide the inverse transformation.
+    // Given an expression, we decompose it into all its arguments.
     case acc@Abs(_, _) => {
+      // To do so, we simply use `unfoldRight`.
       unfoldRight[String, Expr] {
-        case Abs(n, acc) => (n, acc)
+        case Abs(n, acc) => (n, acc)  // We split the `Abs` into its two components.
       }(acc)
     }
+    // If the value is not an `Abs`, we have no inverses.
     case _ => Seq()
   }
 
+  // Application, which consists of a sequence of at least one basic expressions.
   lazy val appExpr: Syntax[Expr] = many1(basic).map {
+    // We reduce all expressions into a single one using `reduceLeft`.
     xs => xs.reduceLeft(App(_, _))
   } contramap {
+    // We provide also the inverse operation.
+    // We unfold arguments using `unreduceLeft`.
     acc => {
+      // We use `unreduceLeft` to unpack the value.
       unreduceLeft[Expr] {
-        case App(l, r) => (l, r)
+        case App(l, r) => (l, r)  // We split the `App` into its two components.
       }(acc)
     }
   }
