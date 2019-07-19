@@ -68,6 +68,11 @@ case class OperatorClass(op: Char) extends TokenClass(op.toString)
 case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
 case object OtherClass extends TokenClass("?")
 
+sealed abstract class Expr
+case class LitExpr(value: Int) extends Expr
+case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
+case class UnaryExpr(op: Char, inner: Expr) extends Expr
+
 object CalcParser extends Parsers[Token, TokenClass] with Operators {
 
   override def getKind(token: Token): TokenClass = token match {
@@ -77,57 +82,58 @@ object CalcParser extends Parsers[Token, TokenClass] with Operators {
     case _ => OtherClass
   }
 
-  val number = accept(NumberClass) {
-    case NumberToken(n) => n
+  val number: InvParser[Expr] = accept(NumberClass) {
+    case NumberToken(n) => LitExpr(n)
+  } contramap {
+    case LitExpr(n) => Seq(NumberToken(n))
+    case _ => Seq()
   }
 
-  val plus = accept(OperatorClass('+')) {
-    case _ => (x: Int, y: Int) => x + y
+  def binOp(char: Char): Parser[Char, (Expr, Expr) => Expr] = accept(OperatorClass(char)) {
+    case _ => (l: Expr, r: Expr) => BinaryExpr(char, l, r)
+  } contramap {
+    case `char` => Seq(OperatorToken(char))
+    case _ => Seq()
   }
 
-  val minus = accept(OperatorClass('-')) {
-    case _ => (x: Int, y: Int) => x - y
+  val plus = binOp('+')
+
+  val minus = binOp('-')
+
+  val times = binOp('*')
+
+  val div = binOp('/')
+
+  val fac: Parser[Char, Expr => Expr] = accept(OperatorClass('!')) {
+    case _ => (x: Expr) => UnaryExpr('!', x)
+  } contramap {
+    case '!' => Seq(OperatorToken('!'))
+    case _ => Seq()
   }
 
-  val times = elem(OperatorClass('*')).map {
-    case _ => (x: Int, y: Int) => x * y
+  def parens(isOpen: Boolean) = elem(ParenthesisClass(isOpen)).unit(ParenthesisToken(isOpen))
+  val open = parens(true)
+  val close = parens(false)
+
+  lazy val basic: InvParser[Expr] = number | open ~>~ value ~<~ close
+
+  lazy val postfixed: InvParser[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
+    case UnaryExpr(op, e) => (e, op)
+  })
+
+  val reverses: PartialFunction[Expr, (Expr, Char, Expr)] = {
+    case BinaryExpr(op, l, r) => (l, op, r)
   }
 
-  val div = accept(OperatorClass('/')) {
-    case _ => (x: Int, y: Int) => if (y == 0) 0 else x / y
-  }
-
-  val fac = accept(OperatorClass('!')) {
-    case _ => (x: Int) => 1.to(x).product
-  }
-
-  val uMinus = accept(OperatorClass('-')) {
-    case _ => (x: Int) => -x
-  }
-
-  val uPlus = accept(OperatorClass('+')) {
-    case _ => (x: Int) => x
-  }
-
-  val open = elem(ParenthesisClass(true)).unit(ParenthesisToken(true))
-  val close = elem(ParenthesisClass(false)).unit(ParenthesisToken(false))
-
-  lazy val basic: Parser[Int] = number | open ~>~ value ~<~ close
-
-  lazy val postfixed: Parser[Int] = postfixes(basic, fac)
-
-  lazy val prefixed: Parser[Int] = opt(uPlus | uMinus) ~ postfixed map {
-    case Some(f) ~ x => f(x)
-    case None ~ x => x
-  }
-
-  lazy val value: Parser[Int] = recursive {
-    operators(prefixed)(
+  lazy val value: InvParser[Expr] = recursive {
+    operators(postfixed, reverses)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)
   }
 
-  def apply(it: Iterator[Token]): Option[Int] = value(it) match {
+  def unapply(expr: Expr): Iterator[Seq[Token]] = value.tokensOf(expr)
+
+  def apply(it: Iterator[Token]): Option[Expr] = value(it) match {
     case Parsed(value, _) => Some(value)
     case _ => None
   }

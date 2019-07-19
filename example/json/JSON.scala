@@ -20,17 +20,6 @@ import scala.language.implicitConversions
 import scallion.input._
 import scallion.lexing._
 import scallion.parsing._
-import scallion.parsing.visualization._
-
-object time {
-  def apply[T](block: => T): T = {
-    val start = System.currentTimeMillis
-    val res = block
-    val totalTime = System.currentTimeMillis - start
-    println("Elapsed time: %1d ms".format(totalTime))
-    res
-  }
-}
 
 sealed abstract class Token {
   val range: (Int, Int)
@@ -137,73 +126,44 @@ object JSONParser extends Parsers[Token, TokenClass] {
     case _ => NoClass
   }
 
-  val booleanValue = accept(BooleanClass) {
+  type P[A] = Parser[_, A]
+
+  val booleanValue: P[BooleanValue] = accept(BooleanClass) {
     case BooleanToken(value, range) => BooleanValue(value, range)
-  } withInverse {
-    case BooleanValue(value, range) => BooleanToken(value, range)
   }
 
-  val numberValue = accept(NumberClass) {
+  val numberValue: P[NumberValue] = accept(NumberClass) {
     case NumberToken(value, range) => NumberValue(value, range)
-  } withInverse {
-    case NumberValue(value, range) => NumberToken(value, range)
   }
 
-  val stringValue = accept(StringClass) {
+  val stringValue: P[StringValue] = accept(StringClass) {
     case StringToken(value, range) => StringValue(value, range)
-  } withInverse {
-    case StringValue(value, range) => StringToken(value, range)
   }
 
-  val nullValue = accept(NullClass) {
+  val nullValue: P[Value] = accept(NullClass) {
     case NullToken(range) => NullValue(range)
-  } withInverse {
-    case NullValue(range) => NullToken(range)
   }
 
+  implicit def separator(char: Char): Parser[Unit, Token] = elem(SeparatorClass(char)).unit()
 
-  implicit def separator(char: Char): Parser[Token] = elem(SeparatorClass(char))
-
-  lazy val arrayValue =
-    transform('[' ~ repsep(value, ','.unit(SeparatorToken(',', (-1, -1)))) ~ ']') {
+  lazy val arrayValue: P[Value] =
+    ('[' ~ repsep(value, ',') ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
-    } withInverse {
-      case ArrayValue(vs, (s, e)) => SeparatorToken('[', (s, s + 1)) ~ vs ~ SeparatorToken(']', (e - 1, e))
     }
 
-  lazy val binding =
-    transform(stringValue ~ ':' ~ value) {
+  lazy val binding: P[(StringValue, Value)] =
+    (stringValue ~ ':' ~ value).map {
       case key ~ _ ~ value => (key, value)
-    } withInverse {
-      case (key: StringValue, value: Value) => {
-        val mid = SeparatorToken(':', (key.range._2, key.range._2 + 1))
-        key ~ mid ~ value
-      }
     }
 
-  lazy val objectValue =
-    transform('{' ~ repsep(binding, ','.unit(SeparatorToken(',', (-1, -1)))) ~ '}') {
+  lazy val objectValue: P[Value] =
+    ('{' ~ repsep(binding, ',') ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
-    } withInverse {
-      case ObjectValue(bs, (s, e)) => SeparatorToken('{', (s, s + 1)) ~ bs ~ SeparatorToken('}', (e - 1, e))
     }
 
-  lazy val value: Parser[Value] = recursive {
+  lazy val value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
-}
-
-object JSON {
-  def main(args: Array[String]): Unit = {
-
-    println(JSONParser.grammars.getGrammar(JSONParser.value).pretty())
-
-    for (arg <- args) {
-      for (_ <- 1 to 100) {
-        time(JSONParser(JSONLexer(io.Source.fromFile(arg))))
-      }
-    }
-  }
+  def apply(it: Iterator[Token]): Option[Value] = value(it).getValue
 }

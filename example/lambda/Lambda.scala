@@ -1,113 +1,146 @@
+/* Copyright 2019 EPFL, Lausanne
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package example.lambda
 
+import scallion.input._
+import scallion.lexing._
 import scallion.parsing._
+import scallion.parsing.unfolds._
 
-sealed abstract class Token
+sealed trait Token
 case object LambdaToken extends Token
 case object DotToken extends Token
-case class NameToken(name: String) extends Token
-case class ParensToken(isOpen: Boolean) extends Token
+case class IdentifierToken(name: String) extends Token
+case class ParenthesisToken(isOpen: Boolean) extends Token
+case object SpaceToken extends Token
+case class UnknownToken(content: String) extends Token
 
-sealed abstract class Kind
-case object LambdaKind extends Kind
-case object DotKind extends Kind
-case object NameKind extends Kind
-case class ParensKind(isOpen: Boolean) extends Kind
+object LambdaLexer extends Lexers[Token, Char, Unit] with CharRegExps {
+
+  val lexer = Lexer(
+    // Lambda
+    elem('\\') |> { cs => LambdaToken },
+
+    // Dot
+    elem('.') |> { cs => DotToken },
+
+    // Parentheses
+    elem('(') |> ParenthesisToken(true),
+    elem(')') |> ParenthesisToken(false),
+
+    // Spaces
+    many1(whiteSpace) |> SpaceToken,
+
+    // Identifiers
+    many1(elem(_.isLetter)) |> { cs => IdentifierToken(cs.mkString) }
+
+  ) onError {
+    (cs, _) => UnknownToken(cs.mkString)
+  }
+
+
+  def apply(it: Iterator[Char]): Iterator[Token] = {
+    val source = Source.fromIterator(it, NoPositioner)
+
+    val tokens = lexer(source)
+
+    tokens.filter((token: Token) => token != SpaceToken)
+  }
+}
+
+sealed abstract class TokenClass(text: String) {
+  override def toString = text
+}
+case object IdentifierClass extends TokenClass("<id>")
+case object LambdaClass extends TokenClass(".")
+case object DotClass extends TokenClass(".")
+case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
+case object OtherClass extends TokenClass("?")
 
 sealed abstract class Expr
 case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object Parser extends Parsers[Token, Kind] {
-  override def getKind(token: Token): Kind = token match {
-    case LambdaToken => LambdaKind
-    case DotToken => DotKind
-    case NameToken(_) => NameKind
-    case ParensToken(isOpen) => ParensKind(isOpen)
+object LambdaParser extends Parsers[Token, TokenClass] {
+
+  override def getKind(token: Token): TokenClass = token match {
+    case IdentifierToken(_) => IdentifierClass
+    case DotToken => DotClass
+    case LambdaToken => LambdaClass
+    case ParenthesisToken(o) => ParenthesisClass(o)
+    case _ => OtherClass
   }
 
-  val open = accept(ParensKind(true)) {
-    case _ => ()
-  } withInverse {
-    case () => ParensToken(true)
+  val name: InvParser[String] = accept(IdentifierClass) {
+    case IdentifierToken(n) => n
+  } contramap {
+    case n => Seq(IdentifierToken(n))
   }
 
-  val close = accept(ParensKind(false)) {
-    case _ => ()
-  } withInverse {
-    case () => ParensToken(false)
-  }
+  val lambda: InvParser[Unit] = elem(LambdaClass).always(LambdaToken)
 
-  val lambda = accept(LambdaKind) {
-    case _ => ()
-  } withInverse {
-    case () => LambdaToken
-  }
+  val dot: InvParser[Unit] = elem(DotClass).always(DotToken)
 
-  val dot = accept(DotKind) {
-    case _ => ()
-  } withInverse {
-    case () => DotToken
-  }
+  def parens(isOpen: Boolean): InvParser[Unit] =
+    elem(ParenthesisClass(isOpen)).always(ParenthesisToken(isOpen))
 
-  val name = accept(NameKind) {
-    case NameToken(n) => n
-  } withInverse {
-    case n => NameToken(n)
-  }
+  val open = parens(true)
+  val close = parens(false)
 
-  val variable = transform(name) {
+  lazy val variable: InvParser[Expr] = name.map {
     case n => Var(n)
-  } withInverse {
-    case Var(n) => n
+  } contramap {
+    case Var(n) => Seq(n)
+    case _ => Seq()
   }
 
-  lazy val basic: Parser[Expr] = variable | open ~>~ expr ~<~ close
+  lazy val expr: InvParser[Expr] = recursive(lambdaExpr | appExpr)
 
-  lazy val args: Parser[Seq[Expr]] = recursive {
-    basic +: (args | epsilon(Seq())) | lambdaExpr +: epsilon(Seq())
-  }
+  lazy val basic: InvParser[Expr] = variable | open ~>~ expr ~<~ close
 
-  lazy val appExpr: Parser[Expr] = transform(args) {
-    case xs => xs.reduceLeft(App(_, _))
-  } withInverses {
-    case e: Expr => {
-      def go(e: Expr): Seq[Seq[Expr]] = Seq(e) +: (e match {
-        case App(l, r) => go(l).map {
-          case ls => ls :+ r
-        }
-        case _ => Seq()
-      })
-
-      go(e)
+  lazy val lambdaExpr: InvParser[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
+    case ns ~ e => ns.foldRight(e) {
+      case (n, acc) => Abs(n, acc)
     }
-  }
-
-  lazy val expr: Parser[Expr] = recursive {
-    appExpr
-  }
-
-  lazy val lambdaExpr: Parser[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map({
-    case ns ~ b => ns.foldRight(b)(Abs(_, _))
-  }, {
-    case e: Expr => {
-      def go(e: Expr): Seq[Seq[String] ~ Expr] = (Seq() ~ e) +: (e match {
-        case Abs(n, b) => go(b).map {
-          case ns ~ z => (n +: ns) ~ z
-        }
-        case _ => Seq()
-      })
-
-      go(e)
+  } contramap {
+    case acc@Abs(_, _) => {
+      unfoldRight[String, Expr] {
+        case Abs(n, acc) => (n, acc)
+      }(acc)
     }
     case _ => Seq()
-  })
+  }
+
+  lazy val appExpr: InvParser[Expr] = many1(basic).map {
+    xs => xs.reduceLeft(App(_, _))
+  } contramap {
+    acc => {
+      unreduceLeft[Expr] {
+        case App(l, r) => (l, r)
+      }(acc)
+    }
+  }
+
+  def unapply(value: Expr): Iterator[String] = expr.tokensOf(value).map(pretty(_))
 
   def pretty(tokens: Seq[Token]): String = {
 
     val space: ((Token, Token)) => String = {
-      case (NameToken(_), NameToken(_)) => " "
+      case (IdentifierToken(_), IdentifierToken(_)) => " "
       case _ => ""
     }
 
@@ -115,11 +148,14 @@ object Parser extends Parsers[Token, Kind] {
 
     val strings = tokens.map {
       case LambdaToken => "\\"
-      case NameToken(n) => n
+      case IdentifierToken(n) => n
       case DotToken => "."
-      case ParensToken(isOpen) => if (isOpen) "(" else ")"
+      case ParenthesisToken(isOpen) => if (isOpen) "(" else ")"
+      case _ => "?"
     }
 
     spaces.zip(strings).map(x => x._1 + x._2).mkString("")
   }
+
+  def apply(text: String): Option[Expr] = expr(LambdaLexer(text.toIterator)).getValue
 }

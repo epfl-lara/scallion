@@ -20,7 +20,6 @@ import scala.language.implicitConversions
 import scallion.input._
 import scallion.lexing._
 import scallion.parsing._
-import scallion.parsing.visualization._
 
 sealed abstract class Token {
   val range: (Int, Int)
@@ -127,39 +126,44 @@ object JSONParser extends Parsers[Token, TokenClass] {
     case _ => NoClass
   }
 
-  val booleanValue = accept(BooleanClass) {
+  type P[A] = Parser[_, A]
+
+  val booleanValue: P[BooleanValue] = accept(BooleanClass) {
     case BooleanToken(value, range) => BooleanValue(value, range)
   }
-  val numberValue = accept(NumberClass) {
+
+  val numberValue: P[NumberValue] = accept(NumberClass) {
     case NumberToken(value, range) => NumberValue(value, range)
   }
-  val stringValue = accept(StringClass) {
+
+  val stringValue: P[StringValue] = accept(StringClass) {
     case StringToken(value, range) => StringValue(value, range)
   }
-  val nullValue = accept(NullClass) {
+
+  val nullValue: P[Value] = accept(NullClass) {
     case NullToken(range) => NullValue(range)
   }
-  implicit def separator(char: Char): Parser[(Int, Int)] = accept(SeparatorClass(char)) {
-    case SeparatorToken(_, range) => range
-  }
 
-  lazy val arrayValue =
-    ('[' ~ repsep(value, ','.void) ~ ']').map {
-      case start ~ vs ~ end => ArrayValue(vs, (start._1, end._2))
+  implicit def separator(char: Char): Parser[Unit, Token] = elem(SeparatorClass(char)).unit()
+
+  lazy val arrayValue: P[Value] =
+    ('[' ~ repsep(value, ',') ~ ']').map {
+      case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  lazy val binding =
+  lazy val binding: P[(StringValue, Value)] =
     (stringValue ~ ':' ~ value).map {
       case key ~ _ ~ value => (key, value)
     }
-  lazy val objectValue =
-    ('{' ~ repsep(binding, ','.void) ~ '}').map {
-      case start ~ bs ~ end => ObjectValue(bs, (start._1, end._2))
+
+  lazy val objectValue: P[Value] =
+    ('{' ~ repsep(binding, ',') ~ '}').map {
+      case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  lazy val value: Parser[Value] = recursive {
+  lazy val value: P[Value] = recursive {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
   }
 
-  def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  def apply(it: Iterator[Token]): ParseResult[Nothing, Value] = value(it)
 }

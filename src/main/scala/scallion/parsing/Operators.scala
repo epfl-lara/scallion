@@ -15,6 +15,8 @@
 
 package scallion.parsing
 
+import scallion.parsing.unfolds._
+
 /** Contains utilities to write parsers with infix, prefix and postfix operators.
   * Expected to be mixed-in to `Parsers`.
   *
@@ -53,7 +55,7 @@ trait Operators { self: Parsers[_, _] =>
     *
     * @group level
     */
-  case class Level[A](operator: Parser[(A, A) => A], associativity: Associativity)
+  case class Level[-V, A](operator: Parser[V, (A, A) => A], associativity: Associativity)
 
 
   /** Implicitly decorates an `operator` parser to add an `is` methods
@@ -65,30 +67,25 @@ trait Operators { self: Parsers[_, _] =>
     *
     * @group level
     */
-  implicit class LevelDecorator[A](operator: Parser[(A, A) => A]) {
+  implicit class LevelDecorator[-V, A](operator: Parser[V, (A, A) => A]) {
 
     /** Indicates the associativity of the operator. */
-    def is(associativity: Associativity): Level[A] = Level(operator, associativity)
+    def is(associativity: Associativity): Level[V, A] = Level(operator, associativity)
   }
 
   /** Parser that parses repetitions of `elem` separated by infix operators.
     *
     * The operators in earlier levels are considered to bind tighter than those in later levels.
     *
-    * {{{
-    * val boolExpr = operators(basicBoolExpr)(
-    *   andOp is LeftAssociative,
-    *   orOp is LeftAssociative,
-    *   implyOp is RightAssociative)
-    * }}}
-    *
     * @group combinator
     */
-  def operators[A](elem: Parser[A])(levels: Level[A]*): Parser[A] = {
+  def operators[V, W, A](elem: Parser[V, A], rev: PartialFunction[V, (V, W, V)])
+                        (levels: Level[W, A]*): Parser[V, A] = {
+
     levels.foldLeft(elem) {
       case (acc, Level(op, assoc)) => assoc match {
-        case LeftAssociative => infixLeft(acc, op)
-        case RightAssociative => infixRight(acc, op)
+        case LeftAssociative => infixLeft(acc, op, rev)
+        case RightAssociative => infixRight(acc, op, rev)
       }
     }
   }
@@ -98,20 +95,36 @@ trait Operators { self: Parsers[_, _] =>
     *
     * @group combinator
     */
-  def infixLeft[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op ~ elem)).map {
+  def infixLeft[V, W, A](
+      elem: Parser[V, A],
+      op: Parser[W, (A, A) => A],
+      rev: PartialFunction[V, (V, W, V)]): Parser[V, A] =
+
+    (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => opElems.foldLeft(first) {
         case (acc, (op ~ elem)) => op(acc, elem)
       }
-    }
+    }, {
+      case v => {
+        val regrouped: PartialFunction[V, (V, W ~ V)] = rev andThen {
+          case (v1, w, v2) => (v1, w ~ v2)
+        }
+
+        unfoldLeft(regrouped)(v)
+      }
+    })
 
   /** Parser that accepts repetitions of `elem` separated by right-associative `op`.
     * The value returned is reduced right-to-left.
     *
     * @group combinator
     */
-  def infixRight[A](elem: Parser[A], op: Parser[(A, A) => A]): Parser[A] =
-    (elem ~ many(op ~ elem)).map {
+  def infixRight[V, W, A](
+      elem: Parser[V, A],
+      op: Parser[W, (A, A) => A],
+      rev: PartialFunction[V, (V, W, V)]): Parser[V, A] =
+
+    (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => {
         val (ops, elems) = opElems.map(t => (t._1, t._2)).unzip
         val allElems = first +: elems
@@ -120,7 +133,26 @@ trait Operators { self: Parsers[_, _] =>
           case ((elem, op), acc) => op(elem, acc)
         }
       }
-    }
+    }, {
+      case v => {
+        val regrouped: PartialFunction[V, ((V, W), V)] = rev andThen {
+          case (v1, w, v2) => ((v1, w), v2)
+        }
+
+        unfoldRight(regrouped)(v).map {
+          case elemOps ~ last => {
+            val (elems, ops) = elemOps.unzip
+
+            val allElems = elems :+ last
+
+            allElems.head ~ (ops.zip(allElems.tail).map {
+              case (op, elem) => op ~ elem
+            })
+          }
+        }
+      }
+
+    })
 
   /** Parser that parses `elem` prefixed by any number of `op`.
     *
@@ -128,12 +160,16 @@ trait Operators { self: Parsers[_, _] =>
     *
     * @group combinator
     */
-  def prefixes[A](op: Parser[A => A], elem: Parser[A]): Parser[A] = {
-    many(op) ~ elem map {
+  def prefixes[V, W, A](op: Parser[W, A => A], elem: Parser[V, A], rev: PartialFunction[V, (W, V)]): Parser[V, A] = {
+    (many(op) ~ elem).bimap({
       case os ~ v => os.foldRight(v) {
         case (o, acc) => o(acc)
       }
-    }
+    }, {
+      case v => {
+        unfoldRight(rev)(v)
+      }
+    })
   }
 
   /** Parser that parses `elem` postfixed by any number of `op`.
@@ -142,11 +178,15 @@ trait Operators { self: Parsers[_, _] =>
     *
     * @group combinator
     */
-  def postfixes[A](elem: Parser[A], op: Parser[A => A]): Parser[A] = {
-    elem ~ many(op) map {
+  def postfixes[V, W, A](elem: Parser[V, A], op: Parser[W, A => A], rev: PartialFunction[V, (V, W)]): Parser[V, A] = {
+    (elem ~ many(op)).bimap({
       case v ~ os => os.foldLeft(v) {
         case (acc, o) => o(acc)
       }
-    }
+    }, {
+      case v => {
+        unfoldLeft(rev)(v)
+      }
+    })
   }
 }

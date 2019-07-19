@@ -112,13 +112,13 @@ trait Grammars[Kind] { self: Parsers[_, Kind] =>
       *
       * @group grammar
       */
-    def getGrammar(parser: Parser[Any]): Grammar = {
+    def getGrammar(parser: Parser[Nothing, Any]): Grammar = {
       var nextId = 0
       var rules = Vector[Rule]()
-      val queue = new Queue[Parser[Any]]
-      var ids = Map[Parser[Any], Int]()
+      val queue = new Queue[Parser[Nothing, Any]]
+      var ids = Map[Parser[Nothing, Any], Int]()
 
-      def inspect(next: Parser[Any]): Int = {
+      def inspect(next: Parser[Nothing, Any]): Int = {
         if (!ids.contains(next)) {
           val res = nextId
           nextId += 1
@@ -133,12 +133,12 @@ trait Grammars[Kind] { self: Parsers[_, Kind] =>
 
       inspect(parser)
 
-      def getSymbols(next: Parser[Any]): Seq[Seq[Symbol]] = next match {
+      def getSymbols(next: Parser[Nothing, Any]): Seq[Seq[Symbol]] = next match {
         case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)
         case _ => Seq(getSequents(next))
       }
 
-      def getSequents(next: Parser[Any]): Seq[Symbol] = next match {
+      def getSequents(next: Parser[Nothing, Any]): Seq[Symbol] = next match {
         case Failure => Seq()
         case Success(_) => Seq(Epsilon)
         case Elem(kind) => Seq(Terminal(kind))

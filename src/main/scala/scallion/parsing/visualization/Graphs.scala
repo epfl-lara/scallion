@@ -33,13 +33,13 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
     import Parser._
 
-    private def getGraph(parser: Parser[Any]): Graph = {
+    private def getGraph(parser: Parser[Nothing, Any]): Graph = {
       var nextId = 0
       var nodes = Vector[Node]()
-      val queue = new Queue[(Parser[Any], Int)]
-      var ids = Map[Parser[Any], Int]()
+      val queue = new Queue[(Parser[Nothing, Any], Int)]
+      var ids = Map[Parser[Nothing, Any], Int]()
 
-      def inspect(next: Parser[Any]): Int = {
+      def inspect(next: Parser[Nothing, Any]): Int = {
         if (!ids.contains(next)) {
           val res = nextId
           nextId += 1
@@ -101,7 +101,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
     }
 
     /** Returns a Graphviz representation of the parser. */
-    private def toGraphviz(parser: Parser[Any]): String = {
+    private def toGraphviz(parser: Parser[Nothing, Any]): String = {
 
       val graph = getGraph(parser)
 
@@ -140,7 +140,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
       * @param location The directory in which to save the files.
       * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
       */
-    def outputGraph(parser: Parser[Any], location: String, name: String): Unit = {
+    def outputGraph(parser: Parser[Nothing, Any], location: String, name: String): Unit = {
       import java.nio.file._
       import sys.process._
 

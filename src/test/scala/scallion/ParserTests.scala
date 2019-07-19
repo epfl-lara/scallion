@@ -116,7 +116,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "not parse tokens from different classes" in {
-    val parser: Parser[Int] = accept(NumClass) {
+    val parser: Parser[_, Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
@@ -129,7 +129,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "correctly fail at the end of input" in {
-    val parser: Parser[Int] = accept(NumClass) {
+    val parser: Parser[_, Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
@@ -209,7 +209,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   // failure
 
   "failure" should "correctly fail in case of end of input" in {
-    val parser = failure[String]
+    val parser = failure[Any, String]
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
@@ -219,7 +219,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "correctly fail in case of remaining input" in {
-    val parser = failure[String]
+    val parser = failure[Any, String]
 
     inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -230,19 +230,19 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "not be nullable" in {
-    val parser = failure[String]
+    val parser = failure[Any, String]
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have an empty `first`" in {
-    val parser = failure[String]
+    val parser = failure[Any, String]
 
     assert(parser.first.isEmpty)
   }
 
   it should "be LL(1)" in {
-    val parser = failure[String]
+    val parser = failure[Any, String]
 
     assert(parser.isLL1)
   }
@@ -367,7 +367,8 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   // concatenation
 
   "concatenation" should "parse using the two parsers in sequence" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
+    def f(k: TokenClass): Parser[Seq[Any], Seq[Token]] = elem(k).map(Seq(_)).void[Seq[Any]]
+    val parser = f(BoolClass) ++ f(NumClass)
 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(res, rest) => {
@@ -378,7 +379,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "use the fact that left might be nullable for parsing" in {
-    val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
+    val parser = (elem(BoolClass) |
+      epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]] ++
+      elem(NumClass).map(Seq(_)).void[Seq[Any]]
 
     inside(parser(Seq(Num(32)).iterator)) {
       case Parsed(res, rest) => {
@@ -388,7 +391,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "fail at the correct point" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
+    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -406,71 +409,71 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "be nullable if both sides are nullable" in {
-    val parser = epsilon(Bool(true)).map(Seq(_)) ++ epsilon(Bool(false)).map(Seq(_))
+    val parser = epsilon(Bool(true)).map(Seq(_)).void[Seq[Any]] ++ epsilon(Bool(false)).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.nullable == Some(Seq(Bool(true), Bool(false))))
   }
 
   it should "not be nullable if the first parser is not nullable" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_))
+    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if the second parser is not nullable" in {
-    val parser = epsilon(Bool(false)).map(Seq(_)) ++ elem(BoolClass).map(Seq(_))
+    val parser = epsilon(Bool(false)).map(Seq(_)).void[Seq[Any]] ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if both sides are not nullable" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
+    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have correct `first` in case of non-nullable first parser" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_))
+    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.first == Set(BoolClass))
   }
 
   it should "have correct `first` in case of nullable first parser" in {
-    val parser = (elem(BoolClass).map(Seq(_)) | epsilon(Seq())) ++ elem(NumClass).map(Seq(_))
+    val parser = (elem(BoolClass).map(Seq(_)).void[Seq[Any]] | epsilon(Seq())) ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.first == Set(BoolClass, NumClass))
   }
 
   it should "not be LL(1) when the first is nullable and both sides have conflicting `first`" in {
-    val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)) ++ elem(BoolClass).map(Seq(_))
+    val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]] ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
-    val left = elem(NumClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_))
+    val left = elem(NumClass).map(Seq(_)).void[Seq[Any]] ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]]
 
     assert(left.isLL1)
 
-    val parser = left ++ elem(BoolClass).map(Seq(_))
+    val parser = left ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when first parser is not LL(1)" in {
-    val parser = (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq(_)) ++ Elem(BoolClass).map(Seq(_))
+    val parser = (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq(_)).void[Seq[Any]] ++ Elem(BoolClass).map(Seq(_)).void[Seq[Any]]
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when second parser is not LL(1)" in {
-    val parser = elem(BoolClass).map(Seq(_)) ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_))
+    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_)).void[Seq[Any]]
 
     assert(!parser.isLL1)
   }
 
   it should "be LL(1) otherwise" in {
-    val parser = (epsilon(Num(2)) | elem(BoolClass)).map(Seq(_)) ++ (elem(NumClass) | epsilon(Bool(true))).map(Seq(_))
+    val parser = (epsilon(Num(2)) | elem(BoolClass)).map(Seq(_)).void[Seq[Any]] ++ (elem(NumClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]]
 
     assert(parser.isLL1)
   }
@@ -771,7 +774,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   // recursive
 
   "recursive" should "allow building recursive parsers" in {
-    lazy val parser: Parser[Seq[Token]] = recursive {
+    lazy val parser: Parser[Seq[Token], Seq[Token]] = recursive {
       elem(BoolClass) +: parser | epsilon(Seq())
     }
 
@@ -784,220 +787,17 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "not be LL(1) in case of left-recursion" in {
-    lazy val parser: Parser[Seq[Token]] = recursive {
+    lazy val parser: Parser[_, Seq[Token]] = recursive {
       parser
     }
 
     assert(!parser.isLL1)
 
-    lazy val parser2: Parser[Seq[Token]] = recursive {
+    lazy val parser2: Parser[Seq[Token], Seq[Token]] = recursive {
       many(elem(NumClass)) ++ parser2 ++ many(elem(BoolClass)) | many(elem(KeywordClass("ok")))
     }
 
     assert(!parser2.isLL1)
-  }
-
-  // prefixes
-
-  "prefixes" should "apply functions left-to-right" in {
-    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
-    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = prefixes(times2 | plus1, number)
-
-    inside(parser(Seq(Op('*'), Op('+'), Num(2)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 6)
-      }
-    }
-
-    inside(parser(Seq(Op('+'), Op('*'), Num(2)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 5)
-      }
-    }
-  }
-
-  it should "accept empty prefixes" in {
-    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
-    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = prefixes(times2 | plus1, number)
-
-    inside(parser(Seq(Num(3)).iterator)) {
-      case Parsed(res, _) =>
-        assert(res == 3)
-    }
-  }
-
-  // postfixes
-
-  "postfixes" should "apply functions right-to-left" in {
-    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
-    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = postfixes(number, times2 | plus1)
-
-    inside(parser(Seq(Num(2), Op('*'), Op('+')).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 5)
-      }
-    }
-
-    inside(parser(Seq(Num(2), Op('+'), Op('*')).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 6)
-      }
-    }
-  }
-
-  it should "accept empty postfixes" in {
-    val times2 = elem(OperatorClass('*')).map(_ => (x: Int) => x * 2)
-    val plus1 = elem(OperatorClass('+')).map(_ => (x: Int) => x + 1)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = postfixes(number, times2 | plus1)
-
-    inside(parser(Seq(Num(3)).iterator)) {
-      case Parsed(res, _) =>
-        assert(res == 3)
-    }
-  }
-
-  // infixLeft
-
-  "infixLeft" should "associate to the left" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = infixLeft(number, times | plus)
-
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 5)
-      }
-    }
-  }
-
-  it should "accept zero repetitions of operator" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = infixLeft(number, times | plus)
-
-    inside(parser(Seq(Num(2)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 2)
-      }
-    }
-  }
-
-  // infixRight
-
-  "infixRight" should "associate to the right" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = infixRight(number, times | plus)
-
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 8)
-      }
-    }
-  }
-
-  it should "accept zero repetitions of operator" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = infixRight(number, times | plus)
-
-    inside(parser(Seq(Num(12)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 12)
-      }
-    }
-  }
-
-  // operators
-
-  "operators" should "respect priorities" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = operators(number)(
-      times is LeftAssociative,
-      plus is LeftAssociative)
-
-    inside(parser(Seq(Num(2), Op('*'), Num(1), Op('+'), Num(3), Op('*'), Num(4)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 14)
-      }
-    }
-
-    inside(parser(Seq(Num(2), Op('+'), Num(1), Op('*'), Num(3), Op('+'), Num(4)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 9)
-      }
-    }
-  }
-
-  it should "respect specified associativities" in {
-    val div = elem(OperatorClass('/')).map(_ => (x: Int, y: Int) => x / y)
-    val minus = elem(OperatorClass('-')).map(_ => (x: Int, y: Int) => x - y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = operators(number)(
-      div is RightAssociative,
-      minus is LeftAssociative)
-
-    inside(parser(Seq(Num(12), Op('/'), Num(6), Op('/'), Num(3)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 6)
-      }
-    }
-
-    inside(parser(Seq(Num(12), Op('-'), Num(6), Op('-'), Num(3)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 3)
-      }
-    }
-  }
-
-  it should "accept zero repetitions of operator" in {
-    val times = elem(OperatorClass('*')).map(_ => (x: Int, y: Int) => x * y)
-    val plus = elem(OperatorClass('+')).map(_ => (x: Int, y: Int) => x + y)
-    val number = accept(NumClass) {
-      case Num(value) => value
-    }
-    val parser = operators(number)(
-      times is LeftAssociative,
-      plus is LeftAssociative)
-
-    inside(parser(Seq(Num(42)).iterator)) {
-      case Parsed(res, _) => {
-        assert(res == 42)
-      }
-    }
   }
 
   // LL1 conflicts
@@ -1005,7 +805,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   import LL1Conflict._
 
   "LL1 conflicts" should "catch ambiguous first kinds" in {
-    val parser = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass).void
+    val parser = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass).unit()
 
     assert(!parser.isLL1)
 
@@ -1053,7 +853,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "catch left-recursion" in {
-    lazy val parser: Parser[Any] = recursive {
+    lazy val parser: Parser[_, Any] = recursive {
       parser
     }
 
@@ -1074,11 +874,11 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
       case Num(value) => value
     } | epsilon(0)
 
-    lazy val expr: Parser[Int] = recursive {
-      plusExpr | opt(elem(OperatorClass('+'))).void ~>~ literal
+    lazy val expr: Parser[_, Int] = recursive {
+      plusExpr | opt(elem(OperatorClass('+'))).unit() ~>~ literal
     }
 
-    lazy val plusExpr: Parser[Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {
+    lazy val plusExpr: Parser[_, Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {
       case _ ~ rhs => rhs
     }
 
@@ -1123,7 +923,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   "Trails" should "return correct results for basic parsers" in {
     assert(elem(NumClass).trails.toSeq == Seq(Seq(NumClass)))
     assert(epsilon(0).trails.toSeq == Seq(Seq()))
-    assert(failure[Nothing].trails.toSeq == Seq())
+    assert(failure[Any, Nothing].trails.toSeq == Seq())
   }
 
   it should "work for basic sequencing" in {
@@ -1152,7 +952,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "work for simple recursive parsers" in {
-    lazy val parser: Parser[Any] = recursive(elem(BoolClass) | elem(NumClass) ~ parser)
+    lazy val parser: Parser[_, Any] = recursive(elem(BoolClass) | elem(NumClass) ~ parser)
 
     val trails = parser.trails
 
@@ -1162,7 +962,7 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
   }
 
   it should "work for intricate, non-LL(1), recursive parsers" in {
-    lazy val parser: Parser[Any] =
+    lazy val parser: Parser[_, Any] =
       many(elem(OperatorClass('+')))      |
       recursive(parser ~ elem(BoolClass)) |
       recursive(parser ~ elem(NumClass) ~ parser)

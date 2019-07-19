@@ -8,7 +8,7 @@ class JSONParserTests extends FlatSpec with Inside {
   def parse(text: String): Option[Value] =
     JSONParser(JSONLexer(text.toIterator)).getValue
 
-  def rest(text: String): JSONParser.Parser[Value] =
+  def rest(text: String): JSONParser.Parser[_, Value] =
     JSONParser(JSONLexer(text.toIterator)).parser
 
   "JSON Parser" should "parse some basic examples" in {
