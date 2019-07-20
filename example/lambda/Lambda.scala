@@ -90,7 +90,7 @@ object LambdaParser extends Parsers[Token, TokenClass] {
     // Extract the string from them.
     case IdentifierToken(n) => n
   } contramap {
-    // Generates all tokens which could have led the the sting.
+    // Generates all tokens which could have led to the string.
     // (In this case, only one.)
     case n => Seq(IdentifierToken(n))
   }
@@ -124,6 +124,7 @@ object LambdaParser extends Parsers[Token, TokenClass] {
   // The syntax for expressions, which is the main syntax.
   lazy val expr: Syntax[Expr] = recursive {
     // Accepts either a lambda expression or an application.
+    // `appExpr` also includes single basic expressions.
     lambdaExpr | appExpr
   }
 
