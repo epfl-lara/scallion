@@ -1,0 +1,11 @@
+
+Parser -> Syntax (watch out for comments and documentation)
+package scallion.parsing -> scallion.syntactic
+package scallion.lexer -> scallion.lexical
+
+add trait Parser[+A]
+add trait Printer[-V]
+
+Syntax[-V, +A] extends Parser[A] with Printer[V]
+
+Explain all contravariant things by refering to the value printed.
