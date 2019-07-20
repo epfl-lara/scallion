@@ -1,5 +1,7 @@
 
 Parser -> Syntax (watch out for comments and documentation)
+Lexer -> Lexicon ? Add unapply to lexer ?
+
 package scallion.parsing -> scallion.syntactic
 package scallion.lexer -> scallion.lexical
 
