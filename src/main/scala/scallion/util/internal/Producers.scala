@@ -55,23 +55,38 @@ private[internal] case object Terminated extends Peek[Nothing]
 /** Indicates that the next value, if any, is not yet available. */
 private[internal] case object Unavailable extends Peek[Nothing]
 
-/** Stream of values. */
+/** Producers are data structures that lazily produce values.
+  *
+  * The current value produced by the producer can be requested using `peek()`.
+  * Peek will return an `Available(value)` response in case a value has been produced,
+  * or a `Terminated` response in case the producer is done. We say in this case that the result
+  * is stable. Up until `skip()` is called, subsequent calls to `peek()` will always return
+  * the same value, and do so effeciently.
+  * The `peek()` call can also result in an `Unavailable` answer, which means that in the current
+  * state the next value, if any, is not yet available.
+  * Once state has changed, later calls to `peek()` may result in a stable answer.
+  *
+  * To skip a value, the method `skip()` is used. The method can only be used after a call to `peek()`
+  * has returned an `Available(value)`, and so only once per such call.
+  *
+  * Producers can be converted to iterators using `toIterator`.
+  */
 trait Producer[+A] { self =>
 
   /** Returns the next value to be produced, if any.
     *
-    * If the result is *stable* (checked using `.stable`),
+    * If the result is *stable* (checked using `isStable`),
     * the result of invoking this method will not change until
-    * `.skip()` is called.
+    * `skip()` is called.
     */
   private[internal] def peek(): Peek[A]
 
   /** Skips the produced value.
     *
     * This method should only be called after
-    * a successful call to `.peek()`
+    * a successful call to `peek()`
     * (i.e. a call returning an `Available` value),
-    * and so only once per such such call.
+    * and so only once per such call.
     */
   private[internal] def skip(): Unit
 
@@ -174,17 +189,21 @@ trait ProducerOps[A] {
 
   /** Union of two producers.
     *
-    * If the two producers produce values in increasing order,
+    * If the two producers produce values in increasing order (according to `lessEquals`),
     * then the resulting producer will also produce values in order.
     */
   def union(left: Producer[A], right: Producer[A]): Producer[A] = new Producer[A] {
+
+    // Contains the latest peeked value, and the side which produced it, if any.
     private var cache: Option[Peek[Either[A, A]]] = None
 
     private def getCache(): Peek[Either[A, A]] = cache match {
-      case Some(peeked) => peeked
+      case Some(peeked) => peeked  // Cache hit.
       case None => {
+        // Cache miss. We peek() the value produced by both sides.
         val peeked = (left.peek(), right.peek()) match {
           case (Available(x), Available(y)) => {
+            // Two values are available, we pick the smallest.
             if (lessEquals(x, y)) {
               Available(Left(x))
             }
@@ -192,12 +211,17 @@ trait ProducerOps[A] {
               Available(Right(y))
             }
           }
+          // Only one value is available, we pick it.
           case (Available(x), _) => Available(Left(x))
           case (_, Available(y)) => Available(Right(y))
+          // Both sides are terminated, therefore the union also is.
           case (Terminated, Terminated) => Terminated
+          // Otherwise the result is not available.
           case _ => Unavailable
         }
 
+        // Update the cache only if we are guaranteed that the result
+        // will not change.
         if (peeked.isStable) {
           cache = Some(peeked)
         }
@@ -207,6 +231,7 @@ trait ProducerOps[A] {
     }
 
     override private[internal] def peek(): Peek[A] = getCache() match {
+      // Removes the information about which side produced the value.
       case Available(Left(value)) => Available(value)
       case Available(Right(value)) => Available(value)
       case Terminated => Terminated
@@ -216,6 +241,7 @@ trait ProducerOps[A] {
     override private[internal] def skip(): Unit = {
       cache.foreach { peeked =>
         peeked.foreach {
+          // Skip only on the side the produced the value.
           case Left(_) => left.skip()
           case Right(_) => right.skip()
         }
@@ -231,20 +257,33 @@ trait ProducerOps[A] {
     * then the resulting producer will produce their `join` in increasing order.
     */
   def product(left: Producer[A], right: Producer[A]): Producer[A] = new Producer[A] {
+    // Create a main Producer and lazy views of that producer for the `right` producer.
     private val (mainRight, createRightView) = Producer.duplicate(right)
 
+    // Buffer of producers of joined values.
+    // Ultimately, there will be one entry in the buffer for each
+    // value produced by `left`.
     private val joinProducers: ArrayBuffer[Producer[A]] = new ArrayBuffer()
 
+    // Indicates if the latest value of `left` has been handled.
     private var included: Boolean = false
+
+    // Indicates if the `left` producer has terminated.
     private var leftTerminated: Boolean = false
 
+    // Cache of produced value and index of the `join` producer that produced it.
     private var cache: Option[Peek[(Int, A)]] = None
 
+    // Tentatively includes one more join producer.
     private def includeMore(): Unit = {
       left.peek() match {
         case Available(leftValue) => {
+          // Creates a fresh producer of values from the `right`.
           val rightProducer = if (joinProducers.isEmpty) mainRight else createRightView()
+
+          // Creates the next join producer.
           joinProducers += rightProducer.map(rightValue => join(leftValue, rightValue))
+
           included = true
           left.skip()
         }
@@ -257,18 +296,24 @@ trait ProducerOps[A] {
     }
 
     private def getCache(): Peek[(Int, A)] = cache match {
-      case Some(peeked) => peeked
+      case Some(peeked) => peeked  // Cache hit.
       case None => {
+
+        // Cache miss.
+
+        // Check if one more join producer must be included.
         if (!included) {
           includeMore()
         }
 
+        // Keep track of the best answer we can give.
         var best: Peek[(Int, A)] = if (leftTerminated) Terminated else Unavailable
 
         for (i <- 0 until joinProducers.size) {
           joinProducers(i).peek() match {
-            case Available(joinValue) => {
+            case Available(joinValue) => {  // A candidate join value is available.
               best match {
+                // We update the best accordingly.
                 case Available((_, bestValue)) => {
                   if (!lessEquals(bestValue, joinValue)) {
                     best = Available((i, joinValue))
@@ -278,6 +323,9 @@ trait ProducerOps[A] {
               }
             }
             case Unavailable => {
+              // A join producer is not yet available,
+              // therefore we can no longer say that the
+              // producer is terminated.
               if (best == Terminated) {
                 best = Unavailable
               }
@@ -286,6 +334,7 @@ trait ProducerOps[A] {
           }
         }
 
+        // Update the cache.
         if (best.isStable) {
           cache = Some(best)
         }
@@ -295,6 +344,8 @@ trait ProducerOps[A] {
     }
 
     override private[internal] def peek(): Peek[A] = getCache() match {
+      // Get rid of the information about which
+      // join producer is responsible for the value.
       case Available((_, value)) => Available(value)
       case Terminated => Terminated
       case Unavailable => Unavailable
@@ -302,6 +353,7 @@ trait ProducerOps[A] {
     override private[internal] def skip(): Unit = cache.foreach { peeked =>
       peeked.foreach {
         case (i, _) => {
+          // Only call `skip()` on the join producer that produced the value.
           joinProducers(i).skip()
           if (i == joinProducers.size - 1 && !leftTerminated) {
             included = false
