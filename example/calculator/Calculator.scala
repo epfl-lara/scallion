@@ -75,7 +75,7 @@ case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
 object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
-  type Syntax[A] = Parser[A, A]
+  type S[A] = Syntax[A, A]
 
   override def getKind(token: Token): TokenClass = token match {
     case NumberToken(_) => NumberClass
@@ -84,14 +84,14 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case _ => OtherClass
   }
 
-  val number: Syntax[Expr] = accept(NumberClass) {
+  val number: S[Expr] = accept(NumberClass) {
     case NumberToken(n) => LitExpr(n)
   } contramap {
     case LitExpr(n) => Seq(NumberToken(n))
     case _ => Seq()
   }
 
-  def binOp(char: Char): Parser[Char, (Expr, Expr) => Expr] = accept(OperatorClass(char)) {
+  def binOp(char: Char): Syntax[Char, (Expr, Expr) => Expr] = accept(OperatorClass(char)) {
     case _ => (l: Expr, r: Expr) => BinaryExpr(char, l, r)
   } contramap {
     case `char` => Seq(OperatorToken(char))
@@ -106,7 +106,7 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
   val div = binOp('/')
 
-  val fac: Parser[Char, Expr => Expr] = accept(OperatorClass('!')) {
+  val fac: Syntax[Char, Expr => Expr] = accept(OperatorClass('!')) {
     case _ => (x: Expr) => UnaryExpr('!', x)
   } contramap {
     case '!' => Seq(OperatorToken('!'))
@@ -117,9 +117,9 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: Syntax[Expr] = number | open ~>~ value ~<~ close
+  lazy val basic: S[Expr] = number | open ~>~ value ~<~ close
 
-  lazy val postfixed: Syntax[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
+  lazy val postfixed: S[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
     case UnaryExpr(op, e) => (e, op)
   })
 
@@ -127,7 +127,7 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case BinaryExpr(op, l, r) => (l, op, r)
   }
 
-  lazy val value: Syntax[Expr] = recursive {
+  lazy val value: S[Expr] = recursive {
     operators(postfixed, reverses)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)

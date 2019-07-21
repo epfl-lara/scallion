@@ -31,15 +31,15 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
     private case class Node(id: Int, label: String, targets: Seq[Int])
     private type Graph = Seq[Node]
 
-    import Parser._
+    import Syntax._
 
-    private def getGraph(parser: Parser[Nothing, Any]): Graph = {
+    private def getGraph(parser: Syntax[Nothing, Any]): Graph = {
       var nextId = 0
       var nodes = Vector[Node]()
-      val queue = new Queue[(Parser[Nothing, Any], Int)]
-      var ids = Map[Parser[Nothing, Any], Int]()
+      val queue = new Queue[(Syntax[Nothing, Any], Int)]
+      var ids = Map[Syntax[Nothing, Any], Int]()
 
-      def inspect(next: Parser[Nothing, Any]): Int = {
+      def inspect(next: Syntax[Nothing, Any]): Int = {
         if (!ids.contains(next)) {
           val res = nextId
           nextId += 1
@@ -101,7 +101,7 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
     }
 
     /** Returns a Graphviz representation of the parser. */
-    private def toGraphviz(parser: Parser[Nothing, Any]): String = {
+    private def toGraphviz(parser: Syntax[Nothing, Any]): String = {
 
       val graph = getGraph(parser)
 
@@ -140,7 +140,7 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
       * @param location The directory in which to save the files.
       * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
       */
-    def outputGraph(parser: Parser[Nothing, Any], location: String, name: String): Unit = {
+    def outputGraph(parser: Syntax[Nothing, Any], location: String, name: String): Unit = {
       import java.nio.file._
       import sys.process._
 

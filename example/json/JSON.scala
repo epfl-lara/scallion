@@ -126,7 +126,7 @@ object JSONSyntax extends Syntaxes[Token, TokenClass] {
     case _ => NoClass
   }
 
-  type P[A] = Parser[_, A]
+  type P[A] = Syntax[_, A]
 
   val booleanValue: P[BooleanValue] = accept(BooleanClass) {
     case BooleanToken(value, range) => BooleanValue(value, range)
@@ -144,7 +144,7 @@ object JSONSyntax extends Syntaxes[Token, TokenClass] {
     case NullToken(range) => NullValue(range)
   }
 
-  implicit def separator(char: Char): Parser[Unit, Token] = elem(SeparatorClass(char)).unit()
+  implicit def separator(char: Char): Syntax[Unit, Token] = elem(SeparatorClass(char)).unit()
 
   lazy val arrayValue: P[Value] =
     ('[' ~ repsep(value, ',') ~ ']').map {

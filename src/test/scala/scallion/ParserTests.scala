@@ -46,7 +46,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     case Kw(value) => KeywordClass(value)
   }
 
-  import Parser._
+  import Syntax._
 
   // elem
 
@@ -116,7 +116,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "not parse tokens from different classes" in {
-    val parser: Parser[_, Int] = accept(NumClass) {
+    val parser: Syntax[_, Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
@@ -129,7 +129,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "correctly fail at the end of input" in {
-    val parser: Parser[_, Int] = accept(NumClass) {
+    val parser: Syntax[_, Int] = accept(NumClass) {
       case Num(value) => value * 2
     }
 
@@ -367,7 +367,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   // concatenation
 
   "concatenation" should "parse using the two parsers in sequence" in {
-    def f(k: TokenClass): Parser[Seq[Any], Seq[Token]] = elem(k).map(Seq(_)).void[Seq[Any]]
+    def f(k: TokenClass): Syntax[Seq[Any], Seq[Token]] = elem(k).map(Seq(_)).void[Seq[Any]]
     val parser = f(BoolClass) ++ f(NumClass)
 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
@@ -778,7 +778,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   // recursive
 
   "recursive" should "allow building recursive parsers" in {
-    lazy val parser: Parser[Seq[Token], Seq[Token]] = recursive {
+    lazy val parser: Syntax[Seq[Token], Seq[Token]] = recursive {
       elem(BoolClass) +: parser | epsilon(Seq())
     }
 
@@ -791,13 +791,13 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "not be LL(1) in case of left-recursion" in {
-    lazy val parser: Parser[_, Seq[Token]] = recursive {
+    lazy val parser: Syntax[_, Seq[Token]] = recursive {
       parser
     }
 
     assert(!parser.isLL1)
 
-    lazy val parser2: Parser[Seq[Token], Seq[Token]] = recursive {
+    lazy val parser2: Syntax[Seq[Token], Seq[Token]] = recursive {
       many(elem(NumClass)) ++ parser2 ++ many(elem(BoolClass)) | many(elem(KeywordClass("ok")))
     }
 
@@ -857,7 +857,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "catch left-recursion" in {
-    lazy val parser: Parser[_, Any] = recursive {
+    lazy val parser: Syntax[_, Any] = recursive {
       parser
     }
 
@@ -878,11 +878,11 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
       case Num(value) => value
     } | epsilon(0)
 
-    lazy val expr: Parser[_, Int] = recursive {
+    lazy val expr: Syntax[_, Int] = recursive {
       plusExpr | opt(elem(OperatorClass('+'))).unit() ~>~ literal
     }
 
-    lazy val plusExpr: Parser[_, Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {
+    lazy val plusExpr: Syntax[_, Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {
       case _ ~ rhs => rhs
     }
 
@@ -956,7 +956,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "work for simple recursive parsers" in {
-    lazy val parser: Parser[_, Any] = recursive(elem(BoolClass) | elem(NumClass) ~ parser)
+    lazy val parser: Syntax[_, Any] = recursive(elem(BoolClass) | elem(NumClass) ~ parser)
 
     val trails = parser.trails
 
@@ -966,7 +966,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "work for intricate, non-LL(1), recursive parsers" in {
-    lazy val parser: Parser[_, Any] =
+    lazy val parser: Syntax[_, Any] =
       many(elem(OperatorClass('+')))      |
       recursive(parser ~ elem(BoolClass)) |
       recursive(parser ~ elem(NumClass) ~ parser)

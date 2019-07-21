@@ -33,8 +33,8 @@ package scallion
   * @groupprio abstract 0
   * @groupname abstract Abstract Members
   *
-  * @groupprio parser 1
-  * @groupname parser Parser
+  * @groupprio syntax 1
+  * @groupname syntax Syntax
   *
   * @groupprio result 2
   * @groupname result Parse Results

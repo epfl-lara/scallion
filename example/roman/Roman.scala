@@ -30,9 +30,9 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
   override def getKind(token: Symbol): Symbol = token
 
-  val stop: Parser[Seq[Symbol], Seq[Symbol]] = epsilon(Seq())
+  val stop: Syntax[Seq[Symbol], Seq[Symbol]] = epsilon(Seq())
 
-  def base(si: Symbol, sv: Symbol, sx: Symbol): Parser[Int, Int] = {
+  def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int, Int] = {
 
     def f(s: Symbol) = elem(s)
 
@@ -71,17 +71,17 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
     }
   }
 
-  val units: Parser[Int, Int] = base(I, V, X)
-  val tens: Parser[Int, Int] = base(X, L, C)
-  val hundreds: Parser[Int, Int] = base(C, D, M)
-  val thousands: Parser[Int, Int] =
+  val units: Syntax[Int, Int] = base(I, V, X)
+  val tens: Syntax[Int, Int] = base(X, L, C)
+  val hundreds: Syntax[Int, Int] = base(C, D, M)
+  val thousands: Syntax[Int, Int] =
     (elem(M) +: (elem(M) +: (elem(M) +: stop | stop) | stop) | stop).map {
       case xs => xs.size
     }.contramap {
       case k if (k >= 0 && k <= 3) => Seq(Seq.fill(k)(M))
     }
 
-  val number: Parser[Int, Int] = (thousands ~ hundreds ~ tens ~ units).map {
+  val number: Syntax[Int, Int] = (thousands ~ hundreds ~ tens ~ units).map {
     case ths ~ hus ~ tes ~ uns => ths * 1000 + hus * 100 + tes * 10 + uns
   }.contramap {
     case n if n >= 0 => {

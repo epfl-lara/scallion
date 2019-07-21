@@ -18,7 +18,7 @@ package scallion.syntactic
 import scallion.syntactic.Unfolds._
 
 /** Contains utilities to write parsers with infix, prefix and postfix operators.
-  * Expected to be mixed-in to `Parsers`.
+  * Expected to be mixed-in to `Syntaxes`.
   *
   * @groupprio level 7
   * @groupname level Priority Levels
@@ -55,7 +55,7 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @group level
     */
-  case class Level[-V, A](operator: Parser[V, (A, A) => A], associativity: Associativity)
+  case class Level[-V, A](operator: Syntax[V, (A, A) => A], associativity: Associativity)
 
 
   /** Implicitly decorates an `operator` parser to add an `is` methods
@@ -67,20 +67,20 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @group level
     */
-  implicit class LevelDecorator[-V, A](operator: Parser[V, (A, A) => A]) {
+  implicit class LevelDecorator[-V, A](operator: Syntax[V, (A, A) => A]) {
 
     /** Indicates the associativity of the operator. */
     def is(associativity: Associativity): Level[V, A] = Level(operator, associativity)
   }
 
-  /** Parser that parses repetitions of `elem` separated by infix operators.
+  /** Syntax that parses repetitions of `elem` separated by infix operators.
     *
     * The operators in earlier levels are considered to bind tighter than those in later levels.
     *
     * @group combinator
     */
-  def operators[V, W, A](elem: Parser[V, A], rev: PartialFunction[V, (V, W, V)])
-                        (levels: Level[W, A]*): Parser[V, A] = {
+  def operators[V, W, A](elem: Syntax[V, A], rev: PartialFunction[V, (V, W, V)])
+                        (levels: Level[W, A]*): Syntax[V, A] = {
 
     levels.foldLeft(elem) {
       case (acc, Level(op, assoc)) => assoc match {
@@ -90,15 +90,15 @@ trait Operators { self: Syntaxes[_, _] =>
     }
   }
 
-  /** Parser that accepts repetitions of `elem` separated by left-associative `op`.
+  /** Syntax that accepts repetitions of `elem` separated by left-associative `op`.
     * The value returned is reduced left-to-right.
     *
     * @group combinator
     */
   def infixLeft[V, W, A](
-      elem: Parser[V, A],
-      op: Parser[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)]): Parser[V, A] =
+      elem: Syntax[V, A],
+      op: Syntax[W, (A, A) => A],
+      rev: PartialFunction[V, (V, W, V)]): Syntax[V, A] =
 
     (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => opElems.foldLeft(first) {
@@ -114,15 +114,15 @@ trait Operators { self: Syntaxes[_, _] =>
       }
     })
 
-  /** Parser that accepts repetitions of `elem` separated by right-associative `op`.
+  /** Syntax that accepts repetitions of `elem` separated by right-associative `op`.
     * The value returned is reduced right-to-left.
     *
     * @group combinator
     */
   def infixRight[V, W, A](
-      elem: Parser[V, A],
-      op: Parser[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)]): Parser[V, A] =
+      elem: Syntax[V, A],
+      op: Syntax[W, (A, A) => A],
+      rev: PartialFunction[V, (V, W, V)]): Syntax[V, A] =
 
     (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => {
@@ -154,13 +154,13 @@ trait Operators { self: Syntaxes[_, _] =>
 
     })
 
-  /** Parser that parses `elem` prefixed by any number of `op`.
+  /** Syntax that parses `elem` prefixed by any number of `op`.
     *
     * Operators are applied right-to-left.
     *
     * @group combinator
     */
-  def prefixes[V, W, A](op: Parser[W, A => A], elem: Parser[V, A], rev: PartialFunction[V, (W, V)]): Parser[V, A] = {
+  def prefixes[V, W, A](op: Syntax[W, A => A], elem: Syntax[V, A], rev: PartialFunction[V, (W, V)]): Syntax[V, A] = {
     (many(op) ~ elem).bimap({
       case os ~ v => os.foldRight(v) {
         case (o, acc) => o(acc)
@@ -172,13 +172,13 @@ trait Operators { self: Syntaxes[_, _] =>
     })
   }
 
-  /** Parser that parses `elem` postfixed by any number of `op`.
+  /** Syntax that parses `elem` postfixed by any number of `op`.
     *
     * Operators are applied left-to-right.
     *
     * @group combinator
     */
-  def postfixes[V, W, A](elem: Parser[V, A], op: Parser[W, A => A], rev: PartialFunction[V, (V, W)]): Parser[V, A] = {
+  def postfixes[V, W, A](elem: Syntax[V, A], op: Syntax[W, A => A], rev: PartialFunction[V, (V, W)]): Syntax[V, A] = {
     (elem ~ many(op)).bimap({
       case v ~ os => os.foldLeft(v) {
         case (acc, o) => o(acc)

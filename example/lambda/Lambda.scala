@@ -77,7 +77,7 @@ case class Abs(name: String, body: Expr) extends Expr
 
 object LambdaSyntax extends Syntaxes[Token, TokenClass] {
 
-  type Syntax[A] = Parser[A, A]
+  type S[A] = Syntax[A, A]
 
   override def getKind(token: Token): TokenClass = token match {
     case IdentifierToken(_) => IdentifierClass
@@ -88,7 +88,7 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }
 
   // Accept any token of the kind IdentifierClass,
-  val name: Syntax[String] = accept(IdentifierClass) {
+  val name: S[String] = accept(IdentifierClass) {
     // Extract the string from them.
     case IdentifierToken(n) => n
   } contramap {
@@ -98,13 +98,13 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }
 
   // Accept any token of the kind LambdaClass, which will always be LambdaToken.
-  val lambda: Syntax[Unit] = elem(LambdaClass).always(LambdaToken)
+  val lambda: S[Unit] = elem(LambdaClass).always(LambdaToken)
 
   // Accept any token of the kind DotClass, which will always be DotToken.
-  val dot: Syntax[Unit] = elem(DotClass).always(DotToken)
+  val dot: S[Unit] = elem(DotClass).always(DotToken)
 
   // Accepts an open or a close parenthesis.
-  def parens(isOpen: Boolean): Syntax[Unit] =
+  def parens(isOpen: Boolean): S[Unit] =
     elem(ParenthesisClass(isOpen)).always(ParenthesisToken(isOpen))
 
   // Open parenthesis.
@@ -114,7 +114,7 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   val close = parens(false)
 
   // Turn a name into an expression.
-  val variable: Syntax[Expr] = name.map {
+  val variable: S[Expr] = name.map {
     // Turn the string into a variable.
     case n => Var(n)
   } contramap {
@@ -124,17 +124,17 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }
 
   // The syntax for expressions, which is the main syntax.
-  lazy val expr: Syntax[Expr] = recursive {
+  lazy val expr: S[Expr] = recursive {
     // Accepts either a lambda expression or an application.
     // `appExpr` also includes single basic expressions.
     lambdaExpr | appExpr
   }
 
   // Basic expressions. Simply a variable or an expression in parenthesis.
-  lazy val basic: Syntax[Expr] = variable | open ~>~ expr ~<~ close
+  lazy val basic: S[Expr] = variable | open ~>~ expr ~<~ close
 
   // Lambda expression.
-  lazy val lambdaExpr: Syntax[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
+  lazy val lambdaExpr: S[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map {
     // Given a sequence of names and the expression body, we create the corresponding lambda.
     case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
       case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.
@@ -153,7 +153,7 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }
 
   // Application, which consists of a sequence of at least one basic expressions.
-  lazy val appExpr: Syntax[Expr] = many1(basic).map {
+  lazy val appExpr: S[Expr] = many1(basic).map {
     // We reduce all expressions into a single one using `reduceLeft`.
     xs => xs.reduceLeft(App(_, _))
   } contramap {
