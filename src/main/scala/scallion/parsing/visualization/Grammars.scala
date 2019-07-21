@@ -140,7 +140,7 @@ trait Grammars[Kind] { self: Parsers[_, Kind] =>
 
       def getSequents(next: Parser[Nothing, Any]): Seq[Symbol] = next match {
         case Failure => Seq()
-        case Success(_) => Seq(Epsilon)
+        case Success(_, _) => Seq(Epsilon)
         case Elem(kind) => Seq(Terminal(kind))
         case Transform(_, _, inner) => getSequents(inner)
         case Sequence(left, right) => getSequents(left) ++ getSequents(right)

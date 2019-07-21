@@ -156,6 +156,9 @@ object Producer {
     override private[internal] def skip(): Unit = result = Terminated
   }
 
+  /** Returns a new producer that produces the values provided by the `iterator`. */
+  def fromIterator[A](iterator: Iterator[A]): Producer[A] = new IteratorProducer(iterator)
+
   /** Returns a producer and a function that returns fresh views over the producer.
     *
     * @param producer The producer to duplicate. Should not be used again after this call.
@@ -411,4 +414,26 @@ private class MemoryProducer[A](producer: Producer[A]) extends Producer[A] {
     }
     override private[internal] def skip(): Unit = index += 1
   }
+}
+
+private class IteratorProducer[A](iterator: Iterator[A]) extends Producer[A] {
+  private var cache: Option[Peek[A]] = None
+
+  override private[internal] def peek(): Peek[A] = cache match {
+    case Some(peeked) => peeked  // Cache hit.
+    case None => {
+      if (iterator.hasNext) {
+        val value = iterator.next()
+        val result = Available(value)
+        cache = Some(result)
+        result
+      }
+      else {
+        cache = Some(Terminated)
+        Terminated
+      }
+    }
+  }
+
+  override private[internal] def skip(): Unit = cache = None
 }

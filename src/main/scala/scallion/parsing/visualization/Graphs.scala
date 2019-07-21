@@ -59,7 +59,7 @@ trait Graphs[Kind] { self: Parsers[_, Kind] =>
 
         val (label, targets) = current match {
           case Failure => ("⊥", Seq())
-          case Success(_) => ("𝛆", Seq())
+          case Success(_, _) => ("𝛆", Seq())
           case Elem(kind) => (kind.toString, Seq())
           case Disjunction(left, right) => {
 

@@ -486,7 +486,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     inside(parser(Seq(Bool(true)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Bool(true))
-        assert(rest == epsilon(Bool(true)))
+        inside(rest) {
+          case Success(Bool(true), _) => ()
+        }
       }
     }
   }
@@ -497,7 +499,9 @@ class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] w
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Num(1))
-        assert(rest == epsilon(Num(1)))
+        inside(rest) {
+          case Success(Num(1), _) => ()
+        }
       }
     }
   }
