@@ -86,7 +86,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for building lexers and parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
     </li><li name="scallion.input" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="input"></a><a id="input:input"></a>
       <span class="permalink">
@@ -110,10 +110,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
 <span class="cmt">// With a custom positioner:</span>
 <span class="kw">val</span> customSource = Source.fromFile(<span class="lit">"data/clients.json"</span>, IndexPositioner)</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li name="scallion.lexing" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lexing"></a><a id="lexing:lexing"></a>
+    </li><li name="scallion.lexical" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lexical"></a><a id="lexical:lexical"></a>
       <span class="permalink">
-      <a href="../scallion/index.html#lexing" title="Permalink">
+      <a href="../scallion/index.html#lexical" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -122,15 +122,15 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="This package is used to write lexers." href="../lexing/index.html"><span class="name">lexing</span></a>
+        <a title="This package is used to write lexers." href="../lexical/index.html"><span class="name">lexical</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="../lexing/Lexers.html" class="extype" name="scallion.lexing.Lexers">scallion.lexing.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
+      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="../lexical/Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">val</span> myLexer = Lexer(...)
 }</pre><p>Additional traits can be mixed-in.
-See for instance <a href="../lexing/CharRegExps.html" class="extype" name="scallion.lexing.CharRegExps">scallion.lexing.CharRegExps</a>
+See for instance <a href="../lexical/CharRegExps.html" class="extype" name="scallion.lexical.CharRegExps">scallion.lexical.CharRegExps</a>
 for regular expressions on <code>Char</code>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">

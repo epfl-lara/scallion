@@ -16,7 +16,7 @@
 package example.lambda
 
 import scallion.input._
-import scallion.lexing._
+import scallion.lexical._
 import scallion.syntactic._
 import scallion.syntactic.Unfolds._
 

@@ -17,7 +17,7 @@ package scallion
 
 import org.scalatest._
 
-import scallion.lexing._
+import scallion.lexical._
 
 class RegExpsTests extends FlatSpec with RegExps[Char] with CharRegExps {
 

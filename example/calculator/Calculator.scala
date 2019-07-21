@@ -16,7 +16,7 @@
 package example.calculator
 
 import scallion.input._
-import scallion.lexing._
+import scallion.lexical._
 import scallion.syntactic._
 
 sealed trait Token

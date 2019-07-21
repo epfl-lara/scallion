@@ -18,7 +18,7 @@ package scallion
 import org.scalatest._
 
 import scallion.input._
-import scallion.lexing._
+import scallion.lexical._
 
 class LexerTests extends FlatSpec with Lexers[String, Char, (Int, Int)] with CharRegExps {
 

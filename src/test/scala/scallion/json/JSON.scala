@@ -18,7 +18,7 @@ package scallion.json
 import scala.language.implicitConversions
 
 import scallion.input._
-import scallion.lexing._
+import scallion.lexical._
 import scallion.syntactic._
 
 sealed abstract class Token {

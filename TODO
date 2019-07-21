@@ -1,8 +1,6 @@
 
 Lexer -> Lexicon ? Add unapply to lexer ?
 
-package scallion.lexer -> scallion.lexical
-
 add trait Parser[+A]
 add trait Printer[-V]
 
