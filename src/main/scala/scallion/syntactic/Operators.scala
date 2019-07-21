@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-package scallion.parsing
+package scallion.syntactic
 
-import scallion.parsing.Unfolds._
+import scallion.syntactic.Unfolds._
 
 /** Contains utilities to write parsers with infix, prefix and postfix operators.
   * Expected to be mixed-in to `Parsers`.
@@ -30,7 +30,7 @@ import scallion.parsing.Unfolds._
   *
   * @group parsing
   */
-trait Operators { self: Parsers[_, _] =>
+trait Operators { self: Syntaxes[_, _] =>
 
   /** Associativity of an operator.
     *

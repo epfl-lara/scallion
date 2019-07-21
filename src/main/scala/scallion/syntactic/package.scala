@@ -57,7 +57,7 @@ package scallion
   * @groupprio other 100
   * @groupname other Others
   */
-package object parsing {
+package object syntactic {
 
   /** Simply a pair.
     *
@@ -71,13 +71,13 @@ package object parsing {
   case class ~[+A, +B](_1: A, _2: B) {
 
     /* Builds a pair. */
-    def ~[C](next: C): (A ~ B) ~ C = parsing.~(this, next)
+    def ~[C](next: C): (A ~ B) ~ C = syntactic.~(this, next)
   }
 
   /** Adds an `~` methods to build pairs. */
   implicit class PairDecorator[A](first: A) {
 
     /** Builds a pair. */
-    def ~[B](second: B): A ~ B = parsing.~(first, second)
+    def ~[B](second: B): A ~ B = syntactic.~(first, second)
   }
 }

@@ -14,7 +14,7 @@
  */
 
 package scallion
-package parsing
+package syntactic
 package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
@@ -27,7 +27,7 @@ import scala.collection.mutable.{Queue, StringBuilder}
   * @groupprio symbol 2
   * @groupname symbol Symbols
   */
-trait Grammars[Kind] { self: Parsers[_, Kind] =>
+trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
 
   /** Contains utilities to visualize parsers as BNF grammars.
     *

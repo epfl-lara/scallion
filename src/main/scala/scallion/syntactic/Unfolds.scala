@@ -1,4 +1,4 @@
-package scallion.parsing
+package scallion.syntactic
 
 /** Contains functions to unfold values. */
 object Unfolds {

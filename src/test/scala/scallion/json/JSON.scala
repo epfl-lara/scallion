@@ -19,7 +19,7 @@ import scala.language.implicitConversions
 
 import scallion.input._
 import scallion.lexing._
-import scallion.parsing._
+import scallion.syntactic._
 
 sealed abstract class Token {
   val range: (Int, Int)
@@ -115,7 +115,7 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   }
 }
 
-object JSONParser extends Parsers[Token, TokenClass] {
+object JSONParser extends Syntaxes[Token, TokenClass] {
 
   override def getKind(token: Token): TokenClass = token match {
     case SeparatorToken(value, _) => SeparatorClass(value)

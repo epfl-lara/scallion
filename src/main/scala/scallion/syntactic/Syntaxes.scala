@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package scallion.parsing
+package scallion.syntactic
 
 import scala.language.implicitConversions
 
@@ -24,22 +24,16 @@ import scallion.util.internal.{Producer, ProducerOps}
 
 /** Contains definitions relating to parsers.
   *
-  * @see See trait [[scallion.parsing.Operators]] for useful combinators
+  * @see See trait [[scallion.syntactic.Operators]] for useful combinators
   *      to describe infix, prefix and postfix operators.
   *
   * @group parsing
   */
-trait Parsers[Token, Kind]
+trait Syntaxes[Token, Kind]
     extends visualization.Graphs[Kind]
        with visualization.Grammars[Kind] {
 
   import Parser._
-
-  /** Type of parsers that can be inversed.
-    *
-    * @group parser
-    */
-  type Syntax[A] = Parser[A, A]
 
   /** Returns the kind associated with `token`.
     *
@@ -352,7 +346,7 @@ trait Parsers[Token, Kind]
       */
     def ~>~[W, B](that: Parser[W, B])(implicit ev: Unit <:< V): Parser[W, B] =
       this.~(that).bimap(_._2, {
-      case x => Seq(scallion.parsing.~(ev(()), x))
+      case x => Seq(scallion.syntactic.~(ev(()), x))
     })
 
     /** Sequences `this` and `that` parser. The parsed value from `this` is returned.
@@ -360,7 +354,7 @@ trait Parsers[Token, Kind]
       * @group combinator
       */
     def ~<~(that: Parser[Unit, Any]): Parser[V, A] = this.~(that).bimap(_._1, {
-      case x => Seq(scallion.parsing.~(x, ()))
+      case x => Seq(scallion.syntactic.~(x, ()))
     })
 
     /** Sequences `this` and `that` parser. The parsed value from `that` is appended to that from `this`.
@@ -395,7 +389,7 @@ trait Parsers[Token, Kind]
     def ~[W, X <: W, B](that: Parser[W, B]): Parser[V ~ X, A ~ B] = (this, that) match {
       case (Failure, _) => Failure
       case (_, Failure) => Failure
-      case (Success(a, pa), Success(b, pb)) => Success(scallion.parsing.~(a, b), {
+      case (Success(a, pa), Success(b, pb)) => Success(scallion.syntactic.~(a, b), {
         case va ~ vb => pa(va) * pb(vb)
       })
       case _ => Sequence(this, that)
@@ -606,7 +600,7 @@ trait Parsers[Token, Kind]
     /** Parser for a prefix before the conflict occurs. */
     val prefix: Parser[Nothing, Any]
 
-    private[parsing] def addPrefix(parser: Parser[Nothing, Any]): LL1Conflict
+    private[syntactic] def addPrefix(parser: Parser[Nothing, Any]): LL1Conflict
 
     /** Returns trails that witness the conflict. */
     def witnesses: Iterator[Trail]
@@ -623,7 +617,7 @@ trait Parsers[Token, Kind]
         prefix: Parser[Nothing, Any],
         source: Disjunction[Nothing, Any]) extends LL1Conflict {
 
-      override private[parsing] def addPrefix(start: Parser[Nothing, Any]): NullableConflict =
+      override private[syntactic] def addPrefix(start: Parser[Nothing, Any]): NullableConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Trail] = prefix.trails
@@ -635,7 +629,7 @@ trait Parsers[Token, Kind]
         ambiguities: Set[Kind],
         source: Disjunction[Nothing, Any]) extends LL1Conflict {
 
-      override private[parsing] def addPrefix(start: Parser[Nothing, Any]): FirstConflict =
+      override private[syntactic] def addPrefix(start: Parser[Nothing, Any]): FirstConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Trail] = for {
@@ -650,7 +644,7 @@ trait Parsers[Token, Kind]
         ambiguities: Set[Kind],
         source: Parser[Nothing, Any] with SequenceLike[Nothing, Nothing, Any, Any]) extends LL1Conflict {
 
-      override private[parsing] def addPrefix(start: Parser[Nothing, Any]): FollowConflict =
+      override private[syntactic] def addPrefix(start: Parser[Nothing, Any]): FollowConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Trail] = for {
@@ -664,7 +658,7 @@ trait Parsers[Token, Kind]
         prefix: Parser[Nothing, Any],
         source: Recursive[Nothing, Any]) extends LL1Conflict {
 
-      override private[parsing] def addPrefix(start: Parser[Nothing, Any]): LeftRecursiveConflict =
+      override private[syntactic] def addPrefix(start: Parser[Nothing, Any]): LeftRecursiveConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Trail] = prefix.trails
@@ -1034,12 +1028,12 @@ trait Parsers[Token, Kind]
       override lazy val nullable: Option[A ~ B] = for {
         leftValue <- left.nullable
         rightValue <- right.nullable
-      } yield scallion.parsing.~(leftValue, rightValue)
+      } yield scallion.syntactic.~(leftValue, rightValue)
 
       override protected def collectNullable(recs: Set[RecId]): Option[A ~ B] = for {
         leftValue <- left.collectNullable(recs)
         rightValue <- right.collectNullable(recs)
-      } yield scallion.parsing.~(leftValue, rightValue)
+      } yield scallion.syntactic.~(leftValue, rightValue)
 
       override protected def collectFilter(
           predicate: Kind => Boolean,

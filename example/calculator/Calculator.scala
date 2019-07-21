@@ -17,7 +17,7 @@ package example.calculator
 
 import scallion.input._
 import scallion.lexing._
-import scallion.parsing._
+import scallion.syntactic._
 
 sealed trait Token
 case class NumberToken(value: Int) extends Token
@@ -73,7 +73,9 @@ case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcParser extends Parsers[Token, TokenClass] with Operators {
+object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
+
+  type Syntax[A] = Parser[A, A]
 
   override def getKind(token: Token): TokenClass = token match {
     case NumberToken(_) => NumberClass

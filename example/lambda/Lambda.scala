@@ -17,8 +17,8 @@ package example.lambda
 
 import scallion.input._
 import scallion.lexing._
-import scallion.parsing._
-import scallion.parsing.Unfolds._
+import scallion.syntactic._
+import scallion.syntactic.Unfolds._
 
 sealed trait Token
 case object LambdaToken extends Token
@@ -75,7 +75,9 @@ case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object LambdaParser extends Parsers[Token, TokenClass] {
+object LambdaSyntax extends Syntaxes[Token, TokenClass] {
+
+  type Syntax[A] = Parser[A, A]
 
   override def getKind(token: Token): TokenClass = token match {
     case IdentifierToken(_) => IdentifierClass

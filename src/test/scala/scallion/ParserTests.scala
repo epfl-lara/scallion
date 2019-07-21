@@ -17,7 +17,7 @@ package scallion
 
 import org.scalatest._
 
-import scallion.parsing._
+import scallion.syntactic._
 
 object Tokens {
   sealed trait Token
@@ -36,7 +36,7 @@ object Tokens {
 }
 import Tokens._
 
-class ParserTests extends FlatSpec with Inside with Parsers[Token, TokenClass] with Operators {
+class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] with Operators {
 
   override def getKind(token: Token): TokenClass = token match {
     case Num(_) => NumClass

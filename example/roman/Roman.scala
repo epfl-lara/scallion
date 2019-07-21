@@ -15,7 +15,7 @@
 
 package example.roman
 
-import scallion.parsing._
+import scallion.syntactic._
 
 sealed trait Symbol
 case object I extends Symbol
@@ -26,7 +26,7 @@ case object C extends Symbol
 case object D extends Symbol
 case object M extends Symbol
 
-object RomanSyntax extends Parsers[Symbol, Symbol] {
+object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
   override def getKind(token: Symbol): Symbol = token
 

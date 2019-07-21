@@ -14,13 +14,13 @@
  */
 
 package scallion
-package parsing
+package syntactic
 package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to visualize parsers as graphs using Graphviz. */
-trait Graphs[Kind] { self: Parsers[_, Kind] =>
+trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
 
   /** Contains utilities to visualize parsers as graphs using Graphviz.
     *
