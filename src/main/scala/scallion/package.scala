@@ -17,7 +17,7 @@
   *
   * @see See the package [[scallion.input]] for handling inputs.
   * @see See the package [[scallion.lexing]] for lexers.
-  * @see See the package [[scallion.parsing]] for parsers. 
+  * @see See the package [[scallion.syntactic]] for parsers and pretty printers.
   */
 package object scallion {
 

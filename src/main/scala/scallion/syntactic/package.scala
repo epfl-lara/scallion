@@ -15,34 +15,40 @@
 
 package scallion
 
-/** This package is used to write LL(1) parsers.
+/** This package is used to describe syntax for LL(1) languages.
   *
-  * To use the package, mix-in the [[scallion.parsing.Parsers]] trait.
+  * To use the package, mix-in the [[scallion.syntactic.Syntaxes]] trait.
   *
   * {{{
-  * object MyParsers extends Parsers[Token, Kind] {
+  * object MySyntaxes extends Syntaxes[Token, Kind] {
   *
   *   // Define the token kind of tokens.
   *   override def getKind(token: Token): Kind = ...
   *
-  *   // Then define your parsers using combinators.
-  *   lazy val myParser = ...
+  *   // Then define your syntax using combinators.
+  *   lazy val mySyntax = ...
   * }
   * }}}
   *
   * @groupprio abstract 0
   * @groupname abstract Abstract Members
   *
-  * @groupprio syntax 1
+  * @groupprio parsing 1
+  * @groupname parsing Parsing
+  *
+  * @groupprio printing 2
+  * @groupname printing Printing
+  *
+  * @groupprio syntax 3
   * @groupname syntax Syntax
   *
-  * @groupprio result 2
+  * @groupprio result 4
   * @groupname result Parse Results
   *
-  * @groupprio basic 3
-  * @groupname basic Basic Parsers
+  * @groupprio basic 5
+  * @groupname basic Basic Syntaxes
   *
-  * @groupprio combinator 4
+  * @groupprio combinator 6
   * @groupname combinator Combinators
   *
   * @groupprio conflict 10
@@ -74,7 +80,10 @@ package object syntactic {
     def ~[C](next: C): (A ~ B) ~ C = syntactic.~(this, next)
   }
 
-  /** Adds an `~` methods to build pairs. */
+  /** Adds an `~` methods to build pairs.
+    *
+    * @group pairs
+    */
   implicit class PairDecorator[A](first: A) {
 
     /** Builds a pair. */

@@ -17,7 +17,7 @@ package scallion.syntactic
 
 import scallion.syntactic.Unfolds._
 
-/** Contains utilities to write parsers with infix, prefix and postfix operators.
+/** Contains utilities to write syntaxes with infix, prefix and postfix operators.
   * Expected to be mixed-in to `Syntaxes`.
   *
   * @groupprio level 7
@@ -28,7 +28,7 @@ import scallion.syntactic.Unfolds._
   * @groupname assoc Associativity
   * @groupdesc assoc Associativity for priority levels.
   *
-  * @group parsing
+  * @group syntax
   */
 trait Operators { self: Syntaxes[_, _] =>
 
@@ -50,7 +50,7 @@ trait Operators { self: Syntaxes[_, _] =>
     */
   case object RightAssociative extends Associativity
 
-  /** Represents a precedence level with a parser for the various `operator`s of that level
+  /** Represents a precedence level with a syntax for the various `operator`s of that level
     * and an associativity.
     *
     * @group level
@@ -58,8 +58,8 @@ trait Operators { self: Syntaxes[_, _] =>
   case class Level[-V, A](operator: Syntax[V, (A, A) => A], associativity: Associativity)
 
 
-  /** Implicitly decorates an `operator` parser to add an `is` methods
-    * that indicates the associativity of the parser.
+  /** Implicitly decorates an `operator` syntax to add an `is` method
+    * that indicates the associativity of the operator.
     *
     * {{{
     * val level = div | times is LeftAssociative
@@ -73,7 +73,7 @@ trait Operators { self: Syntaxes[_, _] =>
     def is(associativity: Associativity): Level[V, A] = Level(operator, associativity)
   }
 
-  /** Syntax that parses repetitions of `elem` separated by infix operators.
+  /** Syntax that represents repetitions of `elem` separated by infix operators.
     *
     * The operators in earlier levels are considered to bind tighter than those in later levels.
     *
@@ -90,7 +90,7 @@ trait Operators { self: Syntaxes[_, _] =>
     }
   }
 
-  /** Syntax that accepts repetitions of `elem` separated by left-associative `op`.
+  /** Syntax that represents repetitions of `elem` separated by left-associative `op`.
     * The value returned is reduced left-to-right.
     *
     * @group combinator
@@ -114,7 +114,7 @@ trait Operators { self: Syntaxes[_, _] =>
       }
     })
 
-  /** Syntax that accepts repetitions of `elem` separated by right-associative `op`.
+  /** Syntax that represents repetitions of `elem` separated by right-associative `op`.
     * The value returned is reduced right-to-left.
     *
     * @group combinator
@@ -154,7 +154,7 @@ trait Operators { self: Syntaxes[_, _] =>
 
     })
 
-  /** Syntax that parses `elem` prefixed by any number of `op`.
+  /** Syntax that represents `elem` prefixed by any number of `op`.
     *
     * Operators are applied right-to-left.
     *
@@ -172,7 +172,7 @@ trait Operators { self: Syntaxes[_, _] =>
     })
   }
 
-  /** Syntax that parses `elem` postfixed by any number of `op`.
+  /** Syntax that represents `elem` postfixed by any number of `op`.
     *
     * Operators are applied left-to-right.
     *

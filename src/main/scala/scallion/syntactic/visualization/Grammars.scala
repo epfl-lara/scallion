@@ -19,7 +19,7 @@ package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
-/** Contains utilities to visualize parsers as BNF grammars.
+/** Contains utilities to visualize syntaxes as BNF grammars.
   *
   * @groupprio grammar 1
   * @groupname grammar Grammar
@@ -29,7 +29,7 @@ import scala.collection.mutable.{Queue, StringBuilder}
   */
 trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
 
-  /** Contains utilities to visualize parsers as BNF grammars.
+  /** Contains utilities to visualize syntaxes as BNF grammars.
     *
     * @group visualization
     */
@@ -108,11 +108,11 @@ trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
 
     import Syntax._
 
-    /** Computes the grammar associated with a `parser`.
+    /** Computes the grammar associated with the `syntax`.
       *
       * @group grammar
       */
-    def getGrammar(parser: Syntax[Nothing, Any]): Grammar = {
+    def getGrammar(syntax: Syntax[Nothing, Any]): Grammar = {
       var nextId = 0
       var rules = Vector[Rule]()
       val queue = new Queue[Syntax[Nothing, Any]]
@@ -131,7 +131,7 @@ trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
         }
       }
 
-      inspect(parser)
+      inspect(syntax)
 
       def getSymbols(next: Syntax[Nothing, Any]): Seq[Seq[Symbol]] = next match {
         case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)

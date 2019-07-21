@@ -69,155 +69,7 @@
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for easily writing lexers and parsers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers and parsers in Scala.
-See the package <a href="" class="extype" name="scallion">scallion</a> for more information.</p><h4>Example</h4><p>Below is an example JSON parser built from scratch using Scallion.</p><p>First, we define the type of tokens that we have in JSON.</p><pre><span class="kw">import</span> scallion.input._
-<span class="kw">import</span> scallion.lexing._
-<span class="kw">import</span> scallion.parsing._
-
-<span class="cmt">// Definition of the different tokens.</span>
-<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> Token {
-  <span class="kw">val</span> range: (<span class="std">Int</span>, <span class="std">Int</span>)
-}
-<span class="kw">case</span> <span class="kw">class</span> SeparatorToken(value: <span class="std">Char</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> BooleanToken(value: <span class="std">Boolean</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> NumberToken(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> StringToken(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> NullToken(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> SpaceToken(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-<span class="kw">case</span> <span class="kw">class</span> UnknownToken(content: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Token
-
-<span class="cmt">// Each token has an associated class.</span>
-<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> TokenClass(repr: <span class="std">String</span>) {
-  <span class="kw">override</span> <span class="kw">def</span> toString = repr
-}
-<span class="kw">case</span> <span class="kw">class</span> SeparatorClass(value: <span class="std">Char</span>) <span class="kw">extends</span> TokenClass(value.toString)
-<span class="kw">case</span> <span class="kw">object</span> BooleanClass <span class="kw">extends</span> TokenClass(<span class="lit">"BOOLEAN"</span>)
-<span class="kw">case</span> <span class="kw">object</span> NumberClass <span class="kw">extends</span> TokenClass(<span class="lit">"NUMBER"</span>)
-<span class="kw">case</span> <span class="kw">object</span> StringClass <span class="kw">extends</span> TokenClass(<span class="lit">"STRING"</span>)
-<span class="kw">case</span> <span class="kw">object</span> NullClass <span class="kw">extends</span> TokenClass(<span class="lit">"NULL"</span>)
-<span class="kw">case</span> <span class="kw">object</span> NoClass <span class="kw">extends</span> TokenClass(<span class="lit">"ERROR"</span>)</pre><p>Then, we can define the actual lexer, which will convert sequences of characters into sequences of tokens.</p><pre><span class="cmt">// Definition of the Lexer.</span>
-<span class="kw">object</span> JSONLexer <span class="kw">extends</span> Lexers[Token, <span class="std">Char</span>, <span class="std">Int</span>] <span class="kw">with</span> CharRegExps {
-
-  <span class="kw">val</span> lexer = Lexer(
-    <span class="cmt">// Separator</span>
-    oneOf(<span class="lit">"[]{},:"</span>)
-      |&gt; { (cs, r) <span class="kw">=&gt;</span> SeparatorToken(cs.head, r) },
-
-    <span class="cmt">// Space</span>
-    many1(whiteSpace)
-      |&gt; { (_, r) <span class="kw">=&gt;</span> SpaceToken(r) },
-
-    <span class="cmt">// Booleans</span>
-    word(<span class="lit">"true"</span>)
-      |&gt; { (_, r) <span class="kw">=&gt;</span> BooleanToken(<span class="kw">true</span>, r) },
-    word(<span class="lit">"false"</span>)
-      |&gt; { (_, r) <span class="kw">=&gt;</span> BooleanToken(<span class="kw">false</span>, r) },
-
-    <span class="cmt">// Null</span>
-    word(<span class="lit">"null"</span>)
-      |&gt; { (_, r) <span class="kw">=&gt;</span> NullToken(r) },
-
-    <span class="cmt">// Strings</span>
-    elem(<span class="lit">'"'</span>) ~
-    many {
-      elem(c <span class="kw">=&gt;</span> c != <span class="lit">'"'</span> &amp;&amp; c != '\\' &amp;&amp; !c.isControl) |
-      elem('\\') ~ (oneOf(<span class="lit">"\"\\/bfnrt"</span>) | elem(<span class="lit">'u'</span>) ~ hex.times(<span class="num">4</span>))
-    } ~
-    elem(<span class="lit">'"'</span>)
-      |&gt; { (cs, r) <span class="kw">=&gt;</span> {
-        <span class="kw">val</span> string = cs.mkString
-        StringToken(string.slice(<span class="num">1</span>, string.length - <span class="num">1</span>), r)
-      }},
-
-    <span class="cmt">// Numbers</span>
-    opt {
-      elem(<span class="lit">'-'</span>)
-    } ~
-    {
-      elem(<span class="lit">'0'</span>) |
-      nonZero ~ many(digit)
-    } ~
-    opt {
-      elem(<span class="lit">'.'</span>) ~ many1(digit)
-    } ~
-    opt {
-      oneOf(<span class="lit">"eE"</span>) ~
-      opt(oneOf(<span class="lit">"+-"</span>)) ~
-      many1(digit)
-    }
-      |&gt; { (cs, r) <span class="kw">=&gt;</span> NumberToken(cs.mkString.toDouble, r) }
-  ) onError {
-    (cs, r) <span class="kw">=&gt;</span> UnknownToken(cs.mkString, r)
-  }
-
-  <span class="kw">def</span> apply(it: Iterator[<span class="std">Char</span>]): Iterator[Token] = {
-    <span class="kw">val</span> source = Source.fromIterator(it, IndexPositioner)
-
-    <span class="kw">val</span> tokens = lexer.spawn(source)
-
-    tokens.filter(!_.isInstanceOf[SpaceToken])
-  }
-}</pre><p>Then, we define the possible JSON values.</p><pre><span class="cmt">// Definition of the different JSON values.</span>
-<span class="kw">sealed</span> <span class="kw">abstract</span> <span class="kw">class</span> Value {
-  <span class="kw">val</span> range: (<span class="std">Int</span>, <span class="std">Int</span>)
-}
-<span class="kw">case</span> <span class="kw">class</span> ArrayValue(elems: <span class="std">Seq</span>[Value], range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
-<span class="kw">case</span> <span class="kw">class</span> ObjectValue(elems: <span class="std">Seq</span>[(StringValue, Value)], range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
-<span class="kw">case</span> <span class="kw">class</span> BooleanValue(value: <span class="std">Boolean</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
-<span class="kw">case</span> <span class="kw">class</span> NumberValue(value: <span class="std">Double</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
-<span class="kw">case</span> <span class="kw">class</span> StringValue(value: <span class="std">String</span>, range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value
-<span class="kw">case</span> <span class="kw">class</span> NullValue(range: (<span class="std">Int</span>, <span class="std">Int</span>)) <span class="kw">extends</span> Value</pre><p>Finally, the parser itself, which produces JSON values.</p><pre><span class="cmt">// Definition of the Parser.</span>
-<span class="kw">object</span> JSONParser <span class="kw">extends</span> Parsers[Token, TokenClass] {
-
-  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): TokenClass = token <span class="kw">match</span> {
-    <span class="kw">case</span> SeparatorToken(value, _) <span class="kw">=&gt;</span> SeparatorClass(value)
-    <span class="kw">case</span> BooleanToken(_, _) <span class="kw">=&gt;</span> BooleanClass
-    <span class="kw">case</span> NumberToken(_, _) <span class="kw">=&gt;</span> NumberClass
-    <span class="kw">case</span> StringToken(_, _) <span class="kw">=&gt;</span> StringClass
-    <span class="kw">case</span> NullToken(_) <span class="kw">=&gt;</span> NullClass
-    <span class="kw">case</span> _ <span class="kw">=&gt;</span> NoClass
-  }
-
-  <span class="kw">type</span> P[A] = Parser[_, A]
-
-  <span class="kw">val</span> booleanValue: P[BooleanValue] = accept(BooleanClass) {
-    <span class="kw">case</span> BooleanToken(value, range) <span class="kw">=&gt;</span> BooleanValue(value, range)
-  }
-
-  <span class="kw">val</span> numberValue: P[NumberValue] = accept(NumberClass) {
-    <span class="kw">case</span> NumberToken(value, range) <span class="kw">=&gt;</span> NumberValue(value, range)
-  }
-
-  <span class="kw">val</span> stringValue: P[StringValue] = accept(StringClass) {
-    <span class="kw">case</span> StringToken(value, range) <span class="kw">=&gt;</span> StringValue(value, range)
-  }
-
-  <span class="kw">val</span> nullValue: P[NullValue] = accept(NullClass) {
-    <span class="kw">case</span> NullToken(range) <span class="kw">=&gt;</span> NullValue(range)
-  }
-
-  <span class="kw">implicit</span> <span class="kw">def</span> separator(char: <span class="std">Char</span>): Parser[<span class="std">Unit</span>, Token] = elem(SeparatorClass(char)).unit()
-
-  <span class="kw">lazy</span> <span class="kw">val</span> arrayValue: P[Value] =
-    (<span class="lit">'['</span> ~ repsep(value, <span class="lit">','</span>) ~ <span class="lit">']'</span>).map {
-      <span class="kw">case</span> start ~ vs ~ end <span class="kw">=&gt;</span> ArrayValue(vs, (start.range._1, end.range._2))
-    }
-
-  <span class="kw">lazy</span> <span class="kw">val</span> binding: P[(StringValue, Value)] =
-    (stringValue ~ <span class="lit">':'</span> ~ value).map {
-      <span class="kw">case</span> key ~ _ ~ value <span class="kw">=&gt;</span> (key, value)
-    }
-
-  <span class="kw">lazy</span> <span class="kw">val</span> objectValue: P[Value] =
-    (<span class="lit">'{'</span> ~ repsep(binding, <span class="lit">','</span>) ~ <span class="lit">'}'</span>).map {
-      <span class="kw">case</span> start ~ bs ~ end <span class="kw">=&gt;</span> ObjectValue(bs, (start.range._1, end.range._2))
-    }
-
-  <span class="kw">lazy</span> <span class="kw">val</span> value: P[Value] = recursive {
-    oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
-  }
-
-  <span class="kw">def</span> apply(it: Iterator[Token]): <span class="std">Option</span>[Value] = value(it).getValue
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+See the package <a href="" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
       <span class="permalink">
@@ -234,7 +86,7 @@ See the package <a href="" class="extype" name="scallion">scallion</a> for more 
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for building lexers and parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="parsing/index.html" class="extype" name="scallion.parsing">scallion.parsing</a> for parsers.</p></span></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
     </li><li name="scallion.input" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="input"></a><a id="input:input"></a>
       <span class="permalink">
@@ -281,10 +133,10 @@ See the package <a href="" class="extype" name="scallion">scallion</a> for more 
 See for instance <a href="lexing/CharRegExps.html" class="extype" name="scallion.lexing.CharRegExps">scallion.lexing.CharRegExps</a>
 for regular expressions on <code>Char</code>.
 </p></div></div>
-    </li><li name="scallion.parsing" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parsing"></a><a id="parsing:parsing"></a>
+    </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="syntactic"></a><a id="syntactic:syntactic"></a>
       <span class="permalink">
-      <a href="../scallion/index.html#parsing" title="Permalink">
+      <a href="../scallion/index.html#syntactic" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -293,16 +145,16 @@ for regular expressions on <code>Char</code>.
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="This package is used to write LL(1) parsers." href="parsing/index.html"><span class="name">parsing</span></a>
+        <a title="This package is used to describe syntax for LL(1) languages." href="syntactic/index.html"><span class="name">syntactic</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to write LL(1) parsers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write LL(1) parsers.</p><p>To use the package, mix-in the <a href="parsing/Parsers.html" class="extype" name="scallion.parsing.Parsers">scallion.parsing.Parsers</a> trait.</p><pre><span class="kw">object</span> MyParsers <span class="kw">extends</span> Parsers[Token, Kind] {
+      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="syntactic/Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes[Token, Kind] {
 
   <span class="cmt">// Define the token kind of tokens.</span>
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
 
-  <span class="cmt">// Then define your parsers using combinators.</span>
-  <span class="kw">lazy</span> <span class="kw">val</span> myParser = ...
+  <span class="cmt">// Then define your syntax using combinators.</span>
+  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
 }</pre></div></div>
     </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="util"></a><a id="util:util"></a>
@@ -349,7 +201,7 @@ for regular expressions on <code>Char</code>.
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/package.scala" target="_blank">package.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="parsing/index.html" class="extype" name="scallion.parsing">scallion.parsing</a> for parsers.</p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/package.scala" target="_blank">package.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="lexing/index.html" class="extype" name="scallion.lexing">scallion.lexing</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>

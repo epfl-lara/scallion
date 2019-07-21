@@ -19,10 +19,10 @@ package visualization
 
 import scala.collection.mutable.{Queue, StringBuilder}
 
-/** Contains utilities to visualize parsers as graphs using Graphviz. */
+/** Contains utilities to visualize syntaxes as graphs using Graphviz. */
 trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
 
-  /** Contains utilities to visualize parsers as graphs using Graphviz.
+  /** Contains utilities to visualize syntaxes as graphs using Graphviz.
     *
     * @group visualization
     */
@@ -33,7 +33,7 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
 
     import Syntax._
 
-    private def getGraph(parser: Syntax[Nothing, Any]): Graph = {
+    private def getGraph(syntax: Syntax[Nothing, Any]): Graph = {
       var nextId = 0
       var nodes = Vector[Node]()
       val queue = new Queue[(Syntax[Nothing, Any], Int)]
@@ -52,7 +52,7 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
         }
       }
 
-      inspect(parser)
+      inspect(syntax)
 
       while(queue.nonEmpty) {
         val (current, id) = queue.dequeue()
@@ -100,10 +100,10 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
       nodes
     }
 
-    /** Returns a Graphviz representation of the parser. */
-    private def toGraphviz(parser: Syntax[Nothing, Any]): String = {
+    /** Returns a Graphviz representation of the syntax. */
+    private def toGraphviz(syntax: Syntax[Nothing, Any]): String = {
 
-      val graph = getGraph(parser)
+      val graph = getGraph(syntax)
 
       def addPorts[A](elems: Seq[A]): Seq[(A, String)] = {
         val n = elems.size
@@ -134,17 +134,17 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
       builder.toString
     }
 
-    /** Produces a graph representation of the parser as a PDF file using `dot` from Graphviz.
+    /** Produces a graph representation of the syntax as a PDF file using `dot` from Graphviz.
       *
-      * @param parser   The parser to display.
+      * @param syntax   The syntax to display.
       * @param location The directory in which to save the files.
       * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
       */
-    def outputGraph(parser: Syntax[Nothing, Any], location: String, name: String): Unit = {
+    def outputGraph(syntax: Syntax[Nothing, Any], location: String, name: String): Unit = {
       import java.nio.file._
       import sys.process._
 
-      val content = toGraphviz(parser)
+      val content = toGraphviz(syntax)
       val dotPath = Paths.get(location, name + ".dot")
       val pdfPath = Paths.get(location, name + ".pdf")
 

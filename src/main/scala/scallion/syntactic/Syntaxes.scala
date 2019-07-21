@@ -27,7 +27,7 @@ import scallion.util.internal.{Producer, ProducerOps}
   * @see See trait [[scallion.syntactic.Operators]] for useful combinators
   *      to describe infix, prefix and postfix operators.
   *
-  * @group parsing
+  * @group syntax
   */
 trait Syntaxes[Token, Kind]
     extends visualization.Graphs[Kind]
@@ -83,20 +83,23 @@ trait Syntaxes[Token, Kind]
       left.size <= right.size
   }
 
-  /** Consumes a stream of tokens and tries to produces a value of type `A`.
+  /** Represents a syntax.
+    *
+    * Acts as both a parser and a pretty printer
+    * for the described language.
     *
     * @group syntax
     *
     * @groupprio subsyntax 2
     * @groupname subsyntax Member Syntaxes
     *
-    * @groupprio parsing 5
-    * @groupname parsing Parsing
+    * @groupprio derivation 6
+    * @groupname derivation Derivations
     *
-    * @groupprio complete 6
+    * @groupprio complete 7
     * @groupname complete Completions
     *
-    * @groupprio property 7
+    * @groupprio property 8
     * @groupname property Properties
     */
   sealed trait Syntax[-V, +A] {
@@ -170,6 +173,7 @@ trait Syntaxes[Token, Kind]
       */
     @inline def kinds: Set[Kind] = collectKinds(ListSet())
 
+    /** @group printing */
     def tokensOf(value: V): Iterator[Seq[Token]] =
       collectTokens(value, Map.empty).toIterator
 
@@ -248,13 +252,13 @@ trait Syntaxes[Token, Kind]
 
     /** Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
       *
-      * @group parsing
+      * @group derivation
       */
     protected def derive(token: Token, kind: Kind): Syntax[V, A]
 
     /** Feeds a token to the syntax and obtain a syntax for the rest of input.
       *
-      * @group parsing
+      * @group derivation
       */
     @inline def derive(token: Token): Syntax[V, A] = derive(token, getKind(token))
 
@@ -1460,7 +1464,7 @@ trait Syntaxes[Token, Kind]
   def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Syntax[Token, A] =
     elem(kind).map(function)
 
-  /** Indicates that the syntax can be recursively invoke itself.
+  /** Indicates that the syntax can refer to itself within its body.
     *
     * @group combinator
     */
