@@ -75,8 +75,6 @@ case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
 object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
-  type S[A] = Syntax[A, A]
-
   override def getKind(token: Token): TokenClass = token match {
     case NumberToken(_) => NumberClass
     case OperatorToken(c) => OperatorClass(c)
@@ -84,7 +82,7 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case _ => OtherClass
   }
 
-  val number: S[Expr] = accept(NumberClass) {
+  val number: Syn[Expr] = accept(NumberClass) {
     case NumberToken(n) => LitExpr(n)
   } contramap {
     case LitExpr(n) => Seq(NumberToken(n))
@@ -117,9 +115,9 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: S[Expr] = number | open ~>~ value ~<~ close
+  lazy val basic: Syn[Expr] = number | open ~>~ value ~<~ close
 
-  lazy val postfixed: S[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
+  lazy val postfixed: Syn[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
     case UnaryExpr(op, e) => (e, op)
   })
 
@@ -127,13 +125,13 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case BinaryExpr(op, l, r) => (l, op, r)
   }
 
-  lazy val value: S[Expr] = recursive {
+  lazy val value: Syn[Expr] = recursive {
     operators(postfixed, reverses)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)
   }
 
-  def unapply(expr: Expr): Iterator[Seq[Token]] = value.tokensOf(expr)
+  def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
 
   def apply(it: Iterator[Token]): Option[Expr] = value(it) match {
     case Parsed(value, _) => Some(value)

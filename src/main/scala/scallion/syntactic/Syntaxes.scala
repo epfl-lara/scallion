@@ -35,6 +35,26 @@ trait Syntaxes[Token, Kind]
 
   import Syntax._
 
+  /** Shorthand notation for a `Syntax` that produces and prints the same type of values.
+    *
+    * @group alias
+    */
+  type Syn[A] = Syntax[A, A]
+
+  /** Shorthand notation for a `Syntax` in which
+    * we are only interested in the parsed values.
+    *
+    * @group alias
+    */
+  type Parser[A] = Syntax[_, A]
+
+  /** Shorthand notation for a `Syntax` in which
+    * we are only interested in the printed values.
+    *
+    * @group alias
+    */
+  type Printer[A] = Syntax[A, _]
+
   /** Returns the kind associated with `token`.
     *
     * @group abstract

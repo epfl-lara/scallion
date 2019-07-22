@@ -60,6 +60,9 @@ package scallion
   * @groupprio pairs 30
   * @groupname pairs Pairs
   *
+  * @groupprio alias 50
+  * @groupname alias Type Aliases
+  *
   * @groupprio other 100
   * @groupname other Others
   */

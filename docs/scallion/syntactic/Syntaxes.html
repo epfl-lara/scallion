@@ -277,6 +277,56 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       
       <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A <code>syntax</code> for subsequent input is also provided.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax for more input.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Parser" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="alias">
+      <a id="Parser[A]=Syntaxes.this.Syntax[_,A]"></a><a id="Parser[A]:Parser[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Parser[A]=Syntaxes.this.Syntax[_,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Parser</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_, <span class="extype" name="scallion.syntactic.Syntaxes.Parser.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Shorthand notation for a <code>Syntax</code> in which
+we are only interested in the parsed values.</p>
+    </li><li name="scallion.syntactic.Syntaxes.Printer" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="alias">
+      <a id="Printer[A]=Syntaxes.this.Syntax[A,_]"></a><a id="Printer[A]:Printer[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Printer[A]=Syntaxes.this.Syntax[A,_]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Printer</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Printer.A">A</span>, _]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Shorthand notation for a <code>Syntax</code> in which
+we are only interested in the printed values.</p>
+    </li><li name="scallion.syntactic.Syntaxes.Syn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="alias">
+      <a id="Syn[A]=Syntaxes.this.Syntax[A,A]"></a><a id="Syn[A]:Syn[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Syn[A]=Syntaxes.this.Syntax[A,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Syn</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syn.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syn.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Shorthand notation for a <code>Syntax</code> that produces and prints the same type of values.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="syntax">
       <a id="Syntax[-V,+A]extendsAnyRef"></a><a id="Syntax[-V,+A]:Syntax[V,A]"></a>
       <span class="permalink">
@@ -991,6 +1041,9 @@ and that directly applies a function on the successfully parsed token.</p>
               
             </div><div class="group" name="visualization">
               <h3>Visualization</h3>
+              
+            </div><div class="group" name="alias">
+              <h3>Type Aliases</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
