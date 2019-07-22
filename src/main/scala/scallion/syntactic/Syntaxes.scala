@@ -20,7 +20,7 @@ import scala.language.implicitConversions
 import scala.collection.immutable.ListSet
 import scala.util.Try
 
-import scallion.util.internal.{Producer, ProducerOps}
+import scallion.util.internal.{Producer, ProducerOps, PTPS}
 
 /** Contains definitions relating to syntaxes.
   *
@@ -61,47 +61,10 @@ trait Syntaxes[Token, Kind]
     */
   def getKind(token: Token): Kind
 
-  /** Sequence of token kinds.
-    *
-    * @group other
-    */
-  private type Trail = Seq[Kind]
 
-  /** Contains utilities to build trails.
-    *
-    * @group other
-    */
-  private object Trail {
+  private val kindSeqOps = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
 
-    /** The empty trail. */
-    val empty: Trail = Vector()
-
-    /** Returns a trail containing a single `kind`. */
-    def single(kind: Kind): Trail = Vector(kind)
-  }
-
-  /** Contains utilies to produce trails. */
-  private object trailOps extends ProducerOps[Trail] {
-
-    /** Concatenation of trails. */
-    override def join(left: Trail, right: Trail): Trail =
-      left ++ right
-
-    /** Comparison of trails by size. */
-    override def lessEquals(left: Trail, right: Trail): Boolean =
-      left.size <= right.size
-  }
-
-  private object tokenSeqOps extends ProducerOps[Seq[Token]] {
-
-    /** Concatenation of token sequences. */
-    override def join(left: Seq[Token], right: Seq[Token]): Seq[Token] =
-      left ++ right
-
-    /** Comparison of trails by size. */
-    override def lessEquals(left: Seq[Token], right: Seq[Token]): Boolean =
-      left.size <= right.size
-  }
+  private val tokenSeqOps = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
 
   /** Represents a syntax.
     *
@@ -258,7 +221,7 @@ trait Syntaxes[Token, Kind]
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail]
+    protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]]
 
     /** Builds a syntax that filter out unwanted kinds.
       *
@@ -662,7 +625,7 @@ trait Syntaxes[Token, Kind]
     private[syntactic] def addPrefix(syntax: Syntax[Nothing, Any]): LL1Conflict
 
     /** Returns trails that witness the conflict. */
-    def witnesses: Iterator[Trail]
+    def witnesses: Iterator[Seq[Kind]]
   }
 
   /** Contains the description of the various LL(1) conflicts.
@@ -679,7 +642,7 @@ trait Syntaxes[Token, Kind]
       override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): NullableConflict =
         this.copy(prefix = start ~ prefix)
 
-      override def witnesses: Iterator[Trail] = prefix.trails
+      override def witnesses: Iterator[Seq[Kind]] = prefix.trails
     }
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
@@ -691,7 +654,7 @@ trait Syntaxes[Token, Kind]
       override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): FirstConflict =
         this.copy(prefix = start ~ prefix)
 
-      override def witnesses: Iterator[Trail] = for {
+      override def witnesses: Iterator[Seq[Kind]] = for {
         trail <- prefix.trails
         kind <- ambiguities
       } yield trail :+ kind
@@ -706,7 +669,7 @@ trait Syntaxes[Token, Kind]
       override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): FollowConflict =
         this.copy(prefix = start ~ prefix)
 
-      override def witnesses: Iterator[Trail] = for {
+      override def witnesses: Iterator[Seq[Kind]] = for {
         trail <- prefix.trails
         kind <- ambiguities
       } yield trail :+ kind
@@ -720,7 +683,7 @@ trait Syntaxes[Token, Kind]
       override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): LeftRecursiveConflict =
         this.copy(prefix = start ~ prefix)
 
-      override def witnesses: Iterator[Trail] = prefix.trails
+      override def witnesses: Iterator[Seq[Kind]] = prefix.trails
     }
   }
 
@@ -768,8 +731,8 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         true
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
-        Producer.single(Trail.empty)
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+        Producer.single(Vector())
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -823,7 +786,7 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         false
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.empty
 
       override protected def collectFilter(
@@ -880,8 +843,8 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         true
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
-        Producer.single(Trail.single(kind))
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+        Producer.single(Vector(kind))
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -975,7 +938,7 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         inner.collectIsProductive(recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         inner.collectTrails(recs)
 
       override protected def collectFilter(
@@ -1066,8 +1029,8 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         left.collectIsProductive(recs) && right.collectIsProductive(recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
-        trailOps.product(left.collectTrails(recs), right.collectTrails(recs))
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+        kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         left.collectKinds(recs) union right.collectKinds(recs)
@@ -1294,8 +1257,8 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         left.collectIsProductive(recs) || right.collectIsProductive(recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
-        trailOps.union(left.collectTrails(recs), right.collectTrails(recs))
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+        kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
 
       override protected def derive(token: Token, kind: Kind): Syntax[V, A] = {
         if (firstFirst.contains(kind)) {
@@ -1435,10 +1398,10 @@ trait Syntaxes[Token, Kind]
       override protected def derive(token: Token, kind: Kind): Syntax[V, A] =
         inner.derive(token, kind)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Trail]]): Producer[Trail] =
+      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         recs.get(this.id) match {
           case None => {
-            lazy val pair: (Producer[Trail], () => Producer[Trail]) =
+            lazy val pair: (Producer[Seq[Kind]], () => Producer[Seq[Kind]]) =
               Producer.duplicate(Producer.lazily {
                 inner.collectTrails(recs + (this.id -> pair._2))
               })

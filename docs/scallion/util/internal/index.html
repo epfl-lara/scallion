@@ -124,6 +124,10 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a class="class" href="BufferedIterator.html" title=""></a>
                         <a href="BufferedIterator.html" title="">BufferedIterator</a>
                       </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="PTPS.html" title="Positively Totally Preordered Semigroup."></a>
+                        <a href="PTPS.html" title="Positively Totally Preordered Semigroup.">PTPS</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Producer$.html" title="Contains utilities to build producers."></a>
                         <a class="trait" href="Producer.html" title="Producers are data structures that lazily produce values."></a>
                         <a href="Producer.html" title="Producers are data structures that lazily produce values.">Producer</a>
@@ -210,6 +214,26 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       
+    </li><li name="scallion.util.internal.PTPS" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="PTPS[A]extendsAnyRef"></a><a id="PTPS[A]:PTPS[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/index.html#PTPS[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Positively Totally Preordered Semigroup." href="PTPS.html"><span class="name">PTPS</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Positively Totally Preordered Semigroup.</p><div class="fullcomment"><div class="comment cmt"><p>Positively Totally Preordered Semigroup.</p><p>Structure with a binary operation <code>append</code> and a relation <code>lessEquiv</code> which obey
+the following laws:</p><ul><li><code>append</code> is a semigroup operation, i.e.:<ul><li><code>append</code> is associative (<code>append(a, append(b, c)) == append(append(a, b), c)</code>).</li></ul></li><li><code>lessEquiv</code> is a total preorder, meaning that:<ul><li><code>lessEquiv</code> is reflexive (<code>lessEquiv(a, a) == true</code>).</li><li><code>lessEquiv</code> is transitive (if <code>lessEquiv(a, b) == true</code> and <code>lessEquiv(b, c) == true</code>,
+       then also <code>lessEquiv(a, c)) == true</code>).</li><li><code>lessEquiv</code> is total, meaning that, for any <code>a</code> and <code>b</code>,
+       either <code>lessEquiv(a, b) == true</code> or <code>lessEquiv(b, a) == true</code>.</li></ul></li><li><code>lessEquiv</code> is compatible with <code>append</code>, that is:<ul><li>if <code>lessEquiv(a, b) == true</code>, then <code>lessEquiv(append(a, c), append(b, c)) == true</code>.</li><li>if <code>lessEquiv(a, b) == true</code>, then <code>lessEquiv(append(c, a), append(c, b)) == true</code>.</li></ul></li><li><code>append</code> is positive with respect to <code>lessEquiv</code>, that is:<ul><li><code>lessEquiv(a, append(a, b)) == true</code>.</li><li><code>lessEquiv(b, append(a, b)) == true</code>.
+</li></ul></li></ul></div></div>
     </li><li name="scallion.util.internal.Producer" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="Producer[+A]extendsAnyRef"></a><a id="Producer[+A]:Producer[A]"></a>
       <span class="permalink">

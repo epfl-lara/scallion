@@ -178,21 +178,16 @@ object Producer {
   }
 }
 
-/** Extra operations for producers with an ordering and a join operation. */
-trait ProducerOps[A] {
+/** Extra operations for producers of values with a
+  * Posively Totally Preordered Semigroup (PTPS) defined on them.
+  */
+class ProducerOps[A](ptps: PTPS[A]) {
 
-  /** Combines two values into a single value.
-    *
-    * Both arguments should always be `lessEquals` to the result.
-    */
-  def join(x: A, y: A): A
-
-  /** Compares two values. */
-  def lessEquals(x: A, y: A): Boolean
+  import ptps._
 
   /** Union of two producers.
     *
-    * If the two producers produce values in increasing order (according to `lessEquals`),
+    * If the two producers produce values in increasing order,
     * then the resulting producer will also produce values in order.
     */
   def union(left: Producer[A], right: Producer[A]): Producer[A] = new Producer[A] {
@@ -207,7 +202,7 @@ trait ProducerOps[A] {
         val peeked = (left.peek(), right.peek()) match {
           case (Available(x), Available(y)) => {
             // Two values are available, we pick the smallest.
-            if (lessEquals(x, y)) {
+            if (lessEquiv(x, y)) {
               Available(Left(x))
             }
             else {
@@ -257,16 +252,16 @@ trait ProducerOps[A] {
   /** Product of two producers.
     *
     * If the two producers produce values in increasing order,
-    * then the resulting producer will produce their `join` in increasing order.
+    * then the resulting producer will produce their `append` in increasing order.
     */
   def product(left: Producer[A], right: Producer[A]): Producer[A] = new Producer[A] {
     // Create a main Producer and lazy views of that producer for the `right` producer.
     private val (mainRight, createRightView) = Producer.duplicate(right)
 
-    // Buffer of producers of joined values.
+    // Buffer of producers of appended values.
     // Ultimately, there will be one entry in the buffer for each
     // value produced by `left`.
-    private val joinProducers: ArrayBuffer[Producer[A]] = new ArrayBuffer()
+    private val appendProducers: ArrayBuffer[Producer[A]] = new ArrayBuffer()
 
     // Indicates if the latest value of `left` has been handled.
     private var included: Boolean = false
@@ -274,18 +269,18 @@ trait ProducerOps[A] {
     // Indicates if the `left` producer has terminated.
     private var leftTerminated: Boolean = false
 
-    // Cache of produced value and index of the `join` producer that produced it.
+    // Cache of produced value and index of the producer that produced it.
     private var cache: Option[Peek[(Int, A)]] = None
 
-    // Tentatively includes one more join producer.
+    // Tentatively includes one more append producer.
     private def includeMore(): Unit = {
       left.peek() match {
         case Available(leftValue) => {
           // Creates a fresh producer of values from the `right`.
-          val rightProducer = if (joinProducers.isEmpty) mainRight else createRightView()
+          val rightProducer = if (appendProducers.isEmpty) mainRight else createRightView()
 
-          // Creates the next join producer.
-          joinProducers += rightProducer.map(rightValue => join(leftValue, rightValue))
+          // Creates the next append producer.
+          appendProducers += rightProducer.map(rightValue => append(leftValue, rightValue))
 
           included = true
           left.skip()
@@ -304,7 +299,7 @@ trait ProducerOps[A] {
 
         // Cache miss.
 
-        // Check if one more join producer must be included.
+        // Check if one more append producer must be included.
         if (!included) {
           includeMore()
         }
@@ -312,21 +307,21 @@ trait ProducerOps[A] {
         // Keep track of the best answer we can give.
         var best: Peek[(Int, A)] = if (leftTerminated) Terminated else Unavailable
 
-        for (i <- 0 until joinProducers.size) {
-          joinProducers(i).peek() match {
-            case Available(joinValue) => {  // A candidate join value is available.
+        for (i <- 0 until appendProducers.size) {
+          appendProducers(i).peek() match {
+            case Available(appendValue) => {  // A candidate append value is available.
               best match {
                 // We update the best accordingly.
                 case Available((_, bestValue)) => {
-                  if (!lessEquals(bestValue, joinValue)) {
-                    best = Available((i, joinValue))
+                  if (!lessEquiv(bestValue, appendValue)) {
+                    best = Available((i, appendValue))
                   }
                 }
-                case _ => best = Available((i, joinValue))
+                case _ => best = Available((i, appendValue))
               }
             }
             case Unavailable => {
-              // A join producer is not yet available,
+              // A append producer is not yet available,
               // therefore we can no longer say that the
               // producer is terminated.
               if (best == Terminated) {
@@ -348,7 +343,7 @@ trait ProducerOps[A] {
 
     override private[internal] def peek(): Peek[A] = getCache() match {
       // Get rid of the information about which
-      // join producer is responsible for the value.
+      // append producer is responsible for the value.
       case Available((_, value)) => Available(value)
       case Terminated => Terminated
       case Unavailable => Unavailable
@@ -356,9 +351,9 @@ trait ProducerOps[A] {
     override private[internal] def skip(): Unit = cache.foreach { peeked =>
       peeked.foreach {
         case (i, _) => {
-          // Only call `skip()` on the join producer that produced the value.
-          joinProducers(i).skip()
-          if (i == joinProducers.size - 1 && !leftTerminated) {
+          // Only call `skip()` on the append producer that produced the value.
+          appendProducers(i).skip()
+          if (i == appendProducers.size - 1 && !leftTerminated) {
             included = false
           }
           cache = None
@@ -416,6 +411,7 @@ private class MemoryProducer[A](producer: Producer[A]) extends Producer[A] {
   }
 }
 
+/** Producer that produces the values of an iterator. */
 private class IteratorProducer[A](iterator: Iterator[A]) extends Producer[A] {
   private var cache: Option[Peek[A]] = None
 
@@ -436,4 +432,49 @@ private class IteratorProducer[A](iterator: Iterator[A]) extends Producer[A] {
   }
 
   override private[internal] def skip(): Unit = cache = None
+}
+
+/** Positively Totally Preordered Semigroup.
+  *
+  * Structure with a binary operation `append` and a relation `lessEquiv` which obey
+  * the following laws:
+  *
+  *   - `append` is a semigroup operation, i.e.:
+  *     - `append` is associative (`append(a, append(b, c)) == append(append(a, b), c)`).
+  *   - `lessEquiv` is a total preorder, meaning that:
+  *     - `lessEquiv` is reflexive (`lessEquiv(a, a) == true`).
+  *     - `lessEquiv` is transitive (if `lessEquiv(a, b) == true` and `lessEquiv(b, c) == true`,
+  *        then also `lessEquiv(a, c)) == true`).
+  *     - `lessEquiv` is total, meaning that, for any `a` and `b`,
+  *        either `lessEquiv(a, b) == true` or `lessEquiv(b, a) == true`.
+  *   - `lessEquiv` is compatible with `append`, that is:
+  *     - if `lessEquiv(a, b) == true`, then `lessEquiv(append(a, c), append(b, c)) == true`.
+  *     - if `lessEquiv(a, b) == true`, then `lessEquiv(append(c, a), append(c, b)) == true`.
+  *   - `append` is positive with respect to `lessEquiv`, that is:
+  *     - `lessEquiv(a, append(a, b)) == true`.
+  *     - `lessEquiv(b, append(a, b)) == true`.
+  */
+trait PTPS[A] {
+
+  /** Checks if `left` is less or equivalent to `right`. */
+  def lessEquiv(left: A, right: A): Boolean
+
+  /** Combines `left` and `right` into a single value. */
+  def append(left: A, right: A): A
+}
+
+/** Contains Positively Totally Preordered Semigroups (PTPSs) for various domains. */
+object PTPS {
+
+  /** Returns a PTPS for sequences.
+    *
+    * The relation `lessEquiv` compares sizes, while `append` concatenates.
+    */
+  def seqPTPS[A]: PTPS[Seq[A]] = new PTPS[Seq[A]] {
+    override def lessEquiv(left: Seq[A], right: Seq[A]): Boolean =
+      left.size <= right.size
+
+    override def append(left: Seq[A], right: Seq[A]): Seq[A] =
+      left ++ right
+  }
 }
