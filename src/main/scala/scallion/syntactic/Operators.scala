@@ -77,9 +77,13 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * The operators in earlier levels are considered to bind tighter than those in later levels.
     *
+    * @param elem   Syntax for the operands.
+    * @param rev    Function to reverse an operation.
+    * @param levels Operators (with associativity), in decreasing priority.
+    *
     * @group combinator
     */
-  def operators[V, W, A](elem: Syntax[V, A], rev: PartialFunction[V, (V, W, V)])
+  def operators[V, W, A](elem: Syntax[V, A], rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty)
                         (levels: Level[W, A]*): Syntax[V, A] = {
 
     levels.foldLeft(elem) {
@@ -94,11 +98,15 @@ trait Operators { self: Syntaxes[_, _] =>
     * The value returned is reduced left-to-right.
     *
     * @group combinator
+    *
+    * @param elem Syntax for the operands.
+    * @param op   Syntax for the operators.
+    * @param rev  Function to reverse an operation.
     */
   def infixLeft[V, W, A](
       elem: Syntax[V, A],
       op: Syntax[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)]): Syntax[V, A] =
+      rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty): Syntax[V, A] =
 
     (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => opElems.foldLeft(first) {
@@ -117,12 +125,16 @@ trait Operators { self: Syntaxes[_, _] =>
   /** Syntax that represents repetitions of `elem` separated by right-associative `op`.
     * The value returned is reduced right-to-left.
     *
+    * @param elem Syntax for the operands.
+    * @param op   Syntax for the operators.
+    * @param rev  Function to reverse an operation.
+    *
     * @group combinator
     */
   def infixRight[V, W, A](
       elem: Syntax[V, A],
       op: Syntax[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)]): Syntax[V, A] =
+      rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty): Syntax[V, A] =
 
     (elem ~ many(op ~ elem)).bimap({
       case first ~ opElems => {
@@ -158,9 +170,16 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * Operators are applied right-to-left.
     *
+    * @param op   Syntax for the operators.
+    * @param elem Syntax for the operands.
+    * @param rev  Function to reverse an operation.
+    *
     * @group combinator
     */
-  def prefixes[V, W, A](op: Syntax[W, A => A], elem: Syntax[V, A], rev: PartialFunction[V, (W, V)]): Syntax[V, A] = {
+  def prefixes[V, W, A](
+      op: Syntax[W, A => A],
+      elem: Syntax[V, A],
+      rev: PartialFunction[V, (W, V)] = PartialFunction.empty): Syntax[V, A] = {
     (many(op) ~ elem).bimap({
       case os ~ v => os.foldRight(v) {
         case (o, acc) => o(acc)
@@ -175,6 +194,10 @@ trait Operators { self: Syntaxes[_, _] =>
   /** Syntax that represents `elem` postfixed by any number of `op`.
     *
     * Operators are applied left-to-right.
+    *
+    * @param elem Syntax for the operands.
+    * @param op   Syntax for the operators.
+    * @param rev  Function to reverse an operation.
     *
     * @group combinator
     */

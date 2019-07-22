@@ -1,9 +1,3 @@
-
+Use mutable maps in some of the collect* for efficiency ?
 Lexer -> Lexicon ? Add unapply to lexer ?
-
-add trait Parser[+A]
-add trait Printer[-V]
-
-Syntax[-V, +A] extends Parser[A] with Printer[V]
-
-Explain all contravariant things by refering to the value printed.
+Rename/rework/remove? .always, .unit, .void

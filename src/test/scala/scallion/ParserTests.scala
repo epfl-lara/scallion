@@ -367,7 +367,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   // concatenation
 
   "concatenation" should "parse using the two parsers in sequence" in {
-    def f(k: TokenClass): Syntax[Seq[Any], Seq[Token]] = elem(k).map(Seq(_)).void[Seq[Any]]
+    def f(k: TokenClass): Syntax[Seq[Any], Seq[Token]] = elem(k).map(Seq(_)).void
     val parser = f(BoolClass) ++ f(NumClass)
 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
@@ -380,8 +380,8 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
   it should "use the fact that left might be nullable for parsing" in {
     val parser = (elem(BoolClass) |
-      epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]] ++
-      elem(NumClass).map(Seq(_)).void[Seq[Any]]
+      epsilon(Bool(true))).map(Seq(_)).void ++
+      elem(NumClass).map(Seq(_)).void
 
     inside(parser(Seq(Num(32)).iterator)) {
       case Parsed(res, rest) => {
@@ -391,7 +391,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "fail at the correct point" in {
-    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
+    val parser = elem(BoolClass).map(Seq(_)).void ++ elem(NumClass).map(Seq(_)).void
 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -409,71 +409,71 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
   }
 
   it should "be nullable if both sides are nullable" in {
-    val parser = epsilon(Bool(true)).map(Seq(_)).void[Seq[Any]] ++ epsilon(Bool(false)).map(Seq(_)).void[Seq[Any]]
+    val parser = epsilon(Bool(true)).map(Seq(_)).void ++ epsilon(Bool(false)).map(Seq(_)).void
 
     assert(parser.nullable == Some(Seq(Bool(true), Bool(false))))
   }
 
   it should "not be nullable if the first parser is not nullable" in {
-    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_)).void[Seq[Any]]
+    val parser = elem(BoolClass).map(Seq(_)).void ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_)).void
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if the second parser is not nullable" in {
-    val parser = epsilon(Bool(false)).map(Seq(_)).void[Seq[Any]] ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
+    val parser = epsilon(Bool(false)).map(Seq(_)).void ++ elem(BoolClass).map(Seq(_)).void
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if both sides are not nullable" in {
-    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
+    val parser = elem(BoolClass).map(Seq(_)).void ++ elem(NumClass).map(Seq(_)).void
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have correct `first` in case of non-nullable first parser" in {
-    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
+    val parser = elem(BoolClass).map(Seq(_)).void ++ elem(NumClass).map(Seq(_)).void
 
     assert(parser.first == Set(BoolClass))
   }
 
   it should "have correct `first` in case of nullable first parser" in {
-    val parser = (elem(BoolClass).map(Seq(_)).void[Seq[Any]] | epsilon(Seq())) ++ elem(NumClass).map(Seq(_)).void[Seq[Any]]
+    val parser = (elem(BoolClass).map(Seq(_)).void | epsilon(Seq())) ++ elem(NumClass).map(Seq(_)).void
 
     assert(parser.first == Set(BoolClass, NumClass))
   }
 
   it should "not be LL(1) when the first is nullable and both sides have conflicting `first`" in {
-    val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]] ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
+    val parser = (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void ++ elem(BoolClass).map(Seq(_)).void
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
-    val left = elem(NumClass).map(Seq(_)).void[Seq[Any]] ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]]
+    val left = elem(NumClass).map(Seq(_)).void ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)).void
 
     assert(left.isLL1)
 
-    val parser = left ++ elem(BoolClass).map(Seq(_)).void[Seq[Any]]
+    val parser = left ++ elem(BoolClass).map(Seq(_)).void
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when first parser is not LL(1)" in {
-    val parser = (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq(_)).void[Seq[Any]] ++ Elem(BoolClass).map(Seq(_)).void[Seq[Any]]
+    val parser = (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq(_)).void ++ Elem(BoolClass).map(Seq(_)).void
 
     assert(!parser.isLL1)
   }
 
   it should "not be LL(1) when second parser is not LL(1)" in {
-    val parser = elem(BoolClass).map(Seq(_)).void[Seq[Any]] ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_)).void[Seq[Any]]
+    val parser = elem(BoolClass).map(Seq(_)).void ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_)).void
 
     assert(!parser.isLL1)
   }
 
   it should "be LL(1) otherwise" in {
-    val parser = (epsilon(Num(2)) | elem(BoolClass)).map(Seq(_)).void[Seq[Any]] ++ (elem(NumClass) | epsilon(Bool(true))).map(Seq(_)).void[Seq[Any]]
+    val parser = (epsilon(Num(2)) | elem(BoolClass)).map(Seq(_)).void ++ (elem(NumClass) | epsilon(Bool(true))).map(Seq(_)).void
 
     assert(parser.isLL1)
   }

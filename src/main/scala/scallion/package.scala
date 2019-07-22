@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** Scallion is a library for building lexers and parsers.
+/** Scallion is a library for writing lexers, parsers and pretty printers.
   *
   * @see See the package [[scallion.input]] for handling inputs.
   * @see See the package [[scallion.lexical]] for lexers.

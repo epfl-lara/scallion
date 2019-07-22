@@ -1,4 +1,4 @@
 ==Overview==
 
-Scallion is a library for easily writing lexers and parsers in Scala.
+Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.
 See the package [[scallion]] for more information.

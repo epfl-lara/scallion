@@ -45,7 +45,7 @@ trait Syntaxes[Token, Kind]
     *
     * @group other
     */
-  protected type Trail = Seq[Kind]
+  private type Trail = Seq[Kind]
 
   /** Contains utilities to build trails.
     *
@@ -85,8 +85,10 @@ trait Syntaxes[Token, Kind]
 
   /** Represents a syntax.
     *
-    * Acts as both a parser and a pretty printer
-    * for the described language.
+    * Acts as both a parser and a pretty printer.
+    *
+    * @tparam V the type of values that can be printed.
+    * @tparam A the type of values that can be produced.
     *
     * @group syntax
     *
@@ -110,29 +112,30 @@ trait Syntaxes[Token, Kind]
       */
     def nullable: Option[A]
 
-    /** Indicates if there exists a sequence of tokens that the syntax can accept.
+    /** Indicates if there exists a finite sequence of tokens that the syntax describes.
       *
       * @group property
       */
     def isProductive: Boolean
 
-    /** Returns the set of tokens that are accepted as the next token.
+    /** Returns the set of token kinds that are accepted as the first token by `this` syntax.
       *
       * @group property
       */
     @inline def first: Set[Kind] = collectFirst(ListSet())
 
     /** Returns all of kinds that should not be accepted
-      * as the next token by a subsequent syntax.
+      * as the first token by a subsequent syntax.
       *
-      * The value associated to the kind is a syntax that accepts
-      * all up until that kind.
+      * The value associated to the kind describes the syntax up to the point
+      * where the constraint was generated.
       *
       * @group property
       */
     @inline def shouldNotFollow: Map[Kind, Syntax[Nothing, Any]] = collectShouldNotFollow(ListSet())
 
-    /** Checks if a `Recursive` syntax can be entered without consuming input first.
+    /** Checks if a `Recursive` syntax can be entered without
+      * being prefixed by a non-empty sequence of tokens.
       *
       * @param rec The `Recursive` syntax.
       *
@@ -140,7 +143,7 @@ trait Syntaxes[Token, Kind]
       */
     @inline def calledLeft(rec: Recursive[Nothing, Any]): Boolean = collectCalledLeft(rec, ListSet())
 
-    /** Checks if this syntax corresponds to a LL(1) grammar.
+    /** Checks if this syntax is LL(1).
       *
       * @group property
       */
@@ -152,14 +155,13 @@ trait Syntaxes[Token, Kind]
       */
     @inline def conflicts: Set[LL1Conflict] = collectLL1Conflicts(ListSet())
 
-    /** Returns all possible sequences of accepted token kinds in increasing size.
+    /** Returns all possible sequences of accepted token kinds, in increasing size.
       *
       * @group property
       */
     @inline def trails: Iterator[Seq[Kind]] = collectTrails(Map.empty).toIterator
 
-    /** Returns a syntax that behaves like `this` syntax but rejects all tokens whose kind does
-      * not satisfy the given predicate.
+    /** Strips a syntax of all token kinds that do not satisfy a `predicate`.
       *
       * @param predicate The predicate that kinds must satisfy.
       *
@@ -173,8 +175,12 @@ trait Syntaxes[Token, Kind]
       */
     @inline def kinds: Set[Kind] = collectKinds(ListSet())
 
-    /** @group printing */
-    def tokensOf(value: V): Iterator[Seq[Token]] =
+    /** Returns all representations of the value `value`,
+      * ordered by increasing length.
+      *
+      * @group printing
+      */
+    def unapply(value: V): Iterator[Seq[Token]] =
       collectTokens(value, Map.empty).toIterator
 
     // All the functions below have an argument `recs` which
@@ -228,7 +234,7 @@ trait Syntaxes[Token, Kind]
       */
     protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict]
 
-    /** Builds a producer of traces from `this` syntax.
+    /** Builds a producer of trails from `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
@@ -248,6 +254,11 @@ trait Syntaxes[Token, Kind]
     protected def collectKinds(recs: Set[RecId]): Set[Kind]
 
 
+    /** Collects a producer that iterates over all representations of a value.
+      *
+      * @param value The value being printed.
+      * @param recs  The producer view associated to an already visited recursive syntax and value.
+      */
     protected def collectTokens(value: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
 
     /** Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
@@ -269,20 +280,26 @@ trait Syntaxes[Token, Kind]
       */
     override def toString = repr(0, Map.empty)
 
-    /** Computes a friendlier string representation for the syntax. */
+    /** Computes a friendly string representation for the syntax. */
     protected def repr(level: Int, recs: Map[RecId, String]): String
 
 
     // Combinators.
 
-    /** Applies a function to the parsed values.
+    /** Applies a `function` to the parsed values.
+      *
+      * Generally, calls to `map` will be followed by
+      * a call to [[contramap]] to apply the inverse
+      * of the `function` to the printed values.
+      *
+      * @param function The function to be applied on parsed values.
       *
       * @group combinator
       */
     def map[B](function: A => B): Syntax[V, B] =
       this match {
         case Failure => Failure
-        case Success(value, predicate) => Success(function(value), predicate)
+        case Success(value, matches) => Success(function(value), matches)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction andThen function,
@@ -291,23 +308,31 @@ trait Syntaxes[Token, Kind]
         case inner => Transform(function, (v: V) => Seq(v), inner)
       }
 
-    /** Specifies the inverse of the applied function.
+    /** Applies a function to the printed values.
+      *
+      * Generally, the function will be the inverse of
+      * a function applied to produced values with [[map]].
+      *
+      * @param function The function to be applied on printed values.
       *
       * @group combinator
       */
-    def contramap[W](inverse: W => Seq[V]): Syntax[W, A] =
+    def contramap[W](function: W => Seq[V]): Syntax[W, A] =
       this match {
         case Failure => Failure
-        case Success(value, predicate) => Success(value, (y: W) => inverse(y).map(predicate).sum)
+        case Success(value, matches) => Success(value, (y: W) => function(y).map(matches).sum)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction,
-            (z: W) => Try(inverse(z)).getOrElse(Seq()).flatMap((y: V) => otherInverse(y)),
+            (z: W) => Try(function(z)).getOrElse(Seq()).flatMap((y: V) => otherInverse(y)),
             inner)
-        case inner => Transform((x: A) => x, inverse, inner)
+        case inner => Transform((x: A) => x, function, inner)
       }
 
-    /** Applies a function to the parsed values and specifies its inverse.
+    /** Applies a `function` to the parsed values and the `inverse` function to the printed values.
+      *
+      * @param function The function to be applied on parsed values.
+      * @param inverse  The function to be applied on printed values.
       *
       * @group combinator
       */
@@ -410,7 +435,7 @@ trait Syntaxes[Token, Kind]
     }
 
     /** Disjunction of `this` and `that` syntax.
-      * The value is tagged to indicate the side which produced it.
+      * The value is tagged to indicate the side it comes from.
       *
       * @group combinator
       */
@@ -454,18 +479,20 @@ trait Syntaxes[Token, Kind]
       case () => defaults
     })
 
-    /** Prevents token generation.
+    /** Indicates that the syntax will not print values.
       *
       * @group combinator
       */
-    def void[W]: Syntax[W, A] = this.contramap {
-      (_: W) => Seq()
+    def void: Syntax[Any, A] = this.contramap {
+      (_: Any) => Seq()
     }
 
     // Parsing.
 
-    /** Consumes a sequence of tokens and parses into a value.
+    /** Consumes a sequence of tokens and parses it into a value.
       * When `this` syntax is not LL(1), the result is unspecified.
+      *
+      * @see See [[ParseResult]] for the possible return values.
       *
       * @group parsing
       */
@@ -552,7 +579,7 @@ trait Syntaxes[Token, Kind]
     }
   }
 
-  /** Result of running a `Syntax`.
+  /** Result of parsing a `Syntax`.
     *
     * @group result
     */
@@ -568,9 +595,12 @@ trait Syntaxes[Token, Kind]
     }
   }
 
-  /** Indicates that the input has been fully processed, resulting in a `value`.
+  /** Indicates that the input has been fully parsed, resulting in a `value`.
     *
     * A `syntax` for subsequent input is also provided.
+    *
+    * @param value  The value produced.
+    * @param syntax Syntax for more input.
     *
     * @group result
     */
@@ -578,7 +608,10 @@ trait Syntaxes[Token, Kind]
 
   /** Indicates that the provided `token` was not expected at that point.
     *
-    * The `syntax` that rejected the token is returned.
+    * The `syntax` at the point of error is returned.
+    *
+    * @param token  The token at fault.
+    * @param syntax Syntax at the point of error.
     *
     * @group result
     */
@@ -587,6 +620,8 @@ trait Syntaxes[Token, Kind]
   /** Indicates that end of input was unexpectedly encountered.
     *
     * The `syntax` for subsequent input is provided.
+    *
+    * @param syntax Syntax at the end of input.
     *
     * @group result
     */
@@ -677,14 +712,14 @@ trait Syntaxes[Token, Kind]
     */
   object Syntax {
 
-    /** Syntax that produces `value` without consuming input tokens.
+    /** Syntax for the empty string.
       *
-      * @param value     The value produced by the syntax.
-      * @param predicate The predicate that checks for equality with `value`.
+      * @param value   The value produced.
+      * @param matches The function that counts how many times its parameter matches the `value`.
       *
       * @group basic
       */
-    case class Success[-V, +A](value: A, predicate: V => Int) extends Syntax[V, A] {
+    case class Success[-V, +A](value: A, matches: V => Int) extends Syntax[V, A] {
 
       override val nullable: Option[A] =
         Some(value)
@@ -726,7 +761,7 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectTokens(
           other: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
-        Producer.fromIterator(Iterator.fill(predicate(other))(Vector()))
+        Producer.fromIterator(Iterator.fill(matches(other))(Vector()))
 
       override protected def derive(token: Token, kind: Kind): Syntax[Any, A] =
         Failure
@@ -735,7 +770,7 @@ trait Syntaxes[Token, Kind]
         "epsilon(" + value.toString + ")"
     }
 
-    /** Syntax that produces `value` without consuming input tokens.
+    /** Empty syntax.
       *
       * @group basic
       */
@@ -790,7 +825,7 @@ trait Syntaxes[Token, Kind]
         "failure"
     }
 
-    /** Syntax that consumes tokens of the given `kind`.
+    /** Syntax that describes a single token of the given `kind`.
       *
       * @param kind The kind accepted by the syntax.
       *
@@ -879,9 +914,11 @@ trait Syntaxes[Token, Kind]
       def right: Syntax[W, B]
     }
 
-    /** Syntax that applies a `function` on the parsed value of the `inner` syntax.
+    /** Syntax that applies a `function` on the parsed values of the `inner` syntax
+      * and an `inverse` function on the printed values given to the `inner` syntax.
       *
       * @param function The function to apply on produced values.
+      * @param inverse  The function to apply on printed values.
       * @param inner    The inner syntax.
       *
       * @group combinator
@@ -1016,7 +1053,7 @@ trait Syntaxes[Token, Kind]
         left.collectKinds(recs) union right.collectKinds(recs)
     }
 
-    /** Syntax that sequences the `left` and `right` syntaxes and groups the results.
+    /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
       *
       * @param left  The syntax for the prefix.
       * @param right The syntax for the suffix.
@@ -1149,7 +1186,7 @@ trait Syntaxes[Token, Kind]
       }
     }
 
-    /** Syntax that acts either as the disjunction of the `left` and `right` syntaxes.
+    /** Syntax that acts as either the `left` or the `right` syntaxes.
       *
       * @param left  The syntax for the first alternative.
       * @param right The syntax for the second alternative.
@@ -1311,7 +1348,7 @@ trait Syntaxes[Token, Kind]
       }
     }
 
-    /** Syntax that may recursively call itself.
+    /** Syntax that may recursively mention itself.
       *
       * @group combinator
       */
@@ -1450,14 +1487,14 @@ trait Syntaxes[Token, Kind]
 
   // API for combinators and basic syntaxes.
 
-  /** Syntax that accepts tokens of the provided `kind`.
+  /** Syntax that describes a single token of the provided `kind`.
     *
     * @group basic
     */
   def elem(kind: Kind): Syntax[Token, Token] = Elem(kind)
 
-  /** Syntax that accepts tokens of the provided `kind`.
-    * A function directly is applied on the successfully matched token.
+  /** Syntax that describes a single token of the provided `kind`,
+    * and that directly applies a function on the successfully parsed token.
     *
     * @group basic
     */
@@ -1470,13 +1507,13 @@ trait Syntaxes[Token, Kind]
     */
   def recursive[V, A](syntax: => Syntax[V, A]): Syntax[V, A] = Recursive.create(syntax)
 
-  /** Syntax that produces the given `value` without consuming any input.
+  /** Syntax that produces the given `value` to the empty sequence of tokens.
     *
     * @group basic
     */
   def epsilon[A](value: A): Syntax[Any, A] = Success(value, (x: Any) => if (value == x) 1 else 0)
 
-  /** Syntax that always fails.
+  /** Empty syntax.
     *
     * @group basic
     */

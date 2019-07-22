@@ -65,10 +65,10 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Scallion is a library for easily writing lexers and parsers in Scala." href="../../index.html"><span class="name">root</span></a>
+        <a title="Scallion is a library for easily writing lexers, parsers and pretty printers in Scala." href="../../index.html"><span class="name">root</span></a>
       </span>
       
-      <p class="shortcomment cmt">Scallion is a library for easily writing lexers and parsers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers and parsers in Scala.
+      <p class="shortcomment cmt">Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.
 See the package <a href="../index.html" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -82,10 +82,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Scallion is a library for building lexers and parsers." href="../index.html"><span class="name">scallion</span></a>
+        <a title="Scallion is a library for writing lexers, parsers and pretty printers." href="../index.html"><span class="name">scallion</span></a>
       </span>
       
-      <p class="shortcomment cmt">Scallion is a library for building lexers and parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
+      <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
     </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="syntactic"></a><a id="syntactic:syntactic"></a>
@@ -256,10 +256,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Result of running a Syntax." href="Syntaxes$ParseResult.html"><span class="name">ParseResult</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Result of parsing a Syntax." href="Syntaxes$ParseResult.html"><span class="name">ParseResult</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Result of running a <code>Syntax</code>.</p>
+      <p class="shortcomment cmt">Result of parsing a <code>Syntax</code>.</p>
     </li><li name="scallion.syntactic.Syntaxes.Parsed" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="Parsed[-V,+A]extendsSyntaxes.this.ParseResult[V,A]withProductwithSerializable"></a><a id="Parsed[-V,+A]:Parsed[V,A]"></a>
       <span class="permalink">
@@ -272,11 +272,11 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that the input has been fully processed, resulting in a value." href="Syntaxes$Parsed.html"><span class="name">Parsed</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span></span>, <span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that the input has been fully parsed, resulting in a value." href="Syntaxes$Parsed.html"><span class="name">Parsed</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span></span>, <span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the input has been fully processed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully processed, resulting in a <code>value</code>.</p><p>A <code>syntax</code> for subsequent input is also provided.
-</p></div></div>
+      <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A <code>syntax</code> for subsequent input is also provided.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax for more input.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="syntax">
       <a id="Syntax[-V,+A]extendsAnyRef"></a><a id="Syntax[-V,+A]:Syntax[V,A]"></a>
       <span class="permalink">
@@ -292,26 +292,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="Represents a syntax." href="Syntaxes$Syntax.html"><span class="name">Syntax</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Represents a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Represents a syntax.</p><p>Acts as both a parser and a pretty printer
-for the described language.
-</p></div></div>
-    </li><li name="scallion.syntactic.Syntaxes.Trail" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="other">
-      <a id="Trail=Seq[Kind]"></a><a id="Trail:Trail"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes.html#Trail=Seq[Kind]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Trail</span><span class="result alias"> = <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Sequence of token kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Sequence of token kinds.
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt">Represents a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Represents a syntax.</p><p>Acts as both a parser and a pretty printer.
+</p></div><dl class="paramcmts block"><dt class="tparam">V</dt><dd class="cmt"><p>the type of values that can be printed.</p></dd><dt class="tparam">A</dt><dd class="cmt"><p>the type of values that can be produced.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.UnexpectedEnd" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="UnexpectedEnd[-V,+A]extendsSyntaxes.this.ParseResult[V,A]withProductwithSerializable"></a><a id="UnexpectedEnd[-V,+A]:UnexpectedEnd[V,A]"></a>
       <span class="permalink">
@@ -328,7 +310,7 @@ for the described language.
       </span>
       
       <p class="shortcomment cmt">Indicates that end of input was unexpectedly encountered.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that end of input was unexpectedly encountered.</p><p>The <code>syntax</code> for subsequent input is provided.
-</p></div></div>
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the end of input.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.UnexpectedToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="UnexpectedToken[-V,+A]extendsSyntaxes.this.ParseResult[V,A]withProductwithSerializable"></a><a id="UnexpectedToken[-V,+A]:UnexpectedToken[V,A]"></a>
       <span class="permalink">
@@ -344,8 +326,8 @@ for the described language.
         <a title="Indicates that the provided token was not expected at that point." href="Syntaxes$UnexpectedToken.html"><span class="name">UnexpectedToken</span></a><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The <code>syntax</code> that rejected the token is returned.
-</p></div></div>
+      <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The <code>syntax</code> at the point of error is returned.
+</p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the point of error.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -421,7 +403,7 @@ for the described language.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes#accept" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
+    </li><li name="scallion.syntactic.Syntaxes#accept" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="accept[A](kind:Kind)(function:PartialFunction[Token,A]):Syntaxes.this.Syntax[Token,A]"></a><a id="accept[A](Kind)(PartialFunction[Token,A]):Syntax[Token,A]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#accept[A](kind:Kind)(function:PartialFunction[Token,A]):Syntaxes.this.Syntax[Token,A]" title="Permalink">
@@ -436,9 +418,8 @@ for the described language.
         <span class="name">accept</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="params">(<span name="function">function: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.accept.A">A</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.accept.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that accepts tokens of the provided <code>kind</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Syntax that accepts tokens of the provided <code>kind</code>.
-A function directly is applied on the successfully matched token.
-</p></div></div>
+      <p class="shortcomment cmt">Syntax that describes a single token of the provided <code>kind</code>,
+and that directly applies a function on the successfully parsed token.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -494,7 +475,7 @@ A function directly is applied on the successfully matched token.
         <span class="name">elem</span><span class="params">(<span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that accepts tokens of the provided <code>kind</code>.</p>
+      <p class="shortcomment cmt">Syntax that describes a single token of the provided <code>kind</code>.</p>
     </li><li name="scallion.syntactic.Syntaxes#epsilon" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="epsilon[A](value:A):Syntaxes.this.Syntax[Any,A]"></a><a id="epsilon[A](A):Syntax[Any,A]"></a>
       <span class="permalink">
@@ -510,7 +491,7 @@ A function directly is applied on the successfully matched token.
         <span class="name">epsilon</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.epsilon.A">A</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scallion.syntactic.Syntaxes.epsilon.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that produces the given <code>value</code> without consuming any input.</p>
+      <p class="shortcomment cmt">Syntax that produces the given <code>value</code> to the empty sequence of tokens.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -558,7 +539,7 @@ A function directly is applied on the successfully matched token.
         <span class="name">failure</span><span class="tparams">[<span name="V">V</span>, <span name="A">A</span>]</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.failure.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.failure.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that always fails.</p>
+      <p class="shortcomment cmt">Empty syntax.</p>
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
@@ -1010,9 +991,6 @@ A function directly is applied on the successfully matched token.
               
             </div><div class="group" name="visualization">
               <h3>Visualization</h3>
-              
-            </div><div class="group" name="other">
-              <h3>Others</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>

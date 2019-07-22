@@ -65,10 +65,10 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Scallion is a library for easily writing lexers and parsers in Scala." href="../../index.html"><span class="name">root</span></a>
+        <a title="Scallion is a library for easily writing lexers, parsers and pretty printers in Scala." href="../../index.html"><span class="name">root</span></a>
       </span>
       
-      <p class="shortcomment cmt">Scallion is a library for easily writing lexers and parsers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers and parsers in Scala.
+      <p class="shortcomment cmt">Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.
 See the package <a href="../index.html" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scallion"></a><a id="scallion:scallion"></a>
@@ -82,10 +82,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Scallion is a library for building lexers and parsers." href="../index.html"><span class="name">scallion</span></a>
+        <a title="Scallion is a library for writing lexers, parsers and pretty printers." href="../index.html"><span class="name">scallion</span></a>
       </span>
       
-      <p class="shortcomment cmt">Scallion is a library for building lexers and parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for building lexers and parsers.
+      <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
     </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="syntactic"></a><a id="syntactic:syntactic"></a>
@@ -134,12 +134,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Syntaxes$ParseResult.html" title="Result of running a Syntax."></a>
-                        <a href="Syntaxes$ParseResult.html" title="Result of running a Syntax.">ParseResult</a>
+                        <a class="trait" href="Syntaxes$ParseResult.html" title="Result of parsing a Syntax."></a>
+                        <a href="Syntaxes$ParseResult.html" title="Result of parsing a Syntax.">ParseResult</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value."></a>
-                        <a href="Syntaxes$Parsed.html" title="Indicates that the input has been fully processed, resulting in a value.">Parsed</a>
+                        <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
+                        <a href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value.">Parsed</a>
                       </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$Syntax$.html" title="Contains primitive basic syntaxes and syntax combinators."></a>
                         <a class="trait" href="" title="Represents a syntax."></a>
@@ -190,9 +190,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Represents a syntax.</p><p>Acts as both a parser and a pretty printer
-for the described language.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Represents a syntax.</p><p>Acts as both a parser and a pretty printer.
+</p></div><dl class="paramcmts block"><dt class="tparam">V</dt><dd class="cmt"><p>the type of values that can be printed.</p></dd><dt class="tparam">A</dt><dd class="cmt"><p>the type of values that can be produced.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -419,7 +418,8 @@ for the described language.
         <span class="name">collectTokens</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[(<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Any">Any</span>), () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt">Collects a producer that iterates over all representations of a value.</p><div class="fullcomment"><div class="comment cmt"><p>Collects a producer that iterates over all representations of a value.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value being printed.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The producer view associated to an already visited recursive syntax and value.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectTrails" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectTrails(recs:Map[Syntaxes.this.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Syntaxes.this.Trail]]):scallion.util.internal.Producer[Syntaxes.this.Trail]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Trail]]):Producer[Trail]"></a>
       <span class="permalink">
@@ -432,10 +432,10 @@ for the described language.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<a href="Syntaxes.html#Trail=Seq[Kind]" class="extmbr" name="scallion.syntactic.Syntaxes.Trail">Trail</a>]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<a href="Syntaxes.html#Trail=Seq[Kind]" class="extmbr" name="scallion.syntactic.Syntaxes.Trail">Trail</a>]</span>
+        <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Trail">Trail</span>]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Trail">Trail</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Builds a producer of traces from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a producer of traces from <code>this</code> syntax.
+      <p class="shortcomment cmt">Builds a producer of trails from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a producer of trails from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#derive" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="derivation">
       <a id="derive(token:Token,kind:Kind):Syntaxes.this.Syntax[V,A]"></a><a id="derive(Token,Kind):Syntax[V,A]"></a>
@@ -469,7 +469,7 @@ for the described language.
         <span class="name">isProductive</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates if there exists a sequence of tokens that the syntax can accept.</p>
+      <p class="shortcomment cmt">Indicates if there exists a finite sequence of tokens that the syntax describes.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#nullable" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="property">
       <a id="nullable:Option[A]"></a>
       <span class="permalink">
@@ -501,7 +501,7 @@ for the described language.
         <span class="name">repr</span><span class="params">(<span name="level">level: <span class="extype" name="scala.Int">Int</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">Computes a friendlier string representation for the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Computes a friendlier string representation for the syntax.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt">Computes a friendly string representation for the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Computes a friendly string representation for the syntax.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li></ol>
             </div>
 
@@ -638,9 +638,9 @@ for the described language.
         <span class="name">apply</span><span class="params">(<span name="it">it: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Consumes a sequence of tokens and parses into a value.</p><div class="fullcomment"><div class="comment cmt"><p>Consumes a sequence of tokens and parses into a value.
+      <p class="shortcomment cmt">Consumes a sequence of tokens and parses it into a value.</p><div class="fullcomment"><div class="comment cmt"><p>Consumes a sequence of tokens and parses it into a value.
 When <code>this</code> syntax is not LL(1), the result is unspecified.
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>See <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a> for the possible return values.</p></span></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -657,7 +657,7 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#bimap" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#bimap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="bimap[W,B](function:A=&gt;B,inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,B]"></a><a id="bimap[W,B]((A)⇒B,(W)⇒Seq[V]):Syntax[W,B]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#bimap[W,B](function:A=&gt;B,inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,B]" title="Permalink">
@@ -672,7 +672,8 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
         <span class="name">bimap</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.B">B</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Applies a function to the parsed values and specifies its inverse.</p>
+      <p class="shortcomment cmt">Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.
+</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on parsed values.</p></dd><dt class="param">inverse</dt><dd class="cmt"><p>The function to be applied on printed values.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#calledLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="calledLeft(rec:Syntaxes.this.Syntax.Recursive[Nothing,Any]):Boolean"></a><a id="calledLeft(Recursive[Nothing,Any]):Boolean"></a>
       <span class="permalink">
@@ -688,7 +689,9 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
         <span class="name">calledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Checks if a <code>Recursive</code> syntax can be entered without consuming input first.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if a <code>Recursive</code> syntax can be entered without consuming input first.
+      <p class="shortcomment cmt">Checks if a <code>Recursive</code> syntax can be entered without
+being prefixed by a non-empty sequence of tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if a <code>Recursive</code> syntax can be entered without
+being prefixed by a non-empty sequence of tokens.
 </p></div><dl class="paramcmts block"><dt class="param">rec</dt><dd class="cmt"><p>The <code>Recursive</code> syntax.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -775,10 +778,10 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#contramap" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="contramap[W](inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]"></a><a id="contramap[W]((W)⇒Seq[V]):Syntax[W,A]"></a>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#contramap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]"></a><a id="contramap[W]((W)⇒Seq[V]):Syntax[W,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#contramap[W](inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -787,10 +790,12 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">contramap</span><span class="tparams">[<span name="W">W</span>]</span><span class="params">(<span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
+        <span class="name">contramap</span><span class="tparams">[<span name="W">W</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Specifies the inverse of the applied function.</p>
+      <p class="shortcomment cmt">Applies a function to the printed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a function to the printed values.</p><p>Generally, the function will be the inverse of
+a function applied to produced values with <a href="#map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax#map">map</a>.
+</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on printed values.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#derive" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="derivation">
       <a id="derive(token:Token):Syntaxes.this.Syntax[V,A]"></a><a id="derive(Token):Syntax[V,A]"></a>
       <span class="permalink">
@@ -858,9 +863,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns a syntax that behaves like <code>this</code> syntax but rejects all tokens whose kind does
-not satisfy the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a syntax that behaves like <code>this</code> syntax but rejects all tokens whose kind does
-not satisfy the given predicate.
+      <p class="shortcomment cmt">Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.
 </p></div><dl class="paramcmts block"><dt class="param">predicate</dt><dd class="cmt"><p>The predicate that kinds must satisfy.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -902,7 +905,7 @@ not satisfy the given predicate.
         <span class="name">first</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns the set of tokens that are accepted as the next token.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of tokens that are accepted as the next token.
+      <p class="shortcomment cmt">Returns the set of token kinds that are accepted as the first token by <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of token kinds that are accepted as the first token by <code>this</code> syntax.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -976,7 +979,7 @@ not satisfy the given predicate.
         <span class="name">isLL1</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Checks if this syntax corresponds to a LL(1) grammar.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if this syntax corresponds to a LL(1) grammar.
+      <p class="shortcomment cmt">Checks if this syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if this syntax is LL(1).
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -1001,7 +1004,7 @@ not satisfy the given predicate.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#map" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#map" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]"></a><a id="map[B]((A)⇒B):Syntax[V,B]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]" title="Permalink">
@@ -1016,7 +1019,10 @@ not satisfy the given predicate.
         <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Applies a function to the parsed values.</p>
+      <p class="shortcomment cmt">Applies a <code>function</code> to the parsed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a <code>function</code> to the parsed values.</p><p>Generally, calls to <code>map</code> will be followed by
+a call to <a href="#contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax#contramap">contramap</a> to apply the inverse
+of the <code>function</code> to the printed values.
+</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on parsed values.</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -1103,9 +1109,9 @@ not satisfy the given predicate.
       </span>
       
       <p class="shortcomment cmt">Returns all of kinds that should not be accepted
-as the next token by a subsequent syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all of kinds that should not be accepted
-as the next token by a subsequent syntax.</p><p>The value associated to the kind is a syntax that accepts
-all up until that kind.
+as the first token by a subsequent syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all of kinds that should not be accepted
+as the first token by a subsequent syntax.</p><p>The value associated to the kind describes the syntax up to the point
+where the constraint was generated.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -1143,22 +1149,6 @@ all up until that kind.
       
       <p class="shortcomment cmt">String representation of the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of the syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#tokensOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="printing">
-      <a id="tokensOf(value:V):Iterator[Seq[Token]]"></a><a id="tokensOf(V):Iterator[Seq[Token]]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#tokensOf(value:V):Iterator[Seq[Token]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tokensOf</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt"></p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#trails" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="trails:Iterator[Seq[Kind]]"></a>
       <span class="permalink">
@@ -1174,11 +1164,28 @@ all up until that kind.
         <span class="name">trails</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns all possible sequences of accepted token kinds in increasing size.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible sequences of accepted token kinds in increasing size.
+      <p class="shortcomment cmt">Returns all possible sequences of accepted token kinds, in increasing size.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible sequences of accepted token kinds, in increasing size.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#unapply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="printing">
+      <a id="unapply(value:V):Iterator[Seq[Token]]"></a><a id="unapply(V):Iterator[Seq[Token]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#unapply(value:V):Iterator[Seq[Token]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unapply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.V">V</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns all representations of the value <code>value</code>,
+ordered by increasing length.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#unit" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
       <a id="unit(defaults:V*):Syntaxes.this.Syntax[Unit,A]"></a><a id="unit(V*):Syntax[Unit,A]"></a>
       <span class="permalink">
@@ -1196,9 +1203,9 @@ all up until that kind.
       
       <p class="shortcomment cmt">Informs the syntax of the values that can be produced.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="void[W]:Syntaxes.this.Syntax[W,A]"></a><a id="void[W]:Syntax[W,A]"></a>
+      <a id="void:Syntaxes.this.Syntax[Any,A]"></a><a id="void:Syntax[Any,A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#void[W]:Syntaxes.this.Syntax[W,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#void:Syntaxes.this.Syntax[Any,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1207,10 +1214,10 @@ all up until that kind.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">void</span><span class="tparams">[<span name="W">W</span>]</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.void.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
+        <span class="name">void</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Prevents token generation.</p>
+      <p class="shortcomment cmt">Indicates that the syntax will not print values.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -1311,7 +1318,7 @@ all up until that kind.
       </span>
       
       <p class="shortcomment cmt">Disjunction of <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Disjunction of <code>this</code> and <code>that</code> syntax.
-The value is tagged to indicate the side which produced it.
+The value is tagged to indicate the side it comes from.
 </p></div></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="~[W,X&lt;:W,B](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[V~X,A~B]"></a><a id="~[W,X&lt;:W,B](Syntax[W,B]):Syntax[~[V,X],~[A,B]]"></a>
