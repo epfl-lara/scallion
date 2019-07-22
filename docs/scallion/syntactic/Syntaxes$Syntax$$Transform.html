@@ -111,9 +111,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
   <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes" visbl="pub" class="indented3 " data-isabs="true" fullComment="yes" group="syntax">
-      <a id="Syntaxes[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
+      <a id="Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]" title="Permalink">
+      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -122,7 +122,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
@@ -163,8 +163,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$Syntax$$Elem.html" title="Syntax that describes a single token of the given kind.">Elem</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="object" href="Syntaxes$Syntax$$Failure$.html" title="Empty syntax."></a>
-                        <a href="Syntaxes$Syntax$$Failure$.html" title="Empty syntax.">Failure</a>
+                        <a class="class" href="Syntaxes$Syntax$$Failure.html" title="Empty syntax."></a>
+                        <a href="Syntaxes$Syntax$$Failure.html" title="Empty syntax.">Failure</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="Syntaxes$Syntax$$Recursive$.html" title="Companion object of Recursive."></a>
                         <a class="class" href="Syntaxes$Syntax$$Recursive.html" title="Syntax that may recursively mention itself."></a>
@@ -212,7 +212,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Transform</span><span class="tparams">[<span name="V">V</span>, <span name="W">W</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>]</span>, <span name="inner">inner: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>] with <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Transform</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>, <span name="inner">inner: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>] with <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -223,7 +223,7 @@ and an <code>inverse</code> function on the printed values given to the <code>in
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -270,9 +270,9 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scallion.syntactic.Syntaxes.Syntax.Transform#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(function:A=&gt;B,inverse:W=&gt;Seq[V],inner:Syntaxes.this.Syntax[V,A]):scallion.syntactic.Syntaxes.Syntax.Transform[V,W,A,B]"></a><a id="&lt;init&gt;:Transform[V,W,A,B]"></a>
+      <a id="&lt;init&gt;(function:A=&gt;B,inverse:B=&gt;Seq[A],inner:Syntaxes.this.Syntax[A]):scallion.syntactic.Syntaxes.Syntax.Transform[A,B]"></a><a id="&lt;init&gt;:Transform[A,B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#&lt;init&gt;(function:A=&gt;B,inverse:W=&gt;Seq[V],inner:Syntaxes.this.Syntax[V,A]):scallion.syntactic.Syntaxes.Syntax.Transform[V,W,A,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#&lt;init&gt;(function:A=&gt;B,inverse:B=&gt;Seq[A],inner:Syntaxes.this.Syntax[A]):scallion.syntactic.Syntaxes.Syntax.Transform[A,B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -281,7 +281,7 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Transform</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>]</span>, <span name="inner">inner: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>)</span>
+        <span class="name">Transform</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>, <span name="inner">inner: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to apply on produced values.</p></dd><dt class="param">inverse</dt><dd class="cmt"><p>The function to apply on printed values.</p></dd><dt class="param">inner</dt><dd class="cmt"><p>The inner syntax.</p></dd></dl></div>
@@ -328,9 +328,9 @@ and an <code>inverse</code> function on the printed values given to the <code>in
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#++" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="++[W,B](that:Syntaxes.this.Syntax[Seq[W],Seq[B]])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]"></a><a id="++[W,B](Syntax[Seq[W],Seq[B]])(&lt;:&lt;[Syntax[W,B],Syntax[Seq[W],Seq[B]]],&lt;:&lt;[Seq[W],W],&lt;:&lt;[B,Seq[B]]):Syntax[Seq[W],Seq[B]]"></a>
+      <a id="++[B](that:Syntaxes.this.Syntax[Seq[B]])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]"></a><a id="++[B](Syntax[Seq[B]])(=:=[Syntax[B],Syntax[Seq[B]]]):Syntax[Seq[B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#++[W,B](that:Syntaxes.this.Syntax[Seq[W],Seq[B]])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#++[B](that:Syntaxes.this.Syntax[Seq[B]])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -339,15 +339,15 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus$plus" class="name">++</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev1">ev1: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]]</span>, <span name="ev2">ev2: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.W">W</span>], <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>, <span name="ev3">ev3: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]</span>
+        <span title="gt4s: $plus$plus" class="name">++</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.++.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed values are concatenated.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#+:" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="+:[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]"></a><a id="+:[W,B](Syntax[W,B])(&lt;:&lt;[Syntax[W,B],Syntax[Seq[W],Seq[B]]],&lt;:&lt;[Seq[W],W],&lt;:&lt;[B,Seq[B]]):Syntax[Seq[W],Seq[B]]"></a>
+      <a id="+:[B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]"></a><a id="+:[B](Syntax[B])(=:=[Syntax[B],Syntax[Seq[B]]]):Syntax[Seq[B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#+:[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#+:[B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -356,15 +356,15 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus$colon" class="name">+:</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev1">ev1: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]]</span>, <span name="ev2">ev2: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.W">W</span>], <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>, <span name="ev3">ev3: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]</span>
+        <span title="gt4s: $plus$colon" class="name">+:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is prepended to that from <code>this</code>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#:+" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id=":+[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]"></a><a id=":+[W,B](Syntax[W,B])(&lt;:&lt;[Syntax[W,B],Syntax[Seq[W],Seq[B]]],&lt;:&lt;[Seq[W],W],&lt;:&lt;[B,Seq[B]]):Syntax[Seq[W],Seq[B]]"></a>
+      <a id=":+[W,B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]"></a><a id=":+[W,B](Syntax[B])(=:=[Syntax[B],Syntax[Seq[B]]]):Syntax[Seq[B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#:+[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev1:Syntaxes.this.Syntax[V,A]&lt;:&lt;Syntaxes.this.Syntax[Seq[W],Seq[B]],implicitev2:Seq[W]&lt;:&lt;V,implicitev3:A&lt;:&lt;Seq[B]):Syntaxes.this.Syntax[Seq[W],Seq[B]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#:+[W,B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -373,7 +373,7 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$plus" class="name">:+</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev1">ev1: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]]</span>, <span name="ev2">ev2: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.W">W</span>], <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>, <span name="ev3">ev3: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.W">W</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]</span>
+        <span title="gt4s: $colon$plus" class="name">:+</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is appended to that from <code>this</code>.
@@ -394,27 +394,10 @@ and an <code>inverse</code> function on the printed values given to the <code>in
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#always" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="always(defaults:V*):Syntaxes.this.Syntax[Unit,Unit]"></a><a id="always(W*):Syntax[Unit,Unit]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#always(defaults:V*):Syntaxes.this.Syntax[Unit,Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">always</span><span class="params">(<span name="defaults">defaults: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>*</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scala.Unit">Unit</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Informs the syntax of the values that can be produced.</p><div class="fullcomment"><div class="comment cmt"><p>Informs the syntax of the values that can be produced.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="parsing">
-      <a id="apply(it:Iterator[Token]):Syntaxes.this.ParseResult[V,A]"></a><a id="apply(Iterator[Token]):ParseResult[W,B]"></a>
+      <a id="apply(it:Iterator[Token]):Syntaxes.this.ParseResult[A]"></a><a id="apply(Iterator[Token]):ParseResult[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#apply(it:Iterator[Token]):Syntaxes.this.ParseResult[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#apply(it:Iterator[Token]):Syntaxes.this.ParseResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -423,7 +406,7 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="it">it: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">apply</span><span class="params">(<span name="it">it: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Consumes a sequence of tokens and parses it into a value.</p><div class="fullcomment"><div class="comment cmt"><p>Consumes a sequence of tokens and parses it into a value.
@@ -445,27 +428,10 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#bimap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="bimap[W,B](function:A=&gt;B,inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,B]"></a><a id="bimap[W,B]((B)⇒B,(W)⇒Seq[W]):Syntax[W,B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#bimap[W,B](function:A=&gt;B,inverse:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">bimap</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.bimap.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.
-</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on parsed values.</p></dd><dt class="param">inverse</dt><dd class="cmt"><p>The function to be applied on printed values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#calledLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
-      <a id="calledLeft(rec:Syntaxes.this.Syntax.Recursive[Nothing,Any]):Boolean"></a><a id="calledLeft(Recursive[Nothing,Any]):Boolean"></a>
+      <a id="calledLeft(rec:Syntaxes.this.Syntax.Recursive[_]):Boolean"></a><a id="calledLeft(Recursive[_]):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#calledLeft(rec:Syntaxes.this.Syntax.Recursive[Nothing,Any]):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#calledLeft(rec:Syntaxes.this.Syntax.Recursive[_]):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -474,7 +440,7 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">calledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">calledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       <p class="shortcomment cmt">Checks if a <code>Recursive</code> syntax can be entered without
@@ -509,9 +475,9 @@ being prefixed by a non-empty sequence of tokens.
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#collectCalledLeft" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[Nothing,Any],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectCalledLeft(Recursive[Nothing,Any],Set[RecId]):Boolean"></a>
+      <a id="collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectCalledLeft(Recursive[_],Set[RecId]):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[Nothing,Any],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -520,15 +486,15 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectCalledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]</span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">collectCalledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_]</span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       <p class="shortcomment cmt">Checks if the recusive syntax <code>rec</code> can be invoked without consuming any input tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if the recusive syntax <code>rec</code> can be invoked without consuming any input tokens.
 </p></div><dl class="paramcmts block"><dt class="param">rec</dt><dd class="cmt"><p>The recursive syntax.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#collectFilter" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectFilter(predicate:Kind=&gt;Boolean,recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,Syntaxes.this.Syntax[Nothing,Any]]):Syntaxes.this.Syntax[W,B]"></a><a id="collectFilter((Kind)⇒Boolean,Map[RecId,Syntax[Nothing,Any]]):Syntax[W,B]"></a>
+      <a id="collectFilter(predicate:Kind=&gt;Boolean,recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,Syntaxes.this.Syntax[_]]):Syntaxes.this.Syntax[B]"></a><a id="collectFilter((Kind)⇒Boolean,Map[RecId,Syntax[_]]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectFilter(predicate:Kind=&gt;Boolean,recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,Syntaxes.this.Syntax[Nothing,Any]]):Syntaxes.this.Syntax[W,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectFilter(predicate:Kind=&gt;Boolean,recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,Syntaxes.this.Syntax[_]]):Syntaxes.this.Syntax[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -537,7 +503,7 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectFilter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">collectFilter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Builds a syntax that filter out unwanted kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a syntax that filter out unwanted kinds.
@@ -645,9 +611,9 @@ being prefixed by a non-empty sequence of tokens.
       <p class="shortcomment cmt">Collects the nullable value from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the nullable value from this syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#collectShouldNotFollow" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectShouldNotFollow(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Map[Kind,Syntaxes.this.Syntax[Nothing,Any]]"></a><a id="collectShouldNotFollow(Set[RecId]):Map[Kind,Syntax[Nothing,Any]]"></a>
+      <a id="collectShouldNotFollow(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Map[Kind,Syntaxes.this.Syntax[_]]"></a><a id="collectShouldNotFollow(Set[RecId]):Map[Kind,Syntax[_]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectShouldNotFollow(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Map[Kind,Syntaxes.this.Syntax[Nothing,Any]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectShouldNotFollow(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Map[Kind,Syntaxes.this.Syntax[_]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -656,15 +622,15 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectShouldNotFollow</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]]</span>
+        <span class="name">collectShouldNotFollow</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]]</span>
       </span>
       
       <p class="shortcomment cmt">Collects the &quot;should-not-follow&quot; set from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;should-not-follow&quot; set from this syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#collectTokens" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectTokens(value:W,recs:Map[(scallion.syntactic.Syntaxes.Syntax.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]]):scallion.util.internal.Producer[Seq[Token]]"></a><a id="collectTokens(W,Map[(RecId,Any),()⇒Producer[Seq[Token]]]):Producer[Seq[Token]]"></a>
+      <a id="collectTokens(value:B,recs:Map[(scallion.syntactic.Syntaxes.Syntax.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]]):scallion.util.internal.Producer[Seq[Token]]"></a><a id="collectTokens(B,Map[(RecId,Any),()⇒Producer[Seq[Token]]]):Producer[Seq[Token]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectTokens(value:W,recs:Map[(scallion.syntactic.Syntaxes.Syntax.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]]):scallion.util.internal.Producer[Seq[Token]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectTokens(value:B,recs:Map[(scallion.syntactic.Syntaxes.Syntax.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]]):scallion.util.internal.Producer[Seq[Token]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -673,15 +639,15 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectTokens</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[(<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Any">Any</span>), () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
+        <span class="name">collectTokens</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[(<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Any">Any</span>), () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Collects a producer that iterates over all representations of a value.</p><div class="fullcomment"><div class="comment cmt"><p>Collects a producer that iterates over all representations of a value.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value being printed.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The producer view associated to an already visited recursive syntax and value.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#collectTrails" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Syntaxes.this.Trail]]):scallion.util.internal.Producer[Syntaxes.this.Trail]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Trail]]):Producer[Trail]"></a>
+      <a id="collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Seq[Kind]]]):scallion.util.internal.Producer[Seq[Kind]]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Seq[Kind]]]):Producer[Seq[Kind]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Syntaxes.this.Trail]]):scallion.util.internal.Producer[Syntaxes.this.Trail]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Seq[Kind]]]):scallion.util.internal.Producer[Seq[Kind]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -690,15 +656,15 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Trail">Trail</span>]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Trail">Trail</span>]</span>
+        <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Builds a producer of trails from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a producer of trails from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#complete" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
-      <a id="complete(toToken:PartialFunction[Kind,Token]):Syntaxes.this.Syntax[V,A]"></a><a id="complete(PartialFunction[Kind,Token]):Syntax[W,B]"></a>
+      <a id="complete(toToken:PartialFunction[Kind,Token]):Syntaxes.this.Syntax[A]"></a><a id="complete(PartialFunction[Kind,Token]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#complete(toToken:PartialFunction[Kind,Token]):Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#complete(toToken:PartialFunction[Kind,Token]):Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -707,7 +673,7 @@ being prefixed by a non-empty sequence of tokens.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">complete</span><span class="params">(<span name="toToken">toToken: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">complete</span><span class="params">(<span name="toToken">toToken: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Returns the smallest completion of <code>this</code> syntax that can
@@ -715,9 +681,9 @@ be obtained using the partial <code>toToken</code> function, if any.</p><div cla
 be obtained using the partial <code>toToken</code> function, if any.</p><p>When <code>this</code> syntax is not LL(1), the result is unspecified.
 </p></div><dl class="paramcmts block"><dt class="param">toToken</dt><dd class="cmt"><p>Computes the preferred token of the given class, if any.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#completions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
-      <a id="completions(toTokens:Kind=&gt;Seq[Token]):Iterator[Syntaxes.this.Syntax[V,A]]"></a><a id="completions((Kind)⇒Seq[Token]):Iterator[Syntax[W,B]]"></a>
+      <a id="completions(toTokens:Kind=&gt;Seq[Token]):Iterator[Syntaxes.this.Syntax[A]]"></a><a id="completions((Kind)⇒Seq[Token]):Iterator[Syntax[B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#completions(toTokens:Kind=&gt;Seq[Token]):Iterator[Syntaxes.this.Syntax[V,A]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#completions(toTokens:Kind=&gt;Seq[Token]):Iterator[Syntaxes.this.Syntax[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -726,7 +692,7 @@ be obtained using the partial <code>toToken</code> function, if any.</p><p>When 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">completions</span><span class="params">(<span name="toTokens">toTokens: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]]</span>
+        <span class="name">completions</span><span class="params">(<span name="toTokens">toTokens: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Returns all possible completions of <code>this</code> syntax,
@@ -753,28 +719,10 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#contramap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]"></a><a id="contramap[W]((W)⇒Seq[W]):Syntax[W,B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contramap</span><span class="tparams">[<span name="W">W</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.contramap.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Applies a function to the printed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a function to the printed values.</p><p>Generally, the function will be the inverse of
-a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax#map">map</a>.
-</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on printed values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#derive" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="derivation">
-      <a id="derive(token:Token,kind:Kind):Syntaxes.this.Syntax[W,B]"></a><a id="derive(Token,Kind):Syntax[W,B]"></a>
+      <a id="derive(token:Token,kind:Kind):Syntaxes.this.Syntax[B]"></a><a id="derive(Token,Kind):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token,kind:Kind):Syntaxes.this.Syntax[W,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token,kind:Kind):Syntaxes.this.Syntax[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -783,15 +731,15 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
 </p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#derive" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="derivation">
-      <a id="derive(token:Token):Syntaxes.this.Syntax[V,A]"></a><a id="derive(Token):Syntax[W,B]"></a>
+      <a id="derive(token:Token):Syntaxes.this.Syntax[A]"></a><a id="derive(Token):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token):Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token):Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -800,7 +748,7 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Feeds a token to the syntax and obtain a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token to the syntax and obtain a syntax for the rest of input.
@@ -825,9 +773,9 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#filter" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="filter(predicate:Kind=&gt;Boolean):Syntaxes.this.Syntax[V,A]"></a><a id="filter((Kind)⇒Boolean):Syntax[W,B]"></a>
+      <a id="filter(predicate:Kind=&gt;Boolean):Syntaxes.this.Syntax[A]"></a><a id="filter((Kind)⇒Boolean):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#filter(predicate:Kind=&gt;Boolean):Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#filter(predicate:Kind=&gt;Boolean):Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -836,7 +784,7 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.
@@ -922,9 +870,9 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#inner" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="subsyntax">
-      <a id="inner:Syntaxes.this.Syntax[V,A]"></a><a id="inner:Syntax[V,A]"></a>
+      <a id="inner:Syntaxes.this.Syntax[A]"></a><a id="inner:Syntax[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#inner:Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#inner:Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -933,15 +881,15 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">inner</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>
+        <span class="name">inner</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">The inner syntax.</p><div class="fullcomment"><div class="comment cmt"><p>The inner syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#inverse" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="inverse:W=&gt;Seq[V]"></a><a id="inverse:(W)⇒Seq[V]"></a>
+      <a id="inverse:B=&gt;Seq[A]"></a><a id="inverse:(B)⇒Seq[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#inverse:W=&gt;Seq[V]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#inverse:B=&gt;Seq[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -950,7 +898,7 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">inverse</span><span class="result">: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>]</span>
+        <span class="name">inverse</span><span class="result">: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</span>
       </span>
       
       
@@ -1028,9 +976,9 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#map" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]"></a><a id="map[B]((B)⇒B):Syntax[W,B]"></a>
+      <a id="map[B](function:A=&gt;B,inverse:B=&gt;Seq[A]):Syntaxes.this.Syntax[B]"></a><a id="map[B]((B)⇒B,(B)⇒Seq[B]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#map[B](function:A=&gt;B):Syntaxes.this.Syntax[V,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#map[B](function:A=&gt;B,inverse:B=&gt;Seq[A]):Syntaxes.this.Syntax[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1039,13 +987,11 @@ a function applied to produced values with <a href="Syntaxes$Syntax.html#map[B](
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span>]</span>
+        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="function">function: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>) ⇒ <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span></span>, <span name="inverse">inverse: (<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span>) ⇒ <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>] = <span class="symbol">(b: B) =&gt; Seq()</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.map.B">B</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Applies a <code>function</code> to the parsed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a <code>function</code> to the parsed values.</p><p>Generally, calls to <code>map</code> will be followed by
-a call to <a href="Syntaxes$Syntax.html#contramap[W](function:W=&gt;Seq[V]):Syntaxes.this.Syntax[W,A]" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax#contramap">contramap</a> to apply the inverse
-of the <code>function</code> to the printed values.
-</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on parsed values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+      <p class="shortcomment cmt">Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.</p><div class="fullcomment"><div class="comment cmt"><p>Applies a <code>function</code> to the parsed values and the <code>inverse</code> function to the printed values.
+</p></div><dl class="paramcmts block"><dt class="param">function</dt><dd class="cmt"><p>The function to be applied on parsed values.</p></dd><dt class="param">inverse</dt><dd class="cmt"><p>The function to be applied on printed values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -1118,9 +1064,9 @@ of the <code>function</code> to the printed values.
       <p class="shortcomment cmt">The value, if any, produced by this syntax without consuming more input.</p><div class="fullcomment"><div class="comment cmt"><p>The value, if any, produced by this syntax without consuming more input.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#opt" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="opt:Syntaxes.this.Syntax[Option[V],Option[A]]"></a><a id="opt:Syntax[Option[W],Option[B]]"></a>
+      <a id="opt:Syntaxes.this.Syntax[Option[A]]"></a><a id="opt:Syntax[Option[B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#opt:Syntaxes.this.Syntax[Option[V],Option[A]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#opt:Syntaxes.this.Syntax[Option[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1129,7 +1075,7 @@ of the <code>function</code> to the printed values.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">opt</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>], <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]]</span>
+        <span class="name">opt</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Makes the syntax nullable.</p><div class="fullcomment"><div class="comment cmt"><p>Makes the syntax nullable.
@@ -1151,9 +1097,9 @@ of the <code>function</code> to the printed values.
       
       <p class="shortcomment cmt">Computes a friendly string representation for the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Computes a friendly string representation for the syntax.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#shouldNotFollow" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
-      <a id="shouldNotFollow:Map[Kind,Syntaxes.this.Syntax[Nothing,Any]]"></a><a id="shouldNotFollow:Map[Kind,Syntax[Nothing,Any]]"></a>
+      <a id="shouldNotFollow:Map[Kind,Syntaxes.this.Syntax[_]]"></a><a id="shouldNotFollow:Map[Kind,Syntax[_]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#shouldNotFollow:Map[Kind,Syntaxes.this.Syntax[Nothing,Any]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#shouldNotFollow:Map[Kind,Syntaxes.this.Syntax[_]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1162,7 +1108,7 @@ of the <code>function</code> to the printed values.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">shouldNotFollow</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]]</span>
+        <span class="name">shouldNotFollow</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]]</span>
       </span>
       
       <p class="shortcomment cmt">Returns all of kinds that should not be accepted
@@ -1227,9 +1173,9 @@ where the constraint was generated.
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#unapply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="printing">
-      <a id="unapply(value:V):Iterator[Seq[Token]]"></a><a id="unapply(W):Iterator[Seq[Token]]"></a>
+      <a id="unapply(value:A):Iterator[Seq[Token]]"></a><a id="unapply(B):Iterator[Seq[Token]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#unapply(value:V):Iterator[Seq[Token]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#unapply(value:A):Iterator[Seq[Token]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1238,7 +1184,7 @@ where the constraint was generated.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">unapply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
+        <span class="name">unapply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Returns all representations of the value <code>value</code>,
@@ -1246,9 +1192,9 @@ ordered by increasing length.</p><div class="fullcomment"><div class="comment cm
 ordered by increasing length.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#unit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="unit(defaults:V*):Syntaxes.this.Syntax[Unit,A]"></a><a id="unit(W*):Syntax[Unit,B]"></a>
+      <a id="unit(defaults:A*):Syntaxes.this.Syntax[Unit]"></a><a id="unit(B*):Syntax[Unit]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#unit(defaults:V*):Syntaxes.this.Syntax[Unit,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#unit(defaults:A*):Syntaxes.this.Syntax[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1257,15 +1203,15 @@ ordered by increasing length.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">unit</span><span class="params">(<span name="defaults">defaults: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>*</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">unit</span><span class="params">(<span name="defaults">defaults: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>*</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Informs the syntax of the values that can be produced.</p><div class="fullcomment"><div class="comment cmt"><p>Informs the syntax of the values that can be produced.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="void:Syntaxes.this.Syntax[Any,A]"></a><a id="void:Syntax[Any,B]"></a>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#up" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]"></a><a id="up[B&gt;:B](Manifest[B]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#void:Syntaxes.this.Syntax[Any,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1274,11 +1220,26 @@ ordered by increasing length.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">void</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span class="name">up</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.up.B">B</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the syntax will not print values.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the syntax will not print values.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="void:Syntaxes.this.Syntax[Any]"></a><a id="void:Syntax[Any]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#void:Syntaxes.this.Syntax[Any]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">void</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Any">Any</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -1348,9 +1309,9 @@ ordered by increasing length.
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#|" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="|[W&lt;:V,B&gt;:A](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[W,B]"></a><a id="|[W&lt;:W,B&gt;:B](Syntax[W,B]):Syntax[W,B]"></a>
+      <a id="|(that:Syntaxes.this.Syntax[A]):Syntaxes.this.Syntax[A]"></a><a id="|(Syntax[B]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#|[W&lt;:V,B&gt;:A](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[W,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#|(that:Syntaxes.this.Syntax[A]):Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1359,15 +1320,15 @@ ordered by increasing length.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="W">W &lt;: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span></span>, <span name="B">B &gt;: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span></span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.|.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.|.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.|.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.|.B">B</span>]</span>
+        <span title="gt4s: $bar" class="name">|</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Disjunction of <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Disjunction of <code>this</code> and <code>that</code> syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#||" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="||[W,B](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[Either[V,W],Either[A,B]]"></a><a id="||[W,B](Syntax[W,B]):Syntax[Either[W,W],Either[B,B]]"></a>
+      <a id="||[W,B](that:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Either[A,B]]"></a><a id="||[W,B](Syntax[B]):Syntax[Either[B,B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#||[W,B](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[Either[V,W],Either[A,B]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#||[W,B](that:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Either[A,B]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1376,16 +1337,16 @@ ordered by increasing length.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar$bar" class="name">||</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.W">W</span>], <span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.B">B</span>]]</span>
+        <span title="gt4s: $bar$bar" class="name">||</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.||.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Disjunction of <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Disjunction of <code>this</code> and <code>that</code> syntax.
 The value is tagged to indicate the side it comes from.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="~[W,X&lt;:W,B](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[V~X,A~B]"></a><a id="~[W,X&lt;:W,B](Syntax[W,B]):Syntax[~[W,X],~[B,B]]"></a>
+      <a id="~[B](that:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[A~B]"></a><a id="~[B](Syntax[B]):Syntax[~[B,B]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~[W,X&lt;:W,B](that:Syntaxes.this.Syntax[W,B]):Syntaxes.this.Syntax[V~X,A~B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~[B](that:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[A~B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1394,15 +1355,15 @@ The value is tagged to indicate the side it comes from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde" class="name">~</span><span class="tparams">[<span name="W">W</span>, <span name="X">X &lt;: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.W">W</span></span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.X">X</span>], <a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.B">B</span>]]</span>
+        <span title="gt4s: $tilde" class="name">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~.B">B</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed values are returned as a pair.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#~&lt;~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="~&lt;~(that:Syntaxes.this.Syntax[Unit,Any]):Syntaxes.this.Syntax[V,A]"></a><a id="~&lt;~(Syntax[Unit,Any]):Syntax[W,B]"></a>
+      <a id="~&lt;~(that:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[A]"></a><a id="~&lt;~(Syntax[Unit]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~&lt;~(that:Syntaxes.this.Syntax[Unit,Any]):Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~&lt;~(that:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1411,15 +1372,15 @@ The value is tagged to indicate the side it comes from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde$less$tilde" class="name">~&lt;~</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
+        <span title="gt4s: $tilde$less$tilde" class="name">~&lt;~</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>this</code> is returned.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#~&gt;~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="~&gt;~[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev:Unit&lt;:&lt;V):Syntaxes.this.Syntax[W,B]"></a><a id="~&gt;~[W,B](Syntax[W,B])(&lt;:&lt;[Unit,W]):Syntax[W,B]"></a>
+      <a id="~&gt;~[W,B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[B]"></a><a id="~&gt;~[W,B](Syntax[B])(=:=[Syntax[B],Syntax[Unit]]):Syntax[B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~&gt;~[W,B](that:Syntaxes.this.Syntax[W,B])(implicitev:Unit&lt;:&lt;V):Syntaxes.this.Syntax[W,B]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#~&gt;~[W,B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1428,7 +1389,7 @@ The value is tagged to indicate the side it comes from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde$greater$tilde" class="name">~&gt;~</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>
+        <span title="gt4s: $tilde$greater$tilde" class="name">~&gt;~</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is returned.
@@ -1452,9 +1413,9 @@ The value is tagged to indicate the side it comes from.
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="scallion.syntactic.Syntaxes.Syntax.Unary">
-              <h3>Inherited from <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</h3>
+              <h3>Inherited from <a href="Syntaxes$Syntax$$Unary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.A">A</span>]</h3>
             </div><div class="parent" name="scallion.syntactic.Syntaxes.Syntax">
-              <h3>Inherited from <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.W">W</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</h3>
+              <h3>Inherited from <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

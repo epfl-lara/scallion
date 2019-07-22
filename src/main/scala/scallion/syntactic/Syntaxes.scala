@@ -30,30 +30,10 @@ import scallion.util.internal.{Producer, ProducerOps, PTPS}
   * @group syntax
   */
 trait Syntaxes[Token, Kind]
-    extends visualization.Graphs[Kind]
-       with visualization.Grammars[Kind] {
+    extends visualization.Graphs[Token, Kind]
+       with visualization.Grammars[Token, Kind] {
 
   import Syntax._
-
-  /** Shorthand notation for a `Syntax` that produces and prints the same type of values.
-    *
-    * @group alias
-    */
-  type Syn[A] = Syntax[A, A]
-
-  /** Shorthand notation for a `Syntax` in which
-    * we are only interested in the parsed values.
-    *
-    * @group alias
-    */
-  type Parser[A] = Syntax[_, A]
-
-  /** Shorthand notation for a `Syntax` in which
-    * we are only interested in the printed values.
-    *
-    * @group alias
-    */
-  type Printer[A] = Syntax[A, _]
 
   /** Returns the kind associated with `token`.
     *
@@ -70,8 +50,7 @@ trait Syntaxes[Token, Kind]
     *
     * Acts as both a parser and a pretty printer.
     *
-    * @tparam V the type of values that can be printed.
-    * @tparam A the type of values that can be produced.
+    * @tparam A the type of values that can be produced or printed.
     *
     * @group syntax
     *
@@ -87,7 +66,7 @@ trait Syntaxes[Token, Kind]
     * @groupprio property 8
     * @groupname property Properties
     */
-  sealed trait Syntax[-V, +A] {
+  sealed trait Syntax[A] {
 
     /** The value, if any, produced by this syntax without consuming more input.
       *
@@ -115,7 +94,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def shouldNotFollow: Map[Kind, Syntax[Nothing, Any]] = collectShouldNotFollow(ListSet())
+    @inline def shouldNotFollow: Map[Kind, Syntax[_]] = collectShouldNotFollow(ListSet())
 
     /** Checks if a `Recursive` syntax can be entered without
       * being prefixed by a non-empty sequence of tokens.
@@ -124,7 +103,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def calledLeft(rec: Recursive[Nothing, Any]): Boolean = collectCalledLeft(rec, ListSet())
+    @inline def calledLeft(rec: Recursive[_]): Boolean = collectCalledLeft(rec, ListSet())
 
     /** Checks if this syntax is LL(1).
       *
@@ -150,7 +129,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    @inline def filter(predicate: Kind => Boolean): Syntax[V, A] = collectFilter(predicate, Map.empty)
+    @inline def filter(predicate: Kind => Boolean): Syntax[A] = collectFilter(predicate, Map.empty)
 
     /** Returns the set of all kinds that appear somewhere in `this` syntax.
       *
@@ -163,7 +142,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group printing
       */
-    def unapply(value: V): Iterator[Seq[Token]] =
+    def unapply(value: A): Iterator[Seq[Token]] =
       collectTokens(value, Map.empty).toIterator
 
     // All the functions below have an argument `recs` which
@@ -190,14 +169,14 @@ trait Syntaxes[Token, Kind]
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]]
+    protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]]
 
     /** Checks if the recusive syntax `rec` can be invoked without consuming any input tokens.
       *
       * @param rec  The recursive syntax.
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean
+    protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean
 
     /** Checks if this syntax is productive.
       *
@@ -228,7 +207,7 @@ trait Syntaxes[Token, Kind]
       * @param predicate Predicate that kinds must satisfy.
       * @param recs      The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[V, A]
+    protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Syntax[_]]): Syntax[A]
 
     /** Collects all kinds appearing in this syntax.
       *
@@ -242,19 +221,19 @@ trait Syntaxes[Token, Kind]
       * @param value The value being printed.
       * @param recs  The producer view associated to an already visited recursive syntax and value.
       */
-    protected def collectTokens(value: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
+    protected def collectTokens(value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
 
     /** Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
       *
       * @group derivation
       */
-    protected def derive(token: Token, kind: Kind): Syntax[V, A]
+    protected def derive(token: Token, kind: Kind): Syntax[A]
 
     /** Feeds a token to the syntax and obtain a syntax for the rest of input.
       *
       * @group derivation
       */
-    @inline def derive(token: Token): Syntax[V, A] = derive(token, getKind(token))
+    @inline def derive(token: Token): Syntax[A] = derive(token, getKind(token))
 
 
     /** String representation of the syntax.
@@ -269,49 +248,6 @@ trait Syntaxes[Token, Kind]
 
     // Combinators.
 
-    /** Applies a `function` to the parsed values.
-      *
-      * Generally, calls to `map` will be followed by
-      * a call to [[contramap]] to apply the inverse
-      * of the `function` to the printed values.
-      *
-      * @param function The function to be applied on parsed values.
-      *
-      * @group combinator
-      */
-    def map[B](function: A => B): Syntax[V, B] =
-      this match {
-        case Failure => Failure
-        case Success(value, matches) => Success(function(value), matches)
-        case Transform(otherFunction, otherInverse, inner) =>
-          Transform(
-            otherFunction andThen function,
-            otherInverse,
-            inner)
-        case inner => Transform(function, (v: V) => Seq(v), inner)
-      }
-
-    /** Applies a function to the printed values.
-      *
-      * Generally, the function will be the inverse of
-      * a function applied to produced values with [[map]].
-      *
-      * @param function The function to be applied on printed values.
-      *
-      * @group combinator
-      */
-    def contramap[W](function: W => Seq[V]): Syntax[W, A] =
-      this match {
-        case Failure => Failure
-        case Success(value, matches) => Success(value, (y: W) => function(y).map(matches).sum)
-        case Transform(otherFunction, otherInverse, inner) =>
-          Transform(
-            otherFunction,
-            (z: W) => Try(function(z)).getOrElse(Seq()).flatMap((y: V) => otherInverse(y)),
-            inner)
-        case inner => Transform((x: A) => x, function, inner)
-      }
-
     /** Applies a `function` to the parsed values and the `inverse` function to the printed values.
       *
       * @param function The function to be applied on parsed values.
@@ -319,14 +255,14 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def bimap[W, B](function: A => B, inverse: W => Seq[V]): Syntax[W, B] =
+    def map[B](function: A => B, inverse: B => Seq[A] = (b: B) => Seq()): Syntax[B] =
       this match {
-        case Failure => Failure
-        case Success(value, predicate) => Success(function(value), (y: W) => inverse(y).map(predicate).sum)
+        case Failure() => Failure()
+        case Success(value, predicate) => Success(function(value), (y: B) => inverse(y).map(predicate).sum)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction andThen function,
-            (z: W) => Try(inverse(z)).getOrElse(Seq()).flatMap((y: V) => otherInverse(y)),
+            (z: B) => Try(inverse(z)).getOrElse(Seq()).flatMap((y: A) => otherInverse(y)),
             inner)
         case inner => Transform(function, inverse, inner)
       }
@@ -335,14 +271,12 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ++[W, B](that: Syntax[Seq[W], Seq[B]])
-        (implicit ev1: Syntax[V, A] <:< Syntax[Seq[W], Seq[B]],
-                  ev2: Seq[W] <:< V,
-                  ev3: A <:< Seq[B]): Syntax[Seq[W], Seq[B]] =
-      (this, that) match {
-        case (Failure, _) => Failure
-        case (_, Failure) => Failure
-        case (Success(a, pa), Success(b, pb)) => Success(a ++ b, (xs: Seq[W]) => {
+    def ++[B](that: Syntax[Seq[B]])
+        (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
+      (ev(this), that) match {
+        case (Failure(), _) => Failure()
+        case (_, Failure()) => Failure()
+        case (Success(a, pa), Success(b, pb)) => Success(a ++ b, (xs: Seq[B]) => {
           val (as, bs) = xs.splitAt(a.size)
           pa(as) * pb(bs)
         })
@@ -356,16 +290,16 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ~>~[W, B](that: Syntax[W, B])(implicit ev: Unit <:< V): Syntax[W, B] =
-      this.~(that).bimap(_._2, {
-      case x => Seq(scallion.syntactic.~(ev(()), x))
+    def ~>~[W, B](that: Syntax[B])(implicit ev: Syntax[A] =:= Syntax[Unit]): Syntax[B] =
+      ev(this).~(that).map(_._2, {
+      case x => Seq(scallion.syntactic.~((), x))
     })
 
     /** Sequences `this` and `that` syntax. The parsed value from `this` is returned.
       *
       * @group combinator
       */
-    def ~<~(that: Syntax[Unit, Any]): Syntax[V, A] = this.~(that).bimap(_._1, {
+    def ~<~(that: Syntax[Unit]): Syntax[A] = this.~(that).map(_._1, {
       case x => Seq(scallion.syntactic.~(x, ()))
     })
 
@@ -373,11 +307,9 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def :+[W, B](that: Syntax[W, B])
-        (implicit ev1: Syntax[V, A] <:< Syntax[Seq[W], Seq[B]],
-                  ev2: Seq[W] <:< V,
-                  ev3: A <:< Seq[B]): Syntax[Seq[W], Seq[B]] =
-      this ++ that.bimap(Vector(_), {
+    def :+[W, B](that: Syntax[B])
+        (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
+      ev(this) ++ that.map(Vector[B](_), {
         case Seq(x) => Seq(x)
         case _ => Seq()
       })
@@ -386,21 +318,19 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def +:[W, B](that: Syntax[W, B])
-        (implicit ev1: Syntax[V, A] <:< Syntax[Seq[W], Seq[B]],
-                  ev2: Seq[W] <:< V,
-                  ev3: A <:< Seq[B]): Syntax[Seq[W], Seq[B]] =
-      that.bimap(Vector(_), {
-        (xs: Seq[W]) => if (xs.size == 1) xs else Seq()
-      }) ++ this
+    def +:[B](that: Syntax[B])
+        (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
+      that.map(Vector(_) : Seq[B], {
+        (xs: Seq[B]) => if (xs.size == 1) xs else Seq()
+      }) ++ ev(this)
 
     /** Sequences `this` and `that` syntax. The parsed values are returned as a pair.
       *
       * @group combinator
       */
-    def ~[W, X <: W, B](that: Syntax[W, B]): Syntax[V ~ X, A ~ B] = (this, that) match {
-      case (Failure, _) => Failure
-      case (_, Failure) => Failure
+    def ~[B](that: Syntax[B]): Syntax[A ~ B] = (this, that) match {
+      case (Failure(), _) => Failure()
+      case (_, Failure()) => Failure()
       case (Success(a, pa), Success(b, pb)) => Success(scallion.syntactic.~(a, b), {
         case va ~ vb => pa(va) * pb(vb)
       })
@@ -411,9 +341,9 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def |[W <: V, B >: A](that: Syntax[W, B]): Syntax[W, B] = (this, that) match {
-      case (Failure, _) => that
-      case (_, Failure) => this
+    def |(that: Syntax[A]): Syntax[A] = (this, that) match {
+      case (Failure(), _) => that
+      case (_, Failure()) => this
       case _ => Disjunction(this, that)
     }
 
@@ -422,14 +352,14 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ||[W, B](that: Syntax[W, B]): Syntax[Either[V, W], Either[A, B]] =
-      this.bimap(Left(_), {
-        (e: Either[V, W]) => e match {
+    def ||[W, B](that: Syntax[B]): Syntax[Either[A, B]] =
+      this.map[Either[A, B]](Left(_), {
+        (e: Either[A, B]) => e match {
           case Left(x) => Seq(x)
           case Right(_) => Seq()
         }
-      }) | that.bimap(Right(_), {
-        (e: Either[V, W]) => e match {
+      }) | that.map[Either[A, B]](Right(_), {
+        (e: Either[A, B]) => e match {
           case Left(_) => Seq()
           case Right(x) => Seq(x)
         }
@@ -439,8 +369,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def opt: Syntax[Option[V], Option[A]] = this.bimap(Some(_), {
-      (o: Option[V]) => o match {
+    def opt: Syntax[Option[A]] = this.map[Option[A]](Some(_), {
+      (o: Option[A]) => o match {
         case Some(x) => Seq(x)
         case None => Seq()
       }
@@ -450,25 +380,16 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def unit(defaults: V*): Syntax[Unit, A] = this.contramap {
-      (_: Unit) => defaults
-    }
-
-    /** Informs the syntax of the values that can be produced.
-      *
-      * @group combinator
-      */
-    def always(defaults: V*): Syntax[Unit, Unit] = this.bimap(_ => (), {
+    def unit(defaults: A*): Syntax[Unit] = this.map(_ => (), {
       case () => defaults
     })
 
-    /** Indicates that the syntax will not print values.
-      *
-      * @group combinator
-      */
-    def void: Syntax[Any, A] = this.contramap {
-      (_: Any) => Seq()
-    }
+    def void: Syntax[Any] = this.map((x: A) => x, (y: Any) => Seq())
+
+    def up[B >: A](implicit ev: Manifest[A]): Syntax[B] = this.map((x: A) => x, (y: B) => ev.unapply(y) match {
+      case None => Seq()
+      case Some(x) => Seq(x)
+    })
 
     // Parsing.
 
@@ -479,9 +400,9 @@ trait Syntaxes[Token, Kind]
       *
       * @group parsing
       */
-    def apply(it: Iterator[Token]): ParseResult[V, A] = {
+    def apply(it: Iterator[Token]): ParseResult[A] = {
 
-      var syntax: Syntax[V, A] = this
+      var syntax: Syntax[A] = this
       while (it.hasNext) {
         val token = it.next()
         val newSyntax = syntax.derive(token)
@@ -508,7 +429,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group complete
       */
-    def completions(toTokens: Kind => Seq[Token]): Iterator[Syntax[V, A]] = {
+    def completions(toTokens: Kind => Seq[Token]): Iterator[Syntax[A]] = {
 
       val kindTokens: Map[Kind, Seq[Token]] =
         kinds.toSeq.map(kind => kind -> toTokens(kind)).toMap
@@ -551,13 +472,13 @@ trait Syntaxes[Token, Kind]
       *
       * @group complete
       */
-    def complete(toToken: PartialFunction[Kind, Token]): Syntax[V, A] = {
+    def complete(toToken: PartialFunction[Kind, Token]): Syntax[A] = {
       val it = completions(kind => toToken.lift(kind).toSeq)
       if (it.hasNext) {
         it.next()
       }
       else {
-        Failure
+        Failure()
       }
     }
   }
@@ -566,10 +487,10 @@ trait Syntaxes[Token, Kind]
     *
     * @group result
     */
-  sealed trait ParseResult[-V, +A] {
+  sealed trait ParseResult[A] {
 
     /** Syntax for the rest of input. */
-    val syntax: Syntax[V, A]
+    val syntax: Syntax[A]
 
     /** Returns the parsed value, if any. */
     def getValue: Option[A] = this match {
@@ -587,7 +508,7 @@ trait Syntaxes[Token, Kind]
     *
     * @group result
     */
-  case class Parsed[-V, +A](value: A, syntax: Syntax[V, A]) extends ParseResult[V, A]
+  case class Parsed[A](value: A, syntax: Syntax[A]) extends ParseResult[A]
 
   /** Indicates that the provided `token` was not expected at that point.
     *
@@ -598,7 +519,7 @@ trait Syntaxes[Token, Kind]
     *
     * @group result
     */
-  case class UnexpectedToken[-V, +A](token: Token, syntax: Syntax[V, A]) extends ParseResult[V, A]
+  case class UnexpectedToken[A](token: Token, syntax: Syntax[A]) extends ParseResult[A]
 
   /** Indicates that end of input was unexpectedly encountered.
     *
@@ -608,7 +529,7 @@ trait Syntaxes[Token, Kind]
     *
     * @group result
     */
-  case class UnexpectedEnd[-V, +A](syntax: Syntax[V, A]) extends ParseResult[V, A]
+  case class UnexpectedEnd[A](syntax: Syntax[A]) extends ParseResult[A]
 
   /** Describes a LL(1) conflict.
     *
@@ -617,12 +538,12 @@ trait Syntaxes[Token, Kind]
   sealed trait LL1Conflict {
 
     /** Source of the conflict. */
-    val source: Syntax[Nothing, Any]
+    val source: Syntax[_]
 
     /** Syntax for a prefix before the conflict occurs. */
-    val prefix: Syntax[Nothing, Any]
+    val prefix: Syntax[_]
 
-    private[syntactic] def addPrefix(syntax: Syntax[Nothing, Any]): LL1Conflict
+    private[syntactic] def addPrefix(syntax: Syntax[_]): LL1Conflict
 
     /** Returns trails that witness the conflict. */
     def witnesses: Iterator[Seq[Kind]]
@@ -636,10 +557,10 @@ trait Syntaxes[Token, Kind]
 
     /** Indicates that both branches of a disjunction are nullable. */
     case class NullableConflict(
-        prefix: Syntax[Nothing, Any],
-        source: Disjunction[Nothing, Any]) extends LL1Conflict {
+        prefix: Syntax[_],
+        source: Disjunction[_]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): NullableConflict =
+      override private[syntactic] def addPrefix(start: Syntax[_]): NullableConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = prefix.trails
@@ -647,11 +568,11 @@ trait Syntaxes[Token, Kind]
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
     case class FirstConflict(
-        prefix: Syntax[Nothing, Any],
+        prefix: Syntax[_],
         ambiguities: Set[Kind],
-        source: Disjunction[Nothing, Any]) extends LL1Conflict {
+        source: Disjunction[_]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): FirstConflict =
+      override private[syntactic] def addPrefix(start: Syntax[_]): FirstConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = for {
@@ -662,11 +583,11 @@ trait Syntaxes[Token, Kind]
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
     case class FollowConflict(
-        prefix: Syntax[Nothing, Any],
+        prefix: Syntax[_],
         ambiguities: Set[Kind],
-        source: Syntax[Nothing, Any] with SequenceLike[Nothing, Nothing, Any, Any]) extends LL1Conflict {
+        source: Syntax[_] with SequenceLike[_, _]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): FollowConflict =
+      override private[syntactic] def addPrefix(start: Syntax[_]): FollowConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = for {
@@ -677,10 +598,10 @@ trait Syntaxes[Token, Kind]
 
     /** Indicates that the syntax recursively calls itself in a left position. */
     case class LeftRecursiveConflict(
-        prefix: Syntax[Nothing, Any],
-        source: Recursive[Nothing, Any]) extends LL1Conflict {
+        prefix: Syntax[_],
+        source: Recursive[_]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[Nothing, Any]): LeftRecursiveConflict =
+      override private[syntactic] def addPrefix(start: Syntax[_]): LeftRecursiveConflict =
         this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = prefix.trails
@@ -702,7 +623,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group basic
       */
-    case class Success[-V, +A](value: A, matches: V => Int) extends Syntax[V, A] {
+    case class Success[A](value: A, matches: A => Int) extends Syntax[A] {
 
       override val nullable: Option[A] =
         Some(value)
@@ -716,10 +637,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         false
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -736,18 +657,18 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[V, A] =
+          recs: Map[RecId, Syntax[_]]): Syntax[A] =
         this
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
       override protected def collectTokens(
-          other: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          other: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         Producer.fromIterator(Iterator.fill(matches(other))(Vector()))
 
-      override protected def derive(token: Token, kind: Kind): Syntax[Any, A] =
-        Failure
+      override protected def derive(token: Token, kind: Kind): Syntax[A] =
+        Failure()
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         "epsilon(" + value.toString + ")"
@@ -757,24 +678,24 @@ trait Syntaxes[Token, Kind]
       *
       * @group basic
       */
-    case object Failure extends Syntax[Any, Nothing] {
+    case class Failure[A]() extends Syntax[A] {
 
-      override val nullable: Option[Nothing] =
+      override val nullable: Option[A] =
         None
 
       override val isProductive: Boolean =
         false
 
-      override protected def collectNullable(recs: Set[RecId]): Option[Nothing] =
+      override protected def collectNullable(recs: Set[RecId]): Option[A] =
         None
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         false
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -791,17 +712,17 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[Any, Nothing] =
+          recs: Map[RecId, Syntax[_]]): Syntax[A] =
         this
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
       override protected def collectTokens(
-            value: Any, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+            value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         Producer.empty
 
-      override protected def derive(token: Token, kind: Kind): Syntax[Any, Nothing] =
+      override protected def derive(token: Token, kind: Kind): Syntax[A] =
         this
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
@@ -814,7 +735,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group basic
       */
-    case class Elem(kind: Kind) extends Syntax[Token, Token] {
+    case class Elem(kind: Kind) extends Syntax[Token] {
 
       override val nullable: Option[Token] =
         None
@@ -828,10 +749,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         Set(kind)
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         false
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -848,8 +769,8 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[Token, Token] =
-        if (predicate(kind)) this else Failure
+          recs: Map[RecId, Syntax[_]]): Syntax[Token] =
+        if (predicate(kind)) this else Failure()
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         ListSet(kind)
@@ -858,8 +779,8 @@ trait Syntaxes[Token, Kind]
           value: Token, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]) : Producer[Seq[Token]] =
         if (getKind(value) == kind) Producer.single(Vector(value)) else Producer.empty
 
-      override protected def derive(token: Token, tokenKind: Kind): Syntax[Token, Token] =
-        if (tokenKind == kind) epsilon(token) else Failure
+      override protected def derive(token: Token, tokenKind: Kind): Syntax[Token] =
+        if (tokenKind == kind) epsilon(token) else Failure()
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         "elem(" + kind + ")"
@@ -869,32 +790,32 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    sealed trait Unary[-V, +A] { self: Syntax[_, _] =>
+    sealed trait Unary[A] { self: Syntax[_] =>
 
       /** The inner syntax.
         *
         * @group subsyntax
         */
-      def inner: Syntax[V, A]
+      def inner: Syntax[A]
     }
 
     /** Binary combinator.
       *
       * @group combinator
       */
-    sealed trait Binary[-V, -W, +A, +B] { self: Syntax[_, _] =>
+    sealed trait Binary[A, B] { self: Syntax[_] =>
 
       /** The left-hand side syntax.
         *
         * @group subsyntax
         */
-      def left: Syntax[V, A]
+      def left: Syntax[A]
 
       /** The right-hand side syntax.
         *
         * @group subsyntax
         */
-      def right: Syntax[W, B]
+      def right: Syntax[B]
     }
 
     /** Syntax that applies a `function` on the parsed values of the `inner` syntax
@@ -906,10 +827,10 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    case class Transform[V, W, A, B](
+    case class Transform[A, B](
         function: A => B,
-        inverse: W => Seq[V],
-        inner: Syntax[V, A]) extends Syntax[W, B] with Unary[V, A] {
+        inverse: B => Seq[A],
+        inner: Syntax[A]) extends Syntax[B] with Unary[A] {
 
       override lazy val nullable: Option[B] =
         inner.nullable.map(function)
@@ -923,10 +844,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         inner.collectFirst(recs)
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         inner.collectShouldNotFollow(recs)
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         inner.collectCalledLeft(rec, recs)
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -943,17 +864,17 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[W, B] =
-        inner.collectFilter(predicate, recs).bimap(function, inverse)
+          recs: Map[RecId, Syntax[_]]): Syntax[B] =
+        inner.collectFilter(predicate, recs).map(function, inverse)
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         inner.collectKinds(recs)
 
-      override protected def derive(token: Token, kind: Kind): Syntax[W, B] =
-        inner.derive(token, kind).bimap(function, inverse)
+      override protected def derive(token: Token, kind: Kind): Syntax[B] =
+        inner.derive(token, kind).map(function, inverse)
 
       override protected def collectTokens(
-        value: W, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
+        value: B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
 
         val producers = inverse(value).map(inversed => inner.collectTokens(inversed, recs))
 
@@ -973,7 +894,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    sealed trait SequenceLike[-V, -W, +A, +B] extends Binary[V, W, A, B] { self: Syntax[_, _] =>
+    sealed trait SequenceLike[A, B] extends Binary[A, B] { self: Syntax[_] =>
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         left.nullable match {
@@ -981,11 +902,11 @@ trait Syntaxes[Token, Kind]
           case None => left.collectFirst(recs)
         }
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] = {
-        val rightSNF =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
+        val rightSNF: Map[Kind, Syntax[_]] =
           right.collectShouldNotFollow(recs).map {
             case (k, v) => k -> left ~ v
-          }
+          }.toMap
 
         right.nullable match {
           case Some(_) => combineSNF(
@@ -996,7 +917,7 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || (left.nullable.nonEmpty && right.collectCalledLeft(rec, recs))
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -1043,8 +964,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    case class Sequence[-V, -W, +A, +B](left: Syntax[V, A], right: Syntax[W, B])
-        extends Syntax[V ~ W, A ~ B] with SequenceLike[V, W, A, B] {
+    case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
+        extends Syntax[A ~ B] with SequenceLike[A, B] {
 
       override lazy val isProductive: Boolean =
         left.isProductive && right.isProductive
@@ -1061,7 +982,7 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[V ~ W, A ~ B] =
+          recs: Map[RecId, Syntax[_]]): Syntax[A ~ B] =
         left.collectFilter(predicate, recs) ~ right.collectFilter(predicate, recs)
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
@@ -1077,19 +998,19 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def collectTokens(
-          value: V ~ W, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A ~ B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
 
         value match {
           case a ~ b => tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
         }
 
-      override protected def derive(token: Token, kind: Kind): Syntax[V ~ W, A ~ B] = {
+      override protected def derive(token: Token, kind: Kind): Syntax[A ~ B] = {
         val derived = left.derive(token, kind)
 
         if (!derived.isProductive) {
           left.nullable match {
             case Some(leftValue) => epsilon(leftValue) ~ right.derive(token, kind)
-            case None => Failure
+            case None => Failure()
           }
         }
         else {
@@ -1105,8 +1026,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    case class Concat[-V, +A](left: Syntax[Seq[V], Seq[A]], right: Syntax[Seq[V], Seq[A]])
-        extends Syntax[Seq[V], Seq[A]] with SequenceLike[Seq[V], Seq[V], Seq[A], Seq[A]] {
+    case class Concat[A](left: Syntax[Seq[A]], right: Syntax[Seq[A]])
+        extends Syntax[Seq[A]] with SequenceLike[Seq[A], Seq[A]] {
 
       override lazy val isProductive: Boolean =
         left.isProductive && right.isProductive
@@ -1123,7 +1044,7 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[Seq[V], Seq[A]] =
+          recs: Map[RecId, Syntax[_]]): Syntax[Seq[A]] =
         left.collectFilter(predicate, recs) ++ right.collectFilter(predicate, recs)
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
@@ -1138,13 +1059,13 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def derive(token: Token, kind: Kind): Syntax[Seq[V], Seq[A]] = {
+      override protected def derive(token: Token, kind: Kind): Syntax[Seq[A]] = {
         val derived = left.derive(token, kind)
 
         if (!derived.isProductive) {
           left.nullable match {
             case Some(leftValue) => epsilon(leftValue) ++ right.derive(token, kind)
-            case None => Failure
+            case None => Failure()
           }
         }
         else {
@@ -1153,7 +1074,7 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def collectTokens(
-          value: Seq[V], recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
+          value: Seq[A], recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
 
         val producers = for {
           i <- 0 to value.size
@@ -1176,8 +1097,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    case class Disjunction[-V, +A](left: Syntax[V, A], right: Syntax[V, A])
-        extends Syntax[V, A] with Binary[V, V, A, A] {
+    case class Disjunction[A](left: Syntax[A], right: Syntax[A])
+        extends Syntax[A] with Binary[A, A] {
 
       private lazy val order = if (right.nullable.nonEmpty) (left, right) else (right, left)
       private lazy val firstFirst = order._1.first
@@ -1194,8 +1115,8 @@ trait Syntaxes[Token, Kind]
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         left.collectFirst(recs) ++ right.collectFirst(recs)
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] = {
-        val fromLeft: Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
+        val fromLeft: Map[Kind, Syntax[_]] =
           if (right.nullable.nonEmpty) {
             left.first.toSeq.map {
               kind => kind -> epsilon(())
@@ -1204,7 +1125,7 @@ trait Syntaxes[Token, Kind]
           else {
             Map.empty
           }
-        val fromRight: Map[Kind, Syntax[Nothing, Any]] =
+        val fromRight: Map[Kind, Syntax[_]] =
           if (left.nullable.nonEmpty) {
             right.first.toSeq.map {
               kind => kind -> epsilon(())
@@ -1220,7 +1141,7 @@ trait Syntaxes[Token, Kind]
         combineSNF(baseSNF, addedSNF)
       }
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || right.collectCalledLeft(rec, recs)
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -1260,7 +1181,7 @@ trait Syntaxes[Token, Kind]
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
 
-      override protected def derive(token: Token, kind: Kind): Syntax[V, A] = {
+      override protected def derive(token: Token, kind: Kind): Syntax[A] = {
         if (firstFirst.contains(kind)) {
           order._1.derive(token, kind)
         }
@@ -1271,14 +1192,14 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[V, A] =
+          recs: Map[RecId, Syntax[_]]): Syntax[A] =
         left.collectFilter(predicate, recs) | right.collectFilter(predicate, recs)
 
       override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
         left.collectKinds(recs) union right.collectKinds(recs)
 
       override protected def collectTokens(
-          value: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         tokenSeqOps.union(left.collectTokens(value, recs), right.collectTokens(value, recs))
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
@@ -1312,9 +1233,9 @@ trait Syntaxes[Token, Kind]
       }
 
       /** Extract the inner syntax of a `Recursive` syntax. */
-      def unapply[V, W <: V, A](that: Syntax[V, A]): Option[Syntax[W, A]] = {
-        if (that.isInstanceOf[Recursive[_, _]]) {
-          Some(that.asInstanceOf[Recursive[V, A]].inner)
+      def unapply[A](that: Syntax[A]): Option[Syntax[A]] = {
+        if (that.isInstanceOf[Recursive[_]]) {
+          Some(that.asInstanceOf[Recursive[A]].inner)
         }
         else {
           None
@@ -1325,9 +1246,9 @@ trait Syntaxes[Token, Kind]
         *
         * @param syntax The inner syntax.
         */
-      def create[V, A](syntax: => Syntax[V, A]): Recursive[V, A] = new Recursive[V, A] {
+      def create[A](syntax: => Syntax[A]): Recursive[A] = new Recursive[A] {
         override protected val id = nextId()
-        override lazy val inner: Syntax[V, A] = syntax
+        override lazy val inner: Syntax[A] = syntax
       }
     }
 
@@ -1335,7 +1256,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    sealed abstract class Recursive[-V, +A] extends Syntax[V, A] with Unary[V, A] {
+    sealed abstract class Recursive[A] extends Syntax[A] with Unary[A] {
 
       /** Unique identifier for this recursive syntax. */
       protected val id: RecId
@@ -1345,11 +1266,11 @@ trait Syntaxes[Token, Kind]
         * @group other
         */
       override def equals(other: Any): Boolean =
-        if (!other.isInstanceOf[Recursive[Nothing, Any]]) {
+        if (!other.isInstanceOf[Recursive[_]]) {
           false
         }
         else {
-          val that = other.asInstanceOf[Recursive[Nothing, Any]]
+          val that = other.asInstanceOf[Recursive[_]]
           this.id == that.id
         }
 
@@ -1371,10 +1292,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         if (recs.contains(this.id)) ListSet() else inner.collectFirst(recs + this.id)
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[Nothing, Any]] =
+      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         if (recs.contains(this.id)) Map.empty else inner.collectShouldNotFollow(recs + this.id)
 
-      override protected def collectCalledLeft(rec: Recursive[Nothing, Any], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
         if (recs.contains(this.id)) false else (this.id == rec.id) || inner.collectCalledLeft(rec, recs + this.id)
 
       override protected def collectIsLL1(recs: Set[RecId]): Boolean =
@@ -1395,7 +1316,7 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         if (recs.contains(this.id)) false else inner.collectIsProductive(recs + this.id)
 
-      override protected def derive(token: Token, kind: Kind): Syntax[V, A] =
+      override protected def derive(token: Token, kind: Kind): Syntax[A] =
         inner.derive(token, kind)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -1411,7 +1332,7 @@ trait Syntaxes[Token, Kind]
         }
 
       override protected def collectTokens(
-          value: V, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
 
         recs.get((this.id, value)) match {
           case None => {
@@ -1426,13 +1347,13 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[Nothing, Any]]): Syntax[V, A] = {
+          recs: Map[RecId, Syntax[_]]): Syntax[A] = {
         recs.get(this.id) match {
           case None => {
-            lazy val rec: Syntax[V, A] = recursive(inner.collectFilter(predicate, recs + (this.id -> rec)))
+            lazy val rec: Syntax[A] = recursive(inner.collectFilter(predicate, recs + (this.id -> rec)))
             rec
           }
-          case Some(rec) => rec.asInstanceOf[Syntax[V, A]]
+          case Some(rec) => rec.asInstanceOf[Syntax[A]]
         }
       }
 
@@ -1453,18 +1374,23 @@ trait Syntaxes[Token, Kind]
     /** Combines two maps by applying a function
       * in case of conflicting entries.
       */
-    private def combine[K, V](merge: (V, V) => V)(left: Map[K, V], right: Map[K, V]): Map[K, V] =
-      right.foldLeft(left) {
-        case (acc, (key, value)) => acc + (key -> left.get(key).map(merge(_, value)).getOrElse(value))
+    private def combine[K, V1, V2 <: V1, V3 <: V1]
+        (merge: (V2, V3) => V1)
+        (left: Map[K, V2], right: Map[K, V3]): Map[K, V1] =
+      right.foldLeft(left: Map[K, V1]) {
+        case (acc, (key, value)) => acc + (key -> (left.get(key) match {
+          case None => value
+          case Some(other) => merge(other, value)
+        }))
       }
 
     /** Combines two Should-Not-Follow results by taking
       * the disjunction of syntax in case of conflicting entries.
       */
     private def combineSNF(
-        left: Map[Kind, Syntax[Nothing, Any]],
-        right: Map[Kind, Syntax[Nothing, Any]]): Map[Kind, Syntax[Nothing, Any]] =
-      combine((p1: Syntax[Nothing, Any], p2: Syntax[Nothing, Any]) => p1 | p2)(left, right)
+        left: Map[Kind, Syntax[_]],
+        right: Map[Kind, Syntax[_]]): Map[Kind, Syntax[_]] =
+      combine((p1: Syntax[_], p2: Syntax[_]) => p1.void | p2.void)(left, right)
   }
 
 
@@ -1474,46 +1400,46 @@ trait Syntaxes[Token, Kind]
     *
     * @group basic
     */
-  def elem(kind: Kind): Syntax[Token, Token] = Elem(kind)
+  def elem(kind: Kind): Syntax[Token] = Elem(kind)
 
   /** Syntax that describes a single token of the provided `kind`,
     * and that directly applies a function on the successfully parsed token.
     *
     * @group basic
     */
-  def accept[A](kind: Kind)(function: PartialFunction[Token, A]): Syntax[Token, A] =
-    elem(kind).map(function)
+  def accept[A](kind: Kind)(function: PartialFunction[Token, A], inverse: A => Seq[Token] = (x: A) => Seq()): Syntax[A] =
+    elem(kind).map(function, inverse)
 
   /** Indicates that the syntax can refer to itself within its body.
     *
     * @group combinator
     */
-  def recursive[V, A](syntax: => Syntax[V, A]): Syntax[V, A] = Recursive.create(syntax)
+  def recursive[A](syntax: => Syntax[A]): Syntax[A] = Recursive.create(syntax)
 
   /** Syntax that produces the given `value` to the empty sequence of tokens.
     *
     * @group basic
     */
-  def epsilon[A](value: A): Syntax[Any, A] = Success(value, (x: Any) => if (value == x) 1 else 0)
+  def epsilon[A](value: A): Syntax[A] = Success(value, (x: A) => if (value == x) 1 else 0)
 
   /** Empty syntax.
     *
     * @group basic
     */
-  def failure[V, A]: Syntax[V, A] = Failure
+  def failure[A]: Syntax[A] = Failure()
 
   /** Syntax that represents 0 or 1 instances of the `syntax`.
     *
     * @group combinator
     */
-  def opt[V, A](syntax: Syntax[V, A]): Syntax[Option[V], Option[A]] = syntax.opt
+  def opt[A](syntax: Syntax[A]): Syntax[Option[A]] = syntax.opt
 
   /** Syntax that represents 0 or more repetitions of the `rep` syntax.
     *
     * @group combinator
     */
-  def many[V, A](rep: Syntax[V, A]): Syntax[Seq[V], Seq[A]] = {
-    lazy val rest: Syntax[Seq[V], Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
+  def many[A](rep: Syntax[A]): Syntax[Seq[A]] = {
+    lazy val rest: Syntax[Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
     rest
   }
 
@@ -1521,21 +1447,21 @@ trait Syntaxes[Token, Kind]
     *
     * @group combinator
     */
-  def many1[V, A](rep: Syntax[V, A]): Syntax[Seq[V], Seq[A]] = rep +: many(rep)
+  def many1[A](rep: Syntax[A]): Syntax[Seq[A]] = rep +: many(rep)
 
   /** Syntax that represents 0 or more repetitions of the `rep` syntax, separated by `sep`.
     *
     * @group combinator
     */
-  def repsep[V, A](rep: Syntax[V, A], sep: Syntax[Unit, Any]): Syntax[Seq[V], Seq[A]] =
+  def repsep[A](rep: Syntax[A], sep: Syntax[Unit]): Syntax[Seq[A]] =
     rep1sep(rep, sep) | epsilon(Vector())
 
   /** Syntax that represents 1 or more repetitions of the `rep` syntax, separated by `sep`.
     *
     * @group combinator
     */
-  def rep1sep[V, A](rep: Syntax[V, A], sep: Syntax[Unit, Any]): Syntax[Seq[V], Seq[A]] = {
-    lazy val rest: Syntax[Seq[V], Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
+  def rep1sep[A](rep: Syntax[A], sep: Syntax[Unit]): Syntax[Seq[A]] = {
+    lazy val rest: Syntax[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
   }
 
@@ -1543,8 +1469,8 @@ trait Syntaxes[Token, Kind]
     *
     * @group combinator
     */
-  def oneOf[V, A](syntaxes: Syntax[V, A]*): Syntax[V, A] = {
-    var queue = syntaxes.toVector :+ failure[V, A]
+  def oneOf[A](syntaxes: Syntax[A]*): Syntax[A] = {
+    var queue = syntaxes.toVector :+ failure[A]
 
     while (queue.size > 1) {
       val a = queue(0)

@@ -82,19 +82,19 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case _ => OtherClass
   }
 
-  val number: Syn[Expr] = accept(NumberClass) {
+  val number: Syntax[Expr] = accept(NumberClass)({
     case NumberToken(n) => LitExpr(n)
-  } contramap {
+  }, {
     case LitExpr(n) => Seq(NumberToken(n))
     case _ => Seq()
-  }
+  })
 
-  def binOp(char: Char): Syntax[Char, (Expr, Expr) => Expr] = accept(OperatorClass(char)) {
-    case _ => (l: Expr, r: Expr) => BinaryExpr(char, l, r)
-  } contramap {
+  def binOp(char: Char): Syntax[Char] = accept(OperatorClass(char))({
+    case _ => char
+  }, {
     case `char` => Seq(OperatorToken(char))
     case _ => Seq()
-  }
+  })
 
   val plus = binOp('+')
 
@@ -104,29 +104,35 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
   val div = binOp('/')
 
-  val fac: Syntax[Char, Expr => Expr] = accept(OperatorClass('!')) {
-    case _ => (x: Expr) => UnaryExpr('!', x)
-  } contramap {
+  val fac: Syntax[Char] = accept(OperatorClass('!'))({
+    case _ => '!'
+  }, {
     case '!' => Seq(OperatorToken('!'))
     case _ => Seq()
-  }
+  })
 
   def parens(isOpen: Boolean) = elem(ParenthesisClass(isOpen)).unit(ParenthesisToken(isOpen))
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: Syn[Expr] = number | open ~>~ value ~<~ close
+  lazy val basic: Syntax[Expr] = number | open ~>~ value ~<~ close
 
-  lazy val postfixed: Syn[Expr] = postfixes[Expr, Char, Expr](basic, fac, {
+  lazy val postfixed: Syntax[Expr] = postfixes[Char, Expr](basic, fac, {
+    case (e, op) => UnaryExpr(op, e)
+  }, {
     case UnaryExpr(op, e) => (e, op)
   })
+
+  val functions: (Expr, Char, Expr) => Expr = {
+    case (l, op, r) => BinaryExpr(op, l, r)
+  }
 
   val reverses: PartialFunction[Expr, (Expr, Char, Expr)] = {
     case BinaryExpr(op, l, r) => (l, op, r)
   }
 
-  lazy val value: Syn[Expr] = recursive {
-    operators(postfixed, reverses)(
+  lazy val value: Syntax[Expr] = recursive {
+    operators(postfixed, functions, reverses)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative)
   }

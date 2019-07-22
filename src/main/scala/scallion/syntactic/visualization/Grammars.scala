@@ -27,7 +27,7 @@ import scala.collection.mutable.{Queue, StringBuilder}
   * @groupprio symbol 2
   * @groupname symbol Symbols
   */
-trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
+trait Grammars[Token, Kind] { self: Syntaxes[Token, Kind] =>
 
   /** Contains utilities to visualize syntaxes as BNF grammars.
     *
@@ -108,38 +108,24 @@ trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
 
     import Syntax._
 
+
     /** Computes the grammar associated with the `syntax`.
       *
       * @group grammar
       */
-    def getGrammar(syntax: Syntax[Nothing, Any]): Grammar = {
+    def getGrammar[A](syntax: Syntax[A]): Grammar = {
       var nextId = 0
       var rules = Vector[Rule]()
-      val queue = new Queue[Syntax[Nothing, Any]]
-      var ids = Map[Syntax[Nothing, Any], Int]()
+      val queue = new Queue[Syntax[_]]
+      var ids = Map[Syntax[_], Int]()
 
-      def inspect(next: Syntax[Nothing, Any]): Int = {
-        if (!ids.contains(next)) {
-          val res = nextId
-          nextId += 1
-          ids += next -> res
-          queue.enqueue(next)
-          res
-        }
-        else {
-          ids(next)
-        }
-      }
-
-      inspect(syntax)
-
-      def getSymbols(next: Syntax[Nothing, Any]): Seq[Seq[Symbol]] = next match {
+      def getSymbols[B](next: Syntax[B]): Seq[Seq[Symbol]] = next match {
         case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)
         case _ => Seq(getSequents(next))
       }
 
-      def getSequents(next: Syntax[Nothing, Any]): Seq[Symbol] = next match {
-        case Failure => Seq()
+      def getSequents[B](next: Syntax[B]): Seq[Symbol] = next match {
+        case Failure() => Seq()
         case Success(_, _) => Seq(Epsilon)
         case Elem(kind) => Seq(Terminal(kind))
         case Transform(_, _, inner) => getSequents(inner)
@@ -154,6 +140,22 @@ trait Grammars[Kind] { self: Syntaxes[_, Kind] =>
           Seq(NonTerminal(id))
         }
       }
+
+
+      def inspect[B](next: Syntax[B]): Int = {
+        if (!ids.contains(next)) {
+          val res = nextId
+          nextId += 1
+          ids += next -> res
+          queue.enqueue(next)
+          res
+        }
+        else {
+          ids(next)
+        }
+      }
+
+      inspect(syntax)
 
       while(queue.nonEmpty) {
         val current = queue.dequeue()

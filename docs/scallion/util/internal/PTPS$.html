@@ -86,11 +86,11 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
-    </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="syntactic"></a><a id="syntactic:syntactic"></a>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../../syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
+    </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="util"></a><a id="util:util"></a>
       <span class="permalink">
-      <a href="../scallion/index.html#syntactic" title="Permalink">
+      <a href="../scallion/index.html#util" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -99,21 +99,14 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="This package is used to describe syntax for LL(1) languages." href="../index.html"><span class="name">syntactic</span></a>
+        <a title="" href="../index.html"><span class="name">util</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes[Token, Kind] {
-
-  <span class="cmt">// Define the token kind of tokens.</span>
-  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
-
-  <span class="cmt">// Then define your syntax using combinators.</span>
-  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li name="scallion.syntactic.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="visualization"></a><a id="visualization:visualization"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.util.internal" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="internal"></a><a id="internal:internal"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/index.html#visualization" title="Permalink">
+      <a href="../../scallion/util/index.html#internal" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -122,58 +115,62 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="index.html"><span class="name">visualization</span></a>
+        <a title="" href="index.html"><span class="name">internal</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.util">util</a></dd></dl></div>
     </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="" title="Contains utilities to visualize syntaxes as BNF grammars."></a>
-                        <a href="" title="Contains utilities to visualize syntaxes as BNF grammars.">Grammars</a>
+                        <a class="class" href="BufferedIterator.html" title=""></a>
+                        <a href="BufferedIterator.html" title="">BufferedIterator</a>
+                      </li><li class="current-entities indented3">
+                        <a class="object" href="" title="Contains Positively Totally Preordered Semigroups (PTPSs) for various domains."></a>
+                        <a class="trait" href="PTPS.html" title="Positively Totally Preordered Semigroup."></a>
+                        <a href="PTPS.html" title="Positively Totally Preordered Semigroup.">PTPS</a>
+                      </li><li class="current-entities indented3">
+                        <a class="object" href="Producer$.html" title="Contains utilities to build producers."></a>
+                        <a class="trait" href="Producer.html" title="Producers are data structures that lazily produce values."></a>
+                        <a href="Producer.html" title="Producers are data structures that lazily produce values.">Producer</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Graphs.html" title="Contains utilities to visualize syntaxes as graphs using Graphviz."></a>
-                        <a href="Graphs.html" title="Contains utilities to visualize syntaxes as graphs using Graphviz.">Graphs</a>
+                        <a class="class" href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them."></a>
+                        <a href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them.">ProducerOps</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="trait type">
+            <body class="object value">
       <div id="definition">
-        <div class="big-circle trait">t</div>
-        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a>.<a href="index.html" class="extype" name="scallion.syntactic.visualization">visualization</a></p>
-        <h1>Grammars<span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html" title="Permalink">
+        <a href="PTPS.html" title="See companion trait"><div class="big-circle object-companion-trait">o</div></a>
+        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.util">util</a>.<a href="index.html" class="extype" name="scallion.util.internal">internal</a></p>
+        <h1><a href="PTPS.html" title="See companion trait">PTPS</a><span class="permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"></span></h3>
+        <h3><span class="morelinks"><div>
+            Companion <a href="PTPS.html" title="See companion trait">trait PTPS</a>
+          </div></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Grammars</span><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">PTPS</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains utilities to visualize syntaxes as BNF grammars.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a>[<span class="extype" name="scallion.syntactic.visualization.Grammars.Token">Token</span>, <span class="extype" name="scallion.syntactic.visualization.Grammars.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/visualization/Grammars.scala" target="_blank">Grammars.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains Positively Totally Preordered Semigroups (PTPSs) for various domains.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/Producers.scala" target="_blank">Producers.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">
-              Known Subclasses
-            </span>
-            <div class="subClasses hiddenContent"><a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a></div>
-          </div></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -189,7 +186,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              <li class="group out"><span>Grouped</span></li>
+              
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -198,7 +195,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.syntactic.visualization.Grammars"><span>Grammars</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.util.internal.PTPS"><span>PTPS</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -228,7 +225,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -244,7 +241,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html###():Int" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -260,7 +257,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -276,7 +273,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -292,7 +289,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#clone():Object" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -316,7 +313,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -332,7 +329,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -348,7 +345,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#finalize():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -370,7 +367,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -389,7 +386,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#hashCode():Int" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -408,7 +405,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -424,7 +421,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -440,7 +437,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#notify():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -459,7 +456,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -475,10 +472,27 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.util.internal.PTPS#seqPTPS" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="seqPTPS[A]:scallion.util.internal.PTPS[Seq[A]]"></a><a id="seqPTPS[A]:PTPS[Seq[A]]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#seqPTPS[A]:scallion.util.internal.PTPS[Seq[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">seqPTPS</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="PTPS.html" class="extype" name="scallion.util.internal.PTPS">PTPS</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.util.internal.PTPS.seqPTPS.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a PTPS for sequences.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a PTPS for sequences.</p><p>The relation <code>lessEquiv</code> compares sizes, while <code>append</code> concatenates.
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -494,7 +508,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#toString():String" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -510,7 +524,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#wait():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -532,7 +546,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -554,7 +568,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/PTPS$.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -575,22 +589,6 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.visualization.Grammars.grammars" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="visualization">
-      <a id="grammars"></a><a id="grammars:grammars"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Grammars.html#grammars" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Contains utilities to visualize syntaxes as BNF grammars." href="Grammars$grammars$.html"><span class="name">grammars</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Contains utilities to visualize syntaxes as BNF grammars.</p>
     </li>
               </ol>
             </div>
@@ -610,10 +608,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="visualization">
-              <h3>Visualization</h3>
-              
-            </div><div class="group" name="Ungrouped">
+        <div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

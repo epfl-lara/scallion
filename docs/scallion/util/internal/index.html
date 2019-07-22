@@ -124,7 +124,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a class="class" href="BufferedIterator.html" title=""></a>
                         <a href="BufferedIterator.html" title="">BufferedIterator</a>
                       </li><li class="current-entities indented3">
-                        <span class="separator"></span>
+                        <a class="object" href="PTPS$.html" title="Contains Positively Totally Preordered Semigroups (PTPSs) for various domains."></a>
                         <a class="trait" href="PTPS.html" title="Positively Totally Preordered Semigroup."></a>
                         <a href="PTPS.html" title="Positively Totally Preordered Semigroup.">PTPS</a>
                       </li><li class="current-entities indented3">
@@ -133,8 +133,8 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a href="Producer.html" title="Producers are data structures that lazily produce values.">Producer</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="ProducerOps.html" title="Extra operations for producers with an ordering and a join operation."></a>
-                        <a href="ProducerOps.html" title="Extra operations for producers with an ordering and a join operation.">ProducerOps</a>
+                        <a class="class" href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them."></a>
+                        <a href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them.">ProducerOps</a>
                       </li>
               </ul>
             </div>
@@ -259,7 +259,7 @@ state the next value, if any, is not yet available.
 Once state has changed, later calls to <code>peek()</code> may result in a stable answer.</p><p>To skip a value, the method <code>skip()</code> is used. The method can only be used after a call to <code>peek()</code>
 has returned an <code>Available(value)</code>, and so only once per such call.</p><p>Producers can be converted to iterators using <code>toIterator</code>.
 </p></div></div>
-    </li><li name="scallion.util.internal.ProducerOps" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.util.internal.ProducerOps" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ProducerOps[A]extendsAnyRef"></a><a id="ProducerOps[A]:ProducerOps[A]"></a>
       <span class="permalink">
       <a href="../../../scallion/util/internal/index.html#ProducerOps[A]extendsAnyRef" title="Permalink">
@@ -268,13 +268,14 @@ has returned an <code>Available(value)</code>, and so only once per such call.</
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Extra operations for producers with an ordering and a join operation." href="ProducerOps.html"><span class="name">ProducerOps</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them." href="ProducerOps.html"><span class="name">ProducerOps</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Extra operations for producers with an ordering and a join operation.</p>
+      <p class="shortcomment cmt">Extra operations for producers of values with a
+Posively Totally Preordered Semigroup (PTPS) defined on them.</p>
     </li></ol>
             </div>
 
@@ -283,7 +284,23 @@ has returned an <code>Available(value)</code>, and so only once per such call.</
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="scallion.util.internal.Producer" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+                <li name="scallion.util.internal.PTPS" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PTPS"></a><a id="PTPS:PTPS"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/index.html#PTPS" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains Positively Totally Preordered Semigroups (PTPSs) for various domains." href="PTPS$.html"><span class="name">PTPS</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains Positively Totally Preordered Semigroups (PTPSs) for various domains.</p>
+    </li><li name="scallion.util.internal.Producer" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Producer"></a><a id="Producer:Producer"></a>
       <span class="permalink">
       <a href="../../../scallion/util/internal/index.html#Producer" title="Permalink">

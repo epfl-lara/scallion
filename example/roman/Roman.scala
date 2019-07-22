@@ -30,9 +30,9 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
   override def getKind(token: Symbol): Symbol = token
 
-  val stop: Syntax[Seq[Symbol], Seq[Symbol]] = epsilon(Seq())
+  val stop: Syntax[Seq[Symbol]] = epsilon(Seq())
 
-  def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int, Int] = {
+  def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int] = {
 
     def f(s: Symbol) = elem(s)
 
@@ -40,50 +40,60 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
     val v = f(sv)
     val x = f(sx)
 
-    val fromI = (i +: (i +: (i +: stop | stop) | v +: stop | x +: stop | stop)).map {
+    val fromI: Syntax[Int]= (i +: (i +: (i +: stop | stop) | v +: stop | x +: stop | stop)).map({
       ss => ss.map {
         case `si` => 1
         case `sv` => 3
         case `sx` => 8
         case _ => 0
       }.sum
-    }
-    val fromV = (v +: (i +: (i +: (i +: stop | stop) | stop) | stop)).map {
+    }, {
+      case 9 => Seq(Seq(si, sx))
+      case 4 => Seq(Seq(si, sv))
+      case 3 => Seq(Seq(si, si, si))
+      case 2 => Seq(Seq(si, si))
+      case 1 => Seq(Seq(si))
+      case _ => Seq()
+    })
+
+    val fromV: Syntax[Int] = (v +: (i +: (i +: (i +: stop | stop) | stop) | stop)).map({
       ss => ss.map {
         case `si` => 1
         case `sv` => 5
         case _ => 0
       }.sum
-    }
-
-    (fromI | fromV | stop.map(_ => 0)).contramap {
-      case 9 => Seq(Seq(si, sx))
+    }, {
       case 8 => Seq(Seq(sv, si, si, si))
       case 7 => Seq(Seq(sv, si, si))
       case 6 => Seq(Seq(sv, si))
       case 5 => Seq(Seq(sv))
-      case 4 => Seq(Seq(si, sv))
-      case 3 => Seq(Seq(si, si, si))
-      case 2 => Seq(Seq(si, si))
-      case 1 => Seq(Seq(si))
+      case _ => Seq()
+    })
+
+    val zero: Syntax[Int] = stop.map({
+      case _ => 0
+    }, {
       case 0 => Seq(Seq())
       case _ => Seq()
-    }
+    })
+
+    fromI | fromV | zero
   }
 
-  val units: Syntax[Int, Int] = base(I, V, X)
-  val tens: Syntax[Int, Int] = base(X, L, C)
-  val hundreds: Syntax[Int, Int] = base(C, D, M)
-  val thousands: Syntax[Int, Int] =
-    (elem(M) +: (elem(M) +: (elem(M) +: stop | stop) | stop) | stop).map {
+  val units = base(I, V, X)
+  val tens = base(X, L, C)
+  val hundreds = base(C, D, M)
+  val thousands: Syntax[Int] =
+    (elem(M) +: (elem(M) +: (elem(M) +: stop | stop) | stop) | stop).map({
       case xs => xs.size
-    }.contramap {
+    }, {
       case k if (k >= 0 && k <= 3) => Seq(Seq.fill(k)(M))
-    }
+      case _ => Seq()
+    })
 
-  val number: Syntax[Int, Int] = (thousands ~ hundreds ~ tens ~ units).map {
+  val number: Syntax[Int] = (thousands ~ hundreds ~ tens ~ units).map({
     case ths ~ hus ~ tes ~ uns => ths * 1000 + hus * 100 + tes * 10 + uns
-  }.contramap {
+  }, {
     case n if n >= 0 => {
       val uns = (n / 1) % 10
       val tes = (n / 10) % 10
@@ -93,5 +103,5 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
       Seq(ths ~ hus ~ tes ~ uns)
     }
     case _ => Seq()
-  }
+  })
 }

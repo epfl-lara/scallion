@@ -111,9 +111,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
   <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes" visbl="pub" class="indented3 " data-isabs="true" fullComment="yes" group="syntax">
-      <a id="Syntaxes[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
+      <a id="Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Kind]withGrammars[Kind]" title="Permalink">
+      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -122,7 +122,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
@@ -163,8 +163,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$Syntax$$Elem.html" title="Syntax that describes a single token of the given kind.">Elem</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="object" href="Syntaxes$Syntax$$Failure$.html" title="Empty syntax."></a>
-                        <a href="Syntaxes$Syntax$$Failure$.html" title="Empty syntax.">Failure</a>
+                        <a class="class" href="Syntaxes$Syntax$$Failure.html" title="Empty syntax."></a>
+                        <a href="Syntaxes$Syntax$$Failure.html" title="Empty syntax.">Failure</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="Syntaxes$Syntax$$Recursive$.html" title="Companion object of Recursive."></a>
                         <a class="class" href="Syntaxes$Syntax$$Recursive.html" title="Syntax that may recursively mention itself."></a>
@@ -212,13 +212,13 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Unary</span><span class="tparams">[<span name="V">-V</span>, <span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Unary</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Unary combinator.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.A">A</span>] with <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_, _]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary">Unary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.A">A</span>] with <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -278,9 +278,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <div class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="scallion.syntactic.Syntaxes.Syntax.Unary#inner" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="subsyntax">
-      <a id="inner:Syntaxes.this.Syntax[V,A]"></a><a id="inner:Syntax[V,A]"></a>
+      <a id="inner:Syntaxes.this.Syntax[A]"></a><a id="inner:Syntax[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Unary.html#inner:Syntaxes.this.Syntax[V,A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Unary.html#inner:Syntaxes.this.Syntax[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -289,7 +289,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inner</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.V">V</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.A">A</span>]</span>
+        <span class="name">inner</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Unary.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">The inner syntax.</p>

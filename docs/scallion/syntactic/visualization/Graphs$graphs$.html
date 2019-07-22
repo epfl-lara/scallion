@@ -127,9 +127,9 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
     </li><li name="scallion.syntactic.visualization.Graphs" visbl="pub" class="indented4 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Graphs[Kind]extendsAnyRef"></a><a id="Graphs[Kind]:Graphs[Kind]"></a>
+      <a id="Graphs[Token,Kind]extendsAnyRef"></a><a id="Graphs[Token,Kind]:Graphs[Token,Kind]"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/index.html#Graphs[Kind]extendsAnyRef" title="Permalink">
+      <a href="../../../scallion/syntactic/visualization/index.html#Graphs[Token,Kind]extendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -138,7 +138,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Contains utilities to visualize syntaxes as graphs using Graphviz." href="Graphs.html"><span class="name">Graphs</span></a><span class="tparams">[<span name="Kind">Kind</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Contains utilities to visualize syntaxes as graphs using Graphviz." href="Graphs.html"><span class="name">Graphs</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
       <p class="shortcomment cmt">Contains utilities to visualize syntaxes as graphs using Graphviz.</p><div class="fullcomment"><div class="comment cmt"><p>Contains utilities to visualize syntaxes as graphs using Graphviz.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic.visualization">visualization</a></dd></dl></div>
@@ -483,9 +483,9 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.visualization.Graphs.graphs#outputGraph" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputGraph(syntax:Graphs.this.Syntax[Nothing,Any],location:String,name:String):Unit"></a><a id="outputGraph(Syntax[Nothing,Any],String,String):Unit"></a>
+      <a id="outputGraph[A](syntax:Graphs.this.Syntax[A],location:String,name:String):Unit"></a><a id="outputGraph[A](Syntax[A],String,String):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/visualization/Graphs$graphs$.html#outputGraph(syntax:Graphs.this.Syntax[Nothing,Any],location:String,name:String):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/visualization/Graphs$graphs$.html#outputGraph[A](syntax:Graphs.this.Syntax[A],location:String,name:String):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -494,7 +494,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputGraph</span><span class="params">(<span name="syntax">syntax: <a href="../Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>]</span>, <span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">outputGraph</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="../Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.visualization.Graphs.graphs.outputGraph.A">A</span>]</span>, <span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
       <p class="shortcomment cmt">Produces a graph representation of the syntax as a PDF file using <code>dot</code> from Graphviz.</p><div class="fullcomment"><div class="comment cmt"><p>Produces a graph representation of the syntax as a PDF file using <code>dot</code> from Graphviz.

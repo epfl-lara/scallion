@@ -124,7 +124,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a class="class" href="BufferedIterator.html" title=""></a>
                         <a href="BufferedIterator.html" title="">BufferedIterator</a>
                       </li><li class="current-entities indented3">
-                        <span class="separator"></span>
+                        <a class="object" href="PTPS$.html" title="Contains Positively Totally Preordered Semigroups (PTPSs) for various domains."></a>
                         <a class="trait" href="PTPS.html" title="Positively Totally Preordered Semigroup."></a>
                         <a href="PTPS.html" title="Positively Totally Preordered Semigroup.">PTPS</a>
                       </li><li class="current-entities indented3">
@@ -133,16 +133,16 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a href="Producer.html" title="Producers are data structures that lazily produce values.">Producer</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="" title="Extra operations for producers with an ordering and a join operation."></a>
-                        <a href="" title="Extra operations for producers with an ordering and a join operation.">ProducerOps</a>
+                        <a class="class" href="" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them."></a>
+                        <a href="" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them.">ProducerOps</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="trait type">
+            <body class="class type">
       <div id="definition">
-        <div class="big-circle trait">t</div>
+        <div class="big-circle class">c</div>
         <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.util">util</a>.<a href="index.html" class="extype" name="scallion.util.internal">internal</a></p>
         <h1>ProducerOps<span class="permalink">
       <a href="../../../scallion/util/internal/ProducerOps.html" title="Permalink">
@@ -155,7 +155,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
         <span class="name">ProducerOps</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
@@ -163,7 +163,9 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Extra operations for producers with an ordering and a join operation.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/Producers.scala" target="_blank">Producers.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Extra operations for producers of values with a
+Posively Totally Preordered Semigroup (PTPS) defined on them.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/Producers.scala" target="_blank">Producers.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -211,50 +213,33 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="scallion.util.internal.ProducerOps#join" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="join(x:A,y:A):A"></a><a id="join(A,A):A"></a>
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="scallion.util.internal.ProducerOps#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(ptps:scallion.util.internal.PTPS[A]):scallion.util.internal.ProducerOps[A]"></a><a id="&lt;init&gt;:ProducerOps[A]"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#join(x:A,y:A):A" title="Permalink">
+      <a href="../../../scallion/util/internal/ProducerOps.html#&lt;init&gt;(ptps:scallion.util.internal.PTPS[A]):scallion.util.internal.ProducerOps[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">join</span><span class="params">(<span name="x">x: <span class="extype" name="scallion.util.internal.ProducerOps.A">A</span></span>, <span name="y">y: <span class="extype" name="scallion.util.internal.ProducerOps.A">A</span></span>)</span><span class="result">: <span class="extype" name="scallion.util.internal.ProducerOps.A">A</span></span>
+        <span class="name">ProducerOps</span><span class="params">(<span name="ptps">ptps: <a href="PTPS.html" class="extype" name="scallion.util.internal.PTPS">PTPS</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>)</span>
       </span>
       
-      <p class="shortcomment cmt">Combines two values into a single value.</p><div class="fullcomment"><div class="comment cmt"><p>Combines two values into a single value.</p><p>Both arguments should always be <code>lessEquals</code> to the result.
-</p></div></div>
-    </li><li name="scallion.util.internal.ProducerOps#lessEquals" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="lessEquals(x:A,y:A):Boolean"></a><a id="lessEquals(A,A):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#lessEquals(x:A,y:A):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">lessEquals</span><span class="params">(<span name="x">x: <span class="extype" name="scallion.util.internal.ProducerOps.A">A</span></span>, <span name="y">y: <span class="extype" name="scallion.util.internal.ProducerOps.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
       
-      <p class="shortcomment cmt">Compares two values.</p>
     </li></ol>
             </div>
 
+        
+
+        
+
         <div class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
@@ -522,7 +507,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">Product of two producers.</p><div class="fullcomment"><div class="comment cmt"><p>Product of two producers.</p><p>If the two producers produce values in increasing order,
-then the resulting producer will produce their <code>join</code> in increasing order.
+then the resulting producer will produce their <code>append</code> in increasing order.
 </p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
@@ -571,7 +556,7 @@ then the resulting producer will produce their <code>join</code> in increasing o
         <span class="name">union</span><span class="params">(<span name="left">left: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>, <span name="right">right: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>)</span><span class="result">: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Union of two producers.</p><div class="fullcomment"><div class="comment cmt"><p>Union of two producers.</p><p>If the two producers produce values in increasing order (according to <code>lessEquals</code>),
+      <p class="shortcomment cmt">Union of two producers.</p><div class="fullcomment"><div class="comment cmt"><p>Union of two producers.</p><p>If the two producers produce values in increasing order,
 then the resulting producer will also produce values in order.
 </p></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">

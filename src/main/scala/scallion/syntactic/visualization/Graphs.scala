@@ -20,7 +20,7 @@ package visualization
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to visualize syntaxes as graphs using Graphviz. */
-trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
+trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
 
   /** Contains utilities to visualize syntaxes as graphs using Graphviz.
     *
@@ -33,13 +33,13 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
 
     import Syntax._
 
-    private def getGraph(syntax: Syntax[Nothing, Any]): Graph = {
+    private def getGraph[A](syntax: Syntax[A]): Graph = {
       var nextId = 0
       var nodes = Vector[Node]()
-      val queue = new Queue[(Syntax[Nothing, Any], Int)]
-      var ids = Map[Syntax[Nothing, Any], Int]()
+      val queue = new Queue[(Syntax[_], Int)]
+      var ids = Map[Syntax[_], Int]()
 
-      def inspect(next: Syntax[Nothing, Any]): Int = {
+      def inspect[B](next: Syntax[B]): Int = {
         if (!ids.contains(next)) {
           val res = nextId
           nextId += 1
@@ -55,10 +55,11 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
       inspect(syntax)
 
       while(queue.nonEmpty) {
-        val (current, id) = queue.dequeue()
+        import scala.language.existentials
+        val (current: Syntax[_], id: Int) = queue.dequeue()
 
         val (label, targets) = current match {
-          case Failure => ("⊥", Seq())
+          case Failure() => ("⊥", Seq())
           case Success(_, _) => ("𝛆", Seq())
           case Elem(kind) => (kind.toString, Seq())
           case Disjunction(left, right) => {
@@ -101,11 +102,11 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
     }
 
     /** Returns a Graphviz representation of the syntax. */
-    private def toGraphviz(syntax: Syntax[Nothing, Any]): String = {
+    private def toGraphviz[A](syntax: Syntax[A]): String = {
 
       val graph = getGraph(syntax)
 
-      def addPorts[A](elems: Seq[A]): Seq[(A, String)] = {
+      def addPorts[B](elems: Seq[B]): Seq[(B, String)] = {
         val n = elems.size
 
         if (n == 2) {
@@ -140,7 +141,7 @@ trait Graphs[Kind] { self: Syntaxes[_, Kind] =>
       * @param location The directory in which to save the files.
       * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
       */
-    def outputGraph(syntax: Syntax[Nothing, Any], location: String, name: String): Unit = {
+    def outputGraph[A](syntax: Syntax[A], location: String, name: String): Unit = {
       import java.nio.file._
       import sys.process._
 

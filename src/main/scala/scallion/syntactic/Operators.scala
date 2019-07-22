@@ -55,7 +55,7 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @group level
     */
-  case class Level[-V, A](operator: Syntax[V, (A, A) => A], associativity: Associativity)
+  case class Level[Op](operator: Syntax[Op], associativity: Associativity)
 
 
   /** Implicitly decorates an `operator` syntax to add an `is` method
@@ -67,29 +67,33 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @group level
     */
-  implicit class LevelDecorator[-V, A](operator: Syntax[V, (A, A) => A]) {
+  implicit class LevelDecorator[Op](operator: Syntax[Op]) {
 
     /** Indicates the associativity of the operator. */
-    def is(associativity: Associativity): Level[V, A] = Level(operator, associativity)
+    def is(associativity: Associativity): Level[Op] = Level(operator, associativity)
   }
 
   /** Syntax that represents repetitions of `elem` separated by infix operators.
     *
     * The operators in earlier levels are considered to bind tighter than those in later levels.
     *
-    * @param elem   Syntax for the operands.
-    * @param rev    Function to reverse an operation.
-    * @param levels Operators (with associativity), in decreasing priority.
+    * @param elem     Syntax for the operands.
+    * @param function Function to apply an operation.
+    * @param inverse  Function to reverse an operation.
+    * @param levels   Operators (with associativity), in decreasing priority.
     *
     * @group combinator
     */
-  def operators[V, W, A](elem: Syntax[V, A], rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty)
-                        (levels: Level[W, A]*): Syntax[V, A] = {
+  def operators[Op, A](
+      elem: Syntax[A],
+      function: (A, Op, A) => A,
+      inverse: PartialFunction[A, (A, Op, A)])
+        (levels: Level[Op]*): Syntax[A] = {
 
     levels.foldLeft(elem) {
       case (acc, Level(op, assoc)) => assoc match {
-        case LeftAssociative => infixLeft(acc, op, rev)
-        case RightAssociative => infixRight(acc, op, rev)
+        case LeftAssociative => infixLeft(acc, op, function, inverse)
+        case RightAssociative => infixRight(acc, op, function, inverse)
       }
     }
   }
@@ -101,21 +105,23 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @param elem Syntax for the operands.
     * @param op   Syntax for the operators.
-    * @param rev  Function to reverse an operation.
+    * @param function Function to apply an operation.
+    * @param inverse  Function to reverse an operation.
     */
-  def infixLeft[V, W, A](
-      elem: Syntax[V, A],
-      op: Syntax[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty): Syntax[V, A] =
+  def infixLeft[Op, A](
+      elem: Syntax[A],
+      op: Syntax[Op],
+      function: (A, Op, A) => A,
+      inverse: PartialFunction[A, (A, Op, A)]): Syntax[A] =
 
-    (elem ~ many(op ~ elem)).bimap({
+    (elem ~ many(op ~ elem)).map({
       case first ~ opElems => opElems.foldLeft(first) {
-        case (acc, (op ~ elem)) => op(acc, elem)
+        case (acc, (op ~ elem)) => function(acc, op, elem)
       }
     }, {
       case v => {
-        val regrouped: PartialFunction[V, (V, W ~ V)] = rev andThen {
-          case (v1, w, v2) => (v1, w ~ v2)
+        val regrouped: PartialFunction[A, (A, Op ~ A)] = inverse andThen {
+          case (a1, op, a2) => (a1, op ~ a2)
         }
 
         unfoldLeft(regrouped)(v)
@@ -127,28 +133,29 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * @param elem Syntax for the operands.
     * @param op   Syntax for the operators.
-    * @param rev  Function to reverse an operation.
-    *
+    * @param function Function to apply an operation.
+    * @param inverse  Function to reverse an operation.    *
     * @group combinator
     */
-  def infixRight[V, W, A](
-      elem: Syntax[V, A],
-      op: Syntax[W, (A, A) => A],
-      rev: PartialFunction[V, (V, W, V)] = PartialFunction.empty): Syntax[V, A] =
+  def infixRight[Op, A](
+      elem: Syntax[A],
+      op: Syntax[Op],
+      function: (A, Op, A) => A,
+      inverse: PartialFunction[A, (A, Op, A)]): Syntax[A] =
 
-    (elem ~ many(op ~ elem)).bimap({
+    (elem ~ many(op ~ elem)).map({
       case first ~ opElems => {
         val (ops, elems) = opElems.map(t => (t._1, t._2)).unzip
         val allElems = first +: elems
         val elemOps = allElems.zip(ops)
         elemOps.foldRight(allElems.last) {
-          case ((elem, op), acc) => op(elem, acc)
+          case ((elem, op), acc) => function(elem, op, acc)
         }
       }
     }, {
       case v => {
-        val regrouped: PartialFunction[V, ((V, W), V)] = rev andThen {
-          case (v1, w, v2) => ((v1, w), v2)
+        val regrouped: PartialFunction[A, ((A, Op), A)] = inverse andThen {
+          case (a1, op, a2) => ((a1, op), a2)
         }
 
         unfoldRight(regrouped)(v).map {
@@ -170,23 +177,25 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * Operators are applied right-to-left.
     *
-    * @param op   Syntax for the operators.
-    * @param elem Syntax for the operands.
-    * @param rev  Function to reverse an operation.
+    * @param op       Syntax for the operators.
+    * @param elem     Syntax for the operands.
+    * @param function Function to apply an operation.
+    * @param inverse  Function to reverse an operation.
     *
     * @group combinator
     */
-  def prefixes[V, W, A](
-      op: Syntax[W, A => A],
-      elem: Syntax[V, A],
-      rev: PartialFunction[V, (W, V)] = PartialFunction.empty): Syntax[V, A] = {
-    (many(op) ~ elem).bimap({
+  def prefixes[Op, A](
+      op: Syntax[Op],
+      elem: Syntax[A],
+      function: (Op, A) => A,
+      inverse: PartialFunction[A, (Op, A)] = PartialFunction.empty): Syntax[A] = {
+    (many(op) ~ elem).map({
       case os ~ v => os.foldRight(v) {
-        case (o, acc) => o(acc)
+        case (o, acc) => function(o, acc)
       }
     }, {
       case v => {
-        unfoldRight(rev)(v)
+        unfoldRight(inverse)(v)
       }
     })
   }
@@ -195,20 +204,25 @@ trait Operators { self: Syntaxes[_, _] =>
     *
     * Operators are applied left-to-right.
     *
-    * @param elem Syntax for the operands.
-    * @param op   Syntax for the operators.
-    * @param rev  Function to reverse an operation.
+    * @param elem     Syntax for the operands.
+    * @param op       Syntax for the operators.
+    * @param function Function to apply an operation.
+    * @param inverse  Function to reverse an operation.
     *
     * @group combinator
     */
-  def postfixes[V, W, A](elem: Syntax[V, A], op: Syntax[W, A => A], rev: PartialFunction[V, (V, W)]): Syntax[V, A] = {
-    (elem ~ many(op)).bimap({
+  def postfixes[Op, A](
+      elem: Syntax[A],
+      op: Syntax[Op],
+      function: (A, Op) => A,
+      inverse: PartialFunction[A, (A, Op)]): Syntax[A] = {
+    (elem ~ many(op)).map({
       case v ~ os => os.foldLeft(v) {
-        case (acc, o) => o(acc)
+        case (acc, o) => function(acc, o)
       }
     }, {
       case v => {
-        unfoldLeft(rev)(v)
+        unfoldLeft(inverse)(v)
       }
     })
   }

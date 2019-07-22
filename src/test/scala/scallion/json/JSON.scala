@@ -126,44 +126,42 @@ object JSONParser extends Syntaxes[Token, TokenClass] {
     case _ => NoClass
   }
 
-  type P[A] = Syntax[_, A]
-
-  val booleanValue: P[BooleanValue] = accept(BooleanClass) {
+  val booleanValue: Syntax[Value] = accept(BooleanClass) {
     case BooleanToken(value, range) => BooleanValue(value, range)
   }
 
-  val numberValue: P[NumberValue] = accept(NumberClass) {
+  val numberValue: Syntax[Value] = accept(NumberClass) {
     case NumberToken(value, range) => NumberValue(value, range)
   }
 
-  val stringValue: P[StringValue] = accept(StringClass) {
+  val stringValue: Syntax[StringValue] = accept(StringClass) {
     case StringToken(value, range) => StringValue(value, range)
   }
 
-  val nullValue: P[Value] = accept(NullClass) {
+  val nullValue: Syntax[Value] = accept(NullClass) {
     case NullToken(range) => NullValue(range)
   }
 
-  implicit def separator(char: Char): Syntax[Unit, Token] = elem(SeparatorClass(char)).unit()
+  implicit def separator(char: Char): Syntax[Token] = elem(SeparatorClass(char))
 
-  lazy val arrayValue: P[Value] =
-    ('[' ~ repsep(value, ',') ~ ']').map {
+  lazy val arrayValue: Syntax[Value] =
+    ('[' ~ repsep(value, ','.unit()) ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
     }
 
-  lazy val binding: P[(StringValue, Value)] =
+  lazy val binding: Syntax[(StringValue, Value)] =
     (stringValue ~ ':' ~ value).map {
       case key ~ _ ~ value => (key, value)
     }
 
-  lazy val objectValue: P[Value] =
-    ('{' ~ repsep(binding, ',') ~ '}').map {
+  lazy val objectValue: Syntax[Value] =
+    ('{' ~ repsep(binding, ','.unit()) ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
     }
 
-  lazy val value: P[Value] = recursive {
-    oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue, nullValue)
+  lazy val value: Syntax[Value] = recursive {
+    oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue.up[Value], nullValue)
   }
 
-  def apply(it: Iterator[Token]): ParseResult[Nothing, Value] = value(it)
+  def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
 }
