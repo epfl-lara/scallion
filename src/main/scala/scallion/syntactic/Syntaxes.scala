@@ -68,13 +68,13 @@ trait Syntaxes[Token, Kind]
     */
   sealed trait Syntax[A] {
 
-    /** The value, if any, produced by this syntax without consuming more input.
+    /** The value, if any, corresponding to the empty sequence of tokens in `this` syntax.
       *
       * @group property
       */
     def nullable: Option[A]
 
-    /** Indicates if there exists a finite sequence of tokens that the syntax describes.
+    /** Indicates if there exists a finite sequence of tokens that `this` syntax describes.
       *
       * @group property
       */
@@ -97,7 +97,7 @@ trait Syntaxes[Token, Kind]
     @inline def shouldNotFollow: Map[Kind, Syntax[_]] = collectShouldNotFollow(ListSet())
 
     /** Checks if a `Recursive` syntax can be entered without
-      * being prefixed by a non-empty sequence of tokens.
+      * being prefixed by a non-empty sequence of tokens in `this` syntax.
       *
       * @param rec The `Recursive` syntax.
       *
@@ -105,25 +105,26 @@ trait Syntaxes[Token, Kind]
       */
     @inline def calledLeft(rec: Recursive[_]): Boolean = collectCalledLeft(rec, ListSet())
 
-    /** Checks if this syntax is LL(1).
+    /** Checks if `this` syntax is LL(1).
       *
       * @group property
       */
     @inline def isLL1: Boolean = collectIsLL1(ListSet())
 
-    /** Returns all LL(1) conflicts in the syntax.
+    /** Returns all LL(1) conflicts in `this` syntax.
       *
       * @group property
       */
     @inline def conflicts: Set[LL1Conflict] = collectLL1Conflicts(ListSet())
 
-    /** Returns all possible sequences of accepted token kinds, in increasing size.
+    /** Returns all possible sequences of token kinds accepted by `this` syntax,
+      * ordered by increasing size.
       *
       * @group property
       */
     @inline def trails: Iterator[Seq[Kind]] = collectTrails(Map.empty).toIterator
 
-    /** Strips a syntax of all token kinds that do not satisfy a `predicate`.
+    /** Strips `this` syntax of all token kinds that do not satisfy a `predicate`.
       *
       * @param predicate The predicate that kinds must satisfy.
       *
@@ -137,8 +138,8 @@ trait Syntaxes[Token, Kind]
       */
     @inline def kinds: Set[Kind] = collectKinds(ListSet())
 
-    /** Returns all representations of the value `value`,
-      * ordered by increasing length.
+    /** Returns all representations of `value` in `this` syntax,
+      * ordered by increasing size.
       *
       * @group printing
       */
@@ -153,19 +154,19 @@ trait Syntaxes[Token, Kind]
     // introduced by `Recursive`.
 
 
-    /** Collects the nullable value from this syntax.
+    /** Collects the nullable value from `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectNullable(recs: Set[RecId]): Option[A]
 
-    /** Collects the "first" set from this syntax.
+    /** Collects the "first" set from `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectFirst(recs: Set[RecId]): Set[Kind]
 
-    /** Collects the "should-not-follow" set from this syntax.
+    /** Collects the "should-not-follow" set from `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
@@ -178,19 +179,19 @@ trait Syntaxes[Token, Kind]
       */
     protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean
 
-    /** Checks if this syntax is productive.
+    /** Checks if `this` syntax is productive.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectIsProductive(recs: Set[RecId]): Boolean
 
-    /** Checks if this syntax is LL(1).
+    /** Checks if `this` syntax is LL(1).
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectIsLL1(recs: Set[RecId]): Boolean
 
-    /** Collects the LL(1) conflicts from this syntax.
+    /** Collects the LL(1) conflicts from `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
@@ -202,47 +203,47 @@ trait Syntaxes[Token, Kind]
       */
     protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]]
 
-    /** Builds a syntax that filter out unwanted kinds.
+    /** Builds a syntax that filter out unwanted kinds from `this` syntax.
       *
       * @param predicate Predicate that kinds must satisfy.
       * @param recs      The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Syntax[_]]): Syntax[A]
 
-    /** Collects all kinds appearing in this syntax.
+    /** Collects all token kinds appearing in `this` syntax.
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectKinds(recs: Set[RecId]): Set[Kind]
 
 
-    /** Collects a producer that iterates over all representations of a value.
+    /** Collects a producer that iterates over all representations of `value`.
       *
       * @param value The value being printed.
       * @param recs  The producer view associated to an already visited recursive syntax and value.
       */
     protected def collectTokens(value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
 
-    /** Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
+    /** Feeds a token and its kind to `this` syntax and obtains a syntax for the rest of input.
       *
       * @group derivation
       */
     protected def derive(token: Token, kind: Kind): Syntax[A]
 
-    /** Feeds a token to the syntax and obtain a syntax for the rest of input.
+    /** Feeds a token to this `syntax` and obtains a syntax for the rest of input.
       *
       * @group derivation
       */
     @inline def derive(token: Token): Syntax[A] = derive(token, getKind(token))
 
 
-    /** String representation of the syntax.
+    /** String representation of `this` syntax.
       *
       * @group other
       */
     override def toString = repr(0, Map.empty)
 
-    /** Computes a friendly string representation for the syntax. */
+    /** Computes a friendly string representation for `this` syntax. */
     protected def repr(level: Int, recs: Map[RecId, String]): String
 
 
@@ -286,7 +287,7 @@ trait Syntaxes[Token, Kind]
         case _ => Concat(this, that)
       }
 
-    /** Sequences `this` and `that` syntax. The parsed value from `that` is returned.
+    /** Sequences `this` and `that` syntax. The parsed values from `that` is returned.
       *
       * @group combinator
       */
@@ -354,38 +355,45 @@ trait Syntaxes[Token, Kind]
       */
     def ||[W, B](that: Syntax[B]): Syntax[Either[A, B]] =
       this.map[Either[A, B]](Left(_), {
-        (e: Either[A, B]) => e match {
-          case Left(x) => Seq(x)
-          case Right(_) => Seq()
-        }
+        case Left(x) => Seq(x)
+        case Right(_) => Seq()
       }) | that.map[Either[A, B]](Right(_), {
-        (e: Either[A, B]) => e match {
-          case Left(_) => Seq()
-          case Right(x) => Seq(x)
-        }
+        case Left(_) => Seq()
+        case Right(x) => Seq(x)
       })
 
-    /** Makes the syntax nullable.
+    /** Makes `this` syntax nullable.
       *
       * @group combinator
       */
     def opt: Syntax[Option[A]] = this.map[Option[A]](Some(_), {
-      (o: Option[A]) => o match {
-        case Some(x) => Seq(x)
-        case None => Seq()
-      }
+      case Some(x) => Seq(x)
+      case None => Seq()
     }) | epsilon(None)
 
-    /** Informs the syntax of the values that can be produced.
+    /** Indicates that `this` syntax describes only a finite number of
+      * equivalent `values`.
+      *
+      * Parsed values are replaced by `()`, while printed values
+      * are replaced by the various `values`.
       *
       * @group combinator
       */
-    def unit(defaults: A*): Syntax[Unit] = this.map(_ => (), {
-      case () => defaults
+    def unit(values: A*): Syntax[Unit] = this.map(_ => (), {
+      case () => values
     })
 
+
+    /** Upcasts `this` syntax to `Syntax[Any]`.
+      *
+      * Disables pretty printing for `this` syntax.
+      */
     def void: Syntax[Any] = this.map((x: A) => x, (y: Any) => Seq())
 
+    /** Upcasts `this` syntax.
+      *
+      * The resulting `syntax` parses and pretty prints equivalently to `this` syntax.
+      */
     def up[B >: A](implicit ev: Manifest[A]): Syntax[B] = this.map((x: A) => x, (y: B) => ev.unapply(y) match {
       case None => Seq()
       case Some(x) => Seq(x)

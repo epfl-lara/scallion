@@ -282,7 +282,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectFilter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Builds a syntax that filter out unwanted kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a syntax that filter out unwanted kinds.
+      <p class="shortcomment cmt">Builds a syntax that filter out unwanted kinds from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a syntax that filter out unwanted kinds from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">predicate</dt><dd class="cmt"><p>Predicate that kinds must satisfy.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectFirst" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectFirst(recs:Set[Syntaxes.this.Syntax.RecId]):Set[Kind]"></a><a id="collectFirst(Set[RecId]):Set[Kind]"></a>
@@ -299,7 +299,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectFirst</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects the &quot;first&quot; set from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;first&quot; set from this syntax.
+      <p class="shortcomment cmt">Collects the &quot;first&quot; set from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;first&quot; set from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectIsLL1" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectIsLL1(recs:Set[Syntaxes.this.Syntax.RecId]):Boolean"></a><a id="collectIsLL1(Set[RecId]):Boolean"></a>
@@ -316,7 +316,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectIsLL1</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Checks if this syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if this syntax is LL(1).
+      <p class="shortcomment cmt">Checks if <code>this</code> syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if <code>this</code> syntax is LL(1).
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectIsProductive" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectIsProductive(recs:Set[Syntaxes.this.Syntax.RecId]):Boolean"></a><a id="collectIsProductive(Set[RecId]):Boolean"></a>
@@ -333,7 +333,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectIsProductive</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Checks if this syntax is productive.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if this syntax is productive.
+      <p class="shortcomment cmt">Checks if <code>this</code> syntax is productive.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if <code>this</code> syntax is productive.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectKinds" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectKinds(recs:Set[Syntaxes.this.Syntax.RecId]):Set[Kind]"></a><a id="collectKinds(Set[RecId]):Set[Kind]"></a>
@@ -350,7 +350,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectKinds</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects all kinds appearing in this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects all kinds appearing in this syntax.
+      <p class="shortcomment cmt">Collects all token kinds appearing in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects all token kinds appearing in <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectLL1Conflicts" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectLL1Conflicts(recs:Set[Syntaxes.this.Syntax.RecId]):Set[Syntaxes.this.LL1Conflict]"></a><a id="collectLL1Conflicts(Set[RecId]):Set[LL1Conflict]"></a>
@@ -367,7 +367,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectLL1Conflicts</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects the LL(1) conflicts from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the LL(1) conflicts from this syntax.
+      <p class="shortcomment cmt">Collects the LL(1) conflicts from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the LL(1) conflicts from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectNullable" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectNullable(recs:Set[Syntaxes.this.Syntax.RecId]):Option[A]"></a><a id="collectNullable(Set[RecId]):Option[A]"></a>
@@ -384,7 +384,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectNullable</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects the nullable value from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the nullable value from this syntax.
+      <p class="shortcomment cmt">Collects the nullable value from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the nullable value from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectShouldNotFollow" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectShouldNotFollow(recs:Set[Syntaxes.this.Syntax.RecId]):Map[Kind,Syntaxes.this.Syntax[_]]"></a><a id="collectShouldNotFollow(Set[RecId]):Map[Kind,Syntax[_]]"></a>
@@ -401,7 +401,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectShouldNotFollow</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>, <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects the &quot;should-not-follow&quot; set from this syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;should-not-follow&quot; set from this syntax.
+      <p class="shortcomment cmt">Collects the &quot;should-not-follow&quot; set from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;should-not-follow&quot; set from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectTokens" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectTokens(value:A,recs:Map[(Syntaxes.this.Syntax.RecId,Any),()=&gt;scallion.util.internal.Producer[Seq[Token]]]):scallion.util.internal.Producer[Seq[Token]]"></a><a id="collectTokens(A,Map[(RecId,Any),()⇒Producer[Seq[Token]]]):Producer[Seq[Token]]"></a>
@@ -418,7 +418,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">collectTokens</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[(<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Any">Any</span>), () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Collects a producer that iterates over all representations of a value.</p><div class="fullcomment"><div class="comment cmt"><p>Collects a producer that iterates over all representations of a value.
+      <p class="shortcomment cmt">Collects a producer that iterates over all representations of <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Collects a producer that iterates over all representations of <code>value</code>.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value being printed.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The producer view associated to an already visited recursive syntax and value.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#collectTrails" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="collectTrails(recs:Map[Syntaxes.this.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Seq[Kind]]]):scallion.util.internal.Producer[Seq[Kind]]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Seq[Kind]]]):Producer[Seq[Kind]]"></a>
@@ -452,7 +452,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token and its kind to the syntax and obtain a syntax for the rest of input.
+      <p class="shortcomment cmt">Feeds a token and its kind to <code>this</code> syntax and obtains a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token and its kind to <code>this</code> syntax and obtains a syntax for the rest of input.
 </p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#isProductive" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="property">
       <a id="isProductive:Boolean"></a>
@@ -469,7 +469,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">isProductive</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates if there exists a finite sequence of tokens that the syntax describes.</p>
+      <p class="shortcomment cmt">Indicates if there exists a finite sequence of tokens that <code>this</code> syntax describes.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#nullable" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="property">
       <a id="nullable:Option[A]"></a>
       <span class="permalink">
@@ -485,7 +485,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">nullable</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">The value, if any, produced by this syntax without consuming more input.</p>
+      <p class="shortcomment cmt">The value, if any, corresponding to the empty sequence of tokens in <code>this</code> syntax.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#repr" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="repr(level:Int,recs:Map[Syntaxes.this.Syntax.RecId,String]):String"></a><a id="repr(Int,Map[RecId,String]):String"></a>
       <span class="permalink">
@@ -501,7 +501,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">repr</span><span class="params">(<span name="level">level: <span class="extype" name="scala.Int">Int</span></span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">Computes a friendly string representation for the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Computes a friendly string representation for the syntax.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt">Computes a friendly string representation for <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Computes a friendly string representation for <code>this</code> syntax.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li></ol>
             </div>
 
@@ -657,8 +657,8 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
       </span>
       
       <p class="shortcomment cmt">Checks if a <code>Recursive</code> syntax can be entered without
-being prefixed by a non-empty sequence of tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if a <code>Recursive</code> syntax can be entered without
-being prefixed by a non-empty sequence of tokens.
+being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if a <code>Recursive</code> syntax can be entered without
+being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">rec</dt><dd class="cmt"><p>The <code>Recursive</code> syntax.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -740,7 +740,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">conflicts</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns all LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all LL(1) conflicts in the syntax.
+      <p class="shortcomment cmt">Returns all LL(1) conflicts in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all LL(1) conflicts in <code>this</code> syntax.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -760,7 +760,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Feeds a token to the syntax and obtain a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token to the syntax and obtain a syntax for the rest of input.
+      <p class="shortcomment cmt">Feeds a token to this <code>syntax</code> and obtains a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token to this <code>syntax</code> and obtains a syntax for the rest of input.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -812,7 +812,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Strips a syntax of all token kinds that do not satisfy a <code>predicate</code>.
+      <p class="shortcomment cmt">Strips <code>this</code> syntax of all token kinds that do not satisfy a <code>predicate</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Strips <code>this</code> syntax of all token kinds that do not satisfy a <code>predicate</code>.
 </p></div><dl class="paramcmts block"><dt class="param">predicate</dt><dd class="cmt"><p>The predicate that kinds must satisfy.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -928,7 +928,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">isLL1</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Checks if this syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if this syntax is LL(1).
+      <p class="shortcomment cmt">Checks if <code>this</code> syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if <code>this</code> syntax is LL(1).
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -1039,7 +1039,7 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">opt</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Makes the syntax nullable.</p>
+      <p class="shortcomment cmt">Makes <code>this</code> syntax nullable.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#shouldNotFollow" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="shouldNotFollow:Map[Kind,Syntaxes.this.Syntax[_]]"></a><a id="shouldNotFollow:Map[Kind,Syntax[_]]"></a>
       <span class="permalink">
@@ -1094,7 +1094,7 @@ where the constraint was generated.
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">String representation of the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of the syntax.
+      <p class="shortcomment cmt">String representation of <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of <code>this</code> syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a> → AnyRef → Any</dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#trails" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="trails:Iterator[Seq[Kind]]"></a>
@@ -1111,7 +1111,9 @@ where the constraint was generated.
         <span class="name">trails</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns all possible sequences of accepted token kinds, in increasing size.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible sequences of accepted token kinds, in increasing size.
+      <p class="shortcomment cmt">Returns all possible sequences of token kinds accepted by <code>this</code> syntax,
+ordered by increasing size.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible sequences of token kinds accepted by <code>this</code> syntax,
+ordered by increasing size.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -1131,12 +1133,12 @@ where the constraint was generated.
         <span class="name">unapply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns all representations of the value <code>value</code>,
-ordered by increasing length.</p>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#unit" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="unit(defaults:A*):Syntaxes.this.Syntax[Unit]"></a><a id="unit(A*):Syntax[Unit]"></a>
+      <p class="shortcomment cmt">Returns all representations of <code>value</code> in <code>this</code> syntax,
+ordered by increasing size.</p>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#unit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="unit(values:A*):Syntaxes.this.Syntax[Unit]"></a><a id="unit(A*):Syntax[Unit]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#unit(defaults:A*):Syntaxes.this.Syntax[Unit]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#unit(values:A*):Syntaxes.this.Syntax[Unit]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1145,11 +1147,15 @@ ordered by increasing length.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">unit</span><span class="params">(<span name="defaults">defaults: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>*</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+        <span class="name">unit</span><span class="params">(<span name="values">values: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>*</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Informs the syntax of the values that can be produced.</p>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#up" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Indicates that <code>this</code> syntax describes only a finite number of
+equivalent <code>values</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that <code>this</code> syntax describes only a finite number of
+equivalent <code>values</code>.</p><p>Parsed values are replaced by <code>()</code>, while printed values
+are replaced by the various <code>values</code>.
+</p></div></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#up" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]"></a><a id="up[B&gt;:A](Manifest[A]):Syntax[B]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]" title="Permalink">
@@ -1164,8 +1170,9 @@ ordered by increasing length.</p>
         <span class="name">up</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.up.B">B</span>]</span>
       </span>
       
-      
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Upcasts <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Upcasts <code>this</code> syntax.</p><p>The resulting <code>syntax</code> parses and pretty prints equivalently to <code>this</code> syntax.
+</p></div></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="void:Syntaxes.this.Syntax[Any]"></a><a id="void:Syntax[Any]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#void:Syntaxes.this.Syntax[Any]" title="Permalink">
@@ -1180,7 +1187,8 @@ ordered by increasing length.</p>
         <span class="name">void</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Any">Any</span>]</span>
       </span>
       
-      
+      <p class="shortcomment cmt">Upcasts <code>this</code> syntax to <code>Syntax[Any]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Upcasts <code>this</code> syntax to <code>Syntax[Any]</code>.</p><p>Disables pretty printing for <code>this</code> syntax.
+</p></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
@@ -1332,7 +1340,7 @@ The value is tagged to indicate the side it comes from.
         <span title="gt4s: $tilde$greater$tilde" class="name">~&gt;~</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>], <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.~&gt;~.B">B</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is returned.
+      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed values from <code>that</code> is returned.
 </p></div></div>
     </li>
               </ol>
