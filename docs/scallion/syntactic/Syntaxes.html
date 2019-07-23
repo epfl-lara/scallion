@@ -277,6 +277,24 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       
       <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A <code>syntax</code> for subsequent input is also provided.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax for more input.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Skip" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="other">
+      <a id="SkipextendsProductwithSerializable"></a><a id="Skip:Skip"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#SkipextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Wrapper around a Syntax indicating that values from the inner syntax should be ignored when building up sequences using ~." href="Syntaxes$Skip.html"><span class="name">Skip</span></a><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Wrapper around a <code>Syntax</code> indicating that values from
+the inner <code>syntax</code> should be ignored when building up sequences
+using <code>~</code>.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="syntax">
       <a id="Syntax[A]extendsAnyRef"></a><a id="Syntax[A]:Syntax[A]"></a>
       <span class="permalink">
@@ -991,6 +1009,9 @@ and that directly applies a function on the successfully parsed token.</p>
               
             </div><div class="group" name="visualization">
               <h3>Visualization</h3>
+              
+            </div><div class="group" name="other">
+              <h3>Others</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>

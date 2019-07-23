@@ -287,6 +287,19 @@ trait Syntaxes[Token, Kind]
         case _ => Concat(this, that)
       }
 
+    /** Sequences `this` and `that` syntax. The parsed value from `this` is returned.
+      *
+      * @group combinator
+      */
+    def ~(that: Skip): Syntax[A] = this ~<~ that.syntax
+
+    /** Indicates that the value from `this` syntax should be ignored
+      * when building up sequences using `~`.
+      *
+      * @group combinator
+      */
+    def skip(implicit ev: Syntax[A] =:= Syntax[Unit]): Skip = Skip(ev(this))
+
     /** Sequences `this` and `that` syntax. The parsed values from `that` is returned.
       *
       * @group combinator
@@ -387,12 +400,16 @@ trait Syntaxes[Token, Kind]
     /** Upcasts `this` syntax to `Syntax[Any]`.
       *
       * Disables pretty printing for `this` syntax.
+      *
+      * @group combinator
       */
     def void: Syntax[Any] = this.map((x: A) => x, (y: Any) => Seq())
 
     /** Upcasts `this` syntax.
       *
       * The resulting `syntax` parses and pretty prints equivalently to `this` syntax.
+      *
+      * @group combinator
       */
     def up[B >: A](implicit ev: Manifest[A]): Syntax[B] = this.map((x: A) => x, (y: B) => ev.unapply(y) match {
       case None => Seq()
@@ -1399,6 +1416,29 @@ trait Syntaxes[Token, Kind]
         left: Map[Kind, Syntax[_]],
         right: Map[Kind, Syntax[_]]): Map[Kind, Syntax[_]] =
       combine((p1: Syntax[_], p2: Syntax[_]) => p1.void | p2.void)(left, right)
+  }
+
+  /** Wrapper around a `Syntax` indicating that values from
+    * the inner `syntax` should be ignored when building up sequences
+    * using `~`.
+    *
+    * @group other
+    */
+  case class Skip(syntax: Syntax[Unit]) {
+
+    /** Sequences `this` and `that` syntax.
+      * The parsed value from `that` is returned.
+      *
+      * @group combinator
+      */
+    def ~[A](that: Syntax[A]): Syntax[A] = this.syntax ~>~ that
+
+    /** Sequences `this` and `that` skipped syntax.
+      * Results in a skipped syntax.
+      *
+      * @group combinator
+      */
+    def ~(that: Skip): Skip = Skip(this.syntax ~>~ that.syntax)
   }
 
 

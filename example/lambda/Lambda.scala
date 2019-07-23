@@ -149,10 +149,10 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }
 
   // Basic expressions. Simply a variable or an expression in parenthesis.
-  lazy val basic: Syntax[Expr] = variable | open ~>~ expr ~<~ close
+  lazy val basic: Syntax[Expr] = variable | open.skip ~ expr ~ close.skip
 
   // Lambda expression.
-  lazy val lambdaExpr: Syntax[Expr] = (lambda ~>~ many1(name) ~<~ dot ~ expr).map({
+  lazy val lambdaExpr: Syntax[Expr] = (lambda.skip ~ many1(name) ~ dot.skip ~ expr).map({
     // Given a sequence of names and the expression body, we create the corresponding lambda.
     case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
       case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.

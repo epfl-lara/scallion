@@ -32,27 +32,27 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
   def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int] = {
 
-    val i = elem(si).unit(si)
-    val v = elem(sv).unit(sv)
-    val x = elem(sx).unit(sx)
+    val i = elem(si).unit(si).skip
+    val v = elem(sv).unit(sv).skip
+    val x = elem(sx).unit(sx).skip
 
     epsilon(0) |
-    i ~>~ {
+    i ~ {
       epsilon(1) |
-      i ~>~ {
+      i ~ {
         epsilon(2) |
-        i ~>~ epsilon(3)
+        i ~ epsilon(3)
       } |
-      v ~>~ epsilon(4) |
-      x ~>~ epsilon(9)
+      v ~ epsilon(4) |
+      x ~ epsilon(9)
     } |
-    v ~>~ {
+    v ~ {
       epsilon(5) |
-      i ~>~ {
+      i ~ {
         epsilon(6) |
-        i ~>~ {
+        i ~ {
           epsilon(7) |
-          i ~>~ epsilon(8)
+          i ~ epsilon(8)
         }
       }
     }
@@ -62,14 +62,14 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
   val tens = base(X, L, C)
   val hundreds = base(C, D, M)
   val thousands: Syntax[Int] = {
-    val m = elem(M).unit(M)
+    val m = elem(M).unit(M).skip
 
     epsilon(0) |
-    m ~>~ {
+    m ~ {
       epsilon(1) |
-      m ~>~ {
+      m ~ {
         epsilon(2) |
-        m ~>~ epsilon(3)
+        m ~ epsilon(3)
       }
     }
   }

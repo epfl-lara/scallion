@@ -141,6 +141,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
                         <a href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value.">Parsed</a>
                       </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="class" href="Syntaxes$Skip.html" title="Wrapper around a Syntax indicating that values from the inner syntax should be ignored when building up sequences using ~."></a>
+                        <a href="Syntaxes$Skip.html" title="Wrapper around a Syntax indicating that values from the inner syntax should be ignored when building up sequences using ~.">Skip</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$Syntax$.html" title="Contains primitive basic syntaxes and syntax combinators."></a>
                         <a class="trait" href="" title="Represents a syntax."></a>
                         <a href="" title="Represents a syntax.">Syntax</a>
@@ -1063,6 +1067,23 @@ where the constraint was generated.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#skip" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
+      <a id="skip(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Unit]):Syntaxes.this.Skip"></a><a id="skip(=:=[Syntax[A],Syntax[Unit]]):Skip"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#skip(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Unit]):Syntaxes.this.Skip" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">skip</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>], <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Skip.html" class="extype" name="scallion.syntactic.Syntaxes.Skip">Skip</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that the value from <code>this</code> syntax should be ignored
+when building up sequences using <code>~</code>.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -1155,7 +1176,7 @@ equivalent <code>values</code>.</p><div class="fullcomment"><div class="comment 
 equivalent <code>values</code>.</p><p>Parsed values are replaced by <code>()</code>, while printed values
 are replaced by the various <code>values</code>.
 </p></div></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#up" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#up" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]"></a><a id="up[B&gt;:A](Manifest[A]):Syntax[B]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#up[B&gt;:A](implicitev:Manifest[A]):Syntaxes.this.Syntax[B]" title="Permalink">
@@ -1172,7 +1193,7 @@ are replaced by the various <code>values</code>.
       
       <p class="shortcomment cmt">Upcasts <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Upcasts <code>this</code> syntax.</p><p>The resulting <code>syntax</code> parses and pretty prints equivalently to <code>this</code> syntax.
 </p></div></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#void" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="void:Syntaxes.this.Syntax[Any]"></a><a id="void:Syntax[Any]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax.html#void:Syntaxes.this.Syntax[Any]" title="Permalink">
@@ -1307,6 +1328,23 @@ The value is tagged to indicate the side it comes from.
       </span>
       
       <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed values are returned as a pair.
+</p></div></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax#~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="~(that:Syntaxes.this.Skip):Syntaxes.this.Syntax[A]"></a><a id="~(Skip):Syntax[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax.html#~(that:Syntaxes.this.Skip):Syntaxes.this.Syntax[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $tilde" class="name">~</span><span class="params">(<span name="that">that: <a href="Syntaxes$Skip.html" class="extype" name="scallion.syntactic.Syntaxes.Skip">Skip</a></span>)</span><span class="result">: <a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>this</code> is returned.
 </p></div></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#~&lt;~" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="~&lt;~(that:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[A]"></a><a id="~&lt;~(Syntax[Unit]):Syntax[A]"></a>

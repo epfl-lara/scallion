@@ -115,7 +115,7 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: Syntax[Expr] = number | open ~>~ value ~<~ close
+  lazy val basic: Syntax[Expr] = number | open.skip ~ value ~ close.skip
 
   lazy val postfixed: Syntax[Expr] = postfixes[Char, Expr](basic, fac, {
     case (e, op) => UnaryExpr(op, e)
