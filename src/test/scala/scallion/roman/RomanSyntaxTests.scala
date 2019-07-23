@@ -64,6 +64,18 @@ class RomanSyntaxTests extends FlatSpec with Inside {
     assert(display(number.unapply(3009).next()) == "MMMIX")
   }
 
+  it should "support completions" in {
+    val completedParsers = number(tokenize("I")).syntax.completions(x => Seq(x)).toList
+
+    val values = completedParsers.map(_.nullable.get).toSet
+
+    assert(values == Set(1, 2, 3, 4, 9))
+
+    val trails = completedParsers.flatMap(_.trails.toList).toSet
+
+    assert(trails == Set(Seq(), Seq(I), Seq(I, I), Seq(V), Seq(X)))
+  }
+
   "Pretty printing" should "lead to a single value for valid numbers" in {
     for (i <- 0 until 4000) {
       val xs = number.unapply(i).toList
