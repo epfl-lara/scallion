@@ -64,9 +64,9 @@ trait Lexers[Token, Character, Position] extends RegExps[Character] with Automat
     *
     * @group lexer
     */
-  class Lexer(producers: List[Producer],
-              errorToken: Option[(Seq[Character], (Position, Position)) => Token],
-              endToken: Option[Position => Token]) {
+  class Lexer private(producers: List[Producer],
+                      errorToken: Option[(Seq[Character], (Position, Position)) => Token],
+                      endToken: Option[Position => Token]) {
 
     /** Specifies what token to generate in case no regular expressions match. */
     def onError(handler: (Seq[Character], (Position, Position)) => Token): Lexer = {

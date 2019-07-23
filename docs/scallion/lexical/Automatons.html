@@ -213,7 +213,7 @@ and from NFAs to deterministic finite automata (DFAs).</p><p>Expected to be mixe
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.lexical.Automatons.Branch" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
+              <ol><li name="scallion.lexical.Automatons.Branch" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
       <a id="Branch[+A]extendsAutomatons.this.DecisionTree[A]withProductwithSerializable"></a><a id="Branch[+A]:(Automatons.this)#Branch[A]"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#Branch[+A]extendsAutomatons.this.DecisionTree[A]withProductwithSerializable" title="Permalink">
@@ -231,8 +231,8 @@ and from NFAs to deterministic finite automata (DFAs).</p><p>Expected to be mixe
       <p class="shortcomment cmt">Branching tree.</p><div class="fullcomment"><div class="comment cmt"><p>Branching tree.</p><p>The <code>condition</code> decides whether the value corresponding to a character is in
 the <code>trueSide</code> (in case <code>predicate</code> returns <code>true</code>) or
 the <code>falseSide</code> (in case <code>predicate</code> returns <code>false</code>).
-</p></div></div>
-    </li><li name="scallion.lexical.Automatons.Condition" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Condition" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="dfa">
       <a id="ConditionextendsAnyRef"></a><a id="Condition:(Automatons.this)#Condition"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#ConditionextendsAnyRef" title="Permalink">
@@ -244,11 +244,12 @@ the <code>falseSide</code> (in case <code>predicate</code> returns <code>false</
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="" href="Automatons$Condition.html"><span class="name">Condition</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Predicate on a character." href="Automatons$Condition.html"><span class="name">Condition</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      
-    </li><li name="scallion.lexical.Automatons.DFA" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="dfa">
+      <p class="shortcomment cmt">Predicate on a character.</p><div class="fullcomment"><div class="comment cmt"><p>Predicate on a character.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.DFA" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="dfa">
       <a id="DFAextendsAnyRef"></a><a id="DFA:(Automatons.this)#DFA"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#DFAextendsAnyRef" title="Permalink">
@@ -263,8 +264,9 @@ the <code>falseSide</code> (in case <code>predicate</code> returns <code>false</
         <a title="Deterministic finite automaton." href="Automatons$DFA.html"><span class="name">DFA</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Deterministic finite automaton.</p>
-    </li><li name="scallion.lexical.Automatons.DecisionTree" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="dfa">
+      <p class="shortcomment cmt">Deterministic finite automaton.</p><div class="fullcomment"><div class="comment cmt"><p>Deterministic finite automaton.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.DecisionTree" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="dfa">
       <a id="DecisionTree[+A]extendsAnyRef"></a><a id="DecisionTree[+A]:(Automatons.this)#DecisionTree[A]"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#DecisionTree[+A]extendsAnyRef" title="Permalink">
@@ -280,8 +282,10 @@ the <code>falseSide</code> (in case <code>predicate</code> returns <code>false</
       </span>
       
       <p class="shortcomment cmt">Tree of values of type <code>A</code>, with branches predicated by a
-test on a single character.</p>
-    </li><li name="scallion.lexical.Automatons.Epsilon" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="nfa">
+test on a single character.</p><div class="fullcomment"><div class="comment cmt"><p>Tree of values of type <code>A</code>, with branches predicated by a
+test on a single character.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Epsilon" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="nfa">
       <a id="EpsilonextendsAutomatons.this.TransitionwithProductwithSerializable"></a><a id="Epsilon:(Automatons.this)#Epsilon"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#EpsilonextendsAutomatons.this.TransitionwithProductwithSerializable" title="Permalink">
@@ -297,8 +301,8 @@ test on a single character.</p>
       </span>
       
       <p class="shortcomment cmt">Epsilon transition.</p><div class="fullcomment"><div class="comment cmt"><p>Epsilon transition. Can be freely taken.
-</p></div></div>
-    </li><li name="scallion.lexical.Automatons.Guarded" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="nfa">
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Guarded" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="nfa">
       <a id="GuardedextendsAutomatons.this.TransitionwithProductwithSerializable"></a><a id="Guarded:(Automatons.this)#Guarded"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#GuardedextendsAutomatons.this.TransitionwithProductwithSerializable" title="Permalink">
@@ -313,8 +317,9 @@ test on a single character.</p>
         <a title="Transition guarded by a predicate on the next character." href="Automatons$Guarded.html"><span class="name">Guarded</span></a><span class="params">(<span name="condition">condition: (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Condition">Condition</span></span>, <span name="target">target: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Transition">Transition</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Transition guarded by a <code>predicate</code> on the next character.</p>
-    </li><li name="scallion.lexical.Automatons.Leaf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
+      <p class="shortcomment cmt">Transition guarded by a <code>predicate</code> on the next character.</p><div class="fullcomment"><div class="comment cmt"><p>Transition guarded by a <code>predicate</code> on the next character.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Leaf" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
       <a id="Leaf[+A]extendsAutomatons.this.DecisionTree[A]withProductwithSerializable"></a><a id="Leaf[+A]:(Automatons.this)#Leaf[A]"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#Leaf[+A]extendsAutomatons.this.DecisionTree[A]withProductwithSerializable" title="Permalink">
@@ -330,8 +335,8 @@ test on a single character.</p>
       </span>
       
       <p class="shortcomment cmt">Leaf tree.</p><div class="fullcomment"><div class="comment cmt"><p>Leaf tree. Always contains the same value for all characters.
-</p></div></div>
-    </li><li name="scallion.lexical.Automatons.NFA" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="nfa">
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.NFA" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="nfa">
       <a id="NFAextendsAnyRef"></a><a id="NFA:(Automatons.this)#NFA"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#NFAextendsAnyRef" title="Permalink">
@@ -346,8 +351,9 @@ test on a single character.</p>
         <a title="Non-deterministic finite automaton." href="Automatons$NFA.html"><span class="name">NFA</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Non-deterministic finite automaton.</p>
-    </li><li name="scallion.lexical.Automatons.Predicated" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Non-deterministic finite automaton.</p><div class="fullcomment"><div class="comment cmt"><p>Non-deterministic finite automaton.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Predicated" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
       <a id="PredicatedextendsAutomatons.this.ConditionwithProductwithSerializable"></a><a id="Predicated:(Automatons.this)#Predicated"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#PredicatedextendsAutomatons.this.ConditionwithProductwithSerializable" title="Permalink">
@@ -359,11 +365,12 @@ test on a single character.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Automatons$Predicated.html"><span class="name">Predicated</span></a><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.lexical.Automatons.Character">Character</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Condition">Condition</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Predicate based on a function." href="Automatons$Predicated.html"><span class="name">Predicated</span></a><span class="params">(<span name="predicate">predicate: (<span class="extype" name="scallion.lexical.Automatons.Character">Character</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Condition">Condition</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      
-    </li><li name="scallion.lexical.Automatons.Transition" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="nfa">
+      <p class="shortcomment cmt">Predicate based on a function.</p><div class="fullcomment"><div class="comment cmt"><p>Predicate based on a function.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Transition" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="nfa">
       <a id="TransitionextendsAnyRef"></a><a id="Transition:(Automatons.this)#Transition"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#TransitionextendsAnyRef" title="Permalink">
@@ -378,8 +385,9 @@ test on a single character.</p>
         <a title="Transition of an NFA." href="Automatons$Transition.html"><span class="name">Transition</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Transition of an NFA.</p>
-    </li><li name="scallion.lexical.Automatons.Valued" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Transition of an NFA.</p><div class="fullcomment"><div class="comment cmt"><p>Transition of an NFA.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.Valued" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
       <a id="ValuedextendsAutomatons.this.ConditionwithProductwithSerializable"></a><a id="Valued:(Automatons.this)#Valued"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#ValuedextendsAutomatons.this.ConditionwithProductwithSerializable" title="Permalink">
@@ -391,10 +399,11 @@ test on a single character.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Automatons$Valued.html"><span class="name">Valued</span></a><span class="params">(<span name="value">value: <span class="extype" name="scallion.lexical.Automatons.Character">Character</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Condition">Condition</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Predicate based on equality." href="Automatons$Valued.html"><span class="name">Valued</span></a><span class="params">(<span name="value">value: <span class="extype" name="scallion.lexical.Automatons.Character">Character</span></span>)</span><span class="result"> extends (<a href="" class="extype" name="scallion.lexical.Automatons">Automatons</a>.this)#<span class="extype" name="scallion.lexical.Automatons.Condition">Condition</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      
+      <p class="shortcomment cmt">Predicate based on equality.</p><div class="fullcomment"><div class="comment cmt"><p>Predicate based on equality.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li></ol>
             </div>
 
@@ -753,7 +762,7 @@ test on a single character.</p>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.lexical.Automatons.DFA" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="dfa">
+    </li><li name="scallion.lexical.Automatons.DFA" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="dfa">
       <a id="DFA"></a><a id="DFA:DFA"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#DFA" title="Permalink">
@@ -768,8 +777,9 @@ test on a single character.</p>
         <a title="Builds deterministic finite automata." href="Automatons$DFA$.html"><span class="name">DFA</span></a>
       </span>
       
-      <p class="shortcomment cmt">Builds deterministic finite automata.</p>
-    </li><li name="scallion.lexical.Automatons.NFA" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="nfa">
+      <p class="shortcomment cmt">Builds deterministic finite automata.</p><div class="fullcomment"><div class="comment cmt"><p>Builds deterministic finite automata.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scallion.lexical.Automatons.NFA" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="nfa">
       <a id="NFA"></a><a id="NFA:NFA"></a>
       <span class="permalink">
       <a href="../../scallion/lexical/Automatons.html#NFA" title="Permalink">
@@ -784,7 +794,8 @@ test on a single character.</p>
         <a title="Builds non-deterministic finite automata." href="Automatons$NFA$.html"><span class="name">NFA</span></a>
       </span>
       
-      <p class="shortcomment cmt">Builds non-deterministic finite automata.</p>
+      <p class="shortcomment cmt">Builds non-deterministic finite automata.</p><div class="fullcomment"><div class="comment cmt"><p>Builds non-deterministic finite automata.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li>
               </ol>
             </div>

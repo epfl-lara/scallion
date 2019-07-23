@@ -31,22 +31,11 @@ import collection.mutable.Queue
   */
 trait Automatons[Character] { self: RegExps[Character] =>
 
-  sealed trait Condition {
-    def apply(value: Character): Boolean
-  }
-  case class Predicated(predicate: Character => Boolean) extends Condition {
-    override def apply(value: Character): Boolean =
-      predicate(value)
-  }
-  case class Valued(value: Character) extends Condition {
-    override def apply(other: Character): Boolean = value == other
-  }
-
   /** Transition of an NFA.
     *
     * @group nfa
     */
-  sealed trait Transition {
+  protected sealed trait Transition {
 
     /** The index of the target of the transition. */
     val target: Int
@@ -56,19 +45,19 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group nfa
     */
-  case class Guarded(condition: Condition, target: Int) extends Transition
+  protected case class Guarded(condition: Condition, target: Int) extends Transition
 
   /** Epsilon transition. Can be freely taken.
     *
     * @group nfa
     */
-  case class Epsilon(target: Int) extends Transition
+  protected case class Epsilon(target: Int) extends Transition
 
   /** Non-deterministic finite automaton.
     *
     * @group nfa
     */
-  trait NFA {
+  protected trait NFA {
 
     /** The transitions. */
     val transitions: IndexedSeq[Set[Transition]]
@@ -112,7 +101,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group nfa
     */
-  object NFA {
+  protected object NFA {
 
     import RegExp._
 
@@ -197,7 +186,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group dfa
     */
-  sealed trait DecisionTree[+A] {
+  protected sealed trait DecisionTree[+A] {
 
     /** Gets the value corresponding to the character. */
     def apply(char: Character): A
@@ -213,6 +202,31 @@ trait Automatons[Character] { self: RegExps[Character] =>
     def compact: DecisionTree[A]
   }
 
+  /** Predicate on a character.
+    *
+    * @group dfa
+    */
+  protected sealed trait Condition {
+    def apply(value: Character): Boolean
+  }
+
+  /** Predicate based on a function.
+    *
+    * @group dfa
+    */
+  protected case class Predicated(predicate: Character => Boolean) extends Condition {
+    override def apply(value: Character): Boolean =
+      predicate(value)
+  }
+
+  /** Predicate based on equality.
+    *
+    * @group dfa
+    */
+  protected case class Valued(value: Character) extends Condition {
+    override def apply(other: Character): Boolean = value == other
+  }
+
   /** Branching tree.
     *
     * The `condition` decides whether the value corresponding to a character is in
@@ -221,7 +235,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group dfa
     */
-  case class Branch[+A](condition: Condition,
+  protected case class Branch[+A](condition: Condition,
                         trueSide: DecisionTree[A],
                         falseSide: DecisionTree[A]) extends DecisionTree[A] {
     override def apply(char: Character): A =
@@ -262,7 +276,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group dfa
     */
-  case class Leaf[+A](value: A) extends DecisionTree[A] {
+  protected case class Leaf[+A](value: A) extends DecisionTree[A] {
     override def apply(char: Character): A = value
     override def map[B](function: A => B): Leaf[B] = Leaf(function(value))
     override def values: Seq[A] = Vector(value)
@@ -274,7 +288,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group dfa
     */
-  trait DFA {
+  protected trait DFA {
 
     /** State transitions. */
     val transitions: IndexedSeq[DecisionTree[Int]]
@@ -302,7 +316,7 @@ trait Automatons[Character] { self: RegExps[Character] =>
     *
     * @group dfa
     */
-  object DFA {
+  protected object DFA {
 
     /** Builds a DFA equivalent to the given regular expression. */
     def apply(regExp: RegExp): DFA = toDFA(NFA(regExp))

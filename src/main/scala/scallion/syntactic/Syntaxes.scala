@@ -1415,7 +1415,9 @@ trait Syntaxes[Token, Kind]
     *
     * @group basic
     */
-  def accept[A](kind: Kind)(function: PartialFunction[Token, A], inverse: A => Seq[Token] = (x: A) => Seq()): Syntax[A] =
+  def accept[A](kind: Kind)(
+      function: PartialFunction[Token, A],
+      inverse: A => Seq[Token] = (x: A) => Seq()): Syntax[A] =
     elem(kind).map(function, inverse)
 
   /** Indicates that the syntax can refer to itself within its body.
