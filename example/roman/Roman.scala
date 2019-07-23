@@ -30,33 +30,29 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
   override def getKind(token: Symbol): Symbol = token
 
-  def stop(n: Int): Syntax[Int] = epsilon(n)
-
-  def f(s: Symbol) = elem(s).unit(s)
-
   def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int] = {
 
-    val i = f(si)
-    val v = f(sv)
-    val x = f(sx)
+    val i = elem(si).unit(si)
+    val v = elem(sv).unit(sv)
+    val x = elem(sx).unit(sx)
 
-    stop(0) |
+    epsilon(0) |
     i ~>~ {
-      stop(1) |
+      epsilon(1) |
       i ~>~ {
-        stop(2) |
-        i ~>~ stop(3)
+        epsilon(2) |
+        i ~>~ epsilon(3)
       } |
-      v ~>~ stop(4) |
-      x ~>~ stop(9)
+      v ~>~ epsilon(4) |
+      x ~>~ epsilon(9)
     } |
     v ~>~ {
-      stop(5) |
+      epsilon(5) |
       i ~>~ {
-        stop(6) |
+        epsilon(6) |
         i ~>~ {
-          stop(7) |
-          i ~>~ stop(8)
+          epsilon(7) |
+          i ~>~ epsilon(8)
         }
       }
     }
@@ -66,14 +62,14 @@ object RomanSyntax extends Syntaxes[Symbol, Symbol] {
   val tens = base(X, L, C)
   val hundreds = base(C, D, M)
   val thousands: Syntax[Int] = {
-    val m = f(M)
+    val m = elem(M).unit(M)
 
-    stop(0) |
+    epsilon(0) |
     m ~>~ {
-      stop(1) |
+      epsilon(1) |
       m ~>~ {
-        stop(2) |
-        m ~>~ stop(3)
+        epsilon(2) |
+        m ~>~ epsilon(3)
       }
     }
   }
