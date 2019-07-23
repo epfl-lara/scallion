@@ -87,7 +87,7 @@ trait Operators { self: Syntaxes[_, _] =>
   def operators[Op, A](
       elem: Syntax[A],
       function: (A, Op, A) => A,
-      inverse: PartialFunction[A, (A, Op, A)])
+      inverse: PartialFunction[A, (A, Op, A)] = PartialFunction.empty)
         (levels: Level[Op]*): Syntax[A] = {
 
     levels.foldLeft(elem) {
@@ -112,7 +112,7 @@ trait Operators { self: Syntaxes[_, _] =>
       elem: Syntax[A],
       op: Syntax[Op],
       function: (A, Op, A) => A,
-      inverse: PartialFunction[A, (A, Op, A)]): Syntax[A] =
+      inverse: PartialFunction[A, (A, Op, A)] = PartialFunction.empty): Syntax[A] =
 
     (elem ~ many(op ~ elem)).map({
       case first ~ opElems => opElems.foldLeft(first) {
@@ -141,7 +141,7 @@ trait Operators { self: Syntaxes[_, _] =>
       elem: Syntax[A],
       op: Syntax[Op],
       function: (A, Op, A) => A,
-      inverse: PartialFunction[A, (A, Op, A)]): Syntax[A] =
+      inverse: PartialFunction[A, (A, Op, A)] = PartialFunction.empty): Syntax[A] =
 
     (elem ~ many(op ~ elem)).map({
       case first ~ opElems => {
@@ -215,7 +215,7 @@ trait Operators { self: Syntaxes[_, _] =>
       elem: Syntax[A],
       op: Syntax[Op],
       function: (A, Op) => A,
-      inverse: PartialFunction[A, (A, Op)]): Syntax[A] = {
+      inverse: PartialFunction[A, (A, Op)] = PartialFunction.empty): Syntax[A] = {
     (elem ~ many(op)).map({
       case v ~ os => os.foldLeft(v) {
         case (acc, o) => function(acc, o)
