@@ -258,14 +258,17 @@ trait Syntaxes[Token, Kind]
       */
     def map[B](function: A => B, inverse: B => Seq[A] = (b: B) => Seq()): Syntax[B] =
       this match {
-        case Failure() => Failure()
-        case Success(value, predicate) => Success(function(value), (y: B) => inverse(y).map(predicate).sum)
+        case Failure() =>
+          Failure()
+        case Success(value, predicate) =>
+          Success(function(value), (y: B) => Try(inverse(y)).getOrElse(Seq()).map(predicate).sum)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction andThen function,
             (z: B) => Try(inverse(z)).getOrElse(Seq()).flatMap((y: A) => otherInverse(y)),
             inner)
-        case inner => Transform(function, inverse, inner)
+        case inner =>
+          Transform(function, (y: B) => Try(inverse(y)).getOrElse(Seq()), inner)
       }
 
     /** Sequences `this` and `that` syntax. The parsed values are concatenated.
