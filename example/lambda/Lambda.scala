@@ -177,7 +177,7 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
   }, {
     // We provide also the inverse operation.
     // We unfold arguments using `unreduceLeft`.
-    acc => {
+    case acc => {
       // We use `unreduceLeft` to unpack the value.
       unreduceLeft[Expr] {
         case App(l, r) => (l, r)  // We split the `App` into its two components.

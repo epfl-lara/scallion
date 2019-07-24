@@ -256,19 +256,23 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def map[B](function: A => B, inverse: B => Seq[A] = (b: B) => Seq()): Syntax[B] =
+    def map[B](function: A => B, inverse: PartialFunction[B, Seq[A]] = PartialFunction.empty): Syntax[B] =
       this match {
         case Failure() =>
           Failure()
         case Success(value, predicate) =>
-          Success(function(value), (y: B) => Try(inverse(y)).getOrElse(Seq()).map(predicate).sum)
+          Success(function(value), (y: B) => inverse.lift(y).getOrElse(Seq()).map(predicate).sum)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction andThen function,
-            (z: B) => Try(inverse(z)).getOrElse(Seq()).flatMap((y: A) => otherInverse(y)),
+            { case z =>
+                inverse.lift(z).getOrElse(Seq()).flatMap {
+                  (y: A) => otherInverse.lift(y).getOrElse(Seq())
+                }
+            },
             inner)
         case inner =>
-          Transform(function, (y: B) => Try(inverse(y)).getOrElse(Seq()), inner)
+          Transform(function, inverse, inner)
       }
 
     /** Sequences `this` and `that` syntax. The parsed values are concatenated.
@@ -337,8 +341,8 @@ trait Syntaxes[Token, Kind]
       */
     def +:[B](that: Syntax[B])
         (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
-      that.map(Vector(_) : Seq[B], {
-        (xs: Seq[B]) => if (xs.size == 1) xs else Seq()
+      that.map[Seq[B]](Vector(_), {
+        case xs => if (xs.size == 1) xs else Seq()
       }) ++ ev(this)
 
     /** Sequences `this` and `that` syntax. The parsed values are returned as a pair.
@@ -406,7 +410,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def void: Syntax[Any] = this.map((x: A) => x, (y: Any) => Seq())
+    def void: Syntax[Any] = this.map((x: A) => x)
 
     /** Upcasts `this` syntax.
       *
@@ -857,7 +861,7 @@ trait Syntaxes[Token, Kind]
       */
     case class Transform[A, B](
         function: A => B,
-        inverse: B => Seq[A],
+        inverse: PartialFunction[B, Seq[A]],
         inner: Syntax[A]) extends Syntax[B] with Unary[A] {
 
       override lazy val nullable: Option[B] =
@@ -904,7 +908,9 @@ trait Syntaxes[Token, Kind]
       override protected def collectTokens(
         value: B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
 
-        val producers = inverse(value).map(inversed => inner.collectTokens(inversed, recs))
+        val producers = inverse.lift(value)
+                               .getOrElse(Seq())
+                               .map(inversed => inner.collectTokens(inversed, recs))
 
         if (producers.isEmpty) {
           Producer.empty
@@ -1460,7 +1466,7 @@ trait Syntaxes[Token, Kind]
     */
   def accept[A](kind: Kind)(
       function: PartialFunction[Token, A],
-      inverse: A => Seq[Token] = (x: A) => Seq()): Syntax[A] =
+      inverse: PartialFunction[A, Seq[Token]] = PartialFunction.empty): Syntax[A] =
     elem(kind).map(function, inverse)
 
   /** Indicates that the syntax can refer to itself within its body.

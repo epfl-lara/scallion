@@ -108,7 +108,6 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     case _ => '!'
   }, {
     case '!' => Seq(OperatorToken('!'))
-    case _ => Seq()
   })
 
   def parens(isOpen: Boolean) = elem(ParenthesisClass(isOpen)).unit(ParenthesisToken(isOpen))
