@@ -117,24 +117,21 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
   lazy val basic: Syntax[Expr] = number | open.skip ~ value ~ close.skip
 
-  lazy val postfixed: Syntax[Expr] = postfixes[Char, Expr](basic, fac, {
+  lazy val postfixed: Syntax[Expr] = postfixes(basic, fac)({
     case (e, op) => UnaryExpr(op, e)
   }, {
     case UnaryExpr(op, e) => (e, op)
   })
 
-  val functions: (Expr, Char, Expr) => Expr = {
-    case (l, op, r) => BinaryExpr(op, l, r)
-  }
-
-  val reverses: PartialFunction[Expr, (Expr, Char, Expr)] = {
-    case BinaryExpr(op, l, r) => (l, op, r)
-  }
-
   lazy val value: Syntax[Expr] = recursive {
-    operators(postfixed, functions, reverses)(
+    operators(postfixed)(
       times | div is LeftAssociative,
-      plus | minus is LeftAssociative)
+      plus | minus is LeftAssociative
+    )({
+      case (l, op, r) => BinaryExpr(op, l, r)
+    }, {
+      case BinaryExpr(op, l, r) => (l, op, r)
+    })
   }
 
   def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
