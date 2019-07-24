@@ -18,6 +18,7 @@ package scallion.syntactic
 import scala.language.implicitConversions
 
 import scala.collection.immutable.ListSet
+import scala.collection.mutable.{Set => MutSet}
 import scala.util.Try
 
 import scallion.util.internal.{Producer, ProducerOps, PTPS}
@@ -103,13 +104,13 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def calledLeft(rec: Recursive[_]): Boolean = collectCalledLeft(rec, ListSet())
+    @inline def calledLeft(rec: Recursive[_]): Boolean = collectCalledLeft(rec, MutSet.empty)
 
     /** Checks if `this` syntax is LL(1).
       *
       * @group property
       */
-    @inline def isLL1: Boolean = collectIsLL1(ListSet())
+    @inline def isLL1: Boolean = collectIsLL1(MutSet.empty)
 
     /** Returns all LL(1) conflicts in `this` syntax.
       *
@@ -177,7 +178,7 @@ trait Syntaxes[Token, Kind]
       * @param rec  The recursive syntax.
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean
+    protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean
 
     /** Checks if `this` syntax is productive.
       *
@@ -189,7 +190,7 @@ trait Syntaxes[Token, Kind]
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectIsLL1(recs: Set[RecId]): Boolean
+    protected def collectIsLL1(recs: MutSet[RecId]): Boolean
 
     /** Collects the LL(1) conflicts from `this` syntax.
       *
@@ -668,10 +669,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
       override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
@@ -723,10 +724,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
       override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
@@ -780,10 +781,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
       override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
@@ -875,10 +876,10 @@ trait Syntaxes[Token, Kind]
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         inner.collectShouldNotFollow(recs)
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         inner.collectCalledLeft(rec, recs)
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         inner.collectIsLL1(recs)
 
       override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
@@ -945,10 +946,10 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || (left.nullable.nonEmpty && right.collectCalledLeft(rec, recs))
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (left.shouldNotFollow.keySet & right.first).isEmpty
 
@@ -1169,10 +1170,10 @@ trait Syntaxes[Token, Kind]
         combineSNF(baseSNF, addedSNF)
       }
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || right.collectCalledLeft(rec, recs)
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (left.nullable.isEmpty || right.nullable.isEmpty) &&
         (left.first & right.first).isEmpty
@@ -1323,11 +1324,20 @@ trait Syntaxes[Token, Kind]
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         if (recs.contains(this.id)) Map.empty else inner.collectShouldNotFollow(recs + this.id)
 
-      override protected def collectCalledLeft(rec: Recursive[_], recs: Set[RecId]): Boolean =
-        if (recs.contains(this.id)) false else (this.id == rec.id) || inner.collectCalledLeft(rec, recs + this.id)
+      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
+        if (recs.contains(this.id)) false else {
+          recs += this.id
+          (this.id == rec.id) || inner.collectCalledLeft(rec, recs)
+        }
 
-      override protected def collectIsLL1(recs: Set[RecId]): Boolean =
-        if (recs.contains(this.id)) true else !inner.calledLeft(this) && inner.collectIsLL1(recs + this.id)
+      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean = {
+        if (recs.contains(this.id)) {
+          true
+        } else {
+          recs += this.id
+          !inner.calledLeft(this) && inner.collectIsLL1(recs)
+        }
+      }
 
       override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
         if (recs.contains(this.id)) ListSet() else {

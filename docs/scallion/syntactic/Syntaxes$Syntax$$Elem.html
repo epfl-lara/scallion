@@ -474,9 +474,9 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Elem#collectCalledLeft" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectCalledLeft(Recursive[_],Set[RecId]):Boolean"></a>
+      <a id="collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectCalledLeft(Recursive[_],Set[RecId]):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Elem.html#collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Elem.html#collectCalledLeft(rec:scallion.syntactic.Syntaxes.Syntax.Recursive[_],recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -485,7 +485,7 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectCalledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_]</span>, <span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">collectCalledLeft</span><span class="params">(<span name="rec">rec: <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_]</span>, <span name="recs">recs: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       <p class="shortcomment cmt">Checks if the recusive syntax <code>rec</code> can be invoked without consuming any input tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Checks if the recusive syntax <code>rec</code> can be invoked without consuming any input tokens.
@@ -525,9 +525,9 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
       <p class="shortcomment cmt">Collects the &quot;first&quot; set from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the &quot;first&quot; set from <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Elem">Elem</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Elem#collectIsLL1" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectIsLL1(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectIsLL1(Set[RecId]):Boolean"></a>
+      <a id="collectIsLL1(recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean"></a><a id="collectIsLL1(Set[RecId]):Boolean"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Elem.html#collectIsLL1(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Elem.html#collectIsLL1(recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -536,7 +536,7 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectIsLL1</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">collectIsLL1</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       <p class="shortcomment cmt">Checks if <code>this</code> syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if <code>this</code> syntax is LL(1).
