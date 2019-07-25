@@ -116,7 +116,11 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def conflicts: Set[LL1Conflict] = collectLL1Conflicts(ListSet())
+    @inline def conflicts: Set[LL1Conflict] = {
+      val result = MutSet.empty[LL1Conflict]
+      collectLL1Conflicts(None, MutSet.empty, result)
+      result.toSet
+    }
 
     /** Returns all possible sequences of token kinds accepted by `this` syntax,
       * ordered by increasing size.
@@ -196,7 +200,7 @@ trait Syntaxes[Token, Kind]
       *
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
-    protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict]
+    protected def collectLL1Conflicts(prefix: Option[Syntax[Unit]], recs: MutSet[RecId], res: MutSet[LL1Conflict]): Unit
 
     /** Builds a producer of trails from `this` syntax.
       *
@@ -569,12 +573,16 @@ trait Syntaxes[Token, Kind]
     /** Source of the conflict. */
     val source: Syntax[_]
 
-    /** Syntax for a prefix before the conflict occurs. */
+    /** Syntax for a prefix before the conflict occurs.
+      *
+      * This may not be exhaustive.
+      */
     val prefix: Syntax[_]
 
-    private[syntactic] def addPrefix(syntax: Syntax[_]): LL1Conflict
-
-    /** Returns trails that witness the conflict. */
+    /** Returns trails that witness the conflict.
+      *
+      * This may not be exhaustive.
+      */
     def witnesses: Iterator[Seq[Kind]]
   }
 
@@ -589,9 +597,6 @@ trait Syntaxes[Token, Kind]
         prefix: Syntax[_],
         source: Disjunction[_]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[_]): NullableConflict =
-        this.copy(prefix = start ~ prefix)
-
       override def witnesses: Iterator[Seq[Kind]] = prefix.trails
     }
 
@@ -600,9 +605,6 @@ trait Syntaxes[Token, Kind]
         prefix: Syntax[_],
         ambiguities: Set[Kind],
         source: Disjunction[_]) extends LL1Conflict {
-
-      override private[syntactic] def addPrefix(start: Syntax[_]): FirstConflict =
-        this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = for {
         trail <- prefix.trails
@@ -616,9 +618,6 @@ trait Syntaxes[Token, Kind]
         ambiguities: Set[Kind],
         source: Syntax[_] with SequenceLike[_, _]) extends LL1Conflict {
 
-      override private[syntactic] def addPrefix(start: Syntax[_]): FollowConflict =
-        this.copy(prefix = start ~ prefix)
-
       override def witnesses: Iterator[Seq[Kind]] = for {
         trail <- prefix.trails
         kind <- ambiguities
@@ -629,9 +628,6 @@ trait Syntaxes[Token, Kind]
     case class LeftRecursiveConflict(
         prefix: Syntax[_],
         source: Recursive[_]) extends LL1Conflict {
-
-      override private[syntactic] def addPrefix(start: Syntax[_]): LeftRecursiveConflict =
-        this.copy(prefix = start ~ prefix)
 
       override def witnesses: Iterator[Seq[Kind]] = prefix.trails
     }
@@ -675,8 +671,11 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
-        ListSet()
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit =
+        ()
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         true
@@ -730,8 +729,11 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
-        ListSet()
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit =
+        ()
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         false
@@ -787,8 +789,11 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         true
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
-        ListSet()
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit =
+        ()
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         true
@@ -882,8 +887,11 @@ trait Syntaxes[Token, Kind]
       override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
         inner.collectIsLL1(recs)
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
-        inner.collectLL1Conflicts(recs)
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit =
+        inner.collectLL1Conflicts(prefix, recs, res)
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
         inner.collectIsProductive(recs)
@@ -953,27 +961,24 @@ trait Syntaxes[Token, Kind]
         left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
         (left.shouldNotFollow.keySet & right.first).isEmpty
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] = {
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit = {
 
         val leftSNF = left.shouldNotFollow
 
         val problematicKinds = (leftSNF.keySet & right.first)
 
-        val followConflicts: Set[LL1Conflict] =
-          if (problematicKinds.isEmpty) {
-            ListSet()
-          }
-          else {
-            problematicKinds.map { kind =>
-              FollowConflict(leftSNF(kind), problematicKinds, this)
-            }
-          }
+        problematicKinds.foreach { kind =>
+          res += FollowConflict(leftSNF(kind), problematicKinds, this)
+        }
 
-        val baseConflicts: Set[LL1Conflict] =
-          left.collectLL1Conflicts(recs) union
-          right.collectLL1Conflicts(recs).map(_.addPrefix(left))
+        val rightPrefix: Option[Syntax[Unit]] =
+          Some(prefix.map((pre: Syntax[Unit]) => (pre ~>~ left.unit())).getOrElse(left.unit()))
 
-        baseConflicts union followConflicts
+        left.collectLL1Conflicts(prefix, recs, res)
+        right.collectLL1Conflicts(rightPrefix, recs, res)
       }
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
@@ -1178,30 +1183,23 @@ trait Syntaxes[Token, Kind]
         (left.nullable.isEmpty || right.nullable.isEmpty) &&
         (left.first & right.first).isEmpty
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] = {
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit = {
 
         val problematicKinds = (left.first & right.first)
 
-        val firstConflicts: Set[LL1Conflict] =
-          if (problematicKinds.isEmpty) {
-            ListSet()
-          }
-          else {
-            ListSet(FirstConflict(epsilon(()), problematicKinds, this))
-          }
+        if (problematicKinds.nonEmpty) {
+          res += FirstConflict(prefix.getOrElse(epsilon(())), problematicKinds, this)
+        }
 
-        val nullableConflicts: Set[LL1Conflict] =
-          if (left.nullable.isEmpty || right.nullable.isEmpty) {
-            ListSet()
-          }
-          else {
-            ListSet(NullableConflict(epsilon(()), this))
-          }
+        if (left.nullable.nonEmpty && right.nullable.nonEmpty) {
+          res += NullableConflict(prefix.getOrElse(epsilon(())), this)
+        }
 
-        val baseConflicts: Set[LL1Conflict] =
-          left.collectLL1Conflicts(recs) union right.collectLL1Conflicts(recs)
-
-        baseConflicts union firstConflicts union nullableConflicts
+        left.collectLL1Conflicts(prefix, recs, res)
+        right.collectLL1Conflicts(prefix, recs, res)
       }
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
@@ -1339,16 +1337,18 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def collectLL1Conflicts(recs: Set[RecId]): Set[LL1Conflict] =
-        if (recs.contains(this.id)) ListSet() else {
-          val base = inner.collectLL1Conflicts(recs + this.id)
+      override protected def collectLL1Conflicts(
+          prefix: Option[Syntax[Unit]],
+          recs: MutSet[RecId],
+          res: MutSet[LL1Conflict]): Unit =
+        if (recs.contains(this.id)) () else {
 
           if (inner.calledLeft(this)) {
-            base + LeftRecursiveConflict(epsilon(()), this)
+            res += LeftRecursiveConflict(prefix.getOrElse(epsilon(())), this)
           }
-          else {
-            base
-          }
+
+          recs += this.id
+          inner.collectLL1Conflicts(prefix, recs, res)
         }
 
       override protected def collectIsProductive(recs: Set[RecId]): Boolean =
