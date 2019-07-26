@@ -576,9 +576,9 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
       <p class="shortcomment cmt">Collects all token kinds appearing in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects all token kinds appearing in <code>this</code> syntax.
 </p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Failure">Failure</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Failure#collectLL1Conflicts" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectLL1Conflicts(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Set[Syntaxes.this.LL1Conflict]"></a><a id="collectLL1Conflicts(Set[RecId]):Set[LL1Conflict]"></a>
+      <a id="collectLL1Conflicts(prefix:Option[Syntaxes.this.Syntax[Unit]],recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId],res:scala.collection.mutable.Set[Syntaxes.this.LL1Conflict]):Unit"></a><a id="collectLL1Conflicts(Option[Syntax[Unit]],Set[RecId],Set[LL1Conflict]):Unit"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Failure.html#collectLL1Conflicts(recs:Set[scallion.syntactic.Syntaxes.Syntax.RecId]):Set[Syntaxes.this.LL1Conflict]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Failure.html#collectLL1Conflicts(prefix:Option[Syntaxes.this.Syntax[Unit]],recs:scala.collection.mutable.Set[scallion.syntactic.Syntaxes.Syntax.RecId],res:scala.collection.mutable.Set[Syntaxes.this.LL1Conflict]):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -587,7 +587,7 @@ being prefixed by a non-empty sequence of tokens in <code>this</code> syntax.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectLL1Conflicts</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]</span>
+        <span class="name">collectLL1Conflicts</span><span class="params">(<span name="prefix">prefix: <span class="extype" name="scala.Option">Option</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>, <span name="recs">recs: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>]</span>, <span name="res">res: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
       <p class="shortcomment cmt">Collects the LL(1) conflicts from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Collects the LL(1) conflicts from <code>this</code> syntax.
