@@ -17,11 +17,14 @@ package scallion.syntactic
 
 import scala.language.implicitConversions
 
+import java.util.{ IdentityHashMap => IHM }
+
 import scala.collection.immutable.ListSet
+import scala.collection.JavaConverters._
 import scala.collection.mutable.{Set => MutSet}
 import scala.util.Try
 
-import scallion.util.internal.{Producer, ProducerOps, PTPS}
+import scallion.util.internal._
 
 /** Contains definitions relating to syntaxes.
   *
@@ -158,12 +161,7 @@ trait Syntaxes[Token, Kind]
     // This is done to handle the potentially cyclic structure of syntaxes
     // introduced by `Recursive`.
 
-
-    /** Collects the nullable value from `this` syntax.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectNullable(recs: Set[RecId]): Option[A]
+    protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit
 
     /** Collects the "first" set from `this` syntax.
       *
@@ -656,8 +654,8 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         true
 
-      override protected def collectNullable(recs: Set[RecId]): Option[A] =
-        Some(value)
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
+        pipe.feed(value)
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
@@ -714,8 +712,8 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         false
 
-      override protected def collectNullable(recs: Set[RecId]): Option[A] =
-        None
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
+        ()
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
@@ -774,8 +772,8 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         true
 
-      override protected def collectNullable(recs: Set[RecId]): Option[Token] =
-        None
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[Token]): Unit =
+        ()
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         Set(kind)
@@ -872,8 +870,10 @@ trait Syntaxes[Token, Kind]
       override lazy val isProductive: Boolean =
         inner.isProductive
 
-      override protected def collectNullable(recs: Set[RecId]): Option[B] =
-        inner.collectNullable(recs).map(function)
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[B]): Unit = {
+        val transformPipe = new TransformPipe(pipe, function)
+        inner.computeNullable(points, transformPipe)
+      }
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         inner.collectFirst(recs)
@@ -1009,10 +1009,11 @@ trait Syntaxes[Token, Kind]
         rightValue <- right.nullable
       } yield scallion.syntactic.~(leftValue, rightValue)
 
-      override protected def collectNullable(recs: Set[RecId]): Option[A ~ B] = for {
-        leftValue <- left.collectNullable(recs)
-        rightValue <- right.collectNullable(recs)
-      } yield scallion.syntactic.~(leftValue, rightValue)
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A ~ B]): Unit = {
+        val mergePipe = new MergePipe(pipe, (a: A, b: B) => scallion.syntactic.~(a, b))
+        left.computeNullable(points, mergePipe.left)
+        right.computeNullable(points, mergePipe.right)
+      }
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -1071,10 +1072,11 @@ trait Syntaxes[Token, Kind]
         rightValue <- right.nullable
       } yield leftValue ++ rightValue
 
-      override protected def collectNullable(recs: Set[RecId]): Option[Seq[A]] = for {
-        leftValue <- left.collectNullable(recs)
-        rightValue <- right.collectNullable(recs)
-      } yield leftValue ++ rightValue
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[Seq[A]]): Unit = {
+        val mergePipe = new MergePipe(pipe, (xs: Seq[A], ys: Seq[A]) => xs ++ ys)
+        left.computeNullable(points, mergePipe.left)
+        right.computeNullable(points, mergePipe.right)
+      }
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -1140,8 +1142,10 @@ trait Syntaxes[Token, Kind]
       override lazy val isProductive: Boolean =
         left.isProductive || right.isProductive
 
-      override protected def collectNullable(recs: Set[RecId]): Option[A] =
-        left.collectNullable(recs) orElse right.collectNullable(recs)
+      override def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
+        left.computeNullable(points, pipe)
+        right.computeNullable(points, pipe)
+      }
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         left.collectFirst(recs) ++ right.collectFirst(recs)
@@ -1304,14 +1308,47 @@ trait Syntaxes[Token, Kind]
         */
       override def hashCode(): Int = id
 
-      override lazy val nullable: Option[A] =
-        inner.collectNullable(Set(this.id))
+      private var nullableCacheValid: Boolean = false
+      private var nullableCacheValue: Option[A] = None
+      override def nullable: Option[A] = {
+        if (!nullableCacheValid) {
+          val point = new Point[A]({ optValue =>
+            nullableCacheValue = optValue
+            nullableCacheValid = true
+          })
+          val points = new IHM[Recursive[_], Point[_]]()
+          points.put(this, point)
+          inner.computeNullable(points, point)
+          for (other <- points.values().asScala) {
+            other.complete()
+          }
+        }
+        nullableCacheValue
+      }
+
+      override def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
+        if (nullableCacheValid) {
+          nullableCacheValue.foreach(value => pipe.feed(value))
+        }
+        else if (points.containsKey(this)) {
+          val point = points.get(this).asInstanceOf[Point[A]]
+          point.register(pipe)
+        }
+        else {
+          val point = new Point[A]({ optValue =>
+            nullableCacheValue = optValue
+            nullableCacheValid = true
+          })
+          point.register(pipe)
+          points.put(this, point)
+          inner.computeNullable(points, point)
+        }
+      }
 
       override lazy val isProductive: Boolean =
         inner.collectIsProductive(Set(this.id))
 
-      override protected def collectNullable(recs: Set[RecId]): Option[A] =
-        if (recs.contains(this.id)) None else inner.collectNullable(recs + this.id)
+
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         if (recs.contains(this.id)) ListSet() else inner.collectFirst(recs + this.id)
