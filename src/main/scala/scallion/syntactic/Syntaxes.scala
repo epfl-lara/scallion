@@ -1134,9 +1134,6 @@ trait Syntaxes[Token, Kind]
     case class Disjunction[A](left: Syntax[A], right: Syntax[A])
         extends Syntax[A] with Binary[A, A] {
 
-      private lazy val order = if (right.nullable.nonEmpty) (left, right) else (right, left)
-      private lazy val firstFirst = order._1.first
-
       override lazy val nullable: Option[A] =
         left.nullable orElse right.nullable
 
@@ -1209,11 +1206,11 @@ trait Syntaxes[Token, Kind]
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
 
       override protected def derive(token: Token, kind: Kind): Syntax[A] = {
-        if (firstFirst.contains(kind)) {
-          order._1.derive(token, kind)
+        if (left.first.contains(kind)) {
+          left.derive(token, kind)
         }
         else {
-          order._2.derive(token, kind)
+          right.derive(token, kind)
         }
       }
 
