@@ -154,14 +154,17 @@ trait Syntaxes[Token, Kind]
     def unapply(value: A): Iterator[Seq[Token]] =
       collectTokens(value, Map.empty).toIterator
 
+
+    protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit
+
+    protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit
+
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` syntax on which the call
     // was already performed.
     //
     // This is done to handle the potentially cyclic structure of syntaxes
     // introduced by `Recursive`.
-
-    protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit
 
     /** Collects the "first" set from `this` syntax.
       *
@@ -181,12 +184,6 @@ trait Syntaxes[Token, Kind]
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean
-
-    /** Checks if `this` syntax is productive.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectIsProductive(recs: Set[RecId]): Boolean
 
     /** Checks if `this` syntax is LL(1).
       *
@@ -657,6 +654,9 @@ trait Syntaxes[Token, Kind]
       override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
         pipe.feed(value)
 
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
+        pipe.feed(())
+
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
@@ -674,9 +674,6 @@ trait Syntaxes[Token, Kind]
           recs: MutSet[RecId],
           res: MutSet[LL1Conflict]): Unit =
         ()
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        true
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector())
@@ -715,6 +712,9 @@ trait Syntaxes[Token, Kind]
       override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
         ()
 
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
+        ()
+
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         ListSet()
 
@@ -732,9 +732,6 @@ trait Syntaxes[Token, Kind]
           recs: MutSet[RecId],
           res: MutSet[LL1Conflict]): Unit =
         ()
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        false
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.empty
@@ -775,6 +772,9 @@ trait Syntaxes[Token, Kind]
       override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[Token]): Unit =
         ()
 
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
+        pipe.feed(())
+
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         Set(kind)
 
@@ -792,9 +792,6 @@ trait Syntaxes[Token, Kind]
           recs: MutSet[RecId],
           res: MutSet[LL1Conflict]): Unit =
         ()
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        true
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector(kind))
@@ -875,6 +872,9 @@ trait Syntaxes[Token, Kind]
         inner.computeNullable(points, transformPipe)
       }
 
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
+        inner.computeIsProductive(points, pipe)
+
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         inner.collectFirst(recs)
 
@@ -892,9 +892,6 @@ trait Syntaxes[Token, Kind]
           recs: MutSet[RecId],
           res: MutSet[LL1Conflict]): Unit =
         inner.collectLL1Conflicts(prefix, recs, res)
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        inner.collectIsProductive(recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         inner.collectTrails(recs)
@@ -932,6 +929,12 @@ trait Syntaxes[Token, Kind]
       * @group combinator
       */
     sealed trait SequenceLike[A, B] extends Binary[A, B] { self: Syntax[_] =>
+
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
+        val mergePipe = new MergePipe(pipe, (_: Any, _: Any) => ())
+        left.computeIsProductive(points, mergePipe.left)
+        right.computeIsProductive(points, mergePipe.right)
+      }
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         left.nullable match {
@@ -980,9 +983,6 @@ trait Syntaxes[Token, Kind]
         left.collectLL1Conflicts(prefix, recs, res)
         right.collectLL1Conflicts(rightPrefix, recs, res)
       }
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        left.collectIsProductive(recs) && right.collectIsProductive(recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
@@ -1142,9 +1142,14 @@ trait Syntaxes[Token, Kind]
       override lazy val isProductive: Boolean =
         left.isProductive || right.isProductive
 
-      override def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
+      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
         left.computeNullable(points, pipe)
         right.computeNullable(points, pipe)
+      }
+
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
+        left.computeIsProductive(points, pipe)
+        right.computeIsProductive(points, pipe)
       }
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
@@ -1202,9 +1207,6 @@ trait Syntaxes[Token, Kind]
         left.collectLL1Conflicts(prefix, recs, res)
         right.collectLL1Conflicts(prefix, recs, res)
       }
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        left.collectIsProductive(recs) || right.collectIsProductive(recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
@@ -1345,10 +1347,44 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override lazy val isProductive: Boolean =
-        inner.collectIsProductive(Set(this.id))
+      private var productiveCacheValid: Boolean = false
+      private var productiveCacheValue: Boolean = false
+      override def isProductive: Boolean = {
+        if (!productiveCacheValid) {
+          val point = new Point[Any]({ optValue =>
+            productiveCacheValue = optValue.nonEmpty
+            productiveCacheValid = true
+          })
+          val points = new IHM[Recursive[_], Point[Any]]()
+          points.put(this, point)
+          inner.computeIsProductive(points, point)
+          for (other <- points.values().asScala) {
+            other.complete()
+          }
+        }
+        productiveCacheValue
+      }
 
-
+      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
+        if (productiveCacheValid) {
+          if (productiveCacheValue) {
+            pipe.feed(())
+          }
+        }
+        else if (points.containsKey(this)) {
+          val point = points.get(this)
+          point.register(pipe)
+        }
+        else {
+          val point = new Point[Any]({ optValue =>
+            productiveCacheValue = optValue.nonEmpty
+            productiveCacheValid = true
+          })
+          point.register(pipe)
+          points.put(this, point)
+          inner.computeIsProductive(points, point)
+        }
+      }
 
       override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
         if (recs.contains(this.id)) ListSet() else inner.collectFirst(recs + this.id)
@@ -1384,9 +1420,6 @@ trait Syntaxes[Token, Kind]
           recs += this.id
           inner.collectLL1Conflicts(prefix, recs, res)
         }
-
-      override protected def collectIsProductive(recs: Set[RecId]): Boolean =
-        if (recs.contains(this.id)) false else inner.collectIsProductive(recs + this.id)
 
       override protected def derive(token: Token, kind: Kind): Syntax[A] =
         inner.derive(token, kind)
