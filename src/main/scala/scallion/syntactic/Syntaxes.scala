@@ -417,7 +417,14 @@ trait Syntaxes[Token, Kind]
       * @group parsing
       */
     def apply(it: Iterator[Token]): ParseResult[A] = {
-      var syntax: Syntax[A] = this
+
+      var syntax: Syntax[A] = if (!this.isProductive) Failure() else this
+      // Note that the initial value is set to Failure() instead of this in case the
+      // syntax is not productive to avoid problems arising due to left-recursivity.
+      // left-recursivity makes derive loop.
+      // If the syntax is LL(1), the only way a syntax can be left-recursive is
+      // if it is not productive.
+
       while (it.hasNext) {
         val token = it.next()
         val newSyntax = syntax.derive(token)
@@ -1820,7 +1827,7 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def derive(token: Token, kind: Kind): Syntax[A] =
-        if (isProductive) inner.derive(token, kind) else Failure()
+        inner.derive(token, kind)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         recs.get(this.id) match {
