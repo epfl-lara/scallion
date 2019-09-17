@@ -102,6 +102,11 @@ trait Syntaxes[Token, Kind]
       */
     def followLast: Set[Kind]
 
+    /** Returns the set of token kinds that are accepted right after an accepted sequence,
+      * marked with the source of the entry.
+      *
+      * @group property
+      */
     protected def followLastEntries: Set[FollowLastEntry]
 
     /** Checks if `this` syntax is LL(1).
@@ -122,7 +127,13 @@ trait Syntaxes[Token, Kind]
       */
     def kinds: Set[Kind]
 
-    final def prefix(syntax: Syntax[_]): Syntax[Unit] = {
+    /** Returns a syntax for the language up to the given point.
+      *
+      * Returned syntax might not be LL(1), even when `this` is.
+      *
+      * @param syntax The syntax to find in `this`.
+      */
+    private[scallion] def prefix(syntax: Syntax[_]): Syntax[Unit] = {
       val recs = new IHM[Recursive[_], Recursive[Unit]]()
       computePrefix(syntax, recs)
     }
@@ -132,7 +143,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def trails: Iterator[Seq[Kind]] = collectTrails(Map.empty).toIterator
+    @inline def trails: Iterator[Seq[Kind]] =
+      collectTrails(Map.empty).toIterator
 
     /** Strips `this` syntax of all token kinds that do not satisfy a `predicate`.
       *
@@ -140,7 +152,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    @inline def filter(predicate: Kind => Boolean): Syntax[A] = collectFilter(predicate, Map.empty)
+    @inline private[scallion] def filter(predicate: Kind => Boolean): Syntax[A] =
+      collectFilter(predicate, Map.empty)
 
     /** Returns all representations of `value` in `this` syntax,
       * ordered by increasing size.
@@ -178,13 +191,6 @@ trait Syntaxes[Token, Kind]
       }
 
     protected def computePrefixHelper(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit]
-
-    // All the functions below have an argument `recs` which
-    // contains the set of all `Recursive` syntax on which the call
-    // was already performed.
-    //
-    // This is done to handle the potentially cyclic structure of syntaxes
-    // introduced by `Recursive`.
 
     /** Builds a producer of trails from `this` syntax.
       *
@@ -550,6 +556,10 @@ trait Syntaxes[Token, Kind]
     /** Source of the conflict. */
     val source: Disjunction[_]
 
+    /** Returns sequences of token kinds that lead to an ambiguity due to this conflict.
+      *
+      * @param syntax The syntax from which to view the conflict.
+      */
     def witnessedFrom(syntax: Syntax[_]): Iterator[Seq[Kind]] =
       syntax.prefix(source).trails
   }
@@ -1054,7 +1064,8 @@ trait Syntaxes[Token, Kind]
           }
         }
 
-      override def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit =
         if (left.isProductive) {
           right.computeFollowLast(cells, callback)
 
@@ -1063,8 +1074,8 @@ trait Syntaxes[Token, Kind]
           }
         }
 
-      override def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                            callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit =
         if (left.isProductive) {
           right.computeFollowLastEntries(cells, callback)
 
@@ -1196,7 +1207,7 @@ trait Syntaxes[Token, Kind]
         rightValue <- right.nullable
       } yield leftValue ++ rightValue
 
-      override def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Seq[A] => Unit): Unit = {
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Seq[A] => Unit): Unit = {
         val merged = new MergeOnce((xs: Seq[A], ys: Seq[A]) => callback(xs ++ ys))
         left.computeNullable(cells, merged.left)
         right.computeNullable(cells, merged.right)
