@@ -955,4 +955,20 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
       previous = trail.size
     }
   }
+
+
+  "Prefix" should "return a syntax for the language up to that point" in {
+    val point = elem(BoolClass).up[Any]
+
+    lazy val syntax: Syntax[Any] = recursive {
+      opt(elem(NumClass) ~ syntax) ~ point
+    }.up[Any]
+
+    val trails = syntax.prefix(point).trails
+
+    assert(trails.next() == Seq())
+    assert(trails.next() == Seq(NumClass))
+    assert(trails.next() == Seq(NumClass, NumClass))
+    assert(trails.next() == Seq(NumClass, BoolClass))
+  }
 }

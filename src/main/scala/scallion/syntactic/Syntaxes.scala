@@ -102,6 +102,8 @@ trait Syntaxes[Token, Kind]
       */
     def followLast: Set[Kind]
 
+    protected def followLastEntries: Set[FollowLastEntry]
+
     /** Checks if `this` syntax is LL(1).
       *
       * @group property
@@ -113,6 +115,11 @@ trait Syntaxes[Token, Kind]
       * @group property
       */
     def conflicts: Set[LL1Conflict]
+
+    final def prefix(syntax: Syntax[_]): Syntax[Unit] = {
+      val recs = new IHM[Recursive[_], Recursive[Unit]]()
+      computePrefix(syntax, recs)
+    }
 
     /** Returns all possible sequences of token kinds accepted by `this` syntax,
       * ordered by increasing size.
@@ -152,10 +159,23 @@ trait Syntaxes[Token, Kind]
 
     protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
 
+    protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                           callback: Set[FollowLastEntry] => Unit): Unit
+
     protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
 
     protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                    callback: Set[LL1Conflict] => Unit): Unit
+
+    protected def computePrefix(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      if (this == syntax) {
+        Success((), _ => 1)
+      }
+      else {
+        computePrefixHelper(syntax, recs)
+      }
+
+    protected def computePrefixHelper(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit]
 
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` syntax on which the call
@@ -396,7 +416,6 @@ trait Syntaxes[Token, Kind]
       * @group parsing
       */
     def apply(it: Iterator[Token]): ParseResult[A] = {
-
       var syntax: Syntax[A] = this
       while (it.hasNext) {
         val token = it.next()
@@ -534,7 +553,10 @@ trait Syntaxes[Token, Kind]
   sealed trait LL1Conflict {
 
     /** Source of the conflict. */
-    val source: Syntax[_]
+    val source: Disjunction[_]
+
+    def witnessedFrom(syntax: Syntax[_]): Iterator[Seq[Kind]] =
+      syntax.prefix(source).trails
   }
 
   /** Contains the description of the various LL(1) conflicts.
@@ -547,13 +569,18 @@ trait Syntaxes[Token, Kind]
     case class NullableConflict(source: Disjunction[_]) extends LL1Conflict
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
-    case class FirstConflict(source: Disjunction[_], ambiguities: Set[Kind]) extends LL1Conflict
+    case class FirstConflict(source: Disjunction[_],
+                             ambiguities: Set[Kind]) extends LL1Conflict
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
-    case class FollowConflict(source: Syntax[_] with SequenceLike[_, _], ambiguities: Set[Kind]) extends LL1Conflict
+    case class FollowConflict(source: Disjunction[_],
+                              root: Syntax[_] with SequenceLike[_, _],
+                              ambiguities: Set[Kind]) extends LL1Conflict
   }
 
   import LL1Conflict._
+
+  protected case class FollowLastEntry(source: Disjunction[_], kinds: Set[Kind])
 
   /** Contains primitive basic syntaxes and syntax combinators.
     *
@@ -579,7 +606,10 @@ trait Syntaxes[Token, Kind]
       override val first: Set[Kind] =
         Set()
 
-      override val followLast: Set[Kind] =
+      override def followLast: Set[Kind] =
+        Set()
+
+      override protected def followLastEntries: Set[FollowLastEntry] =
         Set()
 
       override val isLL1: Boolean =
@@ -594,10 +624,16 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         callback(())
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
@@ -606,6 +642,10 @@ trait Syntaxes[Token, Kind]
       override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                               callback: Set[LL1Conflict] => Unit): Unit =
         ()
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        Failure()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector())
@@ -644,7 +684,10 @@ trait Syntaxes[Token, Kind]
       override val first: Set[Kind] =
         Set()
 
-      override val followLast: Set[Kind] =
+      override def followLast: Set[Kind] =
+        Set()
+
+      override protected def followLastEntries: Set[FollowLastEntry] =
         Set()
 
       override val isLL1: Boolean =
@@ -659,10 +702,16 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         ()
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
@@ -671,6 +720,10 @@ trait Syntaxes[Token, Kind]
       override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                               callback: Set[LL1Conflict] => Unit): Unit =
         ()
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        Failure()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.empty
@@ -711,10 +764,13 @@ trait Syntaxes[Token, Kind]
       override val first: Set[Kind] =
         Set(kind)
 
-      override val followLast: Set[Kind] =
+      override def followLast: Set[Kind] =
         Set()
 
-      override val isLL1: Boolean =
+      override protected def followLastEntries: Set[FollowLastEntry] =
+        Set()
+
+      override def isLL1: Boolean =
         true
 
       override def conflicts: Set[LL1Conflict] =
@@ -726,10 +782,16 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         callback(())
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
         callback(Set(kind))
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
@@ -738,6 +800,10 @@ trait Syntaxes[Token, Kind]
       override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                               callback: Set[LL1Conflict] => Unit): Unit =
         ()
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        Failure()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector(kind))
@@ -819,6 +885,9 @@ trait Syntaxes[Token, Kind]
       override def followLast: Set[Kind] =
         inner.followLast
 
+      override protected def followLastEntries: Set[FollowLastEntry] =
+        inner.followLastEntries
+
       override def isLL1: Boolean =
         inner.isLL1
 
@@ -833,11 +902,17 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         inner.computeIsProductive(cells, callback)
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
         inner.computeFirst(cells, callback)
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit =
         inner.computeFollowLast(cells, callback)
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+        inner.computeFollowLastEntries(cells, callback)
 
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         inner.computeIsLL1(cells, callback)
@@ -845,6 +920,10 @@ trait Syntaxes[Token, Kind]
       override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                               callback: Set[LL1Conflict] => Unit): Unit =
         inner.computeConflicts(cells, callback)
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        inner.computePrefix(syntax, recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         inner.collectTrails(recs)
@@ -908,17 +987,41 @@ trait Syntaxes[Token, Kind]
           right.followLast union left.followLast
         }
 
+      override protected def followLastEntries: Set[FollowLastEntry] =
+        if (!left.isProductive) {
+          Set()
+        }
+        else if (!right.isNullable) {
+          right.followLastEntries
+        }
+        else {
+          right.followLastEntries union left.followLastEntries
+        }
+
       override def isLL1: Boolean =
         (left.followLast intersect right.first).isEmpty &&
         left.isLL1 &&
         right.isLL1
 
       override def conflicts: Set[LL1Conflict] = {
-        val problematic = left.followLast intersect right.first
+        val firstRight = right.first
+
+        val followConflicts: Set[LL1Conflict] = left.followLastEntries.flatMap {
+          case FollowLastEntry(source, entry) => {
+            val inter = entry intersect firstRight
+
+            if (inter.isEmpty) {
+              None
+            }
+            else {
+              Some(FollowConflict(source, this, inter))
+            }
+          }
+        }
 
         left.conflicts union
         right.conflicts union
-        (if (problematic.nonEmpty) Set(FollowConflict(this, problematic)) else Set())
+        followConflicts
       }
 
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
@@ -927,7 +1030,8 @@ trait Syntaxes[Token, Kind]
         right.computeIsProductive(cells, merged.right)
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
         if (right.isProductive) {
           left.computeFirst(cells, callback)
 
@@ -945,6 +1049,16 @@ trait Syntaxes[Token, Kind]
           }
         }
 
+      override def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                            callback: Set[FollowLastEntry] => Unit): Unit =
+        if (left.isProductive) {
+          right.computeFollowLastEntries(cells, callback)
+
+          if (right.isNullable) {
+            left.computeFollowLastEntries(cells, callback)
+          }
+        }
+
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
         if ((left.followLast intersect right.first).nonEmpty) {
           callback(())
@@ -956,15 +1070,32 @@ trait Syntaxes[Token, Kind]
 
       override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                               callback: Set[LL1Conflict] => Unit): Unit = {
-        val problematic = left.followLast intersect right.first
+        val firstRight = right.first
 
-        if (problematic.nonEmpty) {
-          callback(Set(FollowConflict(this, problematic)))
+        val followConflicts: Set[LL1Conflict] = left.followLastEntries.flatMap {
+          case FollowLastEntry(source, entry) => {
+            val inter = entry intersect firstRight
+
+            if (inter.isEmpty) {
+              None
+            }
+            else {
+              Some(FollowConflict(source, this, inter))
+            }
+          }
+        }
+
+        if (followConflicts.nonEmpty) {
+          callback(followConflicts)
         }
 
         left.computeConflicts(cells, callback)
         right.computeConflicts(cells, callback)
       }
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        left.computePrefix(syntax, recs) | left.unit() ~>~ right.computePrefix(syntax, recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
@@ -1128,6 +1259,13 @@ trait Syntaxes[Token, Kind]
         right.followLast union left.followLast union fromLeft union fromRight
       }
 
+      override protected def followLastEntries: Set[FollowLastEntry] = {
+        val fromLeft = if (right.isNullable) Set(FollowLastEntry(this, left.first)) else Set.empty[FollowLastEntry]
+        val fromRight = if (left.isNullable) Set(FollowLastEntry(this, right.first)) else Set.empty[FollowLastEntry]
+
+        right.followLastEntries union left.followLastEntries union fromLeft union fromRight
+      }
+
       override def isLL1: Boolean =
         (left.first intersect right.first).isEmpty &&
         !(left.isNullable && right.isNullable) &&
@@ -1153,12 +1291,14 @@ trait Syntaxes[Token, Kind]
         right.computeIsProductive(cells, callback)
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit = {
         left.computeFirst(cells, callback)
         right.computeFirst(cells, callback)
       }
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit = {
         right.computeFollowLast(cells, callback)
         left.computeFollowLast(cells, callback)
 
@@ -1167,6 +1307,19 @@ trait Syntaxes[Token, Kind]
         }
         if (left.isNullable) {
           callback(right.first)
+        }
+      }
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit = {
+        right.computeFollowLastEntries(cells, callback)
+        left.computeFollowLastEntries(cells, callback)
+
+        if (right.isNullable) {
+          callback(Set(FollowLastEntry(this, left.first)))
+        }
+        if (left.isNullable) {
+          callback(Set(FollowLastEntry(this, right.first)))
         }
       }
 
@@ -1194,6 +1347,10 @@ trait Syntaxes[Token, Kind]
         left.computeConflicts(cells, callback)
         right.computeConflicts(cells, callback)
       }
+
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+        left.computePrefix(syntax, recs) | right.computePrefix(syntax, recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
@@ -1430,7 +1587,8 @@ trait Syntaxes[Token, Kind]
         followLastCacheValue
       }
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                               callback: Set[Kind] => Unit): Unit = {
         if (followLastCacheValid) {
           if (followLastCacheValue.nonEmpty) {
             callback(followLastCacheValue)
@@ -1448,6 +1606,46 @@ trait Syntaxes[Token, Kind]
           cell.register(callback)
           cells.put(this, cell)
           inner.computeFollowLast(cells, cell)
+        }
+      }
+
+      private var followLastEntriesCacheValid: Boolean = false
+      private var followLastEntriesCacheValue: Set[FollowLastEntry] = Set()
+      override protected def followLastEntries: Set[FollowLastEntry] = {
+        if (!followLastEntriesCacheValid) {
+          val cell = new CellUpgradableSet[FollowLastEntry]({ result =>
+            followLastEntriesCacheValue = result
+            followLastEntriesCacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Set[FollowLastEntry]]]()
+          cells.put(this, cell)
+          inner.computeFollowLastEntries(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
+          }
+        }
+        followLastEntriesCacheValue
+      }
+
+      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+                                                      callback: Set[FollowLastEntry] => Unit): Unit = {
+        if (followLastEntriesCacheValid) {
+          if (followLastEntriesCacheValue.nonEmpty) {
+            callback(followLastEntriesCacheValue)
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellUpgradableSet[FollowLastEntry]({ result =>
+            followLastEntriesCacheValue = result
+            followLastEntriesCacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeFollowLastEntries(cells, cell)
         }
       }
 
@@ -1531,8 +1729,23 @@ trait Syntaxes[Token, Kind]
         }
       }
 
+      override protected def computePrefixHelper(syntax: Syntax[_],
+                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] = {
+
+        if (recs.containsKey(this)) {
+          recs.get(this)
+        }
+        else {
+          val rec: Recursive[Unit] = Recursive.create {
+            inner.computePrefix(syntax, recs)
+          }
+          recs.put(this, rec)
+          rec
+        }
+      }
+
       override protected def derive(token: Token, kind: Kind): Syntax[A] =
-        inner.derive(token, kind)
+        if (isProductive) inner.derive(token, kind) else Failure()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         recs.get(this.id) match {
