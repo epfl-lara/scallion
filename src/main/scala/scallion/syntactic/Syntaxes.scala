@@ -116,6 +116,12 @@ trait Syntaxes[Token, Kind]
       */
     def conflicts: Set[LL1Conflict]
 
+    /** Returns the set of all kinds that appear somewhere in `this` syntax.
+      *
+      * @group property
+      */
+    def kinds: Set[Kind]
+
     final def prefix(syntax: Syntax[_]): Syntax[Unit] = {
       val recs = new IHM[Recursive[_], Recursive[Unit]]()
       computePrefix(syntax, recs)
@@ -135,12 +141,6 @@ trait Syntaxes[Token, Kind]
       * @group combinator
       */
     @inline def filter(predicate: Kind => Boolean): Syntax[A] = collectFilter(predicate, Map.empty)
-
-    /** Returns the set of all kinds that appear somewhere in `this` syntax.
-      *
-      * @group property
-      */
-    @inline def kinds: Set[Kind] = collectKinds(ListSet())
 
     /** Returns all representations of `value` in `this` syntax,
       * ordered by increasing size.
@@ -166,6 +166,8 @@ trait Syntaxes[Token, Kind]
 
     protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                    callback: Set[LL1Conflict] => Unit): Unit
+
+    protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
 
     protected def computePrefix(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
       if (this == syntax) {
@@ -196,13 +198,6 @@ trait Syntaxes[Token, Kind]
       * @param recs      The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectFilter(predicate: Kind => Boolean, recs: Map[RecId, Syntax[_]]): Syntax[A]
-
-    /** Collects all token kinds appearing in `this` syntax.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectKinds(recs: Set[RecId]): Set[Kind]
-
 
     /** Collects a producer that iterates over all representations of `value`.
       *
@@ -618,6 +613,9 @@ trait Syntaxes[Token, Kind]
       override def conflicts: Set[LL1Conflict] =
         Set()
 
+      override def kinds: Set[Kind] =
+        Set()
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
         callback(value)
 
@@ -625,6 +623,10 @@ trait Syntaxes[Token, Kind]
         callback(())
 
       override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
                                           callback: Set[Kind] => Unit): Unit =
         ()
 
@@ -654,9 +656,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[A] =
         this
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        ListSet()
 
       override protected def collectTokens(
           other: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
@@ -696,6 +695,9 @@ trait Syntaxes[Token, Kind]
       override def conflicts: Set[LL1Conflict] =
         Set()
 
+      override def kinds: Set[Kind] =
+        Set()
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
         ()
 
@@ -703,6 +705,10 @@ trait Syntaxes[Token, Kind]
         ()
 
       override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
                                           callback: Set[Kind] => Unit): Unit =
         ()
 
@@ -732,9 +738,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[A] =
         this
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        ListSet()
 
       override protected def collectTokens(
             value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
@@ -776,6 +779,9 @@ trait Syntaxes[Token, Kind]
       override def conflicts: Set[LL1Conflict] =
         Set()
 
+      override def kinds: Set[Kind] =
+        Set(kind)
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Token => Unit): Unit =
         ()
 
@@ -801,6 +807,10 @@ trait Syntaxes[Token, Kind]
                                               callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
+        callback(Set(kind))
+
       override protected def computePrefixHelper(syntax: Syntax[_],
                                                  recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         Failure()
@@ -812,9 +822,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[Token] =
         if (predicate(kind)) this else Failure()
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        ListSet(kind)
 
       override protected def collectTokens(
           value: Token, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]) : Producer[Seq[Token]] =
@@ -894,6 +901,9 @@ trait Syntaxes[Token, Kind]
       override def conflicts: Set[LL1Conflict] =
         inner.conflicts
 
+      override def kinds: Set[Kind] =
+        inner.kinds
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit = {
         val transformed = new TransformOnce(callback, function)
         inner.computeNullable(cells, transformed)
@@ -921,6 +931,10 @@ trait Syntaxes[Token, Kind]
                                               callback: Set[LL1Conflict] => Unit): Unit =
         inner.computeConflicts(cells, callback)
 
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit =
+        inner.computeKinds(cells, callback)
+
       override protected def computePrefixHelper(syntax: Syntax[_],
                                                  recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         inner.computePrefix(syntax, recs)
@@ -932,9 +946,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[B] =
         inner.collectFilter(predicate, recs).map(function, inverse)
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        inner.collectKinds(recs)
 
       override protected def derive(token: Token, kind: Kind): Syntax[B] =
         inner.derive(token, kind).map(function, inverse)
@@ -1024,6 +1035,9 @@ trait Syntaxes[Token, Kind]
         followConflicts
       }
 
+      override def kinds: Set[Kind] =
+        left.kinds union right.kinds
+
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
         val merged = new MergeOnce((_: Unit, _: Unit) => callback(()))
         left.computeIsProductive(cells, merged.left)
@@ -1093,15 +1107,18 @@ trait Syntaxes[Token, Kind]
         right.computeConflicts(cells, callback)
       }
 
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit = {
+        left.computeKinds(cells, callback)
+        right.computeKinds(cells, callback)
+      }
+
       override protected def computePrefixHelper(syntax: Syntax[_],
                                                  recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         left.computePrefix(syntax, recs) | left.unit() ~>~ right.computePrefix(syntax, recs)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        left.collectKinds(recs) union right.collectKinds(recs)
     }
 
     /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
@@ -1281,6 +1298,9 @@ trait Syntaxes[Token, Kind]
         (if (problematic.nonEmpty) Set(FirstConflict(this, problematic)) else Set())
       }
 
+      override def kinds: Set[Kind] =
+        left.kinds union right.kinds
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
         left.computeNullable(cells, callback)
         right.computeNullable(cells, callback)
@@ -1348,6 +1368,12 @@ trait Syntaxes[Token, Kind]
         right.computeConflicts(cells, callback)
       }
 
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit = {
+        left.computeKinds(cells, callback)
+        right.computeKinds(cells, callback)
+      }
+
       override protected def computePrefixHelper(syntax: Syntax[_],
                                                  recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         left.computePrefix(syntax, recs) | right.computePrefix(syntax, recs)
@@ -1368,9 +1394,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[A] =
         left.collectFilter(predicate, recs) | right.collectFilter(predicate, recs)
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        left.collectKinds(recs) union right.collectKinds(recs)
 
       override protected def collectTokens(
           value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
@@ -1548,7 +1571,8 @@ trait Syntaxes[Token, Kind]
         firstCacheValue
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit = {
         if (firstCacheValid) {
           if (firstCacheValue.nonEmpty) {
             callback(firstCacheValue)
@@ -1729,6 +1753,46 @@ trait Syntaxes[Token, Kind]
         }
       }
 
+      private var kindsCacheValid: Boolean = false
+      private var kindsCacheValue: Set[Kind] = Set()
+      override def kinds: Set[Kind] = {
+        if (!kindsCacheValid) {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            kindsCacheValue = result
+            kindsCacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
+          cells.put(this, cell)
+          inner.computeKinds(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
+          }
+        }
+        kindsCacheValue
+      }
+
+      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
+                                          callback: Set[Kind] => Unit): Unit = {
+        if (kindsCacheValid) {
+          if (kindsCacheValue.nonEmpty) {
+            callback(kindsCacheValue)
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            kindsCacheValue = result
+            kindsCacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeKinds(cells, cell)
+        }
+      }
+
       override protected def computePrefixHelper(syntax: Syntax[_],
                                                  recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] = {
 
@@ -1784,9 +1848,6 @@ trait Syntaxes[Token, Kind]
           case Some(rec) => rec.asInstanceOf[Syntax[A]]
         }
       }
-
-      override protected def collectKinds(recs: Set[RecId]): Set[Kind] =
-        if (recs.contains(this.id)) ListSet() else inner.collectKinds(recs + this.id)
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
         recs.get(this.id) match {
