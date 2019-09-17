@@ -102,25 +102,6 @@ trait Syntaxes[Token, Kind]
       */
     def followLast: Set[Kind]
 
-    /** Returns all of kinds that should not be accepted
-      * as the first token by a subsequent syntax.
-      *
-      * The value associated to the kind describes the syntax up to the point
-      * where the constraint was generated.
-      *
-      * @group property
-      */
-    @inline def shouldNotFollow: Map[Kind, Syntax[_]] = collectShouldNotFollow(ListSet())
-
-    /** Checks if a `Recursive` syntax can be entered without
-      * being prefixed by a non-empty sequence of tokens in `this` syntax.
-      *
-      * @param rec The `Recursive` syntax.
-      *
-      * @group property
-      */
-    @inline def calledLeft(rec: Recursive[_]): Boolean = collectCalledLeft(rec, MutSet.empty)
-
     /** Checks if `this` syntax is LL(1).
       *
       * @group property
@@ -131,11 +112,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def conflicts: Set[LL1Conflict] = {
-      val result = MutSet.empty[LL1Conflict]
-      collectLL1Conflicts(None, MutSet.empty, result)
-      result.toSet
-    }
+    def conflicts: Set[LL1Conflict]
 
     /** Returns all possible sequences of token kinds accepted by `this` syntax,
       * ordered by increasing size.
@@ -177,27 +154,15 @@ trait Syntaxes[Token, Kind]
 
     protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
 
+    protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                   callback: Set[LL1Conflict] => Unit): Unit
+
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` syntax on which the call
     // was already performed.
     //
     // This is done to handle the potentially cyclic structure of syntaxes
     // introduced by `Recursive`.
-
-    protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]]
-
-    /** Checks if the recusive syntax `rec` can be invoked without consuming any input tokens.
-      *
-      * @param rec  The recursive syntax.
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean
-
-    /** Collects the LL(1) conflicts from `this` syntax.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectLL1Conflicts(prefix: Option[Syntax[Unit]], recs: MutSet[RecId], res: MutSet[LL1Conflict]): Unit
 
     /** Builds a producer of trails from `this` syntax.
       *
@@ -561,6 +526,7 @@ trait Syntaxes[Token, Kind]
     */
   case class UnexpectedEnd[A](syntax: Syntax[A]) extends ParseResult[A]
 
+
   /** Describes a LL(1) conflict.
     *
     * @group conflict
@@ -569,18 +535,6 @@ trait Syntaxes[Token, Kind]
 
     /** Source of the conflict. */
     val source: Syntax[_]
-
-    /** Syntax for a prefix before the conflict occurs.
-      *
-      * This may not be exhaustive.
-      */
-    val prefix: Syntax[_]
-
-    /** Returns trails that witness the conflict.
-      *
-      * This may not be exhaustive.
-      */
-    def witnesses: Iterator[Seq[Kind]]
   }
 
   /** Contains the description of the various LL(1) conflicts.
@@ -590,44 +544,13 @@ trait Syntaxes[Token, Kind]
   object LL1Conflict {
 
     /** Indicates that both branches of a disjunction are nullable. */
-    case class NullableConflict(
-        prefix: Syntax[_],
-        source: Disjunction[_]) extends LL1Conflict {
-
-      override def witnesses: Iterator[Seq[Kind]] = prefix.trails
-    }
+    case class NullableConflict(source: Disjunction[_]) extends LL1Conflict
 
     /** Indicates that two branches of a disjunction share the same first token(s). */
-    case class FirstConflict(
-        prefix: Syntax[_],
-        ambiguities: Set[Kind],
-        source: Disjunction[_]) extends LL1Conflict {
-
-      override def witnesses: Iterator[Seq[Kind]] = for {
-        trail <- prefix.trails
-        kind <- ambiguities
-      } yield trail :+ kind
-    }
+    case class FirstConflict(source: Disjunction[_], ambiguities: Set[Kind]) extends LL1Conflict
 
     /** Indicates that the right end side first token set conflicts with the left end side. */
-    case class FollowConflict(
-        prefix: Syntax[_],
-        ambiguities: Set[Kind],
-        source: Syntax[_] with SequenceLike[_, _]) extends LL1Conflict {
-
-      override def witnesses: Iterator[Seq[Kind]] = for {
-        trail <- prefix.trails
-        kind <- ambiguities
-      } yield trail :+ kind
-    }
-
-    /** Indicates that the syntax recursively calls itself in a left position. */
-    case class LeftRecursiveConflict(
-        prefix: Syntax[_],
-        source: Recursive[_]) extends LL1Conflict {
-
-      override def witnesses: Iterator[Seq[Kind]] = prefix.trails
-    }
+    case class FollowConflict(source: Syntax[_] with SequenceLike[_, _], ambiguities: Set[Kind]) extends LL1Conflict
   }
 
   import LL1Conflict._
@@ -662,6 +585,9 @@ trait Syntaxes[Token, Kind]
       override val isLL1: Boolean =
         true
 
+      override def conflicts: Set[LL1Conflict] =
+        Set()
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
         callback(value)
 
@@ -677,16 +603,8 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         ()
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
-        Map.empty
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        false
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit =
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -732,6 +650,9 @@ trait Syntaxes[Token, Kind]
       override val isLL1: Boolean =
         true
 
+      override def conflicts: Set[LL1Conflict] =
+        Set()
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
         ()
 
@@ -747,16 +668,8 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         ()
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
-        Map.empty
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        false
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit =
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -804,6 +717,9 @@ trait Syntaxes[Token, Kind]
       override val isLL1: Boolean =
         true
 
+      override def conflicts: Set[LL1Conflict] =
+        Set()
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Token => Unit): Unit =
         ()
 
@@ -819,16 +735,8 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         ()
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
-        Map.empty
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        false
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit =
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -914,6 +822,9 @@ trait Syntaxes[Token, Kind]
       override def isLL1: Boolean =
         inner.isLL1
 
+      override def conflicts: Set[LL1Conflict] =
+        inner.conflicts
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit = {
         val transformed = new TransformOnce(callback, function)
         inner.computeNullable(cells, transformed)
@@ -931,17 +842,9 @@ trait Syntaxes[Token, Kind]
       override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         inner.computeIsLL1(cells, callback)
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
-        inner.collectShouldNotFollow(recs)
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        inner.collectCalledLeft(rec, recs)
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit =
-        inner.collectLL1Conflicts(prefix, recs, res)
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit =
+        inner.computeConflicts(cells, callback)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         inner.collectTrails(recs)
@@ -1010,6 +913,14 @@ trait Syntaxes[Token, Kind]
         left.isLL1 &&
         right.isLL1
 
+      override def conflicts: Set[LL1Conflict] = {
+        val problematic = left.followLast intersect right.first
+
+        left.conflicts union
+        right.conflicts union
+        (if (problematic.nonEmpty) Set(FollowConflict(this, problematic)) else Set())
+      }
+
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
         val merged = new MergeOnce((_: Unit, _: Unit) => callback(()))
         left.computeIsProductive(cells, merged.left)
@@ -1043,42 +954,16 @@ trait Syntaxes[Token, Kind]
         right.computeIsLL1(cells, callback)
       }
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
-        val rightSNF: Map[Kind, Syntax[_]] =
-          right.collectShouldNotFollow(recs).map {
-            case (k, v) => k -> left ~ v
-          }.toMap
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit = {
+        val problematic = left.followLast intersect right.first
 
-        right.nullable match {
-          case Some(_) => combineSNF(
-            left.collectShouldNotFollow(recs),
-            rightSNF
-          )
-          case None => rightSNF
-        }
-      }
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        left.collectCalledLeft(rec, recs) || (left.nullable.nonEmpty && right.collectCalledLeft(rec, recs))
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit = {
-
-        val leftSNF = left.shouldNotFollow
-
-        val problematicKinds = (leftSNF.keySet & right.first)
-
-        problematicKinds.foreach { kind =>
-          res += FollowConflict(leftSNF(kind), problematicKinds, this)
+        if (problematic.nonEmpty) {
+          callback(Set(FollowConflict(this, problematic)))
         }
 
-        val rightPrefix: Option[Syntax[Unit]] =
-          Some(prefix.map((pre: Syntax[Unit]) => (pre ~>~ left.unit())).getOrElse(left.unit()))
-
-        left.collectLL1Conflicts(prefix, recs, res)
-        right.collectLL1Conflicts(rightPrefix, recs, res)
+        left.computeConflicts(cells, callback)
+        right.computeConflicts(cells, callback)
       }
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -1249,6 +1134,15 @@ trait Syntaxes[Token, Kind]
         left.isLL1 &&
         right.isLL1
 
+      override def conflicts: Set[LL1Conflict] = {
+        val problematic = left.first intersect right.first
+
+        left.conflicts union
+        right.conflicts union
+        (if (left.isNullable && right.isNullable) Set(NullableConflict(this)) else Set()) union
+        (if (problematic.nonEmpty) Set(FirstConflict(this, problematic)) else Set())
+      }
+
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
         left.computeNullable(cells, callback)
         right.computeNullable(cells, callback)
@@ -1285,52 +1179,20 @@ trait Syntaxes[Token, Kind]
         right.computeIsLL1(cells, callback)
       }
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
-        val fromLeft: Map[Kind, Syntax[_]] =
-          if (right.nullable.nonEmpty) {
-            left.first.toSeq.map {
-              kind => kind -> epsilon(())
-            }.toMap
-          }
-          else {
-            Map.empty
-          }
-        val fromRight: Map[Kind, Syntax[_]] =
-          if (left.nullable.nonEmpty) {
-            right.first.toSeq.map {
-              kind => kind -> epsilon(())
-            }.toMap
-          }
-          else {
-            Map.empty
-          }
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit = {
+        val problematic = left.first intersect right.first
 
-        val baseSNF = combineSNF(left.collectShouldNotFollow(recs), right.collectShouldNotFollow(recs))
-        val addedSNF = combineSNF(fromLeft, fromRight)
-
-        combineSNF(baseSNF, addedSNF)
-      }
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        left.collectCalledLeft(rec, recs) || right.collectCalledLeft(rec, recs)
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit = {
-
-        val problematicKinds = (left.first & right.first)
-
-        if (problematicKinds.nonEmpty) {
-          res += FirstConflict(prefix.getOrElse(epsilon(())), problematicKinds, this)
+        if (problematic.nonEmpty) {
+          callback(Set(FirstConflict(this, problematic)))
         }
 
-        if (left.nullable.nonEmpty && right.nullable.nonEmpty) {
-          res += NullableConflict(prefix.getOrElse(epsilon(())), this)
+        if (left.isNullable && right.isNullable) {
+          callback(Set(NullableConflict(this)))
         }
 
-        left.collectLL1Conflicts(prefix, recs, res)
-        right.collectLL1Conflicts(prefix, recs, res)
+        left.computeConflicts(cells, callback)
+        right.computeConflicts(cells, callback)
       }
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
@@ -1629,28 +1491,45 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
-        if (recs.contains(this.id)) Map.empty else inner.collectShouldNotFollow(recs + this.id)
-
-      override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
-        if (recs.contains(this.id)) false else {
-          recs += this.id
-          (this.id == rec.id) || inner.collectCalledLeft(rec, recs)
-        }
-
-      override protected def collectLL1Conflicts(
-          prefix: Option[Syntax[Unit]],
-          recs: MutSet[RecId],
-          res: MutSet[LL1Conflict]): Unit =
-        if (recs.contains(this.id)) () else {
-
-          if (inner.calledLeft(this)) {
-            res += LeftRecursiveConflict(prefix.getOrElse(epsilon(())), this)
+      private var conflictsCacheValid: Boolean = false
+      private var conflictsCacheValue: Set[LL1Conflict] = Set()
+      override def conflicts: Set[LL1Conflict] = {
+        if (!conflictsCacheValid) {
+          val cell = new CellUpgradableSet[LL1Conflict]({ result =>
+            conflictsCacheValue = result
+            conflictsCacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Set[LL1Conflict]]]()
+          cells.put(this, cell)
+          inner.computeConflicts(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
           }
-
-          recs += this.id
-          inner.collectLL1Conflicts(prefix, recs, res)
         }
+        conflictsCacheValue
+      }
+
+      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+                                              callback: Set[LL1Conflict] => Unit): Unit = {
+        if (conflictsCacheValid) {
+          if (conflictsCacheValue.nonEmpty) {
+            callback(conflictsCacheValue)
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellUpgradableSet[LL1Conflict]({ result =>
+            conflictsCacheValue = result
+            conflictsCacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeConflicts(cells, cell)
+        }
+      }
 
       override protected def derive(token: Token, kind: Kind): Syntax[A] =
         inner.derive(token, kind)

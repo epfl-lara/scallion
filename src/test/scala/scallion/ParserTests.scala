@@ -804,7 +804,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     assert(conflicts.size == 1)
 
     inside(conflicts(0)) {
-      case FirstConflict(prefix, ambiguities, source) => {
+      case FirstConflict(source, ambiguities) => {
         assert(ambiguities == Set(BoolClass))
         assert(source == parser)
       }
@@ -824,8 +824,8 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     assert(conflicts.size == 1)
 
     inside(conflicts(0)) {
-      case NullableConflict(prefix, problematic) => {
-        assert(problematic == parser)
+      case NullableConflict(source) => {
+        assert(source == parser)
       }
     }
   }
@@ -858,7 +858,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     val cs = expr.conflicts.toSeq
 
-    assert(cs.size == 4)
+    assert(cs.size == 3)
 
     val firstConflicts = cs.collect {
       case c: FirstConflict => c
@@ -884,13 +884,6 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     // but expr can start with "+".
     assert(followConflicts.size == 1)
     assert(followConflicts(0).ambiguities == Set(OperatorClass('+')))
-
-    val leftRecursiveConflicts = cs.collect {
-      case c: LeftRecursiveConflict => c
-    }
-
-    // expr is left recursive.
-    assert(leftRecursiveConflicts.size == 1)
   }
 
 
