@@ -251,7 +251,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict.FirstConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict.FirstConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="FirstConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable"></a><a id="FirstConflict:FirstConflict"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$.html#FirstConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable" title="Permalink">
@@ -263,11 +263,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that two branches of a disjunction share the same first token(s)." href="Syntaxes$LL1Conflict$$FirstConflict.html"><span class="name">FirstConflict</span></a><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that two branches of a disjunction share some same first token kinds." href="Syntaxes$LL1Conflict$$FirstConflict.html"><span class="name">FirstConflict</span></a><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that two branches of a disjunction share the same first token(s).</p>
-    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Indicates that two branches of a disjunction share some same first token kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that two branches of a disjunction share some same first token kinds.
+</p></div><dl class="paramcmts block"><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="FollowConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable"></a><a id="FollowConflict:FollowConflict"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$.html#FollowConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable" title="Permalink">
@@ -279,10 +280,15 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that the right end side first token set conflicts with the left end side." href="Syntaxes$LL1Conflict$$FollowConflict.html"><span class="name">FollowConflict</span></a><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that an ambiguity arises due to a disjunction appearing somewhere in the left-hand side of a sequence, that conflicts with the right-hand side of that sequence." href="Syntaxes$LL1Conflict$$FollowConflict.html"><span class="name">FollowConflict</span></a><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the right end side first token set conflicts with the left end side.</p>
+      <p class="shortcomment cmt">Indicates that an ambiguity arises due to a disjunction appearing somewhere in
+the left-hand side of a sequence, that conflicts with the right-hand side of
+that sequence.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that an ambiguity arises due to a disjunction appearing somewhere in
+the left-hand side of a sequence, that conflicts with the right-hand side of
+that sequence.
+</p></div><dl class="paramcmts block"><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.NullableConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="NullableConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable"></a><a id="NullableConflict:NullableConflict"></a>
       <span class="permalink">

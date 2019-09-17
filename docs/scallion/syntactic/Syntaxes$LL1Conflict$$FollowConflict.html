@@ -147,12 +147,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="Syntaxes$LL1Conflict$$FirstConflict.html" title="Indicates that two branches of a disjunction share the same first token(s)."></a>
-                        <a href="Syntaxes$LL1Conflict$$FirstConflict.html" title="Indicates that two branches of a disjunction share the same first token(s).">FirstConflict</a>
+                        <a class="class" href="Syntaxes$LL1Conflict$$FirstConflict.html" title="Indicates that two branches of a disjunction share some same first token kinds."></a>
+                        <a href="Syntaxes$LL1Conflict$$FirstConflict.html" title="Indicates that two branches of a disjunction share some same first token kinds.">FirstConflict</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="" title="Indicates that the right end side first token set conflicts with the left end side."></a>
-                        <a href="" title="Indicates that the right end side first token set conflicts with the left end side.">FollowConflict</a>
+                        <a class="class" href="" title="Indicates that an ambiguity arises due to a disjunction appearing somewhere in the left-hand side of a sequence, that conflicts with the right-hand side of that sequence."></a>
+                        <a href="" title="Indicates that an ambiguity arises due to a disjunction appearing somewhere in the left-hand side of a sequence, that conflicts with the right-hand side of that sequence.">FollowConflict</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$LL1Conflict$$NullableConflict.html" title="Indicates that both branches of a disjunction are nullable."></a>
@@ -185,7 +185,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Indicates that the right end side first token set conflicts with the left end side.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Indicates that an ambiguity arises due to a disjunction appearing somewhere in
+the left-hand side of a sequence, that conflicts with the right-hand side of
+that sequence.
+</p></div><dl class="paramcmts block"><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -235,7 +238,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict"></a><a id="&lt;init&gt;:FollowConflict"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$$FollowConflict.html#&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" title="Permalink">
@@ -250,7 +253,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">FollowConflict</span><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span>
       </span>
       
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
     </li></ol>
             </div>
 

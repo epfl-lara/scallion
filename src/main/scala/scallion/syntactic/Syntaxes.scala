@@ -580,11 +580,20 @@ trait Syntaxes[Token, Kind]
     /** Indicates that both branches of a disjunction are nullable. */
     case class NullableConflict(source: Disjunction[_]) extends LL1Conflict
 
-    /** Indicates that two branches of a disjunction share the same first token(s). */
+    /** Indicates that two branches of a disjunction share some same first token kinds.
+      *
+      * @param ambiguities The conflicting kinds.
+      */
     case class FirstConflict(source: Disjunction[_],
                              ambiguities: Set[Kind]) extends LL1Conflict
 
-    /** Indicates that the right end side first token set conflicts with the left end side. */
+    /** Indicates that an ambiguity arises due to a disjunction appearing somewhere in
+      * the left-hand side of a sequence, that conflicts with the right-hand side of
+      * that sequence.
+      *
+      * @param root        The sequence in which the conflict occured.
+      * @param ambiguities The conflicting kinds.
+      */
     case class FollowConflict(source: Disjunction[_],
                               root: Syntax[_] with SequenceLike[_, _],
                               ambiguities: Set[Kind]) extends LL1Conflict
