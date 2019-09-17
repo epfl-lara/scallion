@@ -78,6 +78,12 @@ trait Syntaxes[Token, Kind]
       */
     def nullable: Option[A]
 
+    /** Indicates if the empty sequence is described by `this` syntax.
+      *
+      * @group property
+      */
+    @inline def isNullable: Boolean = nullable.nonEmpty
+
     /** Indicates if there exists a finite sequence of tokens that `this` syntax describes.
       *
       * @group property
@@ -88,7 +94,13 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def first: Set[Kind] = collectFirst(ListSet())
+    def first: Set[Kind]
+
+    /** Returns the set of token kinds that are accepted right after an accepted sequence.
+      *
+      * @group property
+      */
+    def followLast: Set[Kind]
 
     /** Returns all of kinds that should not be accepted
       * as the first token by a subsequent syntax.
@@ -113,7 +125,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group property
       */
-    @inline def isLL1: Boolean = collectIsLL1(MutSet.empty)
+    def isLL1: Boolean
 
     /** Returns all LL(1) conflicts in `this` syntax.
       *
@@ -155,9 +167,15 @@ trait Syntaxes[Token, Kind]
       collectTokens(value, Map.empty).toIterator
 
 
-    protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit
+    protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit
 
-    protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit
+    protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
+
+    protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
+
+    protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
+
+    protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
 
     // All the functions below have an argument `recs` which
     // contains the set of all `Recursive` syntax on which the call
@@ -166,16 +184,6 @@ trait Syntaxes[Token, Kind]
     // This is done to handle the potentially cyclic structure of syntaxes
     // introduced by `Recursive`.
 
-    /** Collects the "first" set from `this` syntax.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectFirst(recs: Set[RecId]): Set[Kind]
-
-    /** Collects the "should-not-follow" set from `this` syntax.
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
     protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]]
 
     /** Checks if the recusive syntax `rec` can be invoked without consuming any input tokens.
@@ -184,12 +192,6 @@ trait Syntaxes[Token, Kind]
       * @param recs The identifiers of already visited `Recursive` syntaxes.
       */
     protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean
-
-    /** Checks if `this` syntax is LL(1).
-      *
-      * @param recs The identifiers of already visited `Recursive` syntaxes.
-      */
-    protected def collectIsLL1(recs: MutSet[RecId]): Boolean
 
     /** Collects the LL(1) conflicts from `this` syntax.
       *
@@ -651,23 +653,35 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         true
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
-        pipe.feed(value)
+      override val first: Set[Kind] =
+        Set()
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
-        pipe.feed(())
+      override val followLast: Set[Kind] =
+        Set()
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        ListSet()
+      override val isLL1: Boolean =
+        true
+
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
+        callback(value)
+
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        callback(())
+
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        ()
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        true
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -709,23 +723,35 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         false
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit =
+      override val first: Set[Kind] =
+        Set()
+
+      override val followLast: Set[Kind] =
+        Set()
+
+      override val isLL1: Boolean =
+        true
+
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
         ()
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         ()
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        ListSet()
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        ()
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        true
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -769,23 +795,35 @@ trait Syntaxes[Token, Kind]
       override val isProductive: Boolean =
         true
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[Token]): Unit =
+      override val first: Set[Kind] =
+        Set(kind)
+
+      override val followLast: Set[Kind] =
+        Set()
+
+      override val isLL1: Boolean =
+        true
+
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Token => Unit): Unit =
         ()
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
-        pipe.feed(())
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        callback(())
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        Set(kind)
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        callback(Set(kind))
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        ()
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        ()
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         Map.empty
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         false
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        true
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -867,25 +905,37 @@ trait Syntaxes[Token, Kind]
       override lazy val isProductive: Boolean =
         inner.isProductive
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[B]): Unit = {
-        val transformPipe = new TransformPipe(pipe, function)
-        inner.computeNullable(points, transformPipe)
+      override lazy val first: Set[Kind] =
+        inner.first
+
+      override def followLast: Set[Kind] =
+        inner.followLast
+
+      override def isLL1: Boolean =
+        inner.isLL1
+
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit = {
+        val transformed = new TransformOnce(callback, function)
+        inner.computeNullable(cells, transformed)
       }
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit =
-        inner.computeIsProductive(points, pipe)
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        inner.computeIsProductive(cells, callback)
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        inner.collectFirst(recs)
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        inner.computeFirst(cells, callback)
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        inner.computeFollowLast(cells, callback)
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+        inner.computeIsLL1(cells, callback)
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         inner.collectShouldNotFollow(recs)
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         inner.collectCalledLeft(rec, recs)
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        inner.collectIsLL1(recs)
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -930,17 +980,68 @@ trait Syntaxes[Token, Kind]
       */
     sealed trait SequenceLike[A, B] extends Binary[A, B] { self: Syntax[_] =>
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
-        val mergePipe = new MergePipe(pipe, (_: Any, _: Any) => ())
-        left.computeIsProductive(points, mergePipe.left)
-        right.computeIsProductive(points, mergePipe.right)
+      override lazy val isProductive: Boolean =
+        left.isProductive && right.isProductive
+
+      override lazy val first: Set[Kind] =
+        if (!right.isProductive) {
+          Set()
+        }
+        else if (!left.isNullable) {
+          left.first
+        }
+        else {
+          left.first union right.first
+        }
+
+      override def followLast: Set[Kind] =
+        if (!left.isProductive) {
+          Set()
+        }
+        else if (!right.isNullable) {
+          right.followLast
+        }
+        else {
+          right.followLast union left.followLast
+        }
+
+      override def isLL1: Boolean =
+        (left.followLast intersect right.first).isEmpty &&
+        left.isLL1 &&
+        right.isLL1
+
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        val merged = new MergeOnce((_: Unit, _: Unit) => callback(()))
+        left.computeIsProductive(cells, merged.left)
+        right.computeIsProductive(cells, merged.right)
       }
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        left.nullable match {
-          case Some(_) => left.collectFirst(recs) ++ right.collectFirst(recs)
-          case None => left.collectFirst(recs)
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        if (right.isProductive) {
+          left.computeFirst(cells, callback)
+
+          if (left.isNullable) {
+            right.computeFirst(cells, callback)
+          }
         }
+
+      override def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit =
+        if (left.isProductive) {
+          right.computeFollowLast(cells, callback)
+
+          if (right.isNullable) {
+            left.computeFollowLast(cells, callback)
+          }
+        }
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        if ((left.followLast intersect right.first).nonEmpty) {
+          callback(())
+        }
+
+        left.computeIsLL1(cells, callback)
+        right.computeIsLL1(cells, callback)
+      }
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
         val rightSNF: Map[Kind, Syntax[_]] =
@@ -959,10 +1060,6 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || (left.nullable.nonEmpty && right.collectCalledLeft(rec, recs))
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
-        (left.shouldNotFollow.keySet & right.first).isEmpty
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -1001,18 +1098,15 @@ trait Syntaxes[Token, Kind]
     case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
         extends Syntax[A ~ B] with SequenceLike[A, B] {
 
-      override lazy val isProductive: Boolean =
-        left.isProductive && right.isProductive
-
       override lazy val nullable: Option[A ~ B] = for {
         leftValue <- left.nullable
         rightValue <- right.nullable
       } yield scallion.syntactic.~(leftValue, rightValue)
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A ~ B]): Unit = {
-        val mergePipe = new MergePipe(pipe, (a: A, b: B) => scallion.syntactic.~(a, b))
-        left.computeNullable(points, mergePipe.left)
-        right.computeNullable(points, mergePipe.right)
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: (A ~ B) => Unit): Unit = {
+        val merged = new MergeOnce((a: A, b: B) => callback(scallion.syntactic.~(a, b)))
+        left.computeNullable(cells, merged.left)
+        right.computeNullable(cells, merged.right)
       }
 
       override protected def collectFilter(
@@ -1064,18 +1158,15 @@ trait Syntaxes[Token, Kind]
     case class Concat[A](left: Syntax[Seq[A]], right: Syntax[Seq[A]])
         extends Syntax[Seq[A]] with SequenceLike[Seq[A], Seq[A]] {
 
-      override lazy val isProductive: Boolean =
-        left.isProductive && right.isProductive
-
       override lazy val nullable: Option[Seq[A]] = for {
         leftValue <- left.nullable
         rightValue <- right.nullable
       } yield leftValue ++ rightValue
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[Seq[A]]): Unit = {
-        val mergePipe = new MergePipe(pipe, (xs: Seq[A], ys: Seq[A]) => xs ++ ys)
-        left.computeNullable(points, mergePipe.left)
-        right.computeNullable(points, mergePipe.right)
+      override def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Seq[A] => Unit): Unit = {
+        val merged = new MergeOnce((xs: Seq[A], ys: Seq[A]) => callback(xs ++ ys))
+        left.computeNullable(cells, merged.left)
+        right.computeNullable(cells, merged.right)
       }
 
       override protected def collectFilter(
@@ -1142,18 +1233,57 @@ trait Syntaxes[Token, Kind]
       override lazy val isProductive: Boolean =
         left.isProductive || right.isProductive
 
-      override protected def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
-        left.computeNullable(points, pipe)
-        right.computeNullable(points, pipe)
+      override lazy val first: Set[Kind] =
+        left.first union right.first
+
+      override def followLast: Set[Kind] = {
+        val fromLeft = if (right.isNullable) left.first else Set.empty[Kind]
+        val fromRight = if (left.isNullable) right.first else Set.empty[Kind]
+
+        right.followLast union left.followLast union fromLeft union fromRight
       }
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
-        left.computeIsProductive(points, pipe)
-        right.computeIsProductive(points, pipe)
+      override def isLL1: Boolean =
+        (left.first intersect right.first).isEmpty &&
+        !(left.isNullable && right.isNullable) &&
+        left.isLL1 &&
+        right.isLL1
+
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
+        left.computeNullable(cells, callback)
+        right.computeNullable(cells, callback)
       }
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        left.collectFirst(recs) ++ right.collectFirst(recs)
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        left.computeIsProductive(cells, callback)
+        right.computeIsProductive(cells, callback)
+      }
+
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+        left.computeFirst(cells, callback)
+        right.computeFirst(cells, callback)
+      }
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+        right.computeFollowLast(cells, callback)
+        left.computeFollowLast(cells, callback)
+
+        if (right.isNullable) {
+          callback(left.first)
+        }
+        if (left.isNullable) {
+          callback(right.first)
+        }
+      }
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        if ((left.first intersect right.first).nonEmpty || (left.isNullable && right.isNullable)) {
+          callback(())
+        }
+
+        left.computeIsLL1(cells, callback)
+        right.computeIsLL1(cells, callback)
+      }
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] = {
         val fromLeft: Map[Kind, Syntax[_]] =
@@ -1183,11 +1313,6 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectCalledLeft(rec: Recursive[_], recs: MutSet[RecId]): Boolean =
         left.collectCalledLeft(rec, recs) || right.collectCalledLeft(rec, recs)
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean =
-        left.collectIsLL1(recs) && right.collectIsLL1(recs) &&
-        (left.nullable.isEmpty || right.nullable.isEmpty) &&
-        (left.first & right.first).isEmpty
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],
@@ -1314,80 +1439,195 @@ trait Syntaxes[Token, Kind]
       private var nullableCacheValue: Option[A] = None
       override def nullable: Option[A] = {
         if (!nullableCacheValid) {
-          val point = new Point[A]({ optValue =>
+          val cell = new CellOnce[A]({ optValue =>
             nullableCacheValue = optValue
             nullableCacheValid = true
           })
-          val points = new IHM[Recursive[_], Point[_]]()
-          points.put(this, point)
-          inner.computeNullable(points, point)
-          for (other <- points.values().asScala) {
+          val cells = new IHM[Recursive[_], Cell[_]]()
+          cells.put(this, cell)
+          inner.computeNullable(cells, cell)
+          for (other <- cells.values().asScala) {
             other.complete()
           }
         }
         nullableCacheValue
       }
 
-      override def computeNullable(points: IHM[Recursive[_], Point[_]], pipe: Pipe[A]): Unit = {
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
         if (nullableCacheValid) {
-          nullableCacheValue.foreach(value => pipe.feed(value))
+          nullableCacheValue.foreach(value => callback(value))
         }
-        else if (points.containsKey(this)) {
-          val point = points.get(this).asInstanceOf[Point[A]]
-          point.register(pipe)
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this).asInstanceOf[Cell[A]]
+          cell.register(callback)
         }
         else {
-          val point = new Point[A]({ optValue =>
+          val cell = new CellOnce[A]({ optValue =>
             nullableCacheValue = optValue
             nullableCacheValid = true
           })
-          point.register(pipe)
-          points.put(this, point)
-          inner.computeNullable(points, point)
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeNullable(cells, cell)
         }
       }
 
-      private var productiveCacheValid: Boolean = false
-      private var productiveCacheValue: Boolean = false
+      private var isProductiveCacheValid: Boolean = false
+      private var isProductiveCacheValue: Boolean = false
       override def isProductive: Boolean = {
-        if (!productiveCacheValid) {
-          val point = new Point[Any]({ optValue =>
-            productiveCacheValue = optValue.nonEmpty
-            productiveCacheValid = true
+        if (!isProductiveCacheValid) {
+          val cell = new CellOnce[Unit]({ optValue =>
+            isProductiveCacheValue = optValue.nonEmpty
+            isProductiveCacheValid = true
           })
-          val points = new IHM[Recursive[_], Point[Any]]()
-          points.put(this, point)
-          inner.computeIsProductive(points, point)
-          for (other <- points.values().asScala) {
+          val cells = new IHM[Recursive[_], Cell[Unit]]()
+          cells.put(this, cell)
+          inner.computeIsProductive(cells, cell)
+          for (other <- cells.values().asScala) {
             other.complete()
           }
         }
-        productiveCacheValue
+        isProductiveCacheValue
       }
 
-      override protected def computeIsProductive(points: IHM[Recursive[_], Point[Any]], pipe: Pipe[Any]): Unit = {
-        if (productiveCacheValid) {
-          if (productiveCacheValue) {
-            pipe.feed(())
+      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        if (isProductiveCacheValid) {
+          if (isProductiveCacheValue) {
+            callback(())
           }
         }
-        else if (points.containsKey(this)) {
-          val point = points.get(this)
-          point.register(pipe)
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
         }
         else {
-          val point = new Point[Any]({ optValue =>
-            productiveCacheValue = optValue.nonEmpty
-            productiveCacheValid = true
+          val cell = new CellOnce[Unit]({ optValue =>
+            isProductiveCacheValue = optValue.nonEmpty
+            isProductiveCacheValid = true
           })
-          point.register(pipe)
-          points.put(this, point)
-          inner.computeIsProductive(points, point)
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeIsProductive(cells, cell)
         }
       }
 
-      override protected def collectFirst(recs: Set[RecId]): Set[Kind] =
-        if (recs.contains(this.id)) ListSet() else inner.collectFirst(recs + this.id)
+      private var firstCacheValid: Boolean = false
+      private var firstCacheValue: Set[Kind] = Set()
+      override def first: Set[Kind] = {
+        if (!firstCacheValid) {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            firstCacheValue = result
+            firstCacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
+          cells.put(this, cell)
+          inner.computeFirst(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
+          }
+        }
+        firstCacheValue
+      }
+
+      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+        if (firstCacheValid) {
+          if (firstCacheValue.nonEmpty) {
+            callback(firstCacheValue)
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            firstCacheValue = result
+            firstCacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeFirst(cells, cell)
+        }
+      }
+
+      private var followLastCacheValid: Boolean = false
+      private var followLastCacheValue: Set[Kind] = Set()
+      override def followLast: Set[Kind] = {
+        if (!followLastCacheValid) {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            followLastCacheValue = result
+            followLastCacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
+          cells.put(this, cell)
+          inner.computeFollowLast(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
+          }
+        }
+        followLastCacheValue
+      }
+
+      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit = {
+        if (followLastCacheValid) {
+          if (followLastCacheValue.nonEmpty) {
+            callback(followLastCacheValue)
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellUpgradableSet[Kind]({ result =>
+            followLastCacheValue = result
+            followLastCacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeFollowLast(cells, cell)
+        }
+      }
+
+
+      private var isLL1CacheValid: Boolean = false
+      private var isLL1CacheValue: Boolean = true
+      override def isLL1: Boolean = {
+        if (!isLL1CacheValid) {
+          val cell = new CellOnce[Unit]({ optValue =>
+            isLL1CacheValue = optValue.isEmpty
+            isLL1CacheValid = true
+          })
+          val cells = new IHM[Recursive[_], Cell[Unit]]()
+          cells.put(this, cell)
+          inner.computeIsLL1(cells, cell)
+          for (other <- cells.values().asScala) {
+            other.complete()
+          }
+        }
+        isLL1CacheValue
+      }
+
+      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+        if (isLL1CacheValid) {
+          if (!isLL1CacheValue) {
+            callback(())
+          }
+        }
+        else if (cells.containsKey(this)) {
+          val cell = cells.get(this)
+          cell.register(callback)
+        }
+        else {
+          val cell = new CellOnce[Unit]({ optValue =>
+            isLL1CacheValue = optValue.isEmpty
+            isLL1CacheValid = true
+          })
+          cell.register(callback)
+          cells.put(this, cell)
+          inner.computeIsLL1(cells, cell)
+        }
+      }
 
       override protected def collectShouldNotFollow(recs: Set[RecId]): Map[Kind, Syntax[_]] =
         if (recs.contains(this.id)) Map.empty else inner.collectShouldNotFollow(recs + this.id)
@@ -1397,15 +1637,6 @@ trait Syntaxes[Token, Kind]
           recs += this.id
           (this.id == rec.id) || inner.collectCalledLeft(rec, recs)
         }
-
-      override protected def collectIsLL1(recs: MutSet[RecId]): Boolean = {
-        if (recs.contains(this.id)) {
-          true
-        } else {
-          recs += this.id
-          !inner.calledLeft(this) && inner.collectIsLL1(recs)
-        }
-      }
 
       override protected def collectLL1Conflicts(
           prefix: Option[Syntax[Unit]],

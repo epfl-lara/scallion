@@ -791,20 +791,6 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     }
   }
 
-  it should "not be LL(1) in case of left-recursion" in {
-    lazy val parser: Syntax[Seq[Token]] = recursive {
-      parser
-    }
-
-    assert(!parser.isLL1)
-
-    lazy val parser2: Syntax[Seq[Token]] = recursive {
-      many(elem(NumClass)) ++ parser2 ++ many(elem(BoolClass)) | many(elem(KeywordClass("ok")))
-    }
-
-    assert(!parser2.isLL1)
-  }
-
   // LL1 conflicts
 
   import LL1Conflict._
@@ -855,23 +841,6 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     val conflicts = parser.conflicts.toSeq
     assert(conflicts.size == 2)
-  }
-
-  it should "catch left-recursion" in {
-    lazy val parser: Syntax[Any] = recursive {
-      parser
-    }
-
-    assert(!parser.isLL1)
-
-    val conflicts = parser.conflicts.toSeq
-    assert(conflicts.size == 1)
-
-    inside(conflicts(0)) {
-      case LeftRecursiveConflict(prefix, problematic) => {
-        assert(problematic == parser)
-      }
-    }
   }
 
   it should " catch combinations of problems" in {
