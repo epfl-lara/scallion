@@ -125,8 +125,8 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a href="BufferedIterator.html" title="">BufferedIterator</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Cell.html" title=""></a>
-                        <a href="Cell.html" title="">Cell</a>
+                        <a class="trait" href="" title=""></a>
+                        <a href="" title="">Cell</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="CellOnce.html" title=""></a>
@@ -149,8 +149,8 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a href="Producer.html" title="Producers are data structures that lazily produce values.">Producer</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="class" href="" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them."></a>
-                        <a href="" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them.">ProducerOps</a>
+                        <a class="class" href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them."></a>
+                        <a href="ProducerOps.html" title="Extra operations for producers of values with a Posively Totally Preordered Semigroup (PTPS) defined on them.">ProducerOps</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="TransformOnce.html" title=""></a>
@@ -160,12 +160,12 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
             </div>
           </div>
           <div id="content">
-            <body class="class type">
+            <body class="trait type">
       <div id="definition">
-        <div class="big-circle class">c</div>
+        <div class="big-circle trait">t</div>
         <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.util">util</a>.<a href="index.html" class="extype" name="scallion.util.internal">internal</a></p>
-        <h1>ProducerOps<span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html" title="Permalink">
+        <h1>Cell<span class="permalink">
+      <a href="../../../scallion/util/internal/Cell.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -175,22 +175,25 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ProducerOps</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Cell</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends (<span class="extype" name="scallion.util.internal.Cell.A">A</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Extra operations for producers of values with a
-Posively Totally Preordered Semigroup (PTPS) defined on them.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/Producers.scala" target="_blank">Producers.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/Propagators.scala" target="_blank">Propagators.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent">(<span class="extype" name="scallion.util.internal.Cell.A">A</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="CellOnce.html" class="extype" name="scallion.util.internal.CellOnce">CellOnce</a>, <a href="CellUpgradableSet.html" class="extype" name="scallion.util.internal.CellUpgradableSet">CellUpgradableSet</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -215,7 +218,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.util.internal.ProducerOps"><span>ProducerOps</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.util.internal.Cell"><span>Cell</span></li><li class="in" name="scala.Function1"><span>Function1</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -233,38 +236,70 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="scallion.util.internal.ProducerOps#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(ptps:scallion.util.internal.PTPS[A]):scallion.util.internal.ProducerOps[A]"></a><a id="&lt;init&gt;:ProducerOps[A]"></a>
+        
+
+        
+
+        <div class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="scala.Function1#apply" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="apply(v1:T1):R"></a><a id="apply(A):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#&lt;init&gt;(ptps:scallion.util.internal.PTPS[A]):scallion.util.internal.ProducerOps[A]" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#apply(v1:T1):R" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ProducerOps</span><span class="params">(<span name="ptps">ptps: <a href="PTPS.html" class="extype" name="scallion.util.internal.PTPS">PTPS</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>)</span>
+        <span class="name">apply</span><span class="params">(<span name="v1">v1: <span class="extype" name="scallion.util.internal.Cell.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd></dl></div>
+    </li><li name="scallion.util.internal.Cell#complete" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="complete():Unit"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/Cell.html#complete():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">complete</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      
+    </li><li name="scallion.util.internal.Cell#register" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="register(action:A=&gt;Unit):Unit"></a><a id="register((A)⇒Unit):Unit"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/Cell.html#register(action:A=&gt;Unit):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">register</span><span class="params">(<span name="action">action: (<span class="extype" name="scallion.util.internal.Cell.A">A</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
       
     </li></ol>
             </div>
 
-        
-
-        
-
         <div class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -280,7 +315,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html###():Int" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -296,7 +331,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -309,10 +344,29 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Function1#andThen" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="andThen[A](g:R=&gt;A):T1=&gt;A"></a><a id="andThen[A]((Unit)⇒A):(A)⇒A"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/Cell.html#andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Unit">Unit</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scallion.util.internal.Cell.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd><dt>Annotations</dt><dd>
+                <span class="name">@unspecialized</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -328,7 +382,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#clone():Object" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -349,10 +403,29 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scala.Function1#compose" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compose[A](g:A=&gt;T1):A=&gt;R"></a><a id="compose[A]((A)⇒A):(A)⇒Unit"></a>
+      <span class="permalink">
+      <a href="../../../scallion/util/internal/Cell.html#compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="scallion.util.internal.Cell.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd><dt>Annotations</dt><dd>
+                <span class="name">@unspecialized</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -368,7 +441,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -384,7 +457,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#finalize():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -406,7 +479,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -425,7 +498,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#hashCode():Int" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -444,7 +517,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -460,7 +533,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -476,7 +549,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#notify():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -495,7 +568,7 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -511,28 +584,10 @@ Posively Totally Preordered Semigroup (PTPS) defined on them.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.util.internal.ProducerOps#product" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="product(left:scallion.util.internal.Producer[A],right:scallion.util.internal.Producer[A]):scallion.util.internal.Producer[A]"></a><a id="product(Producer[A],Producer[A]):Producer[A]"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#product(left:scallion.util.internal.Producer[A],right:scallion.util.internal.Producer[A]):scallion.util.internal.Producer[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">product</span><span class="params">(<span name="left">left: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>, <span name="right">right: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>)</span><span class="result">: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Product of two producers.</p><div class="fullcomment"><div class="comment cmt"><p>Product of two producers.</p><p>If the two producers produce values in increasing order,
-then the resulting producer will produce their <code>append</code> in increasing order.
-</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -545,10 +600,10 @@ then the resulting producer will produce their <code>append</code> in increasing
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Function1#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#toString():String" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -560,29 +615,11 @@ then the resulting producer will produce their <code>append</code> in increasing
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.util.internal.ProducerOps#union" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="union(left:scallion.util.internal.Producer[A],right:scallion.util.internal.Producer[A]):scallion.util.internal.Producer[A]"></a><a id="union(Producer[A],Producer[A]):Producer[A]"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#union(left:scallion.util.internal.Producer[A],right:scallion.util.internal.Producer[A]):scallion.util.internal.Producer[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">union</span><span class="params">(<span name="left">left: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>, <span name="right">right: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>)</span><span class="result">: <a href="Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scallion.util.internal.ProducerOps.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Union of two producers.</p><div class="fullcomment"><div class="comment cmt"><p>Union of two producers.</p><p>If the two producers produce values in increasing order,
-then the resulting producer will also produce values in order.
-</p></div></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1 → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#wait():Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -604,7 +641,7 @@ then the resulting producer will also produce values in order.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -626,7 +663,7 @@ then the resulting producer will also produce values in order.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/ProducerOps.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../scallion/util/internal/Cell.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -657,7 +694,9 @@ then the resulting producer will also produce values in order.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Function1">
+              <h3>Inherited from (<span class="extype" name="scallion.util.internal.Cell.A">A</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

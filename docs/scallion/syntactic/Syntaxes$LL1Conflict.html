@@ -129,6 +129,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="class" href="Syntaxes$FollowLastEntry.html" title=""></a>
+                        <a href="Syntaxes$FollowLastEntry.html" title="">FollowLastEntry</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="" title="Describes a LL(1) conflict."></a>
                         <a href="" title="Describes a LL(1) conflict.">LL1Conflict</a>
@@ -204,7 +208,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
             <span class="toggle">
               Known Subclasses
             </span>
-            <div class="subClasses hiddenContent"><a href="Syntaxes$LL1Conflict$$FirstConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.FirstConflict">FirstConflict</a>, <a href="Syntaxes$LL1Conflict$$FollowConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict">FollowConflict</a>, <a href="Syntaxes$LL1Conflict$$LeftRecursiveConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.LeftRecursiveConflict">LeftRecursiveConflict</a>, <a href="Syntaxes$LL1Conflict$$NullableConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.NullableConflict">NullableConflict</a></div>
+            <div class="subClasses hiddenContent"><a href="Syntaxes$LL1Conflict$$FirstConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.FirstConflict">FirstConflict</a>, <a href="Syntaxes$LL1Conflict$$FollowConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict">FollowConflict</a>, <a href="Syntaxes$LL1Conflict$$NullableConflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict.NullableConflict">NullableConflict</a></div>
           </div></div>
         
 
@@ -254,10 +258,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict#prefix" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="prefix:Syntaxes.this.Syntax[_]"></a><a id="prefix:Syntax[_]"></a>
+              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict#source" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="source:Syntaxes.this.Syntax.Disjunction[_]"></a><a id="source:Disjunction[_]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict.html#prefix:Syntaxes.this.Syntax[_]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict.html#source:Syntaxes.this.Syntax.Disjunction[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -266,44 +270,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">prefix</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Syntax for a prefix before the conflict occurs.</p><div class="fullcomment"><div class="comment cmt"><p>Syntax for a prefix before the conflict occurs.</p><p>This may not be exhaustive.
-</p></div></div>
-    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict#source" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="source:Syntaxes.this.Syntax[_]"></a><a id="source:Syntax[_]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict.html#source:Syntaxes.this.Syntax[_]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">source</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]</span>
+        <span class="name">source</span><span class="result">: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>
       </span>
       
       <p class="shortcomment cmt">Source of the conflict.</p>
-    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict#witnesses" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="witnesses:Iterator[Seq[Kind]]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict.html#witnesses:Iterator[Seq[Kind]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">witnesses</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Returns trails that witness the conflict.</p><div class="fullcomment"><div class="comment cmt"><p>Returns trails that witness the conflict.</p><p>This may not be exhaustive.
-</p></div></div>
     </li></ol>
             </div>
 
@@ -660,6 +630,23 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict#witnessedFrom" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="witnessedFrom(syntax:Syntaxes.this.Syntax[_]):Iterator[Seq[Kind]]"></a><a id="witnessedFrom(Syntax[_]):Iterator[Seq[Kind]]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict.html#witnessedFrom(syntax:Syntaxes.this.Syntax[_]):Iterator[Seq[Kind]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">witnessedFrom</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns sequences of token kinds that lead to an ambiguity due to this conflict.</p><div class="fullcomment"><div class="comment cmt"><p>Returns sequences of token kinds that lead to an ambiguity due to this conflict.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The syntax from which to view the conflict.</p></dd></dl></div>
     </li>
               </ol>
             </div>
