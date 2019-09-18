@@ -163,25 +163,49 @@ trait Syntaxes[Token, Kind]
     def unapply(value: A): Iterator[Seq[Token]] =
       collectTokens(value, Map.empty).toIterator
 
-
+    /** Computes the nullable value of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit
 
+    /** Computes the productivity of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
 
+    /** Computes the first set of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
 
+    /** Computes the follow-last of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
 
+    /** Computes the follow-last set of a syntax and all Recursive syntax below it
+      * using a propagator network. Each set is marked with its origin.
+      */
     protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
                                            callback: Set[FollowLastEntry] => Unit): Unit
 
+    /** Computes the LL(1)-ness of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
 
+    /** Computes the LL(1) conflicts of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
                                    callback: Set[LL1Conflict] => Unit): Unit
 
+    /** Computes the kinds of a syntax and all Recursive syntax below it
+      * using a propagator network.
+      */
     protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
 
+    /** Computes the prefix of a syntax within `this`. */
     protected def computePrefix(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
       if (this == syntax) {
         Success((), _ => 1)
@@ -190,6 +214,9 @@ trait Syntaxes[Token, Kind]
         computePrefixHelper(syntax, recs)
       }
 
+    /** Computes the prefix of a syntax within `this`. Assumes that the check for equality
+      * between `this` and `syntax` has already been performed.
+      */
     protected def computePrefixHelper(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit]
 
     /** Builds a producer of trails from `this` syntax.
@@ -577,11 +604,15 @@ trait Syntaxes[Token, Kind]
     */
   object LL1Conflict {
 
-    /** Indicates that both branches of a disjunction are nullable. */
+    /** Indicates that both branches of a disjunction are nullable.
+      *
+      * @param source The source of the conflict.
+      */
     case class NullableConflict(source: Disjunction[_]) extends LL1Conflict
 
     /** Indicates that two branches of a disjunction share some same first token kinds.
       *
+      * @param source      The source of the conflict.
       * @param ambiguities The conflicting kinds.
       */
     case class FirstConflict(source: Disjunction[_],
@@ -591,6 +622,7 @@ trait Syntaxes[Token, Kind]
       * the left-hand side of a sequence, that conflicts with the right-hand side of
       * that sequence.
       *
+      * @param source      The source of the conflict.
       * @param root        The sequence in which the conflict occured.
       * @param ambiguities The conflicting kinds.
       */
@@ -601,7 +633,8 @@ trait Syntaxes[Token, Kind]
 
   import LL1Conflict._
 
-  protected case class FollowLastEntry(source: Disjunction[_], kinds: Set[Kind])
+  /** Follow-last set tagged with its source. */
+  private[scallion] case class FollowLastEntry(source: Disjunction[_], kinds: Set[Kind])
 
   /** Contains primitive basic syntaxes and syntax combinators.
     *
