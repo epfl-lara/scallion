@@ -3,7 +3,7 @@ lazy val scallion = project
   .in(file("."))
   .settings(
     name               := "scallion",
-    version            := "0.2",
+    version            := "0.3",
     scalaVersion       := "2.12.8",
     crossScalaVersions := Seq("2.12.8", "2.13.0"),
     organization       := "ch.epfl.lara",
