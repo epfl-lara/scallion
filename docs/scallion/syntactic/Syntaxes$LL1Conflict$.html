@@ -129,10 +129,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="class" href="Syntaxes$FollowLastEntry.html" title=""></a>
-                        <a href="Syntaxes$FollowLastEntry.html" title="">FollowLastEntry</a>
-                      </li><li class="current-entities indented3">
                         <a class="object" href="" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
@@ -267,7 +263,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Indicates that two branches of a disjunction share some same first token kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that two branches of a disjunction share some same first token kinds.
-</p></div><dl class="paramcmts block"><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="FollowConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable"></a><a id="FollowConflict:FollowConflict"></a>
       <span class="permalink">
@@ -288,8 +284,8 @@ the left-hand side of a sequence, that conflicts with the right-hand side of
 that sequence.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that an ambiguity arises due to a disjunction appearing somewhere in
 the left-hand side of a sequence, that conflicts with the right-hand side of
 that sequence.
-</p></div><dl class="paramcmts block"><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.NullableConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.NullableConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="NullableConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable"></a><a id="NullableConflict:NullableConflict"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$.html#NullableConflictextendsSyntaxes.this.LL1ConflictwithProductwithSerializable" title="Permalink">
@@ -304,7 +300,8 @@ that sequence.
         <a title="Indicates that both branches of a disjunction are nullable." href="Syntaxes$LL1Conflict$$NullableConflict.html"><span class="name">NullableConflict</span></a><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that both branches of a disjunction are nullable.</p>
+      <p class="shortcomment cmt">Indicates that both branches of a disjunction are nullable.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that both branches of a disjunction are nullable.
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd></dl></div>
     </li></ol>
             </div>
 
