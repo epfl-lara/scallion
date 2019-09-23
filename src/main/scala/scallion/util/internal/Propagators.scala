@@ -21,17 +21,6 @@ trait Cell[A] extends (A => Unit) {
   def complete(): Unit
 }
 
-
-class TransformOnce[A, B](callback: B => Unit, function: A => B) extends (A => Unit) {
-  private var applied: Boolean = false
-
-  override def apply(value: A): Unit = if (!applied) {
-    applied = true
-    callback(function(value))
-  }
-}
-
-
 class MergeOnce[A, B](callback: (A, B) => Unit) {
 
   private trait State

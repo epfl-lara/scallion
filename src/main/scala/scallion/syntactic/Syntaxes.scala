@@ -963,10 +963,8 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         inner.kinds
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit = {
-        val transformed = new TransformOnce(callback, function)
-        inner.computeNullable(cells, transformed)
-      }
+      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit =
+        inner.computeNullable(cells, function andThen callback)
 
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
         inner.computeIsProductive(cells, callback)
@@ -1362,13 +1360,23 @@ trait Syntaxes[Token, Kind]
         left.kinds union right.kinds
 
       override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
-        left.computeNullable(cells, callback)
-        right.computeNullable(cells, callback)
+        var called = false
+        def onceCallback(value: A): Unit = if (!called) {
+          called = true
+          callback(value)
+        }
+        left.computeNullable(cells, onceCallback)
+        right.computeNullable(cells, onceCallback)
       }
 
       override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
-        left.computeIsProductive(cells, callback)
-        right.computeIsProductive(cells, callback)
+        var called = false
+        def onceCallback(value: Unit): Unit = if (!called) {
+          called = true
+          callback(value)
+        }
+        left.computeIsProductive(cells, onceCallback)
+        right.computeIsProductive(cells, onceCallback)
       }
 
       override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
