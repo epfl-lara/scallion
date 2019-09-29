@@ -35,7 +35,8 @@ import scallion.util.internal._
   */
 trait Syntaxes[Token, Kind]
     extends visualization.Graphs[Token, Kind]
-       with visualization.Grammars[Token, Kind] {
+       with visualization.Grammars[Token, Kind]
+       with Automatons[Token, Kind] {
 
   import Syntax._
 

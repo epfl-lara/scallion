@@ -104,3 +104,30 @@ class CellUpgradableSet[A](onComplete: Set[A] => Unit) extends Cell[Set[A]] {
 
   override def complete(): Unit = onComplete(state)
 }
+
+class CellUpgradableMap[K, V](onComplete: Map[K, V] => Unit) extends Cell[Map[K, V]] {
+  private var subscribers: List[Map[K, V] => Unit] = List()
+  private var state: Map[K, V] = Map()
+
+  override def apply(value: Map[K, V]): Unit = {
+
+    val diff: Map[K, V] = value.toList.filter {
+      case (k, v) => !state.contains(k)
+    }.toMap
+
+    if (diff.nonEmpty) {
+      state = state ++ diff
+      subscribers.foreach(_.apply(diff))
+    }
+  }
+
+  override def register(subscriber: Map[K, V] => Unit): Unit = {
+    subscribers = subscriber +: subscribers
+
+    if (state.nonEmpty) {
+      subscriber(state)
+    }
+  }
+
+  override def complete(): Unit = onComplete(state)
+}
