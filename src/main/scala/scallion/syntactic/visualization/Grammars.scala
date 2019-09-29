@@ -135,7 +135,7 @@ trait Grammars[Token, Kind] { self: Syntaxes[Token, Kind] =>
           val id = inspect(d)
           Seq(NonTerminal(id))
         }
-        case Recursive(inner) => {
+        case Recursive(_, inner) => {
           val id = inspect(inner)
           Seq(NonTerminal(id))
         }

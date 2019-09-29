@@ -1480,8 +1480,8 @@ trait Syntaxes[Token, Kind]
       }
     }
 
-    /** Identifier for Recursive. */
-    protected type RecId = Int
+    /** Unique identifier for Recursive syntaxes. */
+    type RecId = Int
 
     /** Companion object of `Recursive`.
       *
@@ -1497,10 +1497,11 @@ trait Syntaxes[Token, Kind]
         res
       }
 
-      /** Extract the inner syntax of a `Recursive` syntax. */
-      def unapply[A](that: Syntax[A]): Option[Syntax[A]] = {
+      /** Extract the id and inner syntax of a `Recursive` syntax. */
+      def unapply[A](that: Syntax[A]): Option[(RecId, Syntax[A])] = {
         if (that.isInstanceOf[Recursive[_]]) {
-          Some(that.asInstanceOf[Recursive[A]].inner)
+          val other = that.asInstanceOf[Recursive[A]]
+          Some((other.id, other.inner))
         }
         else {
           None
@@ -1512,7 +1513,7 @@ trait Syntaxes[Token, Kind]
         * @param syntax The inner syntax.
         */
       def create[A](syntax: => Syntax[A]): Recursive[A] = new Recursive[A] {
-        override protected val id = nextId()
+        override val id = nextId()
         override lazy val inner: Syntax[A] = syntax
       }
     }
@@ -1524,7 +1525,7 @@ trait Syntaxes[Token, Kind]
     sealed abstract class Recursive[A] extends Syntax[A] with Unary[A] {
 
       /** Unique identifier for this recursive syntax. */
-      protected val id: RecId
+      val id: RecId
 
       /** Checks if `this` is equal to `other`.
         *
