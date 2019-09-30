@@ -38,23 +38,25 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
     override def isEmpty = false
   }
 
+  private case class SyntaxCont[A, B](syntax: Syntax[A], cont: Continuation[A, B])
+
   private sealed trait Continuation[A, B] {
-    def apply(value: A): Either[B, Syntax[B]]
+    def apply(value: A): Either[B, SyntaxCont[_, B]]
   }
   private case class ApplyFunction[A, B](function: A => B) extends Continuation[A, B] {
-    override def apply(value: A): Either[B, Syntax[B]] = Left(function(value))
+    override def apply(value: A): Either[B, SyntaxCont[_, B]] = Left(function(value))
   }
   private case class PrependValue[A, B](first: A) extends Continuation[B, A ~ B] {
-    override def apply(second: B): Either[A ~ B, Syntax[A ~ B]] = Left(first ~ second)
+    override def apply(second: B): Either[A ~ B, SyntaxCont[_, A ~ B]] = Left(first ~ second)
   }
   private case class FollowBy[A, B](syntax: Syntax[B]) extends Continuation[A, A ~ B] {
-    override def apply(first: A): Either[A ~ B, Syntax[A ~ B]] = Right(epsilon(first) ~ syntax)
+    override def apply(first: A): Either[A ~ B, SyntaxCont[_, A ~ B]] = Right(SyntaxCont(syntax, PrependValue(first)))
   }
   private case class ConcatPrependValues[A](first: Seq[A]) extends Continuation[Seq[A], Seq[A]] {
-    override def apply(second: Seq[A]): Either[Seq[A], Syntax[Seq[A]]] = Left(first ++ second)
+    override def apply(second: Seq[A]): Either[Seq[A], SyntaxCont[_, Seq[A]]] = Left(first ++ second)
   }
   private case class ConcatFollowBy[A](syntax: Syntax[Seq[A]]) extends Continuation[Seq[A], Seq[A]] {
-    override def apply(first: Seq[A]): Either[Seq[A], Syntax[Seq[A]]] = Right(epsilon(first) ++ syntax)
+    override def apply(first: Seq[A]): Either[Seq[A], SyntaxCont[_, Seq[A]]] = Right(SyntaxCont(syntax, ConcatPrependValues(first)))
   }
 
   object Continued {
@@ -72,22 +74,11 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
         val token = tokens.next()
         val kind = getKind(token)
 
-        @tailrec
-        def go[B](current: ContinuedState[A, B]): Option[ContinuedState[A, _]] = {
-          derive(current.syntax, token, kind, current.chain) match {
-            case Left(res) => res match {
-              case Some(value) if !current.chain.isEmpty =>
-                go(foldStack(current.chain, value))
-              case _ =>
-                None
-            }
-            case Right(newState) => Some(newState)
-          }
-        }
-
-        go(current) match {
-          case None => return UnexpectedToken(token, new Continued(current))
-          case Some(newState) => current = newState
+        findFirst(current, kind) match {
+          case None =>
+            return UnexpectedToken(token, new Continued(current))
+          case Some(toDerive: ContinuedState[_, t]) =>
+            current = foldStack(derive[t](toDerive.syntax, token, kind, toDerive.chain), token)
         }
       }
 
@@ -98,15 +89,26 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
     }
 
     @tailrec
+    private def findFirst[B](state: ContinuedState[A, B], kind: Kind): Option[ContinuedState[A, _]] = {
+      if (state.syntax.first.contains(kind)) Some(state)
+      else if (state.chain.isEmpty) None
+      else state.syntax.nullable match {
+        case None => None
+        case Some(value) => findFirst(foldStack(state.chain, value), kind)
+      }
+    }
+
+    @tailrec
     private def foldStack[B](chain: ContinuationChain[B, A], value: B): ContinuedState[A, _] = chain match {
       case _: EmptyChain[t] => ContinuedState[t, t](epsilon[t](value), EmptyChain())
       case ConsChain(cont: Continuation[_, t], rest) => cont(value) match {
         case Left(newValue) => foldStack(rest, newValue)
-        case Right(syntax) => ContinuedState(syntax, rest)
+        case Right(SyntaxCont(syntax, cont)) => ContinuedState(syntax, cont +: rest)
       }
     }
 
     private def result[C](current: ContinuedState[A, C]): Option[A] = {
+
       @tailrec
       def go[B](syntax: Syntax[B], chain: ContinuationChain[B, A]): Option[A] = syntax.nullable match {
         case None => None
@@ -122,61 +124,36 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
       go[C](current.syntax, current.chain)
     }
 
+    @tailrec
     private def derive[C](
         syntax: Syntax[C],
         token: Token,
         kind: Kind,
-        cs: ContinuationChain[C, A]): Either[Option[C], ContinuedState[A, _]] = {
+        cs: ContinuationChain[C, A]): ContinuationChain[Token, A] =
       syntax match {
-        case Success(value, _) => Left(Some(value))
-        case Failure() => Left(None)
-        case Elem(other) =>
-          if (other == kind) Right(ContinuedState(epsilon(token), cs))
-          else Left(None)
+        case Elem(_) =>
+          cs
         case Transform(function, _, inner) =>
-          derive(inner, token, kind, ApplyFunction(function) +: cs) match {
-            case Left(res) => Left(res.map(function))
-            case Right(state) => Right(state)
-          }
+          derive(inner, token, kind, ApplyFunction(function) +: cs)
         case Disjunction(left, right) =>
           if (left.first.contains(kind))
             derive(left, token, kind, cs)
-          else if (right.first.contains(kind))
+          else
             derive(right, token, kind, cs)
-          else {
-            Left(left.nullable orElse right.nullable)
-          }
         case Sequence(left: Syntax[ltype], right: Syntax[rtype]) =>
-          left.nullable match {
-            case Some(value) if !left.first.contains(kind) =>
-              derive(right, token, kind, PrependValue[ltype, rtype](value) +: cs) match {
-                case Left(res) => Left(res.map(x => value ~ x))
-                case Right(state) => Right(state)
-              }
-            case _ =>
-              derive(left, token, kind, FollowBy[ltype, rtype](right) +: cs) match {
-                case Left(res) => Left(None)
-                case Right(state) => Right(state)
-              }
-          }
+          if (left.first.contains(kind))
+            derive(left, token, kind, FollowBy[ltype, rtype](right) +: cs)
+          else
+            derive(right, token, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
         case Concat(left: Syntax[Seq[etype]], right) =>
-          left.nullable match {
-            case Some(values) if !left.first.contains(kind) =>
-              derive(right, token, kind, ConcatPrependValues[etype](values) +: cs) match {
-                case Left(res) => Left(res.map(x => values ++ x))
-                case Right(state) => Right(state)
-              }
-            case _ =>
-              derive(left, token, kind, ConcatFollowBy[etype](right) +: cs) match {
-                case Left(res) => Left(None)
-                case Right(state) => Right(state)
-              }
-          }
-        case Recursive(_, inner) => {
+          if (left.first.contains(kind))
+            derive(left, token, kind, ConcatFollowBy(right) +: cs)
+          else
+            derive(right, token, kind, ConcatPrependValues[etype](left.nullable.get) +: cs)
+        case Recursive(_, inner) =>
           derive(inner, token, kind, cs)
-        }
+        case _ => throw new IllegalArgumentException("Unexpected syntax.")
       }
-    }
   }
   private case class ContinuedState[A, B](syntax: Syntax[B], chain: ContinuationChain[B, A])
 }
