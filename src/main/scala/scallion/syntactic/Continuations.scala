@@ -78,7 +78,7 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
           case None =>
             return UnexpectedToken(token, new Continued(current))
           case Some(toDerive: ContinuedState[_, t]) =>
-            current = foldStack(derive[t](toDerive.syntax, token, kind, toDerive.chain), token)
+            current = foldStack(derive[t](toDerive.syntax, kind, toDerive.chain), token)
         }
       }
 
@@ -127,31 +127,30 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
     @tailrec
     private def derive[C](
         syntax: Syntax[C],
-        token: Token,
         kind: Kind,
         cs: ContinuationChain[C, A]): ContinuationChain[Token, A] =
       syntax match {
         case Elem(_) =>
           cs
         case Transform(function, _, inner) =>
-          derive(inner, token, kind, ApplyFunction(function) +: cs)
+          derive(inner, kind, ApplyFunction(function) +: cs)
         case Disjunction(left, right) =>
           if (left.first.contains(kind))
-            derive(left, token, kind, cs)
+            derive(left, kind, cs)
           else
-            derive(right, token, kind, cs)
+            derive(right, kind, cs)
         case Sequence(left: Syntax[ltype], right: Syntax[rtype]) =>
           if (left.first.contains(kind))
-            derive(left, token, kind, FollowBy[ltype, rtype](right) +: cs)
+            derive(left, kind, FollowBy[ltype, rtype](right) +: cs)
           else
-            derive(right, token, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
+            derive(right, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
         case Concat(left: Syntax[Seq[etype]], right) =>
           if (left.first.contains(kind))
-            derive(left, token, kind, ConcatFollowBy(right) +: cs)
+            derive(left, kind, ConcatFollowBy(right) +: cs)
           else
-            derive(right, token, kind, ConcatPrependValues[etype](left.nullable.get) +: cs)
+            derive(right, kind, ConcatPrependValues[etype](left.nullable.get) +: cs)
         case Recursive(_, inner) =>
-          derive(inner, token, kind, cs)
+          derive(inner, kind, cs)
         case _ => throw new IllegalArgumentException("Unexpected syntax.")
       }
   }
