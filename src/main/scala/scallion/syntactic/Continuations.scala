@@ -42,21 +42,27 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
 
   private sealed trait Continuation[A, B] {
     def apply(value: A): Either[B, SyntaxCont[_, B]]
+    def apply(syntax: Syntax[A]): Syntax[B]
   }
   private case class ApplyFunction[A, B](function: A => B) extends Continuation[A, B] {
     override def apply(value: A): Either[B, SyntaxCont[_, B]] = Left(function(value))
+    override def apply(syntax: Syntax[A]): Syntax[B] = syntax.map(function)
   }
   private case class PrependValue[A, B](first: A) extends Continuation[B, A ~ B] {
     override def apply(second: B): Either[A ~ B, SyntaxCont[_, A ~ B]] = Left(first ~ second)
+    override def apply(syntax: Syntax[B]): Syntax[A ~ B] = epsilon(first) ~ syntax
   }
-  private case class FollowBy[A, B](syntax: Syntax[B]) extends Continuation[A, A ~ B] {
-    override def apply(first: A): Either[A ~ B, SyntaxCont[_, A ~ B]] = Right(SyntaxCont(syntax, PrependValue(first)))
+  private case class FollowBy[A, B](second: Syntax[B]) extends Continuation[A, A ~ B] {
+    override def apply(first: A): Either[A ~ B, SyntaxCont[_, A ~ B]] = Right(SyntaxCont(second, PrependValue(first)))
+    override def apply(syntax: Syntax[A]): Syntax[A ~ B] = syntax ~ second
   }
   private case class ConcatPrependValues[A](first: Seq[A]) extends Continuation[Seq[A], Seq[A]] {
     override def apply(second: Seq[A]): Either[Seq[A], SyntaxCont[_, Seq[A]]] = Left(first ++ second)
+    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] = epsilon(first) ++ syntax
   }
-  private case class ConcatFollowBy[A](syntax: Syntax[Seq[A]]) extends Continuation[Seq[A], Seq[A]] {
-    override def apply(first: Seq[A]): Either[Seq[A], SyntaxCont[_, Seq[A]]] = Right(SyntaxCont(syntax, ConcatPrependValues(first)))
+  private case class ConcatFollowBy[A](second: Syntax[Seq[A]]) extends Continuation[Seq[A], Seq[A]] {
+    override def apply(first: Seq[A]): Either[Seq[A], SyntaxCont[_, Seq[A]]] = Right(SyntaxCont(second, ConcatPrependValues(first)))
+    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] = syntax ++ second
   }
 
   object Continued {
@@ -64,8 +70,8 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
   }
 
   class Continued[A] private (state: ContinuedState[A, _]) extends Parser[Continued, A] {
-    def syntax: Syntax[_] = state.syntax
-    def conts: Any = state.chain
+
+    def toSyntax: Syntax[A] = state.toSyntax
 
     override def apply(tokens: Iterator[Token]): ParseResult[Continued, A] = {
       var current: ContinuedState[A, _] = state
@@ -154,5 +160,16 @@ trait Continuations[Token, Kind] { self: Syntaxes[Token, Kind] =>
         case _ => throw new IllegalArgumentException("Unexpected syntax.")
       }
   }
-  private case class ContinuedState[A, B](syntax: Syntax[B], chain: ContinuationChain[B, A])
+  private case class ContinuedState[A, B](syntax: Syntax[B], chain: ContinuationChain[B, A]) {
+
+    def toSyntax: Syntax[A] = {
+
+      @tailrec def go[C](syntax: Syntax[C], chain: ContinuationChain[C, A]): Syntax[A] = chain match {
+        case _: EmptyChain[t] => syntax
+        case ConsChain(cont, rest) => go(cont(syntax), rest)
+      }
+
+      go(syntax, chain)
+    }
+  }
 }
