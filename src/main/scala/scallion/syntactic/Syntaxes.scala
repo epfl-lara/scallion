@@ -35,6 +35,7 @@ import scallion.util.internal._
   */
 trait Syntaxes[Token, Kind]
     extends Automatons[Token, Kind]
+       with Continuations[Token, Kind]
        with Parsers[Token, Kind]
        with visualization.Graphs[Token, Kind]
        with visualization.Grammars[Token, Kind] {
@@ -445,7 +446,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group parsing
       */
-    def apply(it: Iterator[Token]): ParseResult[Syntax, A] = {
+    override def apply(it: Iterator[Token]): ParseResult[Syntax, A] = {
 
       var syntax: Syntax[A] = if (!this.isProductive) Failure() else this
       // Note that the initial value is set to Failure() instead of this in case the
