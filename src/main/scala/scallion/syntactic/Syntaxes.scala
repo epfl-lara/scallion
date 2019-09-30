@@ -34,9 +34,10 @@ import scallion.util.internal._
   * @group syntax
   */
 trait Syntaxes[Token, Kind]
-    extends visualization.Graphs[Token, Kind]
-       with visualization.Grammars[Token, Kind]
-       with Automatons[Token, Kind] {
+    extends Automatons[Token, Kind]
+       with Parsers[Token, Kind]
+       with visualization.Graphs[Token, Kind]
+       with visualization.Grammars[Token, Kind] {
 
   import Syntax._
 
@@ -71,7 +72,7 @@ trait Syntaxes[Token, Kind]
     * @groupprio property 8
     * @groupname property Properties
     */
-  sealed trait Syntax[A] {
+  sealed trait Syntax[A] extends Parser[Syntax, A] {
 
     /** The value, if any, corresponding to the empty sequence of tokens in `this` syntax.
       *
@@ -444,7 +445,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group parsing
       */
-    def apply(it: Iterator[Token]): ParseResult[A] = {
+    def apply(it: Iterator[Token]): ParseResult[Syntax, A] = {
 
       var syntax: Syntax[A] = if (!this.isProductive) Failure() else this
       // Note that the initial value is set to Failure() instead of this in case the
@@ -508,7 +509,7 @@ trait Syntaxes[Token, Kind]
           } yield token :: rest
 
         go(choices).map { tokens =>
-          apply(tokens.toIterator).syntax
+          apply(tokens.toIterator).rest
         }
       }
     }
@@ -532,54 +533,6 @@ trait Syntaxes[Token, Kind]
       }
     }
   }
-
-  /** Result of parsing a `Syntax`.
-    *
-    * @group result
-    */
-  sealed trait ParseResult[A] {
-
-    /** Syntax for the rest of input. */
-    val syntax: Syntax[A]
-
-    /** Returns the parsed value, if any. */
-    def getValue: Option[A] = this match {
-      case Parsed(value, _) => Some(value)
-      case _ => None
-    }
-  }
-
-  /** Indicates that the input has been fully parsed, resulting in a `value`.
-    *
-    * A `syntax` for subsequent input is also provided.
-    *
-    * @param value  The value produced.
-    * @param syntax Syntax for more input.
-    *
-    * @group result
-    */
-  case class Parsed[A](value: A, syntax: Syntax[A]) extends ParseResult[A]
-
-  /** Indicates that the provided `token` was not expected at that point.
-    *
-    * The `syntax` at the point of error is returned.
-    *
-    * @param token  The token at fault.
-    * @param syntax Syntax at the point of error.
-    *
-    * @group result
-    */
-  case class UnexpectedToken[A](token: Token, syntax: Syntax[A]) extends ParseResult[A]
-
-  /** Indicates that end of input was unexpectedly encountered.
-    *
-    * The `syntax` for subsequent input is provided.
-    *
-    * @param syntax Syntax at the end of input.
-    *
-    * @group result
-    */
-  case class UnexpectedEnd[A](syntax: Syntax[A]) extends ParseResult[A]
 
 
   /** Describes a LL(1) conflict.

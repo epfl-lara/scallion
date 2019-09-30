@@ -146,7 +146,7 @@ trait Automatons[Token, Kind] { self: Syntaxes[Token, Kind] =>
   /* Factory for Pushdown Automata. */
   object PushdownAutomaton {
 
-    /** Create an automaton given a syntax. */
+    /** Create an automaton given an LL(1) syntax. */
     def create[A](syntax: Syntax[A]): PushdownAutomaton[A] = {
       val cells = new ListBuffer[Cell[_]]()
       val start = new IntermediateStateBuilder(cells)
@@ -158,7 +158,7 @@ trait Automatons[Token, Kind] { self: Syntaxes[Token, Kind] =>
         cell.complete()
       }
 
-      new PushdownAutomaton(start.state)
+      new PushdownAutomatonImpl(start.state, List.empty, List.empty)
     }
 
     /** Walks down the syntax and create states and transitions.
@@ -222,23 +222,40 @@ trait Automatons[Token, Kind] { self: Syntaxes[Token, Kind] =>
     *
     * Provides fast parse.
     */
-  class PushdownAutomaton[+A] private (private val start: State) {
+  sealed trait PushdownAutomaton[A] extends Parser[PushdownAutomaton, A]
 
-    /** Stack of states to enter. */
-    private var recsStack: List[State] = List.empty
+  /** Sole implementation of Pushdown Automaton.
+    *
+    * Delegates parsing to a mutable automaton.
+    */
+  private class PushdownAutomatonImpl[A](
+      private val start: State,
+      private val startRecsStack: List[State],
+      private val stackValuesStack: List[Any]) extends PushdownAutomaton[A] {
 
-    /** Stack of values. */
-    private var valuesStack: List[Any] = List.empty
+    override def apply(tokens: Iterator[Token]): ParseResult[PushdownAutomaton, A] = {
+      val internal = new MutablePushdownAutomaton[A](start, startRecsStack, stackValuesStack)
+      internal.apply(tokens)
+    }
+  }
+
+  /** Mutable implementation of pushdown automaton.
+    *
+    * Only used internally for performance.
+    */
+  private class MutablePushdownAutomaton[A](
+      private val start: State,
+      private val startRecsStack: List[State],
+      private val stackValuesStack: List[Any]) {
 
     /** Current state. */
     private var current: State = start
 
-    /** Resets to automaton to its initial state. */
-    def reset(): Unit = {
-      recsStack = List.empty
-      valuesStack = List.empty
-      current = start
-    }
+    /** Stack of states to enter. */
+    private var recsStack: List[State] = startRecsStack
+
+    /** Stack of values. */
+    private var valuesStack: List[Any] = stackValuesStack
 
     /** Parses the tokens into a value.
       *
@@ -247,19 +264,37 @@ trait Automatons[Token, Kind] { self: Syntaxes[Token, Kind] =>
       *
       * @return Some value in case parsing succeeded, or None otherwise.
       */
-    def apply(tokens: Iterator[Token]): Option[A] = {
+    def apply(tokens: Iterator[Token]): ParseResult[PushdownAutomaton, A] = {
 
-      var ok = true
-      while (tokens.hasNext && ok) {
+      // For every single token.
+      while (tokens.hasNext) {
+
+        // Saving state in case of an error.
+        val savedState = current
+        val savedRecsStack = recsStack
+        val savedValuesStack = valuesStack
+
+        // Getting next token.
         val token = tokens.next()
-        ok = next(token)
+
+        // Take next transition.
+        if (!next(token)) {
+
+          // In case of error return previous state.
+          return UnexpectedToken(token,
+            new PushdownAutomatonImpl[A](savedState, savedRecsStack, savedValuesStack))
+        }
       }
 
-      if (ok) {
-        accept()
-      }
-      else {
-        None
+      // Saving the state before calling accept.
+      // The call might modify state.
+      val rest = new PushdownAutomatonImpl[A](current, recsStack, valuesStack)
+
+      accept() match {
+        // There is a way to reach the accepting state.
+        case Some(value) => Parsed(value, rest)
+        // There was no way to reach the accepting state.
+        case None => UnexpectedEnd(rest)
       }
     }
 
