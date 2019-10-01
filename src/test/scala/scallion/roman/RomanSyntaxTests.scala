@@ -65,7 +65,7 @@ class RomanSyntaxTests extends FlatSpec with Inside {
   }
 
   it should "support completions" in {
-    val completedParsers = number(tokenize("I")).syntax.completions(x => Seq(x)).toList
+    val completedParsers = number(tokenize("I")).rest.toSyntax.completions(x => Seq(x)).toList
 
     val values = completedParsers.map(_.nullable.get).toSet
 

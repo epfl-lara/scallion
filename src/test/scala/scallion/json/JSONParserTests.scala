@@ -23,7 +23,7 @@ class JSONParserTests extends FlatSpec with Inside {
     JSONParser(JSONLexer(text.toIterator)).getValue
 
   def rest(text: String): JSONParser.Syntax[Value] =
-    JSONParser(JSONLexer(text.toIterator)).syntax
+    JSONParser(JSONLexer(text.toIterator)).rest.toSyntax
 
   "JSON Parser" should "parse some basic examples" in {
 
