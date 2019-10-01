@@ -34,9 +34,7 @@ import scallion.util.internal._
   * @group syntax
   */
 trait Syntaxes[Token, Kind]
-    extends Automatons[Token, Kind]
-       with Continuations[Token, Kind]
-       with Parsers[Token, Kind]
+    extends Focuses[Token, Kind]
        with visualization.Graphs[Token, Kind]
        with visualization.Grammars[Token, Kind] {
 
@@ -52,6 +50,56 @@ trait Syntaxes[Token, Kind]
   private val kindSeqOps = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
 
   private val tokenSeqOps = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
+
+
+  /** Result of parsing.
+    *
+    * @group result
+    */
+  sealed trait ParseResult[A] {
+
+    /** Parser for the rest of input. */
+    val rest: Focused[A]
+
+    /** Returns the parsed value, if any. */
+    def getValue: Option[A] = this match {
+      case Parsed(value, _) => Some(value)
+      case _ => None
+    }
+  }
+
+  /** Indicates that the input has been fully parsed, resulting in a `value`.
+    *
+    * A parser for subsequent input is also provided.
+    *
+    * @param value The value produced.
+    * @param rest  Parser for more input.
+    *
+    * @group result
+    */
+  case class Parsed[A](value: A, rest: Focused[A]) extends ParseResult[A]
+
+  /** Indicates that the provided `token` was not expected at that point.
+    *
+    * The parser at the point of error is returned.
+    *
+    * @param token The token at fault.
+    * @param rest  Parser at the point of error.
+    *
+    * @group result
+    */
+  case class UnexpectedToken[A](token: Token, rest: Focused[A]) extends ParseResult[A]
+
+  /** Indicates that end of input was unexpectedly encountered.
+    *
+    * The `syntax` for subsequent input is provided.
+    *
+    * @param syntax Syntax at the end of input.
+    *
+    * @group result
+    */
+  case class UnexpectedEnd[A](rest: Focused[A]) extends ParseResult[A]
+
 
   /** Represents a syntax.
     *
@@ -73,7 +121,7 @@ trait Syntaxes[Token, Kind]
     * @groupprio property 8
     * @groupname property Properties
     */
-  sealed trait Syntax[A] extends Parser[Syntax, A] {
+  sealed trait Syntax[A] {
 
     /** The value, if any, corresponding to the empty sequence of tokens in `this` syntax.
       *
@@ -241,19 +289,6 @@ trait Syntaxes[Token, Kind]
       * @param recs  The producer view associated to an already visited recursive syntax and value.
       */
     protected def collectTokens(value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
-
-    /** Feeds a token and its kind to `this` syntax and obtains a syntax for the rest of input.
-      *
-      * @group derivation
-      */
-    protected def derive(token: Token, kind: Kind): Syntax[A]
-
-    /** Feeds a token to this `syntax` and obtains a syntax for the rest of input.
-      *
-      * @group derivation
-      */
-    @inline def derive(token: Token): Syntax[A] = derive(token, getKind(token))
-
 
     /** String representation of `this` syntax.
       *
@@ -446,27 +481,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group parsing
       */
-    override def apply(it: Iterator[Token]): ParseResult[Syntax, A] = {
-
-      var syntax: Syntax[A] = if (!this.isProductive) Failure() else this
-      // Note that the initial value is set to Failure() instead of this in case the
-      // syntax is not productive to avoid problems arising due to left-recursivity.
-      // left-recursivity makes derive loop.
-      // If the syntax is LL(1), the only way a syntax can be left-recursive is
-      // if it is not productive.
-
-      while (it.hasNext) {
-        val token = it.next()
-        val newSyntax = syntax.derive(token)
-        if (!newSyntax.isProductive) {
-          return UnexpectedToken(token, syntax)
-        }
-        syntax = newSyntax
-      }
-      syntax.nullable match {
-        case None => UnexpectedEnd(syntax)
-        case Some(value) => Parsed(value, syntax)
-      }
+    def apply(it: Iterator[Token]): ParseResult[A] = {
+      Focused(this)(it)
     }
 
 
@@ -510,7 +526,7 @@ trait Syntaxes[Token, Kind]
           } yield token :: rest
 
         go(choices).map { tokens =>
-          apply(tokens.toIterator).rest
+          apply(tokens.toIterator).rest.toSyntax
         }
       }
     }
@@ -675,9 +691,6 @@ trait Syntaxes[Token, Kind]
           other: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         Producer.fromIterator(Iterator.fill(matches(other))(Vector()))
 
-      override protected def derive(token: Token, kind: Kind): Syntax[A] =
-        Failure()
-
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         "epsilon(" + value.toString + ")"
     }
@@ -756,9 +769,6 @@ trait Syntaxes[Token, Kind]
       override protected def collectTokens(
             value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         Producer.empty
-
-      override protected def derive(token: Token, kind: Kind): Syntax[A] =
-        this
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         "failure"
@@ -840,9 +850,6 @@ trait Syntaxes[Token, Kind]
       override protected def collectTokens(
           value: Token, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]) : Producer[Seq[Token]] =
         if (getKind(value) == kind) Producer.single(Vector(value)) else Producer.empty
-
-      override protected def derive(token: Token, tokenKind: Kind): Syntax[Token] =
-        if (tokenKind == kind) epsilon(token) else Failure()
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
         "elem(" + kind + ")"
@@ -958,9 +965,6 @@ trait Syntaxes[Token, Kind]
           predicate: Kind => Boolean,
           recs: Map[RecId, Syntax[_]]): Syntax[B] =
         inner.collectFilter(predicate, recs).map(function, inverse)
-
-      override protected def derive(token: Token, kind: Kind): Syntax[B] =
-        inner.derive(token, kind).map(function, inverse)
 
       override protected def collectTokens(
         value: B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
@@ -1178,20 +1182,6 @@ trait Syntaxes[Token, Kind]
         value match {
           case a ~ b => tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
         }
-
-      override protected def derive(token: Token, kind: Kind): Syntax[A ~ B] = {
-        val derived = left.derive(token, kind)
-
-        if (!derived.isProductive) {
-          left.nullable match {
-            case Some(leftValue) => epsilon(leftValue) ~ right.derive(token, kind)
-            case None => Failure()
-          }
-        }
-        else {
-          derived ~ right
-        }
-      }
     }
 
     /** Syntax that sequences the `left` and `right` syntaxes and concatenates the results.
@@ -1229,20 +1219,6 @@ trait Syntaxes[Token, Kind]
         }
         else {
           l + " ++ " + r
-        }
-      }
-
-      override protected def derive(token: Token, kind: Kind): Syntax[Seq[A]] = {
-        val derived = left.derive(token, kind)
-
-        if (!derived.isProductive) {
-          left.nullable match {
-            case Some(leftValue) => epsilon(leftValue) ++ right.derive(token, kind)
-            case None => Failure()
-          }
-        }
-        else {
-          derived ++ right
         }
       }
 
@@ -1403,15 +1379,6 @@ trait Syntaxes[Token, Kind]
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
-
-      override protected def derive(token: Token, kind: Kind): Syntax[A] = {
-        if (left.first.contains(kind)) {
-          left.derive(token, kind)
-        }
-        else {
-          right.derive(token, kind)
-        }
-      }
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -1831,9 +1798,6 @@ trait Syntaxes[Token, Kind]
           rec
         }
       }
-
-      override protected def derive(token: Token, kind: Kind): Syntax[A] =
-        inner.derive(token, kind)
 
       override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         recs.get(this.id) match {
