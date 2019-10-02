@@ -19,6 +19,7 @@ import scala.language.implicitConversions
 
 import java.util.{ IdentityHashMap => IHM }
 
+import scala.annotation.tailrec
 import scala.collection.immutable.ListSet
 import scala.collection.JavaConverters._
 import scala.collection.mutable.{Set => MutSet}
@@ -28,14 +29,13 @@ import scallion.util.internal._
 
 /** Contains definitions relating to syntaxes.
   *
-  * @see See trait [[scallion.syntactic.Operators]] for useful combinators
+  * @see See trait [[syntactic.Operators]] for useful combinators
   *      to describe infix, prefix and postfix operators.
   *
   * @group syntax
   */
 trait Syntaxes[Token, Kind]
-    extends Focuses[Token, Kind]
-       with visualization.Graphs[Token, Kind]
+    extends visualization.Graphs[Token, Kind]
        with visualization.Grammars[Token, Kind] {
 
   import Syntax._
@@ -47,9 +47,9 @@ trait Syntaxes[Token, Kind]
   def getKind(token: Token): Kind
 
 
-  private val kindSeqOps = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
+  private[syntactic] val kindSeqOps = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
 
-  private val tokenSeqOps = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
+  private[syntactic] val tokenSeqOps = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
 
 
   /** Result of parsing.
@@ -195,7 +195,15 @@ trait Syntaxes[Token, Kind]
       * @group property
       */
     @inline def trails: Iterator[Seq[Kind]] =
-      collectTrails(Map.empty).toIterator
+      getTrails.toIterator
+
+    /** Returns all possible sequences of token kinds accepted by `this` syntax,
+      * ordered by increasing size.
+      *
+      * @group property
+      */
+    @inline private[scallion] def getTrails: Producer[Seq[Kind]] =
+      collectTrails(Map.empty)
 
     /** Strips `this` syntax of all token kinds that do not satisfy a `predicate`.
       *
@@ -217,47 +225,63 @@ trait Syntaxes[Token, Kind]
     /** Computes the nullable value of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit
+    protected def computeNullable(
+      cells: IHM[Recursive[_], Cell[_]],
+      callback: A => Unit): Unit
 
     /** Computes the productivity of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
+    protected def computeIsProductive(
+      cells: IHM[Recursive[_], Cell[Unit]],
+      callback: Unit => Unit): Unit
 
     /** Computes the first set of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
+    protected def computeFirst(
+      cells: IHM[Recursive[_], Cell[Set[Kind]]],
+      callback: Set[Kind] => Unit): Unit
 
     /** Computes the follow-last of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
+    protected def computeFollowLast(
+      cells: IHM[Recursive[_], Cell[Set[Kind]]],
+      callback: Set[Kind] => Unit): Unit
 
     /** Computes the follow-last set of a syntax and all Recursive syntax below it
       * using a propagator network. Each set is marked with its origin.
       */
-    protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                           callback: Set[FollowLastEntry] => Unit): Unit
+    protected def computeFollowLastEntries(
+      cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+      callback: Set[FollowLastEntry] => Unit): Unit
 
     /** Computes the LL(1)-ness of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit
+    protected def computeIsLL1(
+      cells: IHM[Recursive[_], Cell[Unit]],
+      callback: Unit => Unit): Unit
 
     /** Computes the LL(1) conflicts of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                   callback: Set[LL1Conflict] => Unit): Unit
+    protected def computeConflicts(
+      cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+      callback: Set[LL1Conflict] => Unit): Unit
 
     /** Computes the kinds of a syntax and all Recursive syntax below it
       * using a propagator network.
       */
-    protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]], callback: Set[Kind] => Unit): Unit
+    protected def computeKinds(
+      cells: IHM[Recursive[_], Cell[Set[Kind]]],
+      callback: Set[Kind] => Unit): Unit
 
     /** Computes the prefix of a syntax within `this`. */
-    protected def computePrefix(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+    protected def computePrefix(
+        syntax: Syntax[_],
+        recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
       if (this == syntax) {
         Success((), _ => 1)
       }
@@ -268,7 +292,9 @@ trait Syntaxes[Token, Kind]
     /** Computes the prefix of a syntax within `this`. Assumes that the check for equality
       * between `this` and `syntax` has already been performed.
       */
-    protected def computePrefixHelper(syntax: Syntax[_], recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit]
+    protected def computePrefixHelper(
+      syntax: Syntax[_],
+      recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit]
 
     /** Builds a producer of trails from `this` syntax.
       *
@@ -288,7 +314,9 @@ trait Syntaxes[Token, Kind]
       * @param value The value being printed.
       * @param recs  The producer view associated to an already visited recursive syntax and value.
       */
-    protected def collectTokens(value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
+    protected def collectTokens(
+      value: A,
+      recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]]
 
     /** String representation of `this` syntax.
       *
@@ -373,7 +401,8 @@ trait Syntaxes[Token, Kind]
       case x => Seq(scallion.syntactic.~(x, ()))
     })
 
-    /** Sequences `this` and `that` syntax. The parsed value from `that` is appended to that from `this`.
+    /** Sequences `this` and `that` syntax.
+      * The parsed value from `that` is appended to that from `this`.
       *
       * @group combinator
       */
@@ -384,7 +413,8 @@ trait Syntaxes[Token, Kind]
         case _ => Seq()
       })
 
-    /** Sequences `this` and `that` syntax. The parsed value from `that` is prepended to that from `this`.
+    /** Sequences `this` and `that` syntax.
+      * The parsed value from `that` is prepended to that from `this`.
       *
       * @group combinator
       */
@@ -467,10 +497,12 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def up[B >: A](implicit ev: Manifest[A]): Syntax[B] = this.map((x: A) => x, (y: B) => ev.unapply(y) match {
-      case None => Seq()
-      case Some(x) => Seq(x)
-    })
+    def up[B >: A](implicit ev: Manifest[A]): Syntax[B] =
+      this.map((x: A) => x, (y: B) => ev.unapply(y) match {
+        case None => Seq()
+        case Some(x) => Seq(x)
+      })
+
 
     // Parsing.
 
@@ -646,40 +678,53 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         Set()
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: A => Unit): Unit =
         callback(value)
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         callback(())
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         ()
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit =
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         Failure()
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector())
 
       override protected def collectFilter(
@@ -688,7 +733,8 @@ trait Syntaxes[Token, Kind]
         this
 
       override protected def collectTokens(
-          other: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          other: A,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         Producer.fromIterator(Iterator.fill(matches(other))(Vector()))
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
@@ -725,40 +771,53 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         Set()
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit =
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: A => Unit): Unit =
         ()
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         ()
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         ()
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit =
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         Failure()
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.empty
 
       override protected def collectFilter(
@@ -806,40 +865,53 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         Set(kind)
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Token => Unit): Unit =
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: Token => Unit): Unit =
         ()
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         callback(())
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         callback(Set(kind))
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         ()
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit =
         ()
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         ()
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit =
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit =
         ()
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         callback(Set(kind))
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         Failure()
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         Producer.single(Vector(kind))
 
       override protected def collectFilter(
@@ -848,7 +920,8 @@ trait Syntaxes[Token, Kind]
         if (predicate(kind)) this else Failure()
 
       override protected def collectTokens(
-          value: Token, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]) : Producer[Seq[Token]] =
+          value: Token,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]) : Producer[Seq[Token]] =
         if (getKind(value) == kind) Producer.single(Vector(value)) else Producer.empty
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String =
@@ -925,40 +998,53 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         inner.kinds
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: B => Unit): Unit =
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: B => Unit): Unit =
         inner.computeNullable(cells, function andThen callback)
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         inner.computeIsProductive(cells, callback)
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         inner.computeFirst(cells, callback)
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         inner.computeFollowLast(cells, callback)
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit =
         inner.computeFollowLastEntries(cells, callback)
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit =
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit =
         inner.computeIsLL1(cells, callback)
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit =
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit =
         inner.computeConflicts(cells, callback)
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         inner.computeKinds(cells, callback)
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         inner.computePrefix(syntax, recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         inner.collectTrails(recs)
 
       override protected def collectFilter(
@@ -967,7 +1053,8 @@ trait Syntaxes[Token, Kind]
         inner.collectFilter(predicate, recs).map(function, inverse)
 
       override protected def collectTokens(
-        value: B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
+          value: B,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
 
         val producers = inverse(value).map(inversed => inner.collectTokens(inversed, recs))
 
@@ -1054,14 +1141,17 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         left.kinds union right.kinds
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         val merged = new MergeOnce((_: Unit, _: Unit) => callback(()))
         left.computeIsProductive(cells, merged.left)
         right.computeIsProductive(cells, merged.right)
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit =
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         if (right.isProductive) {
           left.computeFirst(cells, callback)
 
@@ -1070,8 +1160,9 @@ trait Syntaxes[Token, Kind]
           }
         }
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit =
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit =
         if (left.isProductive) {
           right.computeFollowLast(cells, callback)
 
@@ -1080,8 +1171,9 @@ trait Syntaxes[Token, Kind]
           }
         }
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit =
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit =
         if (left.isProductive) {
           right.computeFollowLastEntries(cells, callback)
 
@@ -1090,7 +1182,9 @@ trait Syntaxes[Token, Kind]
           }
         }
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         if ((left.followLast intersect right.first).nonEmpty) {
           callback(())
         }
@@ -1099,8 +1193,9 @@ trait Syntaxes[Token, Kind]
         right.computeIsLL1(cells, callback)
       }
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit = {
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit = {
         val firstRight = right.first
 
         val followConflicts: Set[LL1Conflict] = left.followLastEntries.flatMap {
@@ -1124,17 +1219,20 @@ trait Syntaxes[Token, Kind]
         right.computeConflicts(cells, callback)
       }
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit = {
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         left.computeKinds(cells, callback)
         right.computeKinds(cells, callback)
       }
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         left.computePrefix(syntax, recs) | left.unit() ~>~ right.computePrefix(syntax, recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
     }
 
@@ -1153,7 +1251,9 @@ trait Syntaxes[Token, Kind]
         rightValue <- right.nullable
       } yield scallion.syntactic.~(leftValue, rightValue)
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: (A ~ B) => Unit): Unit = {
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: (A ~ B) => Unit): Unit = {
         val merged = new MergeOnce((a: A, b: B) => callback(scallion.syntactic.~(a, b)))
         left.computeNullable(cells, merged.left)
         right.computeNullable(cells, merged.right)
@@ -1177,10 +1277,13 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def collectTokens(
-          value: A ~ B, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A ~ B,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
 
         value match {
-          case a ~ b => tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
+          case a ~ b => tokenSeqOps.product(
+            left.collectTokens(a, recs),
+            right.collectTokens(b, recs))
         }
     }
 
@@ -1199,7 +1302,9 @@ trait Syntaxes[Token, Kind]
         rightValue <- right.nullable
       } yield leftValue ++ rightValue
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: Seq[A] => Unit): Unit = {
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: Seq[A] => Unit): Unit = {
         val merged = new MergeOnce((xs: Seq[A], ys: Seq[A]) => callback(xs ++ ys))
         left.computeNullable(cells, merged.left)
         right.computeNullable(cells, merged.right)
@@ -1223,7 +1328,8 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def collectTokens(
-          value: Seq[A], recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
+          value: Seq[A],
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
 
         val producers = for {
           i <- 0 to value.size
@@ -1266,8 +1372,12 @@ trait Syntaxes[Token, Kind]
       }
 
       override protected def followLastEntries: Set[FollowLastEntry] = {
-        val fromLeft = if (right.isNullable) Set(FollowLastEntry(this, left.first)) else Set.empty[FollowLastEntry]
-        val fromRight = if (left.isNullable) Set(FollowLastEntry(this, right.first)) else Set.empty[FollowLastEntry]
+        val fromLeft =
+          if (right.isNullable) Set(FollowLastEntry(this, left.first))
+          else Set.empty[FollowLastEntry]
+        val fromRight =
+          if (left.isNullable) Set(FollowLastEntry(this, right.first))
+          else Set.empty[FollowLastEntry]
 
         right.followLastEntries union left.followLastEntries union fromLeft union fromRight
       }
@@ -1290,7 +1400,9 @@ trait Syntaxes[Token, Kind]
       override def kinds: Set[Kind] =
         left.kinds union right.kinds
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: A => Unit): Unit = {
         var called = false
         def onceCallback(value: A): Unit = if (!called) {
           called = true
@@ -1300,7 +1412,9 @@ trait Syntaxes[Token, Kind]
         right.computeNullable(cells, onceCallback)
       }
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         var called = false
         def onceCallback(value: Unit): Unit = if (!called) {
           called = true
@@ -1310,14 +1424,16 @@ trait Syntaxes[Token, Kind]
         right.computeIsProductive(cells, onceCallback)
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         left.computeFirst(cells, callback)
         right.computeFirst(cells, callback)
       }
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         right.computeFollowLast(cells, callback)
         left.computeFollowLast(cells, callback)
 
@@ -1329,8 +1445,9 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit = {
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit = {
         right.computeFollowLastEntries(cells, callback)
         left.computeFollowLastEntries(cells, callback)
 
@@ -1342,7 +1459,9 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         if ((left.first intersect right.first).nonEmpty || (left.isNullable && right.isNullable)) {
           callback(())
         }
@@ -1351,8 +1470,9 @@ trait Syntaxes[Token, Kind]
         right.computeIsLL1(cells, callback)
       }
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit = {
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit = {
         val problematic = left.first intersect right.first
 
         if (problematic.nonEmpty) {
@@ -1373,11 +1493,13 @@ trait Syntaxes[Token, Kind]
         right.computeKinds(cells, callback)
       }
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] =
         left.computePrefix(syntax, recs) | right.computePrefix(syntax, recs)
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.union(left.collectTrails(recs), right.collectTrails(recs))
 
       override protected def collectFilter(
@@ -1386,7 +1508,8 @@ trait Syntaxes[Token, Kind]
         left.collectFilter(predicate, recs) | right.collectFilter(predicate, recs)
 
       override protected def collectTokens(
-          value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
         tokenSeqOps.union(left.collectTokens(value, recs), right.collectTokens(value, recs))
 
       override protected def repr(level: Int, recs: Map[RecId, String]): String = {
@@ -1486,7 +1609,9 @@ trait Syntaxes[Token, Kind]
         nullableCacheValue
       }
 
-      override protected def computeNullable(cells: IHM[Recursive[_], Cell[_]], callback: A => Unit): Unit = {
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: A => Unit): Unit = {
         if (nullableCacheValid) {
           nullableCacheValue.foreach(value => callback(value))
         }
@@ -1523,7 +1648,9 @@ trait Syntaxes[Token, Kind]
         isProductiveCacheValue
       }
 
-      override protected def computeIsProductive(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsProductive(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         if (isProductiveCacheValid) {
           if (isProductiveCacheValue) {
             callback(())
@@ -1562,8 +1689,9 @@ trait Syntaxes[Token, Kind]
         firstCacheValue
       }
 
-      override protected def computeFirst(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFirst(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         if (firstCacheValid) {
           if (firstCacheValue.nonEmpty) {
             callback(firstCacheValue)
@@ -1602,8 +1730,9 @@ trait Syntaxes[Token, Kind]
         followLastCacheValue
       }
 
-      override protected def computeFollowLast(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                               callback: Set[Kind] => Unit): Unit = {
+      override protected def computeFollowLast(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         if (followLastCacheValid) {
           if (followLastCacheValue.nonEmpty) {
             callback(followLastCacheValue)
@@ -1642,8 +1771,9 @@ trait Syntaxes[Token, Kind]
         followLastEntriesCacheValue
       }
 
-      override protected def computeFollowLastEntries(cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
-                                                      callback: Set[FollowLastEntry] => Unit): Unit = {
+      override protected def computeFollowLastEntries(
+          cells: IHM[Recursive[_], Cell[Set[FollowLastEntry]]],
+          callback: Set[FollowLastEntry] => Unit): Unit = {
         if (followLastEntriesCacheValid) {
           if (followLastEntriesCacheValue.nonEmpty) {
             callback(followLastEntriesCacheValue)
@@ -1683,7 +1813,9 @@ trait Syntaxes[Token, Kind]
         isLL1CacheValue
       }
 
-      override protected def computeIsLL1(cells: IHM[Recursive[_], Cell[Unit]], callback: Unit => Unit): Unit = {
+      override protected def computeIsLL1(
+          cells: IHM[Recursive[_], Cell[Unit]],
+          callback: Unit => Unit): Unit = {
         if (isLL1CacheValid) {
           if (!isLL1CacheValue) {
             callback(())
@@ -1722,8 +1854,9 @@ trait Syntaxes[Token, Kind]
         conflictsCacheValue
       }
 
-      override protected def computeConflicts(cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
-                                              callback: Set[LL1Conflict] => Unit): Unit = {
+      override protected def computeConflicts(
+          cells: IHM[Recursive[_], Cell[Set[LL1Conflict]]],
+          callback: Set[LL1Conflict] => Unit): Unit = {
         if (conflictsCacheValid) {
           if (conflictsCacheValue.nonEmpty) {
             callback(conflictsCacheValue)
@@ -1762,8 +1895,9 @@ trait Syntaxes[Token, Kind]
         kindsCacheValue
       }
 
-      override protected def computeKinds(cells: IHM[Recursive[_], Cell[Set[Kind]]],
-                                          callback: Set[Kind] => Unit): Unit = {
+      override protected def computeKinds(
+          cells: IHM[Recursive[_], Cell[Set[Kind]]],
+          callback: Set[Kind] => Unit): Unit = {
         if (kindsCacheValid) {
           if (kindsCacheValue.nonEmpty) {
             callback(kindsCacheValue)
@@ -1784,9 +1918,9 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def computePrefixHelper(syntax: Syntax[_],
-                                                 recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] = {
-
+      override protected def computePrefixHelper(
+          syntax: Syntax[_],
+          recs: IHM[Recursive[_], Recursive[Unit]]): Syntax[Unit] = {
         if (recs.containsKey(this)) {
           recs.get(this)
         }
@@ -1799,7 +1933,8 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      override protected def collectTrails(recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
+      override protected def collectTrails(
+          recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         recs.get(this.id) match {
           case None => {
             lazy val pair: (Producer[Seq[Kind]], () => Producer[Seq[Kind]]) =
@@ -1812,7 +1947,8 @@ trait Syntaxes[Token, Kind]
         }
 
       override protected def collectTokens(
-          value: A, recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
+          value: A,
+          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
 
         recs.get((this.id, value)) match {
           case None => {
@@ -1848,6 +1984,413 @@ trait Syntaxes[Token, Kind]
       }
     }
   }
+
+
+  // Focused syntaxes
+
+  /** Pair of a syntax and a context, with matching types.
+    *
+    * See [[Focused]] for the interface to focused syntaxes.
+    */
+  private case class FocusedState[A, B](syntax: Syntax[B], context: Context[B, A]) {
+
+    def toSyntax: Syntax[A] = {
+
+      @tailrec
+      def go[C](syntax: Syntax[C], context: Context[C, A]): Syntax[A] = context match {
+        case _: Empty[t] => syntax
+        case Layered(layer, rest) => go(layer(syntax), rest)
+      }
+
+      go(syntax, context)
+    }
+  }
+
+  /** Represents a context around a [[Syntax]].
+    *
+    * It denotes a single point within a syntax.
+    *
+    * The context may contain many layers, each
+    * successive layer indicating which
+    * combinator was used on top.
+    *
+    * The single focal point is always
+    * situated on the left of the syntax.
+    * The can not be any other syntaxes preceding it,
+    * nor any alternatives to it.
+    */
+  private sealed trait Context[A, B] {
+
+    /** Adds an extra layer of context. */
+    def +:[C](that: Layer[C, A]): Context[C, B] =
+      Layered(that, this)
+
+    /** Returns true if the context is empty, false otherwise. */
+    def isEmpty: Boolean
+  }
+
+  /** Indicates that there are no extra layers of context. */
+  private case class Empty[A]() extends Context[A, A] {
+    override def isEmpty = true
+  }
+
+  /** Layer of extra context on top on a context. */
+  private case class Layered[A, B, C](
+      head: Layer[A, B],
+      tail: Context[B, C]) extends Context[A, C] {
+    override def isEmpty = false
+  }
+
+  /** Pair of a syntax and a layer with matching types. */
+  private case class LayeredSyntax[A, B](syntax: Syntax[A], layer: Layer[A, B])
+
+  /** Context layer. Indicates an operation to be applied to a syntax. */
+  private sealed trait Layer[A, B] {
+
+    /** Type of the value produced by the following syntax
+      * defined by this layer (if any).
+      */
+    type FollowType
+
+    /** Feeds a value to the layer, and either return a value,
+      * or a syntax and a new layer.
+      */
+    def apply(value: A): Either[B, LayeredSyntax[_, B]]
+
+    /** Feeds a syntax to the layer, and return a new
+     *  syntax that takes this extra context into account.
+     */
+    def apply(syntax: Syntax[A]): Syntax[B]
+
+    /** The syntax directly following, if any. */
+    def followSyntax: Option[Syntax[FollowType]]
+  }
+
+  /** Layer that represents being inside of a Transform syntax. */
+  private case class ApplyFunction[A, B](
+      function: A => B,
+      inverse: B => Seq[A]) extends Layer[A, B] {
+
+    type FollowType = Nothing
+
+    override def apply(value: A): Either[B, LayeredSyntax[_, B]] =
+      Left(function(value))
+
+    override def apply(syntax: Syntax[A]): Syntax[B] =
+      syntax.map(function, inverse)
+
+    override def followSyntax: Option[Syntax[FollowType]] =
+      None
+  }
+
+  /** Layer that represents being inside the right part of Sequence syntax.
+    * The left part must already have been completed.
+    */
+  private case class PrependValue[A, B](first: A) extends Layer[B, A ~ B] {
+
+    type FollowType = Nothing
+
+    override def apply(second: B): Either[A ~ B, LayeredSyntax[_, A ~ B]] =
+      Left(first ~ second)
+
+    override def apply(syntax: Syntax[B]): Syntax[A ~ B] =
+      epsilon(first) ~ syntax
+
+    override def followSyntax: Option[Syntax[FollowType]] =
+      None
+  }
+
+  /** Layer that represents being inside the left part of Sequence syntax. */
+  private case class FollowBy[A, B](second: Syntax[B]) extends Layer[A, A ~ B] {
+
+    type FollowType = B
+
+    override def apply(first: A): Either[A ~ B, LayeredSyntax[_, A ~ B]] =
+      Right(LayeredSyntax(second, PrependValue(first)))
+
+    override def apply(syntax: Syntax[A]): Syntax[A ~ B] =
+      syntax ~ second
+
+    override def followSyntax: Option[Syntax[FollowType]] =
+      Some(second)
+  }
+
+  /** Layer that represents being inside the right part of Concat syntax.
+    * The left part must already have been completed.
+    */
+  private case class ConcatPrependValues[A](first: Seq[A]) extends Layer[Seq[A], Seq[A]] {
+
+    type FollowType = Nothing
+
+    override def apply(second: Seq[A]): Either[Seq[A], LayeredSyntax[_, Seq[A]]] =
+      Left(first ++ second)
+
+    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] =
+      epsilon(first) ++ syntax
+
+    override def followSyntax: Option[Syntax[FollowType]] =
+      None
+  }
+
+  /** Layer that represents being inside the left part of Concat syntax. */
+  private case class ConcatFollowBy[A](second: Syntax[Seq[A]]) extends Layer[Seq[A], Seq[A]] {
+
+    type FollowType = Seq[A]
+
+    override def apply(first: Seq[A]): Either[Seq[A], LayeredSyntax[_, Seq[A]]] =
+      Right(LayeredSyntax(second, ConcatPrependValues(first)))
+
+    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] =
+      syntax ++ second
+
+    override def followSyntax: Option[Syntax[FollowType]] =
+      Some(second)
+  }
+
+  /** Factory of focused syntaxes. */
+  private[syntactic] object Focused {
+
+    /** Add a focus to the syntax. */
+    def apply[A](syntax: Syntax[A]): Focused[A] =
+      new Focused(FocusedState(syntax, Empty()))
+  }
+
+  /** Represents a focused [[Syntax]], that is a syntax with a context.
+    *
+    * This datatype is used by the parsing algorithm and is crucial for performance.
+    * It is returned as part of the [[ParseResult]] for parsing resumption and error reporting.
+    *
+    * Unfocusing the syntax is possible through the [[toSyntax]] method.
+    */
+  class Focused[A] private (state: FocusedState[A, _]) {
+
+    /** Unfocuses the syntax. */
+    def toSyntax: Syntax[A] = state.toSyntax
+
+    /** Indicates if there exists a finite sequence of tokens that `this` focused syntax describes.
+      *
+      * @group property
+      */
+    def isProductive: Boolean = {
+
+      @tailrec
+      def go(context: Context[_, A]): Boolean = context match {
+        case Empty() => true
+        case Layered(layer, rest) => layer.followSyntax match {
+          case None => go(rest)
+          case Some(next) => if (next.isProductive) go(rest) else false
+        }
+      }
+
+      state.syntax.isProductive && go(state.context)
+    }
+
+    /** The value, if any, corresponding to the empty
+      * sequence of tokens in `this` focused syntax.
+      *
+      * @group property
+      */
+    def nullable: Option[A] = result(state)
+
+    /** Indicates if the empty sequence is described by `this` focused syntax.
+      *
+      * @group property
+      */
+    def isNullable: Boolean = {
+
+      @tailrec
+      def go(context: Context[_, A]): Boolean = context match {
+        case Empty() => true
+        case Layered(layer, rest) => layer.followSyntax match {
+          case None => go(rest)
+          case Some(next) => if (next.isNullable) go(rest) else false
+        }
+      }
+
+      state.syntax.isNullable && go(state.context)
+    }
+
+    /** Returns the set of token kinds that are accepted as the first token by `this` syntax.
+      *
+      * @group property
+      */
+    def first: Set[Kind] = {
+
+      @tailrec
+      def go(context: Context[_, A], res: Set[Kind]): Set[Kind] = context match {
+        case Empty() => res
+        case Layered(layer, rest) => layer.followSyntax match {
+          case None => go(rest, res)
+          case Some(next) =>
+            val unioned = res union next.first
+            if (next.isNullable) {
+              go(rest, unioned)
+            }
+            else {
+              unioned
+            }
+        }
+      }
+
+      val base = state.syntax.first
+      if (state.syntax.isNullable) {
+        go(state.context, base)
+      }
+      else {
+        base
+      }
+    }
+
+    /** Returns all possible sequences of token kinds accepted by `this` syntax,
+      * ordered by increasing size.
+      *
+      * @group property
+      */
+    def trails: Iterator[Seq[Kind]] = {
+
+      @tailrec
+      def go(context: Context[_, A], res: Producer[Seq[Kind]]): Producer[Seq[Kind]] = {
+        context match {
+          case Empty() => res
+          case Layered(layer, rest) => layer.followSyntax match {
+            case None =>
+              go(rest, res)
+            case Some(next) =>
+              go(rest, kindSeqOps.product(res, next.getTrails))
+          }
+        }
+      }
+
+      go(state.context, state.syntax.getTrails).toIterator
+    }
+
+    /** Consumes a sequence of tokens and parses it into a value.
+      *
+      * @see See [[ParseResult]] for the possible return values.
+      *
+      * @group parsing
+      */
+    def apply(tokens: Iterator[Token]): ParseResult[A] = {
+
+      // Mutable variable for the state.
+      var current: FocusedState[A, _] = state
+
+      while (tokens.hasNext) {
+        val token = tokens.next()
+        val kind = getKind(token)
+
+        // Moves the focus to the syntax that accept the next token.
+        locate(current, kind) match {
+          case None =>  // There is no such syntax, we fail.
+            return UnexpectedToken(token, new Focused(current))
+          case Some(toPierce: FocusedState[_, t]) =>
+            // We are focused on a syntax that accepts the token.
+
+            // We focus down to the place where the token is accepted,
+            // and turn that into a context.
+            val context = pierce[t, A](toPierce.syntax, kind, toPierce.context)
+
+            // Finally, we plug that context with the token,
+            // and get a new focused syntax.
+            current = plug(context, token)
+        }
+      }
+
+      // Then, we get the nullable value.
+      result(current) match {
+        case Some(value) => Parsed(value, new Focused(current))
+        case None => UnexpectedEnd(new Focused(current))
+      }
+    }
+
+    /** Focuses on the syntax that can accept the given kind, if any. */
+    @tailrec
+    private def locate[B](state: FocusedState[A, B], kind: Kind): Option[FocusedState[A, _]] = {
+      // If the current syntax already accepts it, we simply return the unmodified state.
+      if (state.syntax.first.contains(kind)) Some(state)
+      // Otherwise, we need to apply some context.
+      // If the context is empty, we fail.
+      else if (state.context.isEmpty) None
+      // We then check if we can move the context.
+      // To do so, we must skip the currently focused syntax,
+      // which is only possible if the syntax is nullable.
+      else state.syntax.nullable match {
+        case None => None  // If it is not nullable, we fail.
+        // Otherwise, we plug the nullable value in the context
+        // and thereby focus on the next candidate syntax.
+        // We recursively call the function on that syntax.
+        case Some(value) => locate(plug(state.context, value), kind)
+      }
+    }
+
+    /** Plugs a value into a context, and focus on the next syntax. */
+    @tailrec
+    private def plug[B](context: Context[B, A], value: B): FocusedState[A, _] = context match {
+      case _: Empty[t] => FocusedState[t, t](epsilon[t](value), Empty())
+      case Layered(layer: Layer[_, t], rest) => layer(value) match {
+        case Left(newValue) => plug(rest, newValue)
+        case Right(LayeredSyntax(syntax, layer)) => FocusedState(syntax, layer +: rest)
+      }
+    }
+
+    /** The value, if any, corresponding to the empty
+      * sequence of tokens in `this` focused syntax.
+      */
+    private def result[C](current: FocusedState[A, C]): Option[A] = {
+
+      @tailrec
+      def go[B](syntax: Syntax[B], context: Context[B, A]): Option[A] = syntax.nullable match {
+        case None => None
+        case Some(value) => context match {
+          case _: Empty[t] => Some[t](value)
+          case _ => plug(context, value) match {
+            case FocusedState(syntax: Syntax[t], rest) =>
+              go[t](syntax, rest)
+          }
+        }
+      }
+
+      go[C](current.syntax, current.context)
+    }
+
+    /** Returns the context around the single Elem(kind) at the start of a syntax.
+      *
+      * The syntax is required to be LL(1) and must have
+      * the given kind in its first set.
+      */
+    @tailrec
+    private def pierce[C, X](
+        syntax: Syntax[C],
+        kind: Kind,
+        cs: Context[C, X]): Context[Token, X] =
+      syntax match {
+        case Elem(_) =>
+          cs
+        case Transform(function, inverse, inner) =>
+          pierce(inner, kind, ApplyFunction(function, inverse) +: cs)
+        case Disjunction(left, right) =>
+          if (left.first.contains(kind))
+            pierce(left, kind, cs)
+          else
+            pierce(right, kind, cs)
+        case Sequence(left: Syntax[ltype], right: Syntax[rtype]) =>
+          if (left.first.contains(kind))
+            pierce(left, kind, FollowBy[ltype, rtype](right) +: cs)
+          else
+            pierce(right, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
+        case Concat(left: Syntax[Seq[etype]], right) =>
+          if (left.first.contains(kind))
+            pierce(left, kind, ConcatFollowBy(right) +: cs)
+          else
+            pierce(right, kind, ConcatPrependValues[etype](left.nullable.get) +: cs)
+        case Recursive(_, inner) =>
+          pierce(inner, kind, cs)
+        case _ => throw new IllegalArgumentException("Unexpected syntax.")
+      }
+  }
+
+
+  // "Skip" syntactic sugar
 
   /** Wrapper around a `Syntax` indicating that values from
     * the inner `syntax` should be ignored when building up sequences
