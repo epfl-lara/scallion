@@ -2247,6 +2247,25 @@ trait Syntaxes[Token, Kind]
       }
     }
 
+    /** Returns the set of all kinds that appear somewhere in `this` focused syntax.
+      *
+      * @group property
+      */
+    def kinds: Set[Kind] = {
+
+      @tailrec
+      def go(context: Context[_, A], res: Set[Kind]): Set[Kind] = context match {
+        case Empty() => res
+        case Layered(layer, rest) => layer.followSyntax match {
+          case None => go(rest, res)
+          case Some(next) => go(rest, res union next.kinds)
+        }
+      }
+
+      go(state.context, state.syntax.kinds)
+    }
+
+
     /** Returns all possible sequences of token kinds accepted by `this` syntax,
       * ordered by increasing size.
       *
