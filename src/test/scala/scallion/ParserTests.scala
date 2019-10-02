@@ -56,6 +56,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Num(1))
+        assert(rest.first.isEmpty)
         assert(rest.toSyntax.first.isEmpty)
       }
     }
@@ -76,6 +77,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -109,6 +111,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == 2)
+        assert(rest.first.isEmpty)
         assert(rest.toSyntax.first.isEmpty)
       }
     }
@@ -133,6 +136,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -209,6 +213,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
+        assert(!rest.isProductive)
         assert(!rest.toSyntax.isProductive)
       }
     }
@@ -272,6 +277,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Num(1))
+        assert(rest.first == Set(BoolClass))
         assert(rest.toSyntax.first == Set(BoolClass))
       }
     }
@@ -279,6 +285,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(false))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -368,6 +375,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Bool(true), Num(32)))
+        assert(rest.first.isEmpty)
         assert(rest.toSyntax.first.isEmpty)
       }
     }
@@ -391,6 +399,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Num(1))
+        assert(rest.first == Set(BoolClass))
         assert(rest.toSyntax.first == Set(BoolClass))
       }
     }
@@ -398,6 +407,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(false))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -604,6 +614,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq().iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq())
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -615,6 +626,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12)))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -626,6 +638,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Num(34), Num(1)))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -648,6 +661,8 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
+        assert(rest.first == Set(NumClass))
+        assert(rest.nullable == Some(Seq(Num(12))))
         assert(rest.toSyntax.first == Set(NumClass))
         assert(rest.toSyntax.nullable == Some(Seq(Num(12))))
       }
@@ -691,6 +706,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -702,6 +718,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12)))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -713,6 +730,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Num(34), Num(1)))
+        assert(rest.first == Set(NumClass))
         assert(rest.toSyntax.first == Set(NumClass))
       }
     }
@@ -724,6 +742,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)))
+        assert(rest.first == Set(NumClass, BoolClass))
         assert(rest.toSyntax.first == Set(NumClass, BoolClass))
       }
     }
@@ -735,6 +754,8 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
         assert(token == Bool(true))
+        assert(rest.first == Set(NumClass))
+        assert(rest.nullable == Some(Seq(Num(12))))
         assert(rest.toSyntax.first == Set(NumClass))
         assert(rest.toSyntax.nullable == Some(Seq(Num(12))))
       }
@@ -781,6 +802,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] 
     inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
         assert(res == Seq(Bool(true), Bool(false)))
+        assert(rest.first == Set(BoolClass))
         assert(rest.toSyntax.first == Set(BoolClass))
       }
     }
