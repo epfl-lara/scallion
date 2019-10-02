@@ -1847,27 +1847,6 @@ trait Syntaxes[Token, Kind]
         }
       }
     }
-
-    /** Combines two maps by applying a function
-      * in case of conflicting entries.
-      */
-    private def combine[K, V1, V2 <: V1, V3 <: V1]
-        (merge: (V2, V3) => V1)
-        (left: Map[K, V2], right: Map[K, V3]): Map[K, V1] =
-      right.foldLeft(left: Map[K, V1]) {
-        case (acc, (key, value)) => acc + (key -> (left.get(key) match {
-          case None => value
-          case Some(other) => merge(other, value)
-        }))
-      }
-
-    /** Combines two Should-Not-Follow results by taking
-      * the disjunction of syntax in case of conflicting entries.
-      */
-    private def combineSNF(
-        left: Map[Kind, Syntax[_]],
-        right: Map[Kind, Syntax[_]]): Map[Kind, Syntax[_]] =
-      combine((p1: Syntax[_], p2: Syntax[_]) => p1.void | p2.void)(left, right)
   }
 
   /** Wrapper around a `Syntax` indicating that values from
