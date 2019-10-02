@@ -126,16 +126,20 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="class" href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context."></a>
+                        <a href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context.">Focused</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="" title="Result of parsing a Syntax."></a>
-                        <a href="" title="Result of parsing a Syntax.">ParseResult</a>
+                        <a class="trait" href="" title="Result of parsing."></a>
+                        <a href="" title="Result of parsing.">ParseResult</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
@@ -192,7 +196,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Result of parsing a <code>Syntax</code>.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Result of parsing.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -252,10 +256,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.ParseResult#syntax" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="syntax:Syntaxes.this.Syntax[A]"></a><a id="syntax:Syntax[A]"></a>
+              <ol><li name="scallion.syntactic.Syntaxes.ParseResult#rest" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="rest:Syntaxes.this.Focused[A]"></a><a id="rest:Focused[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$ParseResult.html#syntax:Syntaxes.this.Syntax[A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$ParseResult.html#rest:Syntaxes.this.Focused[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -264,10 +268,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">syntax</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.ParseResult.A">A</span>]</span>
+        <span class="name">rest</span><span class="result">: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.ParseResult.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax for the rest of input.</p>
+      <p class="shortcomment cmt">Parser for the rest of input.</p>
     </li></ol>
             </div>
 

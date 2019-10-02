@@ -126,7 +126,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="syntax">
       <a id="Syntax"></a><a id="Syntax:Syntax"></a>
@@ -359,7 +359,8 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span title="gt4s: $plus$colon" class="name">+:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.+:.B">B</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is prepended to that from <code>this</code>.
+      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax.
+The parsed value from <code>that</code> is prepended to that from <code>this</code>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#:+" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id=":+[W,B](that:Syntaxes.this.Syntax[B])(implicitev:Syntaxes.this.Syntax[A]=:=Syntaxes.this.Syntax[Seq[B]]):Syntaxes.this.Syntax[Seq[B]]"></a><a id=":+[W,B](Syntax[B])(=:=[Syntax[B],Syntax[Seq[B]]]):Syntax[Seq[B]]"></a>
@@ -376,7 +377,8 @@ and an <code>inverse</code> function on the printed values given to the <code>in
         <span title="gt4s: $colon$plus" class="name">:+</span><span class="tparams">[<span name="W">W</span>, <span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.:+.B">B</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax. The parsed value from <code>that</code> is appended to that from <code>this</code>.
+      <p class="shortcomment cmt">Sequences <code>this</code> and <code>that</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Sequences <code>this</code> and <code>that</code> syntax.
+The parsed value from <code>that</code> is appended to that from <code>this</code>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
@@ -744,43 +746,6 @@ between <code>this</code> and <code>syntax</code> has already been performed.
       
       <p class="shortcomment cmt">Returns all LL(1) conflicts in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all LL(1) conflicts in <code>this</code> syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.Transform#derive" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="derivation">
-      <a id="derive(token:Token,kind:Kind):Syntaxes.this.Syntax[B]"></a><a id="derive(Token,Kind):Syntax[B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token,kind:Kind):Syntaxes.this.Syntax[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="kind">kind: <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Feeds a token and its kind to <code>this</code> syntax and obtains a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token and its kind to <code>this</code> syntax and obtains a syntax for the rest of input.
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform">Transform</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax#derive" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="derivation">
-      <a id="derive(token:Token):Syntaxes.this.Syntax[A]"></a><a id="derive(Token):Syntax[B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$$Transform.html#derive(token:Token):Syntaxes.this.Syntax[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">derive</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Transform.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Feeds a token to this <code>syntax</code> and obtains a syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Feeds a token to this <code>syntax</code> and obtains a syntax for the rest of input.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd><dt>Annotations</dt><dd>
-                <span class="name">@inline</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -1508,9 +1473,6 @@ The value is tagged to indicate the side it comes from.
               
             </div><div class="group" name="combinator">
               <h3>Combinators</h3>
-              
-            </div><div class="group" name="derivation">
-              <h3>Derivations</h3>
               
             </div><div class="group" name="complete">
               <h3>Completions</h3>

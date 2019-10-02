@@ -175,7 +175,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -228,7 +228,25 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="conflict">
+              <ol><li name="scallion.syntactic.Syntaxes.Focused" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="syntax">
+      <a id="Focused[A]extendsAnyRef"></a><a id="Focused[A]:Focused[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Focused[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Represents a focused Syntax, that is a syntax with a context." href="Syntaxes$Focused.html"><span class="name">Focused</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Represents a focused <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>, that is a syntax with a context.</p><div class="fullcomment"><div class="comment cmt"><p>Represents a focused <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>, that is a syntax with a context.</p><p>This datatype is used by the parsing algorithm and is crucial for performance.
+It is returned as part of the <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a> for parsing resumption and error reporting.</p><p>Unfocusing the syntax is possible through the <a href="Syntaxes$Focused.html#toSyntax:Syntaxes.this.Syntax[A]" class="extmbr" name="scallion.syntactic.Syntaxes.Focused#toSyntax">toSyntax</a> method.
+</p></div></div>
+    </li><li name="scallion.syntactic.Syntaxes.LL1Conflict" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="conflict">
       <a id="LL1ConflictextendsAnyRef"></a><a id="LL1Conflict:LL1Conflict"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#LL1ConflictextendsAnyRef" title="Permalink">
@@ -256,10 +274,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Result of parsing a Syntax." href="Syntaxes$ParseResult.html"><span class="name">ParseResult</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Result of parsing." href="Syntaxes$ParseResult.html"><span class="name">ParseResult</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Result of parsing a <code>Syntax</code>.</p>
+      <p class="shortcomment cmt">Result of parsing.</p>
     </li><li name="scallion.syntactic.Syntaxes.Parsed" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="Parsed[A]extendsSyntaxes.this.ParseResult[A]withProductwithSerializable"></a><a id="Parsed[A]:Parsed[A]"></a>
       <span class="permalink">
@@ -272,11 +290,11 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that the input has been fully parsed, resulting in a value." href="Syntaxes$Parsed.html"><span class="name">Parsed</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span></span>, <span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that the input has been fully parsed, resulting in a value." href="Syntaxes$Parsed.html"><span class="name">Parsed</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span></span>, <span name="rest">rest: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Parsed.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A <code>syntax</code> for subsequent input is also provided.
-</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax for more input.</p></dd></dl></div>
+      <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A parser for subsequent input is also provided.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser for more input.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Skip" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="other">
       <a id="SkipextendsProductwithSerializable"></a><a id="Skip:Skip"></a>
       <span class="permalink">
@@ -324,11 +342,11 @@ using <code>~</code>.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that end of input was unexpectedly encountered." href="Syntaxes$UnexpectedEnd.html"><span class="name">UnexpectedEnd</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that end of input was unexpectedly encountered." href="Syntaxes$UnexpectedEnd.html"><span class="name">UnexpectedEnd</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rest">rest: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       <p class="shortcomment cmt">Indicates that end of input was unexpectedly encountered.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that end of input was unexpectedly encountered.</p><p>The <code>syntax</code> for subsequent input is provided.
-</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the end of input.</p></dd></dl></div>
+</p></div></div>
     </li><li name="scallion.syntactic.Syntaxes.UnexpectedToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="UnexpectedToken[A]extendsSyntaxes.this.ParseResult[A]withProductwithSerializable"></a><a id="UnexpectedToken[A]:UnexpectedToken[A]"></a>
       <span class="permalink">
@@ -341,11 +359,11 @@ using <code>~</code>.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that the provided token was not expected at that point." href="Syntaxes$UnexpectedToken.html"><span class="name">UnexpectedToken</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Indicates that the provided token was not expected at that point." href="Syntaxes$UnexpectedToken.html"><span class="name">UnexpectedToken</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="token">token: <span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="rest">rest: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The <code>syntax</code> at the point of error is returned.
-</p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the point of error.</p></dd></dl></div>
+      <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The parser at the point of error is returned.
+</p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser at the point of error.</p></dd></dl></div>
     </li></ol>
             </div>
 

@@ -126,16 +126,20 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">scallion.syntactic.Operators</a> for useful combinators
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd><dt>See also</dt><dd><span class="cmt"><p>See trait <a href="Operators.html" class="extype" name="scallion.syntactic.Operators">syntactic.Operators</a> for useful combinators
      to describe infix, prefix and postfix operators.</p></span></dd></dl></div>
     </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="class" href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context."></a>
+                        <a href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context.">Focused</a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict.">LL1Conflict</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Syntaxes$ParseResult.html" title="Result of parsing a Syntax."></a>
-                        <a href="Syntaxes$ParseResult.html" title="Result of parsing a Syntax.">ParseResult</a>
+                        <a class="trait" href="Syntaxes$ParseResult.html" title="Result of parsing."></a>
+                        <a href="Syntaxes$ParseResult.html" title="Result of parsing.">ParseResult</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
@@ -187,13 +191,13 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">UnexpectedEnd</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">UnexpectedEnd</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rest">rest: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Indicates that end of input was unexpectedly encountered.</p><p>The <code>syntax</code> for subsequent input is provided.
-</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the end of input.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -243,10 +247,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="scallion.syntactic.Syntaxes.UnexpectedEnd#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(syntax:Syntaxes.this.Syntax[A]):Syntaxes.this.UnexpectedEnd[A]"></a><a id="&lt;init&gt;:UnexpectedEnd[A]"></a>
+              <ol><li name="scallion.syntactic.Syntaxes.UnexpectedEnd#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(rest:Syntaxes.this.Focused[A]):Syntaxes.this.UnexpectedEnd[A]"></a><a id="&lt;init&gt;:UnexpectedEnd[A]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$UnexpectedEnd.html#&lt;init&gt;(syntax:Syntaxes.this.Syntax[A]):Syntaxes.this.UnexpectedEnd[A]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$UnexpectedEnd.html#&lt;init&gt;(rest:Syntaxes.this.Focused[A]):Syntaxes.this.UnexpectedEnd[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -255,10 +259,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">UnexpectedEnd</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span>
+        <span class="name">UnexpectedEnd</span><span class="params">(<span name="rest">rest: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>)</span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>Syntax at the end of input.</p></dd></dl></div>
+      <p class="shortcomment cmt"></p>
     </li></ol>
             </div>
 
@@ -500,6 +504,22 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.UnexpectedEnd#rest" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rest:Syntaxes.this.Focused[A]"></a><a id="rest:Focused[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes$UnexpectedEnd.html#rest:Syntaxes.this.Focused[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rest</span><span class="result">: <a href="Syntaxes$Focused.html" class="extype" name="scallion.syntactic.Syntaxes.Focused">Focused</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Parser for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Parser for the rest of input.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd">UnexpectedEnd</a> → <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -516,22 +536,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.UnexpectedEnd#syntax" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="syntax:Syntaxes.this.Syntax[A]"></a><a id="syntax:Syntax[A]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$UnexpectedEnd.html#syntax:Syntaxes.this.Syntax[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">syntax</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Syntax for the rest of input.</p><div class="fullcomment"><div class="comment cmt"><p>Syntax for the rest of input.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.UnexpectedEnd">UnexpectedEnd</a> → <a href="Syntaxes$ParseResult.html" class="extype" name="scallion.syntactic.Syntaxes.ParseResult">ParseResult</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

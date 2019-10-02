@@ -51,6 +51,9 @@ package scallion
   * @groupprio combinator 6
   * @groupname combinator Combinators
   *
+  * @groupprio property 8
+  * @groupname property Properties
+  *
   * @groupprio conflict 10
   * @groupname conflict LL(1) Conflicts
   *

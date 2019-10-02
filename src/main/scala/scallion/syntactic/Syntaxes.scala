@@ -117,9 +117,6 @@ trait Syntaxes[Token, Kind]
     *
     * @groupprio complete 7
     * @groupname complete Completions
-    *
-    * @groupprio property 8
-    * @groupname property Properties
     */
   sealed trait Syntax[A] {
 
@@ -1994,6 +1991,10 @@ trait Syntaxes[Token, Kind]
     */
   private case class FocusedState[A, B](syntax: Syntax[B], context: Context[B, A]) {
 
+    /** Unfocuses the syntax.
+      *
+      * @group syntax
+      */
     def toSyntax: Syntax[A] = {
 
       @tailrec
@@ -2161,10 +2162,15 @@ trait Syntaxes[Token, Kind]
     * It is returned as part of the [[ParseResult]] for parsing resumption and error reporting.
     *
     * Unfocusing the syntax is possible through the [[toSyntax]] method.
+    *
+    * @group syntax
     */
   class Focused[A] private (state: FocusedState[A, _]) {
 
-    /** Unfocuses the syntax. */
+    /** Unfocuses the syntax.
+      *
+      * @group syntax
+      */
     def toSyntax: Syntax[A] = state.toSyntax
 
     /** Indicates if there exists a finite sequence of tokens that `this` focused syntax describes.
