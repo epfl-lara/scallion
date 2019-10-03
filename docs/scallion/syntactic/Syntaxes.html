@@ -181,7 +181,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent"><a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="../../example/calculator/CalcSyntax$.html" class="extype" name="example.calculator.CalcSyntax">CalcSyntax</a>, <a href="../../example/json/JSONParser$.html" class="extype" name="example.json.JSONParser">JSONParser</a>, <a href="../../example/lambda/LambdaSyntax$.html" class="extype" name="example.lambda.LambdaSyntax">LambdaSyntax</a>, <a href="../../example/roman/RomanSyntax$.html" class="extype" name="example.roman.RomanSyntax">RomanSyntax</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -786,10 +791,10 @@ and that directly applies a function on the successfully parsed token.</p>
       </span>
       
       <p class="shortcomment cmt">Indicates that the syntax can refer to itself within its body.</p>
-    </li><li name="scallion.syntactic.Syntaxes#rep1sep" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="rep1sep[A](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[Seq[A]]"></a><a id="rep1sep[A](Syntax[A],Syntax[Unit]):Syntax[Seq[A]]"></a>
+    </li><li name="scallion.syntactic.Syntaxes#rep1sep" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="rep1sep[A,B](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Seq[A]]"></a><a id="rep1sep[A,B](Syntax[A],Syntax[B]):Syntax[Seq[A]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes.html#rep1sep[A](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[Seq[A]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#rep1sep[A,B](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Seq[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -798,14 +803,29 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]]</span>
+        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that represents 1 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.</p>
-    </li><li name="scallion.syntactic.Syntaxes#repsep" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="combinator">
-      <a id="repsep[A](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[Seq[A]]"></a><a id="repsep[A](Syntax[A],Syntax[Unit]):Syntax[Seq[A]]"></a>
+      <p class="shortcomment cmt">[use case] Syntax that represents 1 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.</p><div class="fullcomment">[use case] <div class="comment cmt"><p>Syntax that represents 1 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.
+</p></div><dl class="attributes block"> <div class="full-signature-block toggleContainer">
+            <span class="toggle">
+              <i class="material-icons"></i>
+              Full Signature
+            </span>
+            <div class="hiddenContent full-signature-usecase"><h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]] = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]]</span>
+      </span>
+      </h4></div>
+          </div></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes#repsep" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
+      <a id="repsep[A,B](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Seq[A]]"></a><a id="repsep[A,B](Syntax[A],Syntax[B]):Syntax[Seq[A]]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes.html#repsep[A](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[Unit]):Syntaxes.this.Syntax[Seq[A]]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#repsep[A,B](rep:Syntaxes.this.Syntax[A],sep:Syntaxes.this.Syntax[B]):Syntaxes.this.Syntax[Seq[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -814,10 +834,25 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]]</span>
+        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]]</span>
       </span>
       
-      <p class="shortcomment cmt">Syntax that represents 0 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.</p>
+      <p class="shortcomment cmt">[use case] Syntax that represents 0 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.</p><div class="fullcomment">[use case] <div class="comment cmt"><p>Syntax that represents 0 or more repetitions of the <code>rep</code> syntax, separated by <code>sep</code>.
+</p></div><dl class="attributes block"> <div class="full-signature-block toggleContainer">
+            <span class="toggle">
+              <i class="material-icons"></i>
+              Full Signature
+            </span>
+            <div class="hiddenContent full-signature-usecase"><h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]] = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]]</span>
+      </span>
+      </h4></div>
+          </div></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
