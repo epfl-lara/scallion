@@ -380,7 +380,7 @@ trait Syntaxes[Token, Kind]
     def skip(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Skip =
       if (ev eq null) Skip(this.unit()) else Skip(ev(this))
 
-    /** Sequences `this` and `that` syntax. The parsed values from `that` is returned.
+    /** Sequences `this` and `that` syntax. The parsed value from `that` is returned.
       *
       * @group combinator
       */
