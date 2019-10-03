@@ -128,6 +128,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
     </li><li class="current-entities indented2">
                         <span class="separator"></span>
+                        <a class="trait" href="Debug.html" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes."></a>
+                        <a href="Debug.html" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.">Debug</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="trait" href="Operators.html" title="Contains utilities to write syntaxes with infix, prefix and postfix operators."></a>
                         <a href="Operators.html" title="Contains utilities to write syntaxes with infix, prefix and postfix operators.">Operators</a>
                       </li><li class="current-entities indented2">
@@ -169,7 +173,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Syntaxes</span><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+        <span class="name">Syntaxes</span><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       </h4>
 
@@ -180,13 +184,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">
-              Known Subclasses
-            </span>
-            <div class="subClasses hiddenContent"><a href="../../example/calculator/CalcSyntax$.html" class="extype" name="example.calculator.CalcSyntax">CalcSyntax</a>, <a href="../../example/json/JSONParser$.html" class="extype" name="example.json.JSONParser">JSONParser</a>, <a href="../../example/lambda/LambdaSyntax$.html" class="extype" name="example.lambda.LambdaSyntax">LambdaSyntax</a>, <a href="../../example/roman/RomanSyntax$.html" class="extype" name="example.roman.RomanSyntax">RomanSyntax</a></div>
-          </div></div>
+          <div class="superTypes hiddenContent"><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -211,7 +210,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.syntactic.Syntaxes"><span>Syntaxes</span></li><li class="in" name="scallion.syntactic.visualization.Grammars"><span>Grammars</span></li><li class="in" name="scallion.syntactic.visualization.Graphs"><span>Graphs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.Syntaxes"><span>Syntaxes</span></li><li class="in" name="scallion.syntactic.Debug"><span>Debug</span></li><li class="in" name="scallion.syntactic.visualization.Grammars"><span>Grammars</span></li><li class="in" name="scallion.syntactic.visualization.Graphs"><span>Graphs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -369,6 +368,47 @@ using <code>~</code>.</p>
       
       <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The parser at the point of error is returned.
 </p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser at the point of error.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Uninteresting" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Uninteresting[A]extendsAnyRef"></a><a id="Uninteresting[A]:Uninteresting[A]"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Uninteresting[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax." href="Syntaxes$Uninteresting.html"><span class="name">Uninteresting</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Typeclass to denote that values of certain types are
+uninteresting and can be safely ignored while describing a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Typeclass to denote that values of certain types are
+uninteresting and can be safely ignored while describing a syntax.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@implicitNotFound</span><span class="args">(<span>
+      
+      <span class="defval" name="&quot;${A} is considered interesting, and can not be ignored. &quot; +<br/>    &quot;Make sure to import either import SafeImplicits._ to make &quot; +<br/>    &quot;Unit uninteresting, &quot; +<br/>    &quot;or import Implicits._ to consider &quot; +<br/>    &quot;all types as potentially uninteresting.&quot;">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.UnsafeImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UnsafeImplicitsextendsAnyRef"></a><a id="UnsafeImplicits:UnsafeImplicits"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#UnsafeImplicitsextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Syntaxes$UnsafeImplicits.html"><span class="name">UnsafeImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      
     </li></ol>
             </div>
 
@@ -501,6 +541,38 @@ and that directly applies a function on the successfully parsed token.</p>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Debug#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug[A](syntax:Debug.this.Syntax[A]):Unit"></a><a id="debug[A](Syntax[A]):Unit"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#debug[A](syntax:Debug.this.Syntax[A]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debug.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Prints a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Prints a report of LL(1) conflicts in the syntax.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Debug#debugString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debugString[A](syntax:Debug.this.Syntax[A]):String"></a><a id="debugString[A](Syntax[A]):String"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#debugString[A](syntax:Debug.this.Syntax[A]):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debugString</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debugString.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a report of LL(1) conflicts in the syntax.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes#elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="elem(kind:Kind):Syntaxes.this.Syntax[Token]"></a><a id="elem(Kind):Syntax[Token]"></a>
       <span class="permalink">
@@ -818,7 +890,7 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]] = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]]</span>
+        <span class="name">rep1sep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.rep1sep.A">A</span>]]</span>
       </span>
       </h4></div>
           </div></dl></div>
@@ -849,7 +921,7 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]] = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]]</span>
+        <span class="name">repsep</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="rep">rep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]</span>, <span name="sep">sep: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.B">B</span>]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.repsep.A">A</span>]]</span>
       </span>
       </h4></div>
           </div></dl></div>
@@ -953,6 +1025,22 @@ and that directly applies a function on the successfully parsed token.</p>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Implicits"></a><a id="Implicits:Implicits"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#Implicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Syntaxes$Implicits$.html"><span class="name">Implicits</span></a><span class="result"> extends <a href="Syntaxes$UnsafeImplicits.html" class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits">UnsafeImplicits</a></span>
+      </span>
+      
+      
     </li><li name="scallion.syntactic.Syntaxes.LL1Conflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="conflict">
       <a id="LL1Conflict"></a><a id="LL1Conflict:LL1Conflict"></a>
       <span class="permalink">
@@ -969,6 +1057,22 @@ and that directly applies a function on the successfully parsed token.</p>
       </span>
       
       <p class="shortcomment cmt">Contains the description of the various LL(1) conflicts.</p>
+    </li><li name="scallion.syntactic.Syntaxes.SafeImplicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SafeImplicits"></a><a id="SafeImplicits:SafeImplicits"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Syntaxes.html#SafeImplicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Syntaxes$SafeImplicits$.html"><span class="name">SafeImplicits</span></a>
+      </span>
+      
+      
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="syntax">
       <a id="Syntax"></a><a id="Syntax:Syntax"></a>
       <span class="permalink">
@@ -1029,7 +1133,9 @@ and that directly applies a function on the successfully parsed token.</p>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scallion.syntactic.visualization.Grammars">
+        <div class="parent" name="scallion.syntactic.Debug">
+              <h3>Inherited from <a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</h3>
+            </div><div class="parent" name="scallion.syntactic.visualization.Grammars">
               <h3>Inherited from <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</h3>
             </div><div class="parent" name="scallion.syntactic.visualization.Graphs">
               <h3>Inherited from <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</h3>

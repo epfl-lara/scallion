@@ -111,9 +111,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
   <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
 }</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes" visbl="pub" class="indented3 " data-isabs="true" fullComment="yes" group="syntax">
-      <a id="Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
+      <a id="Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]withDebug[Token,Kind]"></a><a id="Syntaxes[Token,Kind]:Syntaxes[Token,Kind]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]" title="Permalink">
+      <a href="../../scallion/syntactic/index.html#Syntaxes[Token,Kind]extendsGraphs[Token,Kind]withGrammars[Token,Kind]withDebug[Token,Kind]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -122,7 +122,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+        <a title="Contains definitions relating to syntaxes." href="Syntaxes.html"><span class="name">Syntaxes</span></a><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <a href="visualization/Graphs.html" class="extype" name="scallion.syntactic.visualization.Graphs">Graphs</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="visualization/Grammars.html" class="extype" name="scallion.syntactic.visualization.Grammars">Grammars</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>] with <a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Contains definitions relating to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains definitions relating to syntaxes.
@@ -132,6 +132,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context."></a>
                         <a href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context.">Focused</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="object" href="Syntaxes$Implicits$.html" title=""></a>
+                        <a href="Syntaxes$Implicits$.html" title="">Implicits</a>
                       </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
@@ -144,6 +148,10 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
                         <a href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value.">Parsed</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="object" href="Syntaxes$SafeImplicits$.html" title=""></a>
+                        <a href="Syntaxes$SafeImplicits$.html" title="">SafeImplicits</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Skip.html" title="Wrapper around a Syntax indicating that values from the inner syntax should be ignored when building up sequences using ~."></a>
@@ -160,6 +168,14 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <span class="separator"></span>
                         <a class="class" href="" title="Indicates that the provided token was not expected at that point."></a>
                         <a href="" title="Indicates that the provided token was not expected at that point.">UnexpectedToken</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax."></a>
+                        <a href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax.">Uninteresting</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Syntaxes$UnsafeImplicits.html" title=""></a>
+                        <a href="Syntaxes$UnsafeImplicits.html" title="">UnsafeImplicits</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="object" href="visualization/Grammars$grammars$.html" title="Contains utilities to visualize syntaxes as BNF grammars."></a>

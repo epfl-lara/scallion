@@ -69,11 +69,11 @@
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing lexers, parsers and pretty printers in Scala.
-See the package <a href="../../scallion/index.html" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="_root_.example" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="example"></a><a id="example:example"></a>
+See the package <a href="../index.html" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scallion"></a><a id="scallion:scallion"></a>
       <span class="permalink">
-      <a href="index.html#example" title="Permalink">
+      <a href="index.html#scallion" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -82,14 +82,15 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../index.html"><span class="name">example</span></a>
+        <a title="Scallion is a library for writing lexers, parsers and pretty printers." href="../index.html"><span class="name">scallion</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="example.lambda" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lambda"></a><a id="lambda:lambda"></a>
+      <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
+    </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="syntactic"></a><a id="syntactic:syntactic"></a>
       <span class="permalink">
-      <a href="../example/index.html#lambda" title="Permalink">
+      <a href="../scallion/index.html#syntactic" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -98,97 +99,68 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="index.html"><span class="name">lambda</span></a>
+        <a title="This package is used to describe syntax for LL(1) languages." href="index.html"><span class="name">syntactic</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="example">example</a></dd></dl></div>
+      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes[Token, Kind] {
+
+  <span class="cmt">// Define the token kind of tokens.</span>
+  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
+
+  <span class="cmt">// Then define your syntax using combinators.</span>
+  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.syntactic.visualization" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="visualization"></a><a id="visualization:visualization"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/index.html#visualization" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="visualization/index.html"><span class="name">visualization</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
     </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="Abs.html" title=""></a>
-                        <a href="Abs.html" title="">Abs</a>
+                        <a class="trait" href="" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes."></a>
+                        <a href="" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.">Debug</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="App.html" title=""></a>
-                        <a href="App.html" title="">App</a>
+                        <a class="trait" href="Operators.html" title="Contains utilities to write syntaxes with infix, prefix and postfix operators."></a>
+                        <a href="Operators.html" title="Contains utilities to write syntaxes with infix, prefix and postfix operators.">Operators</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="DotClass$.html" title=""></a>
-                        <a href="DotClass$.html" title="">DotClass</a>
+                        <a class="class" href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs."></a>
+                        <a href="package$$PairDecorator.html" title="Adds an ~ methods to build pairs.">PairDecorator</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="DotToken$.html" title=""></a>
-                        <a href="DotToken$.html" title="">DotToken</a>
+                        <a class="trait" href="Syntaxes.html" title="Contains definitions relating to syntaxes."></a>
+                        <a href="Syntaxes.html" title="Contains definitions relating to syntaxes.">Syntaxes</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="Expr.html" title=""></a>
-                        <a href="Expr.html" title="">Expr</a>
+                        <a class="object" href="Unfolds$.html" title="Contains functions to unfold values."></a>
+                        <a href="Unfolds$.html" title="Contains functions to unfold values.">Unfolds</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">IdentifierClass</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="IdentifierToken.html" title=""></a>
-                        <a href="IdentifierToken.html" title="">IdentifierToken</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="LambdaClass$.html" title=""></a>
-                        <a href="LambdaClass$.html" title="">LambdaClass</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="LambdaLexer$.html" title=""></a>
-                        <a href="LambdaLexer$.html" title="">LambdaLexer</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="LambdaSyntax$.html" title=""></a>
-                        <a href="LambdaSyntax$.html" title="">LambdaSyntax</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="LambdaToken$.html" title=""></a>
-                        <a href="LambdaToken$.html" title="">LambdaToken</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="OtherClass$.html" title=""></a>
-                        <a href="OtherClass$.html" title="">OtherClass</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="ParenthesisClass.html" title=""></a>
-                        <a href="ParenthesisClass.html" title="">ParenthesisClass</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="ParenthesisToken.html" title=""></a>
-                        <a href="ParenthesisToken.html" title="">ParenthesisToken</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="SpaceToken$.html" title=""></a>
-                        <a href="SpaceToken$.html" title="">SpaceToken</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="trait" href="Token.html" title=""></a>
-                        <a href="Token.html" title="">Token</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="TokenClass.html" title=""></a>
-                        <a href="TokenClass.html" title="">TokenClass</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownToken.html" title=""></a>
-                        <a href="UnknownToken.html" title="">UnknownToken</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Var.html" title=""></a>
-                        <a href="Var.html" title="">Var</a>
+                        <a class="class" href="package$$$tilde.html" title="Simply a pair."></a>
+                        <a href="package$$$tilde.html" title="Simply a pair.">~</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="trait type">
       <div id="definition">
-        <div class="big-circle object">o</div>
-        <p id="owner"><a href="../index.html" class="extype" name="example">example</a>.<a href="index.html" class="extype" name="example.lambda">lambda</a></p>
-        <h1>IdentifierClass<span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html" title="Permalink">
+        <div class="big-circle trait">t</div>
+        <p id="owner"><a href="../index.html" class="extype" name="scallion">scallion</a>.<a href="index.html" class="extype" name="scallion.syntactic">syntactic</a></p>
+        <h1>Debug<span class="permalink">
+      <a href="../../scallion/syntactic/Debug.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -198,20 +170,25 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">IdentifierClass</span><span class="result"> extends <a href="TokenClass.html" class="extype" name="example.lambda.TokenClass">TokenClass</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Debug</span><span class="tparams">[<span name="Token">Token</span>, <span name="Kind">Kind</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/example/lambda/Lambda.scala" target="_blank">Lambda.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a>[<span class="extype" name="scallion.syntactic.Debug.Token">Token</span>, <span class="extype" name="scallion.syntactic.Debug.Kind">Kind</span>]</dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Debug.scala" target="_blank">Debug.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="TokenClass.html" class="extype" name="example.lambda.TokenClass">TokenClass</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -236,7 +213,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="example.lambda.IdentifierClass"><span>IdentifierClass</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="example.lambda.TokenClass"><span>TokenClass</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.Debug"><span>Debug</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -266,7 +243,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -282,7 +259,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html###():Int" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -298,7 +275,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -314,7 +291,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -330,7 +307,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#clone():Object" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -351,10 +328,42 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.Debug#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="debug[A](syntax:Debug.this.Syntax[A]):Unit"></a><a id="debug[A](Syntax[A]):Unit"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Debug.html#debug[A](syntax:Debug.this.Syntax[A]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debug.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Prints a report of LL(1) conflicts in the syntax.</p>
+    </li><li name="scallion.syntactic.Debug#debugString" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="debugString[A](syntax:Debug.this.Syntax[A]):String"></a><a id="debugString[A](Syntax[A]):String"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Debug.html#debugString[A](syntax:Debug.this.Syntax[A]):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debugString</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debugString.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a report of LL(1) conflicts in the syntax.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -370,7 +379,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -386,7 +395,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#finalize():Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -408,7 +417,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -424,10 +433,29 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <span class="permalink">
+      <a href="../../scallion/syntactic/Debug.html#hashCode():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -443,7 +471,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -459,7 +487,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#notify():Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -478,7 +506,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -497,7 +525,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -510,10 +538,10 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="example.lambda.TokenClass#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#toString():String" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -522,14 +550,14 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TokenClass.html" class="extype" name="example.lambda.TokenClass">TokenClass</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#wait():Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -551,7 +579,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -573,7 +601,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../example/lambda/IdentifierClass$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../scallion/syntactic/Debug.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -604,17 +632,7 @@ See the package <a href="../../scallion/index.html" class="extype" name="scallio
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="example.lambda.TokenClass">
-              <h3>Inherited from <a href="TokenClass.html" class="extype" name="example.lambda.TokenClass">TokenClass</a></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
