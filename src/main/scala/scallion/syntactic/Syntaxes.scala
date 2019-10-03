@@ -32,8 +32,7 @@ import scallion.util.internal._
   */
 trait Syntaxes[Token, Kind]
     extends visualization.Graphs[Token, Kind]
-       with visualization.Grammars[Token, Kind]
-       with Debug[Token, Kind] {
+       with visualization.Grammars[Token, Kind] {
 
   /** Low priority implicits.
     * Contains an instance for [[Uninteresting]] for every type.
