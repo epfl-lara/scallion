@@ -489,15 +489,6 @@ trait Syntaxes[Token, Kind]
       case () => values
     })
 
-
-    /** Upcasts `this` syntax to `Syntax[Any]`.
-      *
-      * Disables pretty printing for `this` syntax.
-      *
-      * @group combinator
-      */
-    def void: Syntax[Any] = this.map((x: A) => x, (y: Any) => Seq())
-
     /** Upcasts `this` syntax.
       *
       * The resulting `syntax` parses and pretty prints equivalently to `this` syntax.
