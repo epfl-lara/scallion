@@ -372,15 +372,30 @@ trait Syntaxes[Token, Kind]
       */
     def ~(that: Skip): Syntax[A] = this ~<~ that.syntax
 
-    /** Indicates that the value from `this` syntax should be ignored
+    /** @usecase def skip: Skip
+      *
+      * Indicates that the value from `this` syntax should be ignored
       * when building up sequences using `~`.
+      *
+      * {{{
+      * // Assume are not interesed in values produced by open, separator or close.
+      * // We call .skip on them while building up a sequence to skip them in the
+      * // resulting sequence of values.
+      * (open.skip ~ key ~ separator.skip ~ value ~ close.skip).map {
+      *   // Then, we can just apply a transformation over the two values
+      *   // that have not been skipped.
+      *   case k ~ v => (k, v)
+      * }
+      * }}}
       *
       * @group combinator
       */
     def skip(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Skip =
       if (ev eq null) Skip(this.unit()) else Skip(ev(this))
 
-    /** Sequences `this` and `that` syntax. The parsed value from `that` is returned.
+    /** @usecase def ~>~[B](that: Syntax[B]): Syntax[B]
+      *
+      * Sequences `this` and `that` syntax. The parsed value from `that` is returned.
       *
       * @group combinator
       */
@@ -394,7 +409,9 @@ trait Syntaxes[Token, Kind]
         })
       }
 
-    /** Sequences `this` and `that` syntax. The parsed value from `this` is returned.
+    /** @usecase def ~<~[B](that: Syntax[B]): Syntax[A]
+      *
+      * Sequences `this` and `that` syntax. The parsed value from `this` is returned.
       *
       * @group combinator
       */
@@ -2499,7 +2516,9 @@ trait Syntaxes[Token, Kind]
     */
   def many1[A](rep: Syntax[A]): Syntax[Seq[A]] = rep +: many(rep)
 
-  /** Syntax that represents 0 or more repetitions of the `rep` syntax, separated by `sep`.
+  /** @usecase def repsep[A, B](rep: Syntax[A], sep: Syntax[B]): Syntax[Seq[A]]
+    *
+    * Syntax that represents 0 or more repetitions of the `rep` syntax, separated by `sep`.
     *
     * @group combinator
     */
@@ -2507,7 +2526,9 @@ trait Syntaxes[Token, Kind]
       (implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[Seq[A]] =
     rep1sep(rep, sep)(ev) | epsilon(Vector())
 
-  /** Syntax that represents 1 or more repetitions of the `rep` syntax, separated by `sep`.
+  /** @usecase def rep1sep[A, B](rep: Syntax[A], sep: Syntax[B]): Syntax[Seq[A]]
+    *
+    * Syntax that represents 1 or more repetitions of the `rep` syntax, separated by `sep`.
     *
     * @group combinator
     */
