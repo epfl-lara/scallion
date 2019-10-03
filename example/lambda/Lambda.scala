@@ -97,6 +97,8 @@ case class Abs(name: String, body: Expr) extends Expr
 
 object LambdaSyntax extends Syntaxes[Token, TokenClass] {
 
+  import SafeImplicits._
+
   override def getKind(token: Token): TokenClass = token match {
     case IdentifierToken(_) => IdentifierClass
     case DotToken => DotClass

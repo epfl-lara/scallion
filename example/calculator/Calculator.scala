@@ -75,6 +75,8 @@ case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
 object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
 
+  import SafeImplicits._
+
   override def getKind(token: Token): TokenClass = token match {
     case NumberToken(_) => NumberClass
     case OperatorToken(c) => OperatorClass(c)

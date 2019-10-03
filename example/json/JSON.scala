@@ -141,6 +141,8 @@ case class NullValue(range: (Int, Int)) extends Value
 // Then, we define the JSON Parser.
 object JSONParser extends Syntaxes[Token, TokenClass] {
 
+  import Implicits._
+
   // We assign to each token a single token class.
   override def getKind(token: Token): TokenClass = token match {
     case SeparatorToken(value, _) => SeparatorClass(value)
@@ -179,7 +181,7 @@ object JSONParser extends Syntaxes[Token, TokenClass] {
 
   // Defines the syntax for arrays.
   lazy val arrayValue: Syntax[Value] =
-    ('[' ~ repsep(value, ','.unit()) ~ ']').map {
+    ('[' ~ repsep(value, ',') ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
     }
 
@@ -191,7 +193,7 @@ object JSONParser extends Syntaxes[Token, TokenClass] {
 
   // Defines the syntax for objects.
   lazy val objectValue: Syntax[Value] =
-    ('{' ~ repsep(binding, ','.unit()) ~ '}').map {
+    ('{' ~ repsep(binding, ',') ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
     }
 

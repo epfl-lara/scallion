@@ -38,6 +38,8 @@ import Tokens._
 
 class ParserTests extends FlatSpec with Inside with Syntaxes[Token, TokenClass] with Operators {
 
+  import SafeImplicits._
+
   override def getKind(token: Token): TokenClass = token match {
     case Num(_) => NumClass
     case Bool(_) => BoolClass

@@ -17,10 +17,8 @@ package scallion.syntactic
 
 import java.util.{ IdentityHashMap => IHM }
 
-import scala.annotation.tailrec
-import scala.collection.immutable.ListSet
+import scala.annotation.{ tailrec, implicitNotFound }
 import scala.collection.JavaConverters._
-import scala.collection.mutable.{Set => MutSet}
 import scala.util.Try
 
 import scallion.util.internal._
@@ -34,8 +32,34 @@ import scallion.util.internal._
   */
 trait Syntaxes[Token, Kind]
     extends visualization.Graphs[Token, Kind]
-       with visualization.Grammars[Token, Kind] {
+       with visualization.Grammars[Token, Kind]
+       with Debug[Token, Kind] {
 
+  trait UnsafeImplicits {
+    implicit def anyUninteresting[A]: Uninteresting[A] =
+      new Uninteresting[A] {
+        override def unit(syntax: Syntax[A]): Syntax[Unit] =
+          syntax.unit()
+      }
+  }
+
+  object Implicits extends UnsafeImplicits {
+    implicit val unitUninteresting: Uninteresting[Unit] =
+      new Uninteresting[Unit] {
+        override def unit(syntax: Syntax[Unit]): Syntax[Unit] =
+          syntax
+      }
+  }
+
+  object SafeImplicits {
+    implicit val unitUninteresting: Uninteresting[Unit] =
+      new Uninteresting[Unit] {
+        override def unit(syntax: Syntax[Unit]): Syntax[Unit] =
+          syntax
+      }
+  }
+
+  import SafeImplicits._
   import Syntax._
 
   /** Returns the kind associated with `token`.
@@ -390,8 +414,8 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def skip(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Skip =
-      if (ev eq null) Skip(this.unit()) else Skip(ev(this))
+    def skip(implicit ev: Uninteresting[A]): Skip =
+      Skip(ev.unit(this))
 
     /** @usecase def ~>~[B](that: Syntax[B]): Syntax[B]
       *
@@ -399,15 +423,10 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ~>~[B](that: Syntax[B])(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Syntax[B] =
-      if (ev eq null) {
-        this.~(that).map(_._2)
-      }
-      else {
-        ev(this).~(that).map(_._2, {
-          case x => Seq(scallion.syntactic.~((), x))
-        })
-      }
+    def ~>~[B](that: Syntax[B])(implicit ev: Uninteresting[A]): Syntax[B] =
+      ev.unit(this).~(that).map(_._2, {
+        case x => Seq(scallion.syntactic.~((), x))
+      })
 
     /** @usecase def ~<~[B](that: Syntax[B]): Syntax[A]
       *
@@ -415,15 +434,10 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ~<~[B](that: Syntax[B])(implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[A] =
-      if (ev eq null) {
-        this.~(that).map(_._1)
-      }
-      else {
-        this.~(ev(that)).map(_._1, {
-          case x => Seq(scallion.syntactic.~(x, ()))
-        })
-      }
+    def ~<~[B](that: Syntax[B])(implicit ev: Uninteresting[B]): Syntax[A] =
+      this.~(ev.unit(that)).map(_._1, {
+        case x => Seq(scallion.syntactic.~(x, ()))
+      })
 
     /** Sequences `this` and `that` syntax.
       * The parsed value from `that` is appended to that from `this`.
@@ -2458,6 +2472,22 @@ trait Syntaxes[Token, Kind]
     def ~(that: Skip): Skip = Skip(this.syntax ~>~ that.syntax)
   }
 
+  /** Typeclass to denote that values of certain types are
+    * uninteresting and can be safely ignored while describing a syntax.
+    */
+  @implicitNotFound(msg =
+    "${A} is considered interesting, and can not be ignored. " +
+    "Make sure to import either import SafeImplicits._ to make " +
+    "Unit uninteresting, " +
+    "or import Implicits._ to consider " +
+    "all types as potentially uninteresting.")
+  trait Uninteresting[A] {
+
+    /** Converts a syntax that produces values of type A,
+      * to a syntax that only produces the unit value.
+      */
+    def unit(syntax: Syntax[A]): Syntax[Unit]
+  }
 
   // API for combinators and basic syntaxes.
 
@@ -2523,7 +2553,7 @@ trait Syntaxes[Token, Kind]
     * @group combinator
     */
   def repsep[A, B](rep: Syntax[A], sep: Syntax[B])
-      (implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[Seq[A]] =
+      (implicit ev: Uninteresting[B]): Syntax[Seq[A]] =
     rep1sep(rep, sep)(ev) | epsilon(Vector())
 
   /** @usecase def rep1sep[A, B](rep: Syntax[A], sep: Syntax[B]): Syntax[Seq[A]]
@@ -2533,7 +2563,7 @@ trait Syntaxes[Token, Kind]
     * @group combinator
     */
   def rep1sep[A, B](rep: Syntax[A], sep: Syntax[B])
-      (implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[Seq[A]] = {
+      (implicit ev: Uninteresting[B]): Syntax[Seq[A]] = {
     lazy val rest: Syntax[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
   }

@@ -28,6 +28,8 @@ case object M extends Symbol
 
 object RomanSyntax extends Syntaxes[Symbol, Symbol] {
 
+  import SafeImplicits._
+
   override def getKind(token: Symbol): Symbol = token
 
   def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int] = {

@@ -117,6 +117,8 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
 
 object JSONParser extends Syntaxes[Token, TokenClass] {
 
+  import SafeImplicits._
+
   override def getKind(token: Token): TokenClass = token match {
     case SeparatorToken(value, _) => SeparatorClass(value)
     case BooleanToken(_, _) => BooleanClass
