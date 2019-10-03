@@ -368,7 +368,7 @@ using <code>~</code>.</p>
       
       <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The parser at the point of error is returned.
 </p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser at the point of error.</p></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Uninteresting" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Uninteresting" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="other">
       <a id="Uninteresting[A]extendsAnyRef"></a><a id="Uninteresting[A]:Uninteresting[A]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#Uninteresting[A]extendsAnyRef" title="Permalink">
@@ -380,11 +380,11 @@ using <code>~</code>.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax." href="Syntaxes$Uninteresting.html"><span class="name">Uninteresting</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Typeclass to denote that values of a given type are uninteresting and can be safely ignored while describing a syntax." href="Syntaxes$Uninteresting.html"><span class="name">Uninteresting</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Typeclass to denote that values of certain types are
-uninteresting and can be safely ignored while describing a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Typeclass to denote that values of certain types are
+      <p class="shortcomment cmt">Typeclass to denote that values of a given type are
+uninteresting and can be safely ignored while describing a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Typeclass to denote that values of a given type are
 uninteresting and can be safely ignored while describing a syntax.
 </p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@implicitNotFound</span><span class="args">(<span>
@@ -393,7 +393,7 @@ uninteresting and can be safely ignored while describing a syntax.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.UnsafeImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.UnsafeImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="implicit">
       <a id="UnsafeImplicitsextendsAnyRef"></a><a id="UnsafeImplicits:UnsafeImplicits"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#UnsafeImplicitsextendsAnyRef" title="Permalink">
@@ -405,10 +405,12 @@ uninteresting and can be safely ignored while describing a syntax.
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="" href="Syntaxes$UnsafeImplicits.html"><span class="name">UnsafeImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Low priority implicits." href="Syntaxes$UnsafeImplicits.html"><span class="name">UnsafeImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      
+      <p class="shortcomment cmt">Low priority implicits.</p><div class="fullcomment"><div class="comment cmt"><p>Low priority implicits.
+Contains an instance for <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> for every type.
+</p></div></div>
     </li></ol>
             </div>
 
@@ -541,7 +543,7 @@ and that directly applies a function on the successfully parsed token.</p>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Debug#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Debug#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="debug">
       <a id="debug[A](syntax:Debug.this.Syntax[A]):Unit"></a><a id="debug[A](Syntax[A]):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#debug[A](syntax:Debug.this.Syntax[A]):Unit" title="Permalink">
@@ -556,8 +558,9 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="name">debug</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debug.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <p class="shortcomment cmt">Prints a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Prints a report of LL(1) conflicts in the syntax.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Debug#debugString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Prints a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Prints a report of LL(1) conflicts in the syntax.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Debug#debugString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="debug">
       <a id="debugString[A](syntax:Debug.this.Syntax[A]):String"></a><a id="debugString[A](Syntax[A]):String"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#debugString[A](syntax:Debug.this.Syntax[A]):String" title="Permalink">
@@ -572,7 +575,8 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="name">debugString</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Debug.debugString.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">Returns a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a report of LL(1) conflicts in the syntax.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
+      <p class="shortcomment cmt">Returns a report of LL(1) conflicts in the syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a report of LL(1) conflicts in the syntax.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Debug.html" class="extype" name="scallion.syntactic.Debug">Debug</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes#elem" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="basic">
       <a id="elem(kind:Kind):Syntaxes.this.Syntax[Token]"></a><a id="elem(Kind):Syntax[Token]"></a>
       <span class="permalink">
@@ -1025,7 +1029,7 @@ and that directly applies a function on the successfully parsed token.</p>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="implicit">
       <a id="Implicits"></a><a id="Implicits:Implicits"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#Implicits" title="Permalink">
@@ -1037,10 +1041,12 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Syntaxes$Implicits$.html"><span class="name">Implicits</span></a><span class="result"> extends <a href="Syntaxes$UnsafeImplicits.html" class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits">UnsafeImplicits</a></span>
+        <a title="Contains an instance for Uninteresting for every type." href="Syntaxes$Implicits$.html"><span class="name">Implicits</span></a><span class="result"> extends <a href="Syntaxes$UnsafeImplicits.html" class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits">UnsafeImplicits</a></span>
       </span>
       
-      
+      <p class="shortcomment cmt">Contains an instance for <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> for every type.</p><div class="fullcomment"><div class="comment cmt"><p>Contains an instance for <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> for every type.
+The <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> instance for <code>Unit</code> is distinct.
+</p></div></div>
     </li><li name="scallion.syntactic.Syntaxes.LL1Conflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="conflict">
       <a id="LL1Conflict"></a><a id="LL1Conflict:LL1Conflict"></a>
       <span class="permalink">
@@ -1057,7 +1063,7 @@ and that directly applies a function on the successfully parsed token.</p>
       </span>
       
       <p class="shortcomment cmt">Contains the description of the various LL(1) conflicts.</p>
-    </li><li name="scallion.syntactic.Syntaxes.SafeImplicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.SafeImplicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="implicit">
       <a id="SafeImplicits"></a><a id="SafeImplicits:SafeImplicits"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes.html#SafeImplicits" title="Permalink">
@@ -1069,10 +1075,10 @@ and that directly applies a function on the successfully parsed token.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Syntaxes$SafeImplicits$.html"><span class="name">SafeImplicits</span></a>
+        <a title="Contains the instance for Uninteresting of Unit." href="Syntaxes$SafeImplicits$.html"><span class="name">SafeImplicits</span></a>
       </span>
       
-      
+      <p class="shortcomment cmt">Contains the instance for <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> of <code>Unit</code>.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="syntax">
       <a id="Syntax"></a><a id="Syntax:Syntax"></a>
       <span class="permalink">
@@ -1166,8 +1172,14 @@ and that directly applies a function on the successfully parsed token.</p>
             </div><div class="group" name="conflict">
               <h3>LL(1) Conflicts</h3>
               
+            </div><div class="group" name="debug">
+              <h3>Debugging</h3>
+              
             </div><div class="group" name="visualization">
               <h3>Visualization</h3>
+              
+            </div><div class="group" name="implicit">
+              <h3>Implicits</h3>
               
             </div><div class="group" name="other">
               <h3>Others</h3>

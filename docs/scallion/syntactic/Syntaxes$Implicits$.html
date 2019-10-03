@@ -134,8 +134,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$Focused.html" title="Represents a focused Syntax, that is a syntax with a context.">Focused</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">Implicits</a>
+                        <a class="object" href="" title="Contains an instance for Uninteresting for every type."></a>
+                        <a href="" title="Contains an instance for Uninteresting for every type.">Implicits</a>
                       </li><li class="current-entities indented3">
                         <a class="object" href="Syntaxes$LL1Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Syntaxes$LL1Conflict.html" title="Describes a LL(1) conflict."></a>
@@ -150,8 +150,8 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value.">Parsed</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="object" href="Syntaxes$SafeImplicits$.html" title=""></a>
-                        <a href="Syntaxes$SafeImplicits$.html" title="">SafeImplicits</a>
+                        <a class="object" href="Syntaxes$SafeImplicits$.html" title="Contains the instance for Uninteresting of Unit."></a>
+                        <a href="Syntaxes$SafeImplicits$.html" title="Contains the instance for Uninteresting of Unit.">SafeImplicits</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Skip.html" title="Wrapper around a Syntax indicating that values from the inner syntax should be ignored when building up sequences using ~."></a>
@@ -170,12 +170,12 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$UnexpectedToken.html" title="Indicates that the provided token was not expected at that point.">UnexpectedToken</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax."></a>
-                        <a href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of certain types are uninteresting and can be safely ignored while describing a syntax.">Uninteresting</a>
+                        <a class="trait" href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of a given type are uninteresting and can be safely ignored while describing a syntax."></a>
+                        <a href="Syntaxes$Uninteresting.html" title="Typeclass to denote that values of a given type are uninteresting and can be safely ignored while describing a syntax.">Uninteresting</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="trait" href="Syntaxes$UnsafeImplicits.html" title=""></a>
-                        <a href="Syntaxes$UnsafeImplicits.html" title="">UnsafeImplicits</a>
+                        <a class="trait" href="Syntaxes$UnsafeImplicits.html" title="Low priority implicits."></a>
+                        <a href="Syntaxes$UnsafeImplicits.html" title="Low priority implicits.">UnsafeImplicits</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
                         <a class="object" href="visualization/Grammars$grammars$.html" title="Contains utilities to visualize syntaxes as BNF grammars."></a>
@@ -212,7 +212,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains an instance for <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> for every type.
+The <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a> instance for <code>Unit</code> is distinct.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/Syntaxes.scala" target="_blank">Syntaxes.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -332,7 +334,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">anyUninteresting</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a>[<span class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits.anyUninteresting.A">A</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$UnsafeImplicits.html" class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits">UnsafeImplicits</a></dd></dl></div>
+      <p class="shortcomment cmt">Implicit instance for <code>Uninteresting[A]</code> for any <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit instance for <code>Uninteresting[A]</code> for any <code>A</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$UnsafeImplicits.html" class="extype" name="scallion.syntactic.Syntaxes.UnsafeImplicits">UnsafeImplicits</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -582,7 +584,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">unitUninteresting</span><span class="result">: <a href="Syntaxes$Uninteresting.html" class="extype" name="scallion.syntactic.Syntaxes.Uninteresting">Uninteresting</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
-      
+      <p class="shortcomment cmt">Implicit instance for <code>Uninteresting[Unit]</code>.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

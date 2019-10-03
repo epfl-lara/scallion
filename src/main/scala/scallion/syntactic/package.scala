@@ -57,6 +57,9 @@ package scallion
   * @groupprio conflict 10
   * @groupname conflict LL(1) Conflicts
   *
+  * @groupprio debug 15
+  * @groupname debug Debugging
+  *
   * @groupprio visualization 20
   * @groupname visualization Visualization
   *
@@ -65,6 +68,9 @@ package scallion
   *
   * @groupprio alias 50
   * @groupname alias Type Aliases
+  *
+  * @groupprio implicit 90
+  * @groupname implicit Implicits
   *
   * @groupprio other 100
   * @groupname other Others

@@ -35,7 +35,14 @@ trait Syntaxes[Token, Kind]
        with visualization.Grammars[Token, Kind]
        with Debug[Token, Kind] {
 
+  /** Low priority implicits.
+    * Contains an instance for [[Uninteresting]] for every type.
+    *
+    * @group implicit
+    */
   trait UnsafeImplicits {
+
+    /** Implicit instance for `Uninteresting[A]` for any `A`. */
     implicit def anyUninteresting[A]: Uninteresting[A] =
       new Uninteresting[A] {
         override def unit(syntax: Syntax[A]): Syntax[Unit] =
@@ -43,20 +50,36 @@ trait Syntaxes[Token, Kind]
       }
   }
 
-  object Implicits extends UnsafeImplicits {
-    implicit val unitUninteresting: Uninteresting[Unit] =
-      new Uninteresting[Unit] {
-        override def unit(syntax: Syntax[Unit]): Syntax[Unit] =
-          syntax
-      }
+  /** The [[Uninteresting]] instance for `Unit`.
+    *
+    * @group implicit
+    */
+  private object UnitUninteresting extends Uninteresting[Unit] {
+    override def unit(syntax: Syntax[Unit]): Syntax[Unit] =
+      syntax
   }
 
-  object SafeImplicits {
+  /** Contains an instance for [[Uninteresting]] for every type.
+    * The [[Uninteresting]] instance for `Unit` is distinct.
+    *
+    * @group implicit
+    */
+  object Implicits extends UnsafeImplicits {
+
+    /** Implicit instance for `Uninteresting[Unit]`. */
     implicit val unitUninteresting: Uninteresting[Unit] =
-      new Uninteresting[Unit] {
-        override def unit(syntax: Syntax[Unit]): Syntax[Unit] =
-          syntax
-      }
+      UnitUninteresting
+  }
+
+  /** Contains the instance for [[Uninteresting]] of `Unit`.
+    *
+    * @group implicit
+    */
+  object SafeImplicits {
+
+    /** Implicit instance for `Uninteresting[Unit]`. */
+    implicit val unitUninteresting: Uninteresting[Unit] =
+      UnitUninteresting
   }
 
   import SafeImplicits._
@@ -2472,8 +2495,10 @@ trait Syntaxes[Token, Kind]
     def ~(that: Skip): Skip = Skip(this.syntax ~>~ that.syntax)
   }
 
-  /** Typeclass to denote that values of certain types are
+  /** Typeclass to denote that values of a given type are
     * uninteresting and can be safely ignored while describing a syntax.
+    *
+    * @group other
     */
   @implicitNotFound(msg =
     "${A} is considered interesting, and can not be ignored. " +
@@ -2483,7 +2508,7 @@ trait Syntaxes[Token, Kind]
     "all types as potentially uninteresting.")
   trait Uninteresting[A] {
 
-    /** Converts a syntax that produces values of type A,
+    /** Converts a syntax that produces values of type `A`,
       * to a syntax that only produces the unit value.
       */
     def unit(syntax: Syntax[A]): Syntax[Unit]
