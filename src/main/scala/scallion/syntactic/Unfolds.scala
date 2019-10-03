@@ -1,6 +1,9 @@
 package scallion.syntactic
 
-/** Contains functions to unfold values. */
+/** Contains functions to unfold values.
+  *
+  * @group other
+  */
 object Unfolds {
 
   /** Unapplies a `reduceLeft` operation.
