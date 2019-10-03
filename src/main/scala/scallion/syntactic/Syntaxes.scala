@@ -15,8 +15,6 @@
 
 package scallion.syntactic
 
-import scala.language.implicitConversions
-
 import java.util.{ IdentityHashMap => IHM }
 
 import scala.annotation.tailrec
@@ -379,31 +377,43 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def skip(implicit ev: Syntax[A] =:= Syntax[Unit]): Skip = Skip(ev(this))
+    def skip(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Skip =
+      if (ev eq null) Skip(this.unit()) else Skip(ev(this))
 
     /** Sequences `this` and `that` syntax. The parsed values from `that` is returned.
       *
       * @group combinator
       */
-    def ~>~[W, B](that: Syntax[B])(implicit ev: Syntax[A] =:= Syntax[Unit]): Syntax[B] =
-      ev(this).~(that).map(_._2, {
-      case x => Seq(scallion.syntactic.~((), x))
-    })
+    def ~>~[B](that: Syntax[B])(implicit ev: Syntax[A] =:= Syntax[Unit] = null): Syntax[B] =
+      if (ev eq null) {
+        this.~(that).map(_._2)
+      }
+      else {
+        ev(this).~(that).map(_._2, {
+          case x => Seq(scallion.syntactic.~((), x))
+        })
+      }
 
     /** Sequences `this` and `that` syntax. The parsed value from `this` is returned.
       *
       * @group combinator
       */
-    def ~<~(that: Syntax[Unit]): Syntax[A] = this.~(that).map(_._1, {
-      case x => Seq(scallion.syntactic.~(x, ()))
-    })
+    def ~<~[B](that: Syntax[B])(implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[A] =
+      if (ev eq null) {
+        this.~(that).map(_._1)
+      }
+      else {
+        this.~(ev(that)).map(_._1, {
+          case x => Seq(scallion.syntactic.~(x, ()))
+        })
+      }
 
     /** Sequences `this` and `that` syntax.
       * The parsed value from `that` is appended to that from `this`.
       *
       * @group combinator
       */
-    def :+[W, B](that: Syntax[B])
+    def :+[B](that: Syntax[B])
         (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
       ev(this) ++ that.map(Vector[B](_), {
         case Seq(x) => Seq(x)
@@ -449,7 +459,7 @@ trait Syntaxes[Token, Kind]
       *
       * @group combinator
       */
-    def ||[W, B](that: Syntax[B]): Syntax[Either[A, B]] =
+    def ||[B](that: Syntax[B]): Syntax[Either[A, B]] =
       this.map[Either[A, B]](Left(_), {
         case Left(x) => Seq(x)
         case Right(_) => Seq()
@@ -2502,14 +2512,16 @@ trait Syntaxes[Token, Kind]
     *
     * @group combinator
     */
-  def repsep[A](rep: Syntax[A], sep: Syntax[Unit]): Syntax[Seq[A]] =
-    rep1sep(rep, sep) | epsilon(Vector())
+  def repsep[A, B](rep: Syntax[A], sep: Syntax[B])
+      (implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[Seq[A]] =
+    rep1sep(rep, sep)(ev) | epsilon(Vector())
 
   /** Syntax that represents 1 or more repetitions of the `rep` syntax, separated by `sep`.
     *
     * @group combinator
     */
-  def rep1sep[A](rep: Syntax[A], sep: Syntax[Unit]): Syntax[Seq[A]] = {
+  def rep1sep[A, B](rep: Syntax[A], sep: Syntax[B])
+      (implicit ev: Syntax[B] =:= Syntax[Unit] = null): Syntax[Seq[A]] = {
     lazy val rest: Syntax[Seq[A]] = recursive((sep ~>~ rep) +: rest | epsilon(Vector()))
     rep +: rest
   }
