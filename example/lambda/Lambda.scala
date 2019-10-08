@@ -85,7 +85,7 @@ sealed abstract class TokenClass(text: String) {
   override def toString = text
 }
 case object IdentifierClass extends TokenClass("<id>")
-case object LambdaClass extends TokenClass(".")
+case object LambdaClass extends TokenClass("\\")
 case object DotClass extends TokenClass(".")
 case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
 case object OtherClass extends TokenClass("?")
