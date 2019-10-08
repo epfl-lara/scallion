@@ -17,6 +17,8 @@ package scallion
 package syntactic
 package visualization
 
+import scala.language.existentials
+
 import scala.collection.mutable.{Queue, StringBuilder}
 
 /** Contains utilities to visualize syntaxes as graphs using Graphviz. */
@@ -118,7 +120,7 @@ trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
       }
 
       val builder = new StringBuilder()
-      builder ++= "digraph G {\n"
+      builder ++= "subgraph cluster0 {\n"
       builder ++= "node [shape=box];\n"
       for {
         Node(id, _, targets) <- graph
@@ -135,6 +137,34 @@ trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
       builder.toString
     }
 
+    /** Returns a Graphviz representation of the syntax. */
+    private def toGraphviz[A, B](context: Context[A, B]): String = {
+      val builder = new StringBuilder()
+      builder ++= "subgraph cluster1 {\n"
+      builder ++= "node [shape=box];\n"
+      var current: Context[_, B] = context
+      var i = 0;
+      while (!current.isEmpty) {
+        if (i > 0) {
+          builder ++= s"s$i -> s${i+1};\n"
+        }
+        val Layered(layer: Any, rest) = current
+        val label = layer match {
+          case ApplyFunction(_, _) => "Apply"
+          case PrependValue(_) => "Prepend"
+          case ConcatPrependValues(vs) => "Prepend Concat (" + vs.length + ")"
+          case FollowBy(_) => "Follow"
+          case ConcatFollowBy(_) => "Follow Concat"
+          case _ => ""
+        }
+        builder ++= "s" + (i + 1) + " [label=\"" + label + "\",width=2];\n"
+        i += 1
+        current = rest
+      }
+      builder ++= "}\n"
+      builder.toString
+    }
+
     /** Produces a graph representation of the syntax as a PDF file using `dot` from Graphviz.
       *
       * @param syntax   The syntax to display.
@@ -145,7 +175,28 @@ trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
       import java.nio.file._
       import sys.process._
 
-      val content = toGraphviz(syntax)
+      val content = "digraph G {\n" + toGraphviz(syntax) + "}\n"
+      val dotPath = Paths.get(location, name + ".dot")
+      val pdfPath = Paths.get(location, name + ".pdf")
+
+      Files.write(dotPath, content.getBytes())
+
+      ("dot " + dotPath + " -Tpdf -o" + pdfPath).!
+    }
+
+    /** Produces a graph representation of the focused syntax as a PDF file using `dot` from Graphviz.
+      *
+      * @param focused  The focused syntax to display.
+      * @param location The directory in which to save the files.
+      * @param name     The name of the files. Will be postfixed by respectively `.dot` and `.pdf`.
+      */
+    def outputGraph[A](focused: Focused[A], location: String, name: String): Unit = {
+      import java.nio.file._
+      import sys.process._
+
+      val content = "digraph G {\n" +
+        toGraphviz(focused.state.syntax) + "\n" +
+        toGraphviz(focused.state.context) + "}\n"
       val dotPath = Paths.get(location, name + ".dot")
       val pdfPath = Paths.get(location, name + ".pdf")
 

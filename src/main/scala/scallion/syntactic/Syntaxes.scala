@@ -2043,7 +2043,7 @@ trait Syntaxes[Token, Kind]
     *
     * See [[Focused]] for the interface to focused syntaxes.
     */
-  private case class FocusedState[A, B](syntax: Syntax[B], context: Context[B, A]) {
+  private[syntactic] case class FocusedState[A, B](syntax: Syntax[B], context: Context[B, A]) {
 
     /** Unfocuses the syntax.
       *
@@ -2074,7 +2074,7 @@ trait Syntaxes[Token, Kind]
     * The can not be any other syntaxes preceding it,
     * nor any alternatives to it.
     */
-  private sealed trait Context[A, B] {
+  private[syntactic] sealed trait Context[A, B] {
 
     /** Adds an extra layer of context. */
     def +:[C](that: Layer[C, A]): Context[C, B] =
@@ -2085,22 +2085,22 @@ trait Syntaxes[Token, Kind]
   }
 
   /** Indicates that there are no extra layers of context. */
-  private case class Empty[A]() extends Context[A, A] {
+  private[syntactic] case class Empty[A]() extends Context[A, A] {
     override def isEmpty = true
   }
 
   /** Layer of extra context on top on a context. */
-  private case class Layered[A, B, C](
+  private[syntactic] case class Layered[A, B, C](
       head: Layer[A, B],
       tail: Context[B, C]) extends Context[A, C] {
     override def isEmpty = false
   }
 
   /** Pair of a syntax and a layer with matching types. */
-  private case class LayeredSyntax[A, B](syntax: Syntax[A], layer: Layer[A, B])
+  private[syntactic] case class LayeredSyntax[A, B](syntax: Syntax[A], layer: Layer[A, B])
 
   /** Context layer. Indicates an operation to be applied to a syntax. */
-  private sealed trait Layer[A, B] {
+  private[syntactic] sealed trait Layer[A, B] {
 
     /** Type of the value produced by the following syntax
       * defined by this layer (if any).
@@ -2122,7 +2122,7 @@ trait Syntaxes[Token, Kind]
   }
 
   /** Layer that represents being inside of a Transform syntax. */
-  private case class ApplyFunction[A, B](
+  private[syntactic] case class ApplyFunction[A, B](
       function: A => B,
       inverse: B => Seq[A]) extends Layer[A, B] {
 
@@ -2141,7 +2141,7 @@ trait Syntaxes[Token, Kind]
   /** Layer that represents being inside the right part of Sequence syntax.
     * The left part must already have been completed.
     */
-  private case class PrependValue[A, B](first: A) extends Layer[B, A ~ B] {
+  private[syntactic] case class PrependValue[A, B](first: A) extends Layer[B, A ~ B] {
 
     type FollowType = Nothing
 
@@ -2156,7 +2156,7 @@ trait Syntaxes[Token, Kind]
   }
 
   /** Layer that represents being inside the left part of Sequence syntax. */
-  private case class FollowBy[A, B](second: Syntax[B]) extends Layer[A, A ~ B] {
+  private[syntactic] case class FollowBy[A, B](second: Syntax[B]) extends Layer[A, A ~ B] {
 
     type FollowType = B
 
@@ -2173,7 +2173,7 @@ trait Syntaxes[Token, Kind]
   /** Layer that represents being inside the right part of Concat syntax.
     * The left part must already have been completed.
     */
-  private case class ConcatPrependValues[A](first: Seq[A]) extends Layer[Seq[A], Seq[A]] {
+  private[syntactic] case class ConcatPrependValues[A](first: Seq[A]) extends Layer[Seq[A], Seq[A]] {
 
     type FollowType = Nothing
 
@@ -2188,7 +2188,7 @@ trait Syntaxes[Token, Kind]
   }
 
   /** Layer that represents being inside the left part of Concat syntax. */
-  private case class ConcatFollowBy[A](second: Syntax[Seq[A]]) extends Layer[Seq[A], Seq[A]] {
+  private[syntactic] case class ConcatFollowBy[A](second: Syntax[Seq[A]]) extends Layer[Seq[A], Seq[A]] {
 
     type FollowType = Seq[A]
 
@@ -2219,7 +2219,7 @@ trait Syntaxes[Token, Kind]
     *
     * @group syntax
     */
-  class Focused[A] private (state: FocusedState[A, _]) {
+  class Focused[A] private (private[syntactic] val state: FocusedState[A, _]) {
 
     /** Unfocuses the syntax.
       *
