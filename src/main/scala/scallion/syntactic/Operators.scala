@@ -280,37 +280,21 @@ trait Operators { self: Syntaxes[_, _] =>
     */
   def infixRight[Op, A](elem: Syntax[A], op: Syntax[Op])(
       function: (A, Op, A) => A,
-      inverse: PartialFunction[A, (A, Op, A)] = PartialFunction.empty): Syntax[A] =
+      inverse: PartialFunction[A, (A, Op, A)] = PartialFunction.empty): Syntax[A] = {
 
-    (elem ~ many(op ~ elem)).map({
-      case first ~ opElems => {
-        val (ops, elems) = opElems.map(t => (t._1, t._2)).unzip
-        val allElems = first +: elems
-        val elemOps = allElems.zip(ops)
-        elemOps.foldRight(allElems.last) {
-          case ((elem, op), acc) => function(elem, op, acc)
+    lazy val res: Syntax[A] = recursive {
+      (elem ~ opt(op ~ res)).map({
+        case a ~ None => a
+        case a ~ Some(o ~ b) => function(a, o, b)
+      }, {
+        (aob: A) => inverse.lift(aob) match {
+          case Some((a, o, b)) => Seq(aob ~ None, a ~ Some(o ~ b))
+          case None => Seq(aob ~ None)
         }
-      }
-    }, {
-      case v => {
-        val regrouped: PartialFunction[A, ((A, Op), A)] = inverse andThen {
-          case (a1, op, a2) => ((a1, op), a2)
-        }
-
-        unfoldRight(regrouped)(v).map {
-          case elemOps ~ last => {
-            val (elems, ops) = elemOps.unzip
-
-            val allElems = elems :+ last
-
-            allElems.head ~ (ops.zip(allElems.tail).map {
-              case (op, elem) => op ~ elem
-            })
-          }
-        }
-      }
-
-    })
+      })
+    }
+    res
+  }
 
   /** Syntax that represents `elem` prefixed by any number of `op`.
     *
