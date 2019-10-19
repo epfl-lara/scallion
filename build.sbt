@@ -1,11 +1,15 @@
 
+val commonSettings = Seq(
+  version            := "0.3",
+  scalaVersion       := "2.12.8",
+  crossScalaVersions := Seq("2.12.8", "2.13.0"),
+)
+
 lazy val scallion = project
   .in(file("."))
   .settings(
+    commonSettings,
     name               := "scallion",
-    version            := "0.3",
-    scalaVersion       := "2.12.8",
-    crossScalaVersions := Seq("2.12.8", "2.13.0"),
     organization       := "ch.epfl.lara",
 
     scalacOptions ++= Seq(
@@ -35,4 +39,14 @@ lazy val scallion = project
       "parser-combinators", "parsing-combinators"
     ),
   )
+
+lazy val example = project
+  .in(file("example"))
+  .settings(
+    commonSettings,
+    name               := "scallion-examples",
+    organization       := "ch.epfl.lara",
+    scalaSource in Compile := baseDirectory.value,
+  )
+  .dependsOn(scallion)
 
