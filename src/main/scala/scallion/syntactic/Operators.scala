@@ -49,7 +49,7 @@ import scallion.syntactic.Unfolds._
   *     // left associative and bind the strongest.
   *     times | div is LeftAssociative,
   *
-  *     // On the next priority level are addition and multiplication,
+  *     // On the next priority level are addition and subtraction,
   *     // which are also left associative.
   *     plus | minus is LeftAssociative
   *   )({
