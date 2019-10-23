@@ -27,14 +27,14 @@ trait Debug[Token, Kind] { self: Syntaxes[Token, Kind] =>
     *
     * @group debug
     */
-  def debug[A](syntax: Syntax[A]): Unit =
-    print(debugString(syntax))
+  def debug[A](syntax: Syntax[A], showTrails: Boolean=false): Unit =
+    print(debugString(syntax, showTrails))
 
   /** Returns a report of LL(1) conflicts in the syntax.
     *
     * @group debug
     */
-  def debugString[A](syntax: Syntax[A]): String = {
+  def debugString[A](syntax: Syntax[A], showTrails: Boolean=false): String = {
     val builder = new StringBuilder()
 
     val conflicts = syntax.conflicts.toList
@@ -104,12 +104,14 @@ trait Debug[Token, Kind] { self: Syntaxes[Token, Kind] =>
         }
         builder ++= "\n"
 
-        val trails = conflict.witnessedFrom(syntax).take(3).toList.distinct
-        if (trails.nonEmpty) {
-          builder ++= "The following sequences lead to an ambiguity:\n"
-          for ((trail, j) <- trails.zipWithIndex) {
-            builder ++= s"  (${j+1}) ${if (trail.isEmpty)
-              "The empty sequence of tokens" else trail.mkString(" ")}.\n"
+        if (showTrails) {
+          val trails = conflict.witnessedFrom(syntax).take(3).toList.distinct
+          if (trails.nonEmpty) {
+            builder ++= "The following sequences lead to an ambiguity:\n"
+            for ((trail, j) <- trails.zipWithIndex) {
+              builder ++= s"  (${j+1}) ${if (trail.isEmpty)
+                "The empty sequence of tokens" else trail.mkString(" ")}.\n"
+            }
           }
         }
       }
