@@ -365,7 +365,8 @@ class ProducerOps[A](ptps: PTPS[A]) {
 
 /** Producer with an internal memory of the value produced. */
 private class MemoryProducer[A](producer: Producer[A]) extends Producer[A] {
-  private val buffer: ArrayBuffer[A] = new ArrayBuffer[A]()
+
+  private val buffer: ArrayBuffer[A] = new ArrayBuffer[A](1)
 
   private var ended: Boolean = false
 
