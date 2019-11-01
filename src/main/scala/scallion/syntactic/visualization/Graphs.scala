@@ -78,13 +78,6 @@ trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
 
             ("~", Seq(leftId, rightId))
           }
-          case Concat(left, right) => {
-
-            val leftId = inspect(left)
-            val rightId = inspect(right)
-
-            ("++", Seq(leftId, rightId))
-          }
           case Transform(_, _, inner) => {
             val innerId = inspect(inner)
 
@@ -152,9 +145,7 @@ trait Graphs[Token, Kind] { self: Syntaxes[Token, Kind] =>
         val label = layer match {
           case ApplyFunction(_, _) => "Apply"
           case PrependValue(_) => "Prepend"
-          case ConcatPrependValues(vs) => "Prepend Concat (" + vs.length + ")"
           case FollowBy(_) => "Follow"
-          case ConcatFollowBy(_) => "Follow Concat"
           case _ => ""
         }
         builder ++= "s" + (i + 1) + " [label=\"" + label + "\",width=2];\n"

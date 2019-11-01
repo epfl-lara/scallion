@@ -130,7 +130,6 @@ trait Grammars[Token, Kind] { self: Syntaxes[Token, Kind] =>
         case Elem(kind) => Seq(Terminal(kind))
         case Transform(_, _, inner) => getSequents(inner)
         case Sequence(left, right) => getSequents(left) ++ getSequents(right)
-        case Concat(left, right) => getSequents(left) ++ getSequents(right)
         case d@Disjunction(_, _) => {
           val id = inspect(d)
           Seq(NonTerminal(id))

@@ -406,10 +406,16 @@ trait Syntaxes[Token, Kind]
           val (as, bs) = xs.splitAt(a.size)
           pa(as) * pb(bs)
         })
-        // The next transformation is crucial.
-        // It allows to merge together values which accumulate on the left.
-        case (_, Concat(left, right)) => (this ++ left) ++ right
-        case _ => Concat(this, that)
+        case _ => ev(this).~(that).map({
+          case xs ~ ys => xs ++ ys
+        }, {
+          (xys: Seq[B]) => {
+            for (i <- 0 to xys.size) yield {
+              val (xs, ys) = xys.splitAt(i)
+              xs ~ ys
+            }
+          }
+        })
       }
 
     /** Sequences `this` and `that` syntax. The parsed value from `this` is returned.
@@ -686,7 +692,7 @@ trait Syntaxes[Token, Kind]
       * @param ambiguities The conflicting kinds.
       */
     case class FollowConflict(source: Disjunction[_],
-                              root: Syntax[_] with SequenceLike[_, _],
+                              root: Sequence[_, _],
                               ambiguities: Set[Kind]) extends LL1Conflict
   }
 
@@ -1126,11 +1132,20 @@ trait Syntaxes[Token, Kind]
         inner.repr(10, recs) + ".map(<function>)"
     }
 
-    /** Syntax that sequences the `left` and `right` syntaxes.
+    /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
+      *
+      * @param left  The syntax for the prefix.
+      * @param right The syntax for the suffix.
       *
       * @group combinator
       */
-    sealed trait SequenceLike[A, B] extends Binary[A, B] { self: Syntax[_] =>
+    case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
+        extends Syntax[A ~ B] with Binary[A, B] {
+
+      override lazy val nullable: Option[A ~ B] = for {
+        leftValue <- left.nullable
+        rightValue <- right.nullable
+      } yield scallion.syntactic.~(leftValue, rightValue)
 
       override lazy val isProductive: Boolean =
         left.isProductive && right.isProductive
@@ -1196,6 +1211,14 @@ trait Syntaxes[Token, Kind]
 
       override def kinds: Set[Kind] =
         left.kinds union right.kinds
+
+      override protected def computeNullable(
+          cells: IHM[Recursive[_], Cell[_]],
+          callback: (A ~ B) => Unit): Unit = {
+        val merged = new MergeOnce((a: A, b: B) => callback(scallion.syntactic.~(a, b)))
+        left.computeNullable(cells, merged.left)
+        right.computeNullable(cells, merged.right)
+      }
 
       override protected def computeIsProductive(
           cells: IHM[Recursive[_], Cell[Unit]],
@@ -1290,30 +1313,6 @@ trait Syntaxes[Token, Kind]
       override protected def collectTrails(
           recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         kindSeqOps.product(left.collectTrails(recs), right.collectTrails(recs))
-    }
-
-    /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
-      *
-      * @param left  The syntax for the prefix.
-      * @param right The syntax for the suffix.
-      *
-      * @group combinator
-      */
-    case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
-        extends Syntax[A ~ B] with SequenceLike[A, B] {
-
-      override lazy val nullable: Option[A ~ B] = for {
-        leftValue <- left.nullable
-        rightValue <- right.nullable
-      } yield scallion.syntactic.~(leftValue, rightValue)
-
-      override protected def computeNullable(
-          cells: IHM[Recursive[_], Cell[_]],
-          callback: (A ~ B) => Unit): Unit = {
-        val merged = new MergeOnce((a: A, b: B) => callback(scallion.syntactic.~(a, b)))
-        left.computeNullable(cells, merged.left)
-        right.computeNullable(cells, merged.right)
-      }
 
       override protected def collectFilter(
           predicate: Kind => Boolean,
@@ -1341,64 +1340,6 @@ trait Syntaxes[Token, Kind]
             left.collectTokens(a, recs),
             right.collectTokens(b, recs))
         }
-    }
-
-    /** Syntax that sequences the `left` and `right` syntaxes and concatenates the results.
-      *
-      * @param left  The syntax for the prefix.
-      * @param right The syntax for the suffix.
-      *
-      * @group combinator
-      */
-    case class Concat[A](left: Syntax[Seq[A]], right: Syntax[Seq[A]])
-        extends Syntax[Seq[A]] with SequenceLike[Seq[A], Seq[A]] {
-
-      override lazy val nullable: Option[Seq[A]] = for {
-        leftValue <- left.nullable
-        rightValue <- right.nullable
-      } yield leftValue ++ rightValue
-
-      override protected def computeNullable(
-          cells: IHM[Recursive[_], Cell[_]],
-          callback: Seq[A] => Unit): Unit = {
-        val merged = new MergeOnce((xs: Seq[A], ys: Seq[A]) => callback(xs ++ ys))
-        left.computeNullable(cells, merged.left)
-        right.computeNullable(cells, merged.right)
-      }
-
-      override protected def collectFilter(
-          predicate: Kind => Boolean,
-          recs: Map[RecId, Syntax[_]]): Syntax[Seq[A]] =
-        left.collectFilter(predicate, recs) ++ right.collectFilter(predicate, recs)
-
-      override protected def repr(level: Int, recs: Map[RecId, String]): String = {
-        val l = left.repr(7, recs)
-        val r = right.repr(8, recs)
-
-        if (level > 7) {
-          "(" + l + " ++ " + r + ")"
-        }
-        else {
-          l + " ++ " + r
-        }
-      }
-
-      override protected def collectTokens(
-          value: Seq[A],
-          recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] = {
-
-        val producers = for {
-          i <- 0 to value.size
-          (a, b) = value.splitAt(i)
-        } yield tokenSeqOps.product(left.collectTokens(a, recs), right.collectTokens(b, recs))
-
-        if (producers.isEmpty) {
-          Producer.empty
-        }
-        else {
-          producers.reduceLeft(tokenSeqOps.union(_, _))
-        }
-      }
     }
 
     /** Syntax that acts as either the `left` or the `right` syntaxes.
@@ -2175,38 +2116,6 @@ trait Syntaxes[Token, Kind]
       Some(second)
   }
 
-  /** Layer that represents being inside the right part of Concat syntax.
-    * The left part must already have been completed.
-    */
-  private[syntactic] case class ConcatPrependValues[A](first: Seq[A]) extends Layer[Seq[A], Seq[A]] {
-
-    type FollowType = Nothing
-
-    override def apply(second: Seq[A]): Either[Seq[A], LayeredSyntax[_, Seq[A]]] =
-      Left(first ++ second)
-
-    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] =
-      epsilon(first) ++ syntax
-
-    override def followSyntax: Option[Syntax[FollowType]] =
-      None
-  }
-
-  /** Layer that represents being inside the left part of Concat syntax. */
-  private[syntactic] case class ConcatFollowBy[A](second: Syntax[Seq[A]]) extends Layer[Seq[A], Seq[A]] {
-
-    type FollowType = Seq[A]
-
-    override def apply(first: Seq[A]): Either[Seq[A], LayeredSyntax[_, Seq[A]]] =
-      Right(LayeredSyntax(second, ConcatPrependValues(first)))
-
-    override def apply(syntax: Syntax[Seq[A]]): Syntax[Seq[A]] =
-      syntax ++ second
-
-    override def followSyntax: Option[Syntax[FollowType]] =
-      Some(second)
-  }
-
   /** Factory of focused syntaxes. */
   object Focused {
 
@@ -2462,11 +2371,6 @@ trait Syntaxes[Token, Kind]
             pierce(left, kind, FollowBy[ltype, rtype](right) +: cs)
           else
             pierce(right, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
-        case Concat(left: Syntax[Seq[etype]], right) =>
-          if (left.first.contains(kind))
-            pierce(left, kind, ConcatFollowBy(right) +: cs)
-          else
-            pierce(right, kind, ConcatPrependValues[etype](left.nullable.get) +: cs)
         case Recursive(_, inner) =>
           pierce(inner, kind, cs)
         case _ => throw new IllegalArgumentException("Unexpected syntax.")
