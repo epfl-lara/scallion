@@ -283,23 +283,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       </span>
       
       <p class="shortcomment cmt">Binary combinator.</p>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.Concat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="Concat[A]extendsSyntaxes.this.Syntax[Seq[A]]withSyntaxes.Syntax.SequenceLike[Seq[A],Seq[A]]withProductwithSerializable"></a><a id="Concat[A]:Concat[A]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$.html#Concat[A]extendsSyntaxes.this.Syntax[Seq[A]]withSyntaxes.Syntax.SequenceLike[Seq[A],Seq[A]]withProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Syntax that sequences the left and right syntaxes and concatenates the results." href="Syntaxes$Syntax$$Concat.html"><span class="name">Concat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="left">left: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Concat.A">A</span>]]</span>, <span name="right">right: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Concat.A">A</span>]]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Concat.A">A</span>]] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Concat.A">A</span>], <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Concat.A">A</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Syntax that sequences the <code>left</code> and <code>right</code> syntaxes and concatenates the results.</p><div class="fullcomment"><div class="comment cmt"><p>Syntax that sequences the <code>left</code> and <code>right</code> syntaxes and concatenates the results.
-</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>The syntax for the prefix.</p></dd><dt class="param">right</dt><dd class="cmt"><p>The syntax for the suffix.</p></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Disjunction" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
       <a id="Disjunction[A]extendsSyntaxes.this.Syntax[A]withSyntaxes.Syntax.Binary[A,A]withProductwithSerializable"></a><a id="Disjunction[A]:Disjunction[A]"></a>
       <span class="permalink">
@@ -383,9 +366,9 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
       
       <p class="shortcomment cmt">Syntax that may recursively mention itself.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="combinator">
-      <a id="Sequence[A,B]extendsSyntaxes.this.Syntax[A~B]withSyntaxes.Syntax.SequenceLike[A,B]withProductwithSerializable"></a><a id="Sequence[A,B]:Sequence[A,B]"></a>
+      <a id="Sequence[A,B]extendsSyntaxes.this.Syntax[A~B]withSyntaxes.Syntax.Binary[A,B]withProductwithSerializable"></a><a id="Sequence[A,B]:Sequence[A,B]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$.html#Sequence[A,B]extendsSyntaxes.this.Syntax[A~B]withSyntaxes.Syntax.SequenceLike[A,B]withProductwithSerializable" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$Syntax$.html#Sequence[A,B]extendsSyntaxes.this.Syntax[A~B]withSyntaxes.Syntax.Binary[A,B]withProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -394,27 +377,11 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Syntax that sequences the left and right syntaxes and pairs the results." href="Syntaxes$Syntax$$Sequence.html"><span class="name">Sequence</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>]</span>, <span name="right">right: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Syntax that sequences the left and right syntaxes and pairs the results." href="Syntaxes$Syntax$$Sequence.html"><span class="name">Sequence</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>]</span>, <span name="right">right: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]] with <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       <p class="shortcomment cmt">Syntax that sequences the <code>left</code> and <code>right</code> syntaxes and pairs the results.</p><div class="fullcomment"><div class="comment cmt"><p>Syntax that sequences the <code>left</code> and <code>right</code> syntaxes and pairs the results.
 </p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>The syntax for the prefix.</p></dd><dt class="param">right</dt><dd class="cmt"><p>The syntax for the suffix.</p></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="combinator">
-      <a id="SequenceLike[A,B]extendsSyntaxes.Syntax.Binary[A,B]"></a><a id="SequenceLike[A,B]:SequenceLike[A,B]"></a>
-      <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$Syntax$.html#SequenceLike[A,B]extendsSyntaxes.Syntax.Binary[A,B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a title="Syntax that sequences the left and right syntaxes." href="Syntaxes$Syntax$$SequenceLike.html"><span class="name">SequenceLike</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Syntax that sequences the <code>left</code> and <code>right</code> syntaxes.</p>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Success" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="basic">
       <a id="Success[A]extendsSyntaxes.this.Syntax[A]withProductwithSerializable"></a><a id="Success[A]:Success[A]"></a>
       <span class="permalink">

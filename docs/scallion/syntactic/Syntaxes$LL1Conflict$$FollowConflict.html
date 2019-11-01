@@ -180,7 +180,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">FollowConflict</span><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">FollowConflict</span><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax$$Sequence.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -239,9 +239,9 @@ that sequence.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict"></a><a id="&lt;init&gt;:FollowConflict"></a>
+      <a id="&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax.Sequence[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict"></a><a id="&lt;init&gt;:FollowConflict"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$$FollowConflict.html#&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$$FollowConflict.html#&lt;init&gt;(source:Syntaxes.this.Syntax.Disjunction[_],root:Syntaxes.this.Syntax.Sequence[_,_],ambiguities:Set[Kind]):scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -250,7 +250,7 @@ that sequence.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">FollowConflict</span><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span>
+        <span class="name">FollowConflict</span><span class="params">(<span name="source">source: <a href="Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="Syntaxes$Syntax$$Sequence.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
@@ -496,9 +496,9 @@ that sequence.
               
         </dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.LL1Conflict.FollowConflict#root" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_]"></a><a id="root:Syntax[_]withSequenceLike[_,_]"></a>
+      <a id="root:Syntaxes.this.Syntax.Sequence[_,_]"></a><a id="root:Sequence[_,_]"></a>
       <span class="permalink">
-      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$$FollowConflict.html#root:Syntaxes.this.Syntax[_]withSyntaxes.this.Syntax.SequenceLike[_,_]" title="Permalink">
+      <a href="../../scallion/syntactic/Syntaxes$LL1Conflict$$FollowConflict.html#root:Syntaxes.this.Syntax.Sequence[_,_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -507,7 +507,7 @@ that sequence.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">root</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[_, _]</span>
+        <span class="name">root</span><span class="result">: <a href="Syntaxes$Syntax$$Sequence.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a>[_, _]</span>
       </span>
       
       

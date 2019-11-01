@@ -151,10 +151,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <a href="Syntaxes$Syntax$$Binary.html" title="Binary combinator.">Binary</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="Syntaxes$Syntax$$Concat.html" title="Syntax that sequences the left and right syntaxes and concatenates the results."></a>
-                        <a href="Syntaxes$Syntax$$Concat.html" title="Syntax that sequences the left and right syntaxes and concatenates the results.">Concat</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
                         <a class="class" href="Syntaxes$Syntax$$Disjunction.html" title="Syntax that acts as either the left or the right syntaxes."></a>
                         <a href="Syntaxes$Syntax$$Disjunction.html" title="Syntax that acts as either the left or the right syntaxes.">Disjunction</a>
                       </li><li class="current-entities indented4">
@@ -173,10 +169,6 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                         <span class="separator"></span>
                         <a class="class" href="" title="Syntax that sequences the left and right syntaxes and pairs the results."></a>
                         <a href="" title="Syntax that sequences the left and right syntaxes and pairs the results.">Sequence</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="trait" href="Syntaxes$Syntax$$SequenceLike.html" title="Syntax that sequences the left and right syntaxes."></a>
-                        <a href="Syntaxes$Syntax$$SequenceLike.html" title="Syntax that sequences the left and right syntaxes.">SequenceLike</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="Syntaxes$Syntax$$Success.html" title="Syntax for the empty string."></a>
@@ -212,7 +204,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Sequence</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>]</span>, <span name="right">right: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]] with <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Sequence</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>]</span>, <span name="right">right: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</span>)</span><span class="result"> extends <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]] with <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -222,7 +214,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>], <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>], <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<a href="package$$$tilde.html" class="extype" name="scallion.syntactic.~">~</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -248,7 +240,7 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.syntactic.Syntaxes.Syntax.Sequence"><span>Sequence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike"><span>SequenceLike</span></li><li class="in" name="scallion.syntactic.Syntaxes.Syntax.Binary"><span>Binary</span></li><li class="in" name="scallion.syntactic.Syntaxes.Syntax"><span>Syntax</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.Syntaxes.Syntax.Sequence"><span>Sequence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scallion.syntactic.Syntaxes.Syntax.Binary"><span>Binary</span></li><li class="in" name="scallion.syntactic.Syntaxes.Syntax"><span>Syntax</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -487,7 +479,7 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
       
       <p class="shortcomment cmt">Collects a producer that iterates over all representations of <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Collects a producer that iterates over all representations of <code>value</code>.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value being printed.</p></dd><dt class="param">recs</dt><dd class="cmt"><p>The producer view associated to an already visited recursive syntax and value.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#collectTrails" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#collectTrails" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Seq[Kind]]]):scallion.util.internal.Producer[Seq[Kind]]"></a><a id="collectTrails(Map[RecId,()⇒Producer[Seq[Kind]]]):Producer[Seq[Kind]]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#collectTrails(recs:Map[scallion.syntactic.Syntaxes.Syntax.RecId,()=&gt;scallion.util.internal.Producer[Seq[Kind]]]):scallion.util.internal.Producer[Seq[Kind]]" title="Permalink">
@@ -502,7 +494,8 @@ When <code>this</code> syntax is not LL(1), the result is unspecified.
         <span class="name">collectTrails</span><span class="params">(<span name="recs">recs: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Syntaxes$Syntax$.html#RecId=Int" class="extmbr" name="scallion.syntactic.Syntaxes.Syntax.RecId">RecId</a>, () ⇒ <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]]</span>)</span><span class="result">: <a href="../util/internal/Producer.html" class="extype" name="scallion.util.internal.Producer">Producer</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Builds a producer of trails from <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a producer of trails from <code>this</code> syntax.
+</p></div><dl class="paramcmts block"><dt class="param">recs</dt><dd class="cmt"><p>The identifiers of already visited <code>Recursive</code> syntaxes.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#complete" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="complete">
       <a id="complete(toToken:PartialFunction[Kind,Token]):Syntaxes.this.Syntax[A]"></a><a id="complete(PartialFunction[Kind,Token]):Syntax[~[A,B]]"></a>
       <span class="permalink">
@@ -541,7 +534,7 @@ be obtained using the partial <code>toToken</code> function, if any.</p><p>When 
 ordered by increasing number of tokens.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all possible completions of <code>this</code> syntax,
 ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is not LL(1), the result is unspecified.
 </p></div><dl class="paramcmts block"><dt class="param">toTokens</dt><dd class="cmt"><p>Computes the possible tokens for a given kind.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeConflicts" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeConflicts" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeConflicts(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Syntaxes.this.LL1Conflict]]],callback:Set[Syntaxes.this.LL1Conflict]=&gt;Unit):Unit"></a><a id="computeConflicts(IdentityHashMap[Recursive[_],Cell[Set[LL1Conflict]]],(Set[LL1Conflict])⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeConflicts(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Syntaxes.this.LL1Conflict]]],callback:Set[Syntaxes.this.LL1Conflict]=&gt;Unit):Unit" title="Permalink">
@@ -556,8 +549,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeConflicts</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeFirst" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the LL(1) conflicts of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the LL(1) conflicts of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeFirst" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeFirst(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit"></a><a id="computeFirst(IdentityHashMap[Recursive[_],Cell[Set[Kind]]],(Set[Kind])⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeFirst(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit" title="Permalink">
@@ -572,8 +568,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeFirst</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeFollowLast" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the first set of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the first set of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeFollowLast" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeFollowLast(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit"></a><a id="computeFollowLast(IdentityHashMap[Recursive[_],Cell[Set[Kind]]],(Set[Kind])⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeFollowLast(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit" title="Permalink">
@@ -588,8 +587,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeFollowLast</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeFollowLastEntries" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the follow-last of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the follow-last of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeFollowLastEntries" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeFollowLastEntries(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Syntaxes.this.FollowLastEntry]]],callback:Set[Syntaxes.this.FollowLastEntry]=&gt;Unit):Unit"></a><a id="computeFollowLastEntries(IdentityHashMap[Recursive[_],Cell[Set[FollowLastEntry]]],(Set[FollowLastEntry])⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeFollowLastEntries(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Syntaxes.this.FollowLastEntry]]],callback:Set[Syntaxes.this.FollowLastEntry]=&gt;Unit):Unit" title="Permalink">
@@ -604,8 +606,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeFollowLastEntries</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.FollowLastEntry">FollowLastEntry</span>]]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.FollowLastEntry">FollowLastEntry</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeIsLL1" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the follow-last set of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the follow-last set of a syntax and all Recursive syntax below it
+using a propagator network. Each set is marked with its origin.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeIsLL1" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeIsLL1(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Unit]],callback:Unit=&gt;Unit):Unit"></a><a id="computeIsLL1(IdentityHashMap[Recursive[_],Cell[Unit]],(Unit)⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeIsLL1(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Unit]],callback:Unit=&gt;Unit):Unit" title="Permalink">
@@ -620,8 +625,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeIsLL1</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Unit">Unit</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeIsProductive" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the LL(1)-ness of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the LL(1)-ness of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeIsProductive" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeIsProductive(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Unit]],callback:Unit=&gt;Unit):Unit"></a><a id="computeIsProductive(IdentityHashMap[Recursive[_],Cell[Unit]],(Unit)⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeIsProductive(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Unit]],callback:Unit=&gt;Unit):Unit" title="Permalink">
@@ -636,8 +644,11 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeIsProductive</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Unit">Unit</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computeKinds" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the productivity of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the productivity of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeKinds" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeKinds(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit"></a><a id="computeKinds(IdentityHashMap[Recursive[_],Cell[Set[Kind]]],(Set[Kind])⇒Unit):Unit"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computeKinds(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[Set[Kind]]],callback:Set[Kind]=&gt;Unit):Unit" title="Permalink">
@@ -652,7 +663,10 @@ ordered by increasing number of tokens.</p><p>When <code>this</code> syntax is n
         <span class="name">computeKinds</span><span class="params">(<span name="cells">cells: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="../util/internal/Cell.html" class="extype" name="scallion.util.internal.Cell">Cell</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]]]</span>, <span name="callback">callback: (<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Computes the kinds of a syntax and all Recursive syntax below it
+using a propagator network.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the kinds of a syntax and all Recursive syntax below it
+using a propagator network.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computeNullable" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computeNullable(cells:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.util.internal.Cell[_]],callback:A~B=&gt;Unit):Unit"></a><a id="computeNullable(IdentityHashMap[Recursive[_],Cell[_]],(~[A,B])⇒Unit):Unit"></a>
       <span class="permalink">
@@ -688,7 +702,7 @@ using a propagator network.
       </span>
       
       <p class="shortcomment cmt">Computes the prefix of a syntax within <code>this</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the prefix of a syntax within <code>this</code>.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#computePrefixHelper" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#computePrefixHelper" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="computePrefixHelper(syntax:Syntaxes.this.Syntax[_],recs:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.syntactic.Syntaxes.Syntax.Recursive[Unit]]):Syntaxes.this.Syntax[Unit]"></a><a id="computePrefixHelper(Syntax[_],IdentityHashMap[Recursive[_],Recursive[Unit]]):Syntax[Unit]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#computePrefixHelper(syntax:Syntaxes.this.Syntax[_],recs:java.util.IdentityHashMap[scallion.syntactic.Syntaxes.Syntax.Recursive[_],scallion.syntactic.Syntaxes.Syntax.Recursive[Unit]]):Syntaxes.this.Syntax[Unit]" title="Permalink">
@@ -703,8 +717,10 @@ using a propagator network.
         <span class="name">computePrefixHelper</span><span class="params">(<span name="syntax">syntax: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[_]</span>, <span name="recs">recs: <span class="extype" name="java.util.IdentityHashMap">IdentityHashMap</span>[<a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[_], <a href="Syntaxes$Syntax$$Recursive.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Recursive">Recursive</a>[<span class="extype" name="scala.Unit">Unit</span>]]</span>)</span><span class="result">: <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#conflicts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Computes the prefix of a syntax within <code>this</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the prefix of a syntax within <code>this</code>. Assumes that the check for equality
+between <code>this</code> and <code>syntax</code> has already been performed.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#conflicts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="conflicts:Set[Syntaxes.this.LL1Conflict]"></a><a id="conflicts:Set[LL1Conflict]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#conflicts:Set[Syntaxes.this.LL1Conflict]" title="Permalink">
@@ -719,7 +735,8 @@ using a propagator network.
         <span class="name">conflicts</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Syntaxes$LL1Conflict.html" class="extype" name="scallion.syntactic.Syntaxes.LL1Conflict">LL1Conflict</a>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Returns all LL(1) conflicts in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns all LL(1) conflicts in <code>this</code> syntax.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -758,7 +775,7 @@ using a propagator network.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#first" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#first" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="first:Set[Kind]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#first:Set[Kind]" title="Permalink">
@@ -773,8 +790,9 @@ using a propagator network.
         <span class="name">first</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#followLast" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Returns the set of token kinds that are accepted as the first token by <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of token kinds that are accepted as the first token by <code>this</code> syntax.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#followLast" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="followLast:Set[Kind]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#followLast:Set[Kind]" title="Permalink">
@@ -789,8 +807,9 @@ using a propagator network.
         <span class="name">followLast</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#followLastEntries" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Returns the set of token kinds that are accepted right after an accepted sequence.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of token kinds that are accepted right after an accepted sequence.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#followLastEntries" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="followLastEntries:Set[Syntaxes.this.FollowLastEntry]"></a><a id="followLastEntries:Set[FollowLastEntry]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#followLastEntries:Set[Syntaxes.this.FollowLastEntry]" title="Permalink">
@@ -805,7 +824,10 @@ using a propagator network.
         <span class="name">followLastEntries</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.FollowLastEntry">FollowLastEntry</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Returns the set of token kinds that are accepted right after an accepted sequence,
+marked with the source of the entry.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of token kinds that are accepted right after an accepted sequence,
+marked with the source of the entry.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
@@ -841,7 +863,7 @@ using a propagator network.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#isLL1" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#isLL1" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="isLL1:Boolean"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#isLL1:Boolean" title="Permalink">
@@ -856,7 +878,8 @@ using a propagator network.
         <span class="name">isLL1</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Checks if <code>this</code> syntax is LL(1).</p><div class="fullcomment"><div class="comment cmt"><p>Checks if <code>this</code> syntax is LL(1).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax#isNullable" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="isNullable:Boolean"></a>
       <span class="permalink">
@@ -877,7 +900,7 @@ using a propagator network.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#isProductive" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#isProductive" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="isProductive:Boolean"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#isProductive:Boolean" title="Permalink">
@@ -892,8 +915,9 @@ using a propagator network.
         <span class="name">isProductive</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
-    </li><li name="scallion.syntactic.Syntaxes.Syntax.SequenceLike#kinds" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Indicates if there exists a finite sequence of tokens that <code>this</code> syntax describes.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates if there exists a finite sequence of tokens that <code>this</code> syntax describes.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
+    </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#kinds" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="property">
       <a id="kinds:Set[Kind]"></a>
       <span class="permalink">
       <a href="../../scallion/syntactic/Syntaxes$Syntax$$Sequence.html#kinds:Set[Kind]" title="Permalink">
@@ -908,7 +932,8 @@ using a propagator network.
         <span class="name">kinds</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a></dd></dl></div>
+      <p class="shortcomment cmt">Returns the set of all kinds that appear somewhere in <code>this</code> syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the set of all kinds that appear somewhere in <code>this</code> syntax.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a> → <a href="Syntaxes$Syntax.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</a></dd></dl></div>
     </li><li name="scallion.syntactic.Syntaxes.Syntax.Sequence#left" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="subsyntax">
       <a id="left:Syntaxes.this.Syntax[A]"></a><a id="left:Syntax[A]"></a>
       <span class="permalink">
@@ -1431,8 +1456,6 @@ The value is tagged to indicate the side it comes from.
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">
-              <h3>Inherited from <a href="Syntaxes$Syntax$$SequenceLike.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.SequenceLike">SequenceLike</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</h3>
             </div><div class="parent" name="scallion.syntactic.Syntaxes.Syntax.Binary">
               <h3>Inherited from <a href="Syntaxes$Syntax$$Binary.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Binary">Binary</a>[<span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.A">A</span>, <span class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence.B">B</span>]</h3>
             </div><div class="parent" name="scallion.syntactic.Syntaxes.Syntax">
