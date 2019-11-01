@@ -2208,7 +2208,7 @@ trait Syntaxes[Token, Kind]
   }
 
   /** Factory of focused syntaxes. */
-  private[syntactic] object Focused {
+  object Focused {
 
     /** Add a focus to the syntax. */
     def apply[A](syntax: Syntax[A]): Focused[A] =
