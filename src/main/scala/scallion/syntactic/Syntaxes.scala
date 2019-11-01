@@ -468,8 +468,10 @@ trait Syntaxes[Token, Kind]
       */
     def :+[B](that: Syntax[B])
         (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
-      ev(this) ++ that.map(Vector[B](_), {
-        case Seq(x) => Seq(x)
+      ev(this).~(that).map({
+        case xs ~ x => xs :+ x
+      }, {
+        case xs if xs.size >= 1 => Seq(xs.init ~ xs.last)
         case _ => Seq()
       })
 
@@ -480,9 +482,12 @@ trait Syntaxes[Token, Kind]
       */
     def +:[B](that: Syntax[B])
         (implicit ev: Syntax[A] =:= Syntax[Seq[B]]): Syntax[Seq[B]] =
-      that.map(Vector(_) : Seq[B], {
-        (xs: Seq[B]) => if (xs.size == 1) xs else Seq()
-      }) ++ ev(this)
+      that.~(ev(this)).map({
+        case x ~ xs => x +: xs
+      }, {
+        case xs if xs.size >= 1 => Seq(xs.head ~ xs.tail)
+        case _ => Seq()
+      })
 
     /** Sequences `this` and `that` syntax. The parsed values are returned as a pair.
       *
