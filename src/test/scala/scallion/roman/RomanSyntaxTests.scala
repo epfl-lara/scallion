@@ -31,7 +31,7 @@ class RomanSyntaxTests extends FlatSpec with Inside {
       case 'C' => C
       case 'D' => D
       case 'M' => M
-    }.toIterator
+    }.iterator
 
   def display(symbols: Seq[Symbol]): String =
     symbols.map(_.toString).mkString("")
@@ -92,7 +92,7 @@ class RomanSyntaxTests extends FlatSpec with Inside {
 
   "Parsing" should "be possible on all pretty printed values" in {
     for (i <- 0 until 4000) {
-      number.unapply(i).map(_.toIterator).foreach { symbols =>
+      number.unapply(i).map(_.iterator).foreach { symbols =>
         assert(number(symbols).getValue == Some(i))
       }
     }

@@ -18,7 +18,7 @@ package scallion.syntactic
 import java.util.{ IdentityHashMap => IHM }
 
 import scala.annotation.{ tailrec, implicitNotFound }
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 
 import scallion.util.internal._
@@ -620,7 +620,7 @@ trait Syntaxes[Token, Kind]
           } yield token :: rest
 
         go(choices).map { tokens =>
-          apply(tokens.toIterator).rest.toSyntax
+          apply(tokens.iterator).rest.toSyntax
         }
       }
     }
