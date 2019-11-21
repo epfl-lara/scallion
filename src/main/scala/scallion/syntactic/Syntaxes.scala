@@ -18,6 +18,7 @@ package scallion.syntactic
 import java.util.{ IdentityHashMap => IHM }
 
 import scala.annotation.{ tailrec, implicitNotFound }
+import scala.collection.immutable.HashSet
 import scala.collection.JavaConverters._
 import scala.util.Try
 
@@ -723,7 +724,7 @@ trait Syntaxes[Token, Kind]
         true
 
       override val first: Set[Kind] =
-        Set()
+        HashSet()
 
       override def followLast: Set[Kind] =
         Set()
@@ -816,7 +817,7 @@ trait Syntaxes[Token, Kind]
         false
 
       override val first: Set[Kind] =
-        Set()
+        HashSet()
 
       override def followLast: Set[Kind] =
         Set()
@@ -910,7 +911,7 @@ trait Syntaxes[Token, Kind]
         true
 
       override val first: Set[Kind] =
-        Set(kind)
+        HashSet(kind)
 
       override def followLast: Set[Kind] =
         Set()
@@ -1152,7 +1153,7 @@ trait Syntaxes[Token, Kind]
 
       override lazy val first: Set[Kind] =
         if (!right.isProductive) {
-          Set()
+          HashSet()
         }
         else if (!left.isNullable) {
           left.first
@@ -1163,7 +1164,7 @@ trait Syntaxes[Token, Kind]
 
       override def followLast: Set[Kind] =
         if (!left.isProductive) {
-          Set()
+          HashSet()
         }
         else if (!right.isNullable) {
           right.followLast
@@ -1174,7 +1175,7 @@ trait Syntaxes[Token, Kind]
 
       override protected def followLastEntries: Set[FollowLastEntry] =
         if (!left.isProductive) {
-          Set()
+          HashSet()
         }
         else if (!right.isNullable) {
           right.followLastEntries
@@ -1669,11 +1670,11 @@ trait Syntaxes[Token, Kind]
       }
 
       private var firstCacheValid: Boolean = false
-      private var firstCacheValue: Set[Kind] = Set()
+      private var firstCacheValue: Set[Kind] = HashSet()
       override def first: Set[Kind] = {
         if (!firstCacheValid) {
           val cell = new CellUpgradableSet[Kind]({ result =>
-            firstCacheValue = result
+            firstCacheValue = result.to[HashSet]
             firstCacheValid = true
           })
           val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
@@ -2469,7 +2470,7 @@ trait Syntaxes[Token, Kind]
     * @group combinator
     */
   def many[A](rep: Syntax[A]): Syntax[Seq[A]] = {
-    lazy val rest: Syntax[Seq[A]] = recursive(rep +: rest | epsilon(Vector()))
+    lazy val rest: Syntax[Seq[A]] = recursive(rep +: rest | epsilon(List()))
     rest
   }
 
