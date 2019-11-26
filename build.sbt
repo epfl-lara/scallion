@@ -1,8 +1,7 @@
 
 val commonSettings = Seq(
-  version            := "0.3",
-  scalaVersion       := "2.12.8",
-  crossScalaVersions := Seq("2.12.8", "2.13.0"),
+  version            := "0.4",
+  scalaVersion       := "2.13.1",
 )
 
 lazy val scallion = project

@@ -189,5 +189,5 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
 
   def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
 
-  def apply(text: String): Option[Expr] = expr(LambdaLexer(text.toIterator)).getValue
+  def apply(text: String): Option[Expr] = expr(LambdaLexer(text.iterator)).getValue
 }

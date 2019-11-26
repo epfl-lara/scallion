@@ -20,10 +20,10 @@ import org.scalatest._
 class JSONParserTests extends FlatSpec with Inside {
 
   def parse(text: String): Option[Value] =
-    JSONParser(JSONLexer(text.toIterator)).getValue
+    JSONParser(JSONLexer(text.iterator)).getValue
 
   def rest(text: String): JSONParser.Syntax[Value] =
-    JSONParser(JSONLexer(text.toIterator)).rest.toSyntax
+    JSONParser(JSONLexer(text.iterator)).rest.toSyntax
 
   "JSON Parser" should "parse some basic examples" in {
 

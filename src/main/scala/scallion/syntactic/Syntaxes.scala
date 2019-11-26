@@ -19,7 +19,7 @@ import java.util.{ IdentityHashMap => IHM }
 
 import scala.annotation.{ tailrec, implicitNotFound }
 import scala.collection.immutable.HashSet
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 
 import scallion.util.internal._
@@ -237,7 +237,7 @@ trait Syntaxes[Token, Kind]
       * @group property
       */
     @inline def trails: Iterator[Seq[Kind]] =
-      getTrails.toIterator
+      getTrails.iterator
 
     /** Returns all possible sequences of token kinds accepted by `this` syntax,
       * ordered by increasing size.
@@ -262,7 +262,7 @@ trait Syntaxes[Token, Kind]
       * @group printing
       */
     def unapply(value: A): Iterator[Seq[Token]] =
-      collectTokens(value, Map.empty).toIterator
+      collectTokens(value, Map.empty).iterator
 
     /** Computes the nullable value of a syntax and all Recursive syntax below it
       * using a propagator network.
@@ -621,7 +621,7 @@ trait Syntaxes[Token, Kind]
           } yield token :: rest
 
         go(choices).map { tokens =>
-          apply(tokens.toIterator).rest.toSyntax
+          apply(tokens.iterator).rest.toSyntax
         }
       }
     }
@@ -1674,7 +1674,7 @@ trait Syntaxes[Token, Kind]
       override def first: Set[Kind] = {
         if (!firstCacheValid) {
           val cell = new CellUpgradableSet[Kind]({ result =>
-            firstCacheValue = result.to[HashSet]
+            firstCacheValue = result.to(HashSet)
             firstCacheValid = true
           })
           val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
@@ -2255,7 +2255,7 @@ trait Syntaxes[Token, Kind]
         }
       }
 
-      go(state.context, state.syntax.getTrails).toIterator
+      go(state.context, state.syntax.getTrails).iterator
     }
 
     /** Consumes a sequence of tokens and parses it into a value.

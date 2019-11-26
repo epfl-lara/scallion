@@ -69,7 +69,7 @@ private[internal] case object Unavailable extends Peek[Nothing]
   * To skip a value, the method `skip()` is used. The method can only be used after a call to `peek()`
   * has returned an `Available(value)`, and so only once per such call.
   *
-  * Producers can be converted to iterators using `toIterator`.
+  * Producers can be converted to iterators using `iterator`.
   */
 trait Producer[+A] { self =>
 
@@ -115,7 +115,7 @@ trait Producer[+A] { self =>
     * `this` producer should no longer be used after
     * calling this method.
     */
-  def toIterator: Iterator[A] = new Iterator[A] {
+  def iterator: Iterator[A] = new Iterator[A] {
     private var cache: Option[Peek[A]] = None
 
     private def getCache(): Peek[A] = cache match {
