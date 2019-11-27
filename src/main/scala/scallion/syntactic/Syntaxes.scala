@@ -19,6 +19,7 @@ import java.util.{ IdentityHashMap => IHM }
 
 import scala.annotation.{ tailrec, implicitNotFound }
 import scala.collection.immutable.HashSet
+import scala.collection.mutable.HashMap
 import scala.jdk.CollectionConverters._
 import scala.util.Try
 
@@ -219,6 +220,8 @@ trait Syntaxes[Token, Kind]
       * @group property
       */
     def kinds: Set[Kind]
+
+    private[syntactic] val pierceCache: HashMap[Kind, RevContext[Token, A]] = new HashMap()
 
     /** Returns a syntax for the language up to the given point.
       *
@@ -2029,6 +2032,17 @@ trait Syntaxes[Token, Kind]
 
     /** Returns true if the context is empty, false otherwise. */
     def isEmpty: Boolean
+
+    def reverse: RevContext[A, B] = {
+
+      @tailrec
+      def go[E](ctx: Context[E, B], acc: RevContext[A, E]): RevContext[A, B] = ctx match {
+        case Empty() => acc.asInstanceOf[RevContext[A, B]]
+        case Layered(head, tail) => go(tail, RevLayered(acc, head))
+      }
+
+      go(this, RevEmpty())
+    }
   }
 
   /** Indicates that there are no extra layers of context. */
@@ -2042,6 +2056,26 @@ trait Syntaxes[Token, Kind]
       tail: Context[B, C]) extends Context[A, C] {
     override def isEmpty = false
   }
+
+  private[syntactic] sealed trait RevContext[A, B] {
+
+    def toContext[C](acc: Context[B, C]): Context[A, C] = {
+
+      @tailrec
+      def go[E](rev: RevContext[A, E], acc: Context[E, C]): Context[A, C] = rev match {
+        case RevEmpty() => acc.asInstanceOf[Context[A, C]]
+        case RevLayered(init, last) => go(init, Layered(last, acc))
+      }
+
+      go(this, acc)
+    }
+  }
+
+  private[syntactic] case class RevEmpty[A]() extends RevContext[A, A]
+
+  private[syntactic] case class RevLayered[A, B, C](
+      init: RevContext[A, B],
+      last: Layer[B, C]) extends RevContext[A, C]
 
   /** Pair of a syntax and a layer with matching types. */
   private[syntactic] case class LayeredSyntax[A, B](syntax: Syntax[A], layer: Layer[A, B])
@@ -2280,9 +2314,25 @@ trait Syntaxes[Token, Kind]
           case Some(toPierce: FocusedState[_, t]) =>
             // We are focused on a syntax that accepts the token.
 
+            val syntax = toPierce.syntax
+
             // We focus down to the place where the token is accepted,
             // and turn that into a context.
-            val context = pierce[t, A](toPierce.syntax, kind, toPierce.context)
+
+            // val context = pierce[t, A](toPierce.syntax, kind, toPierce.context)
+
+            val revContext: RevContext[Token, t] =
+              syntax.pierceCache.get(kind) match {
+                case Some(rev) => rev
+                case None => {
+                  val context = pierce[t, t](toPierce.syntax, kind, Empty())
+                  val res = context.reverse
+                  syntax.pierceCache(kind) = res
+                  res
+                }
+              }
+
+            val context = revContext.toContext(toPierce.context)
 
             // Finally, we plug that context with the token,
             // and get a new focused syntax.
