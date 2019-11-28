@@ -221,7 +221,48 @@ trait Syntaxes[Token, Kind]
       */
     def kinds: Set[Kind]
 
-    private[syntactic] val pierceCache: HashMap[Kind, RevContext[Token, A]] = new HashMap()
+    /** Cache of reversed context indexed by kind.
+      *
+      * Context is stored reversed for efficient prepending.
+      */
+    private val pierceCache: HashMap[Kind, RevContext[Token, A]] = new HashMap()
+
+    /** Returns the context around the single `Elem(kind)` at the start of a syntax.
+      *
+      * The syntax is required to be LL(1) and must have the given kind in its first set.
+      */
+    private[syntactic] def pierce[B](kind: Kind, context: Context[A, B]): Context[Token, B] = pierceCache.get(kind) match {
+      case Some(rev) => rev.toContext(context)
+      case None => {
+
+        @tailrec
+        def go[C](syntax: Syntax[C], cs: Context[C, A]): Context[Token, A] = syntax match {
+          case Elem(_) =>
+            cs
+          case Transform(function, inverse, inner) =>
+            go(inner, ApplyFunction(function, inverse) +: cs)
+          case Disjunction(left, right) =>
+            if (left.first.contains(kind))
+              go(left, cs)
+            else
+              go(right, cs)
+          case Sequence(left: Syntax[ltype], right: Syntax[rtype]) =>
+            if (left.first.contains(kind))
+              go(left, FollowBy[ltype, rtype](right) +: cs)
+            else
+              go(right, PrependValue[ltype, rtype](left.nullable.get) +: cs)
+          case Recursive(_, inner) =>
+            go(inner, cs)
+          case _ => throw new IllegalArgumentException("Unexpected syntax.")
+        }
+
+        val rev = go(this, Empty()).reverse
+
+        pierceCache += kind -> rev
+
+        rev.toContext(context)
+      }
+    }
 
     /** Returns a syntax for the language up to the given point.
       *
@@ -2033,6 +2074,7 @@ trait Syntaxes[Token, Kind]
     /** Returns true if the context is empty, false otherwise. */
     def isEmpty: Boolean
 
+    /** Reverses this context. */
     def reverse: RevContext[A, B] = {
 
       @tailrec
@@ -2057,6 +2099,11 @@ trait Syntaxes[Token, Kind]
     override def isEmpty = false
   }
 
+  /** Reverse of a context.
+    *
+    * When a context has a pointer to the first element and the tail,
+    * a reverse context has a pointer to the last element and the init.
+    */
   private[syntactic] sealed trait RevContext[A, B] {
 
     def toContext[C](acc: Context[B, C]): Context[A, C] = {
@@ -2071,8 +2118,10 @@ trait Syntaxes[Token, Kind]
     }
   }
 
+  /** Empty reversed context. */
   private[syntactic] case class RevEmpty[A]() extends RevContext[A, A]
 
+  /** Layer of extra context at the end of a reversed context. */
   private[syntactic] case class RevLayered[A, B, C](
       init: RevContext[A, B],
       last: Layer[B, C]) extends RevContext[A, C]
@@ -2151,7 +2200,10 @@ trait Syntaxes[Token, Kind]
       Some(second)
   }
 
-  /** Factory of focused syntaxes. */
+  /** Factory of focused syntaxes.
+    *
+    * @group syntax
+    */
   object Focused {
 
     /** Add a focus to the syntax. */
@@ -2314,25 +2366,9 @@ trait Syntaxes[Token, Kind]
           case Some(toPierce: FocusedState[_, t]) =>
             // We are focused on a syntax that accepts the token.
 
-            val syntax = toPierce.syntax
-
             // We focus down to the place where the token is accepted,
             // and turn that into a context.
-
-            // val context = pierce[t, A](toPierce.syntax, kind, toPierce.context)
-
-            val revContext: RevContext[Token, t] =
-              syntax.pierceCache.get(kind) match {
-                case Some(rev) => rev
-                case None => {
-                  val context = pierce[t, t](toPierce.syntax, kind, Empty())
-                  val res = context.reverse
-                  syntax.pierceCache(kind) = res
-                  res
-                }
-              }
-
-            val context = revContext.toContext(toPierce.context)
+            val context = toPierce.syntax.pierce(kind, toPierce.context)
 
             // Finally, we plug that context with the token,
             // and get a new focused syntax.
@@ -2396,36 +2432,6 @@ trait Syntaxes[Token, Kind]
 
       go[C](current.syntax, current.context)
     }
-
-    /** Returns the context around the single Elem(kind) at the start of a syntax.
-      *
-      * The syntax is required to be LL(1) and must have
-      * the given kind in its first set.
-      */
-    @tailrec
-    private def pierce[C, X](
-        syntax: Syntax[C],
-        kind: Kind,
-        cs: Context[C, X]): Context[Token, X] =
-      syntax match {
-        case Elem(_) =>
-          cs
-        case Transform(function, inverse, inner) =>
-          pierce(inner, kind, ApplyFunction(function, inverse) +: cs)
-        case Disjunction(left, right) =>
-          if (left.first.contains(kind))
-            pierce(left, kind, cs)
-          else
-            pierce(right, kind, cs)
-        case Sequence(left: Syntax[ltype], right: Syntax[rtype]) =>
-          if (left.first.contains(kind))
-            pierce(left, kind, FollowBy[ltype, rtype](right) +: cs)
-          else
-            pierce(right, kind, PrependValue[ltype, rtype](left.nullable.get) +: cs)
-        case Recursive(_, inner) =>
-          pierce(inner, kind, cs)
-        case _ => throw new IllegalArgumentException("Unexpected syntax.")
-      }
   }
 
 
