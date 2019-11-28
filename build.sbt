@@ -1,7 +1,9 @@
 
 val commonSettings = Seq(
   version            := "0.4",
-  scalaVersion       := "2.13.1",
+  scalaVersion       := "2.12.8",
+  crossScalaVersions := Seq("2.12.8", "2.13.1"),
+  organization       := "ch.epfl.lara",
 )
 
 lazy val scallion = project
@@ -9,7 +11,6 @@ lazy val scallion = project
   .settings(
     commonSettings,
     name               := "scallion",
-    organization       := "ch.epfl.lara",
 
     scalacOptions ++= Seq(
       "-deprecation",
@@ -43,8 +44,7 @@ lazy val example = project
   .in(file("example"))
   .settings(
     commonSettings,
-    name               := "scallion-examples",
-    organization       := "ch.epfl.lara",
+    name := "scallion-examples",
     scalaSource in Compile := baseDirectory.value,
   )
   .dependsOn(scallion)

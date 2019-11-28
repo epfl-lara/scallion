@@ -20,10 +20,10 @@ import java.util.{ IdentityHashMap => IHM }
 import scala.annotation.{ tailrec, implicitNotFound }
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.HashMap
-import scala.jdk.CollectionConverters._
 import scala.util.Try
 
 import scallion.util.internal._
+import JDKCollectionConvertersCompat.Converters._
 
 /** Contains definitions relating to syntaxes.
   *
@@ -1677,7 +1677,7 @@ trait Syntaxes[Token, Kind]
       override def first: Set[Kind] = {
         if (!firstCacheValid) {
           val cell = new CellUpgradableSet[Kind]({ result =>
-            firstCacheValue = result.to(HashSet)
+            firstCacheValue = HashSet(result.toSeq: _*)
             firstCacheValid = true
           })
           val cells = new IHM[Recursive[_], Cell[Set[Kind]]]()
