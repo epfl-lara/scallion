@@ -10,6 +10,11 @@ Scallion is a library for writing parsers and pretty printers for LL(1) language
 
 A comprehensive Scaladoc API is [available online](https://epfl-lara.github.io/scallion/).
 
+# Proof of Correctness
+
+The parsing algorithm used by Scallion has been formally proven in Coq.
+The proofs are [freely available online](https://github.com/epfl-lara/scallion-proofs/).
+
 # Examples
 
 * [JSON](example/json/JSON.scala): This example showcases how to build a basic JSON lexer & parser using Scallion.
