@@ -19,7 +19,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.HashMap
 
-import scallion.util.internal.propagators._
+import scallion.util.internal._
 
 /** This trait implements LL(1) parsing with derivatives. */
 trait LL1Parsing { self: Syntaxes =>

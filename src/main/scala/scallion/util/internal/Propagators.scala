@@ -1,4 +1,4 @@
-/* Copyright 2019 EPFL, Lausanne
+/* Copyright 2020 EPFL, Lausanne
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,119 +15,167 @@
 
 package scallion.util.internal
 
+trait Cell[-I, +O, +S] extends (I => Unit) { self =>
+  def apply(value: I): Unit
+  def register(callback: O => Unit): Unit
+  def get: S
 
-trait Cell[A] extends (A => Unit) {
-  def register(action: A => Unit): Unit
-  def complete(): Unit
+  def map[P](function: O => P): Cell[I, P, S] = new Cell[I, P, S] {
+    override def apply(value: I): Unit = self.apply(value)
+    override def register(callback: P => Unit): Unit = self.register(function andThen callback)
+    override def get: S = self.get
+  }
+
+  def contramap[J](function: J => I): Cell[J, O, S] = new Cell[J, O, S] {
+    override def apply(value: J): Unit = self.apply(function(value))
+    override def register(callback: O => Unit): Unit = self.register(callback)
+    override def get: S = self.get
+  }
 }
 
-class MergeOnce[A, B](callback: (A, B) => Unit) {
+class BooleanCell extends Cell[Unit, Unit, Boolean] {
+  private var registered: List[Unit => Unit] = List()
 
-  private trait State
-  private case object Fresh extends State
-  private case class DoneLeft(value: A) extends State
-  private case class DoneRight(value: B) extends State
-  private case object Done extends State
+  private var state: Boolean = false
 
-  private var state: State = Fresh
-
-  val left: A => Unit = { (value: A) =>
-    state match {
-      case Fresh =>
-        state = DoneLeft(value)
-      case DoneRight(other) =>
-        state = Done
-        callback(value, other)
-      case _ => ()
+  override def apply(value: Unit): Unit = {
+    if (!state) {
+      state = true
+      registered.foreach(_.apply(()))
+      registered = List()
     }
   }
 
-  val right: B => Unit = { (value: B) =>
-    state match {
-      case Fresh =>
-        state = DoneRight(value)
-      case DoneLeft(other) =>
-        state = Done
-        callback(other, value)
-      case _ => ()
+  override def register(callback: Unit => Unit): Unit = {
+    if (state) {
+      callback(())
+    }
+    else {
+      registered = callback :: registered
     }
   }
+
+  override def get: Boolean = state
 }
 
+class OptionCell[A] extends Cell[A, A, Option[A]] {
+  private var registered: List[A => Unit] = List()
 
-class CellOnce[A](onComplete: Option[A] => Unit) extends Cell[A] {
-  private var state: Either[List[A => Unit], A] = Left(List())
+  private var state: Option[A] = None
 
-  override def apply(value: A): Unit = state match {
-    case Left(subscribers) =>
-      state = Right(value)
-      for (subscriber <- subscribers) {
-        subscriber(value)
-      }
-    case _ => ()
+  override def apply(value: A): Unit = {
+    if (state.isEmpty) {
+      state = Some(value)
+      registered.foreach(_.apply(value))
+      registered = List()
+    }
   }
 
-  override def register(subscriber: A => Unit): Unit = state match {
-    case Left(subscribers) =>
-      state = Left(subscriber +: subscribers)
-    case Right(value) =>
-      subscriber(value)
+  override def register(callback: A => Unit): Unit = {
+    if (state.nonEmpty) {
+      callback(state.get)
+    }
+    else {
+      registered = callback :: registered
+    }
   }
 
-  override def complete(): Unit = onComplete(state match {
-    case Left(_) => None
-    case Right(value) => Some(value)
-  })
+  override def get: Option[A] = state
 }
 
+class SetCell[A] extends Cell[Set[A], Set[A], Set[A]] {
+  private var registered: List[Set[A] => Unit] = List()
 
-class CellUpgradableSet[A](onComplete: Set[A] => Unit) extends Cell[Set[A]] {
-  private var subscribers: List[Set[A] => Unit] = List()
-  private var state: Set[A] = Set()
+  private var state: Set[A] = Set.empty
 
   override def apply(value: Set[A]): Unit = {
     val diff = value -- state
 
     if (diff.nonEmpty) {
       state = state union diff
-      subscribers.foreach(_.apply(diff))
+      registered.foreach(_.apply(diff))
     }
   }
 
-  override def register(subscriber: Set[A] => Unit): Unit = {
-    subscribers = subscriber +: subscribers
-
+  override def register(callback: Set[A] => Unit): Unit = {
+    registered = callback :: registered
     if (state.nonEmpty) {
-      subscriber(state)
+      callback(state)
     }
   }
 
-  override def complete(): Unit = onComplete(state)
+  override def get: Set[A] = state
 }
 
-class CellUpgradableMap[K, V](onComplete: Map[K, V] => Unit) extends Cell[Map[K, V]] {
-  private var subscribers: List[Map[K, V] => Unit] = List()
-  private var state: Map[K, V] = Map()
+class MergeOnceCell[A, B, C](merge: (A, B) => C) extends Cell[Either[A, B], C, Option[C]] {
+  private var registered: List[C => Unit] = List()
 
-  override def apply(value: Map[K, V]): Unit = {
+  private var fromLeft: Option[A] = None
+  private var fromRight: Option[B] = None
+  private var merged: Option[C] = None
 
-    val diff: Map[K, V] = value.toList.filter {
-      case (k, v) => !state.contains(k)
-    }.toMap
+  override def apply(value: Either[A, B]): Unit = {
 
-    if (diff.nonEmpty) {
-      state = state ++ diff
-      subscribers.foreach(_.apply(diff))
+    value match {
+      case Left(value) => fromLeft = Some(value)
+      case Right(value) => fromRight = Some(value)
+    }
+
+    merged = for {
+      l <- fromLeft
+      r <- fromRight
+    } yield merge(l, r)
+
+    merged.foreach { (mergedValue: C) =>
+      registered.foreach(_.apply(mergedValue))
     }
   }
 
-  override def register(subscriber: Map[K, V] => Unit): Unit = {
-    subscribers = subscriber +: subscribers
-
-    if (state.nonEmpty) {
-      subscriber(state)
+  override def register(callback: C => Unit): Unit = {
+    if (merged.isEmpty) {
+      registered = callback :: registered
+    }
+    else {
+      callback(merged.get)
     }
   }
 
-  override def complete(): Unit = onComplete(state)
+  override def get: Option[C] = merged
+}
+
+class GatedCell[A] extends Cell[Option[A], A, List[A]] {
+  private var registered: List[A => Unit] = List()
+
+  private var values: List[A] = List()
+  private var active: Boolean = false
+
+  override def apply(value: Option[A]): Unit =
+    value match {
+      case Some(value) => {
+        values = value :: values
+        if (active) {
+          registered.foreach(_.apply(value))
+        }
+      }
+      case None => {
+        if (!active) {
+          active = true
+          values.foreach { (value: A) =>
+            registered.foreach(_.apply(value))
+          }
+        }
+      }
+    }
+
+  override def register(callback: A => Unit): Unit = {
+    registered = callback :: registered
+
+    if (active) {
+      values.foreach { (value: A) =>
+        callback(value)
+      }
+    }
+  }
+
+  override def get: List[A] = values
 }
