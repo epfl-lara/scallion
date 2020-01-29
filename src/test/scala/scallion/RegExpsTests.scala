@@ -19,7 +19,7 @@ import org.scalatest._
 
 import scallion.lexical._
 
-class RegExpsTests extends FlatSpec with RegExps[Char] with CharRegExps {
+class RegExpsTests extends FlatSpec with RegExps with CharRegExps {
 
   "elem (predicate)" should "not accept empty" in {
     val regexp = elem(_.isDigit)

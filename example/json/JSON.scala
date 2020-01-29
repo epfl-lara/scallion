@@ -37,7 +37,10 @@ case class UnknownToken(content: String, range: (Int, Int)) extends Token
 
 // Then, we define the lexer.
 // The lexer converts sequences of characters into tokens.
-object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
+object JSONLexer extends Lexers with CharRegExps {
+
+  type Token = example.json.Token
+  type Position = Int
 
   val lexer = Lexer(
     // Separator
@@ -139,7 +142,10 @@ case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
 // Then, we define the JSON Parser.
-object JSONParser extends Syntaxes[Token, TokenClass] {
+object JSONParser extends Syntaxes with LL1Parsing with Enumeration {
+
+  type Token = example.json.Token
+  type Kind = TokenClass
 
   import Implicits._
 
@@ -210,16 +216,13 @@ object JSONParser extends Syntaxes[Token, TokenClass] {
       nullValue)
   }
 
-  // We check that the parser is LL(1).
-  // This would usually go in your test suite.
-  // It ensures that the syntax is not ambiguous.
-  assert(value.isLL1)
+  val parser = LL1(value)
 
   // Turn the iterator of tokens into a value, if possible.
-  def apply(it: Iterator[Token]): Option[Value] = value(it) match {
-    case Parsed(value, syntax) => Some(value)  // The parse was successful.
-    case UnexpectedToken(token, syntax) => None  // Encountered an unexpected `token`.
-    case UnexpectedEnd(syntax) => None  // Encountered an unexpected end of input.
+  def apply(it: Iterator[Token]): Option[Value] = parser(it) match {
+    case LL1.Parsed(value, syntax) => Some(value)  // The parse was successful.
+    case LL1.UnexpectedToken(token, syntax) => None  // Encountered an unexpected `token`.
+    case LL1.UnexpectedEnd(syntax) => None  // Encountered an unexpected end of input.
     // In each case, syntax contains a `Syntax[Value]` which can
     // be used to resume parsing at that point.
   }

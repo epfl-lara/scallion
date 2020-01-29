@@ -27,7 +27,7 @@ import scala.collection.mutable.{Queue, StringBuilder}
   * @groupprio symbol 2
   * @groupname symbol Symbols
   */
-trait Grammars[Token, Kind] { self: Syntaxes[Token, Kind] =>
+trait Grammars { self: Syntaxes =>
 
   /** Contains utilities to visualize syntaxes as BNF grammars.
     *

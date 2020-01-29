@@ -18,6 +18,9 @@
   * @see See the package [[scallion.input]] for handling inputs.
   * @see See the package [[scallion.lexical]] for lexers.
   * @see See the package [[scallion.syntactic]] for parsers and pretty printers.
+  *
+  * @groupprio abstract 0
+  * @groupname abstract Abstract Members
   */
 package object scallion {
 

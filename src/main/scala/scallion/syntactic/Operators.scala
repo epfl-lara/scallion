@@ -74,7 +74,7 @@ import scallion.syntactic.Unfolds._
   *
   * @group syntax
   */
-trait Operators { self: Syntaxes[_, _] =>
+trait Operators { self: Syntaxes =>
 
   /** Associativity of an operator.
     *

@@ -29,7 +29,19 @@ import scallion.util.internal.BufferedIterator
   * @groupprio producer 1
   * @groupname producer Producers
   */
-trait Lexers[Token, Character, Position] extends RegExps[Character] with Automatons[Character] {
+trait Lexers extends RegExps with Automatons {
+
+  /** Type of tokens.
+    *
+    * @group abstract
+    */
+  type Token
+
+  /** Type of positions.
+    *
+    * @group abstract
+    */
+  type Position
 
   //---- Producers ----//
 

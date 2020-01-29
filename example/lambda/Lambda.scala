@@ -28,7 +28,10 @@ case class ParenthesisToken(isOpen: Boolean) extends Token
 case object SpaceToken extends Token
 case class UnknownToken(content: String) extends Token
 
-object LambdaLexer extends Lexers[Token, Char, Unit] with CharRegExps {
+object LambdaLexer extends Lexers with CharRegExps {
+
+  type Token = example.lambda.Token
+  type Position = Unit
 
   val lexer = Lexer(
     // Lambda
@@ -95,7 +98,10 @@ case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object LambdaSyntax extends Syntaxes[Token, TokenClass] {
+object LambdaSyntax extends Syntaxes with LL1Parsing {
+
+  type Token = example.lambda.Token
+  type Kind = TokenClass
 
   import SafeImplicits._
 
@@ -187,7 +193,9 @@ object LambdaSyntax extends Syntaxes[Token, TokenClass] {
     }
   })
 
-  def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
+  //def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
 
-  def apply(text: String): Option[Expr] = expr(LambdaLexer(text.iterator)).getValue
+  val parser = LL1(expr)
+
+  def apply(text: String): Option[Expr] = parser(LambdaLexer(text.iterator)).getValue
 }

@@ -23,7 +23,7 @@ class JSONParserTests extends FlatSpec with Inside {
     JSONParser(JSONLexer(text.iterator)).getValue
 
   def rest(text: String): JSONParser.Syntax[Value] =
-    JSONParser(JSONLexer(text.iterator)).rest.toSyntax
+    JSONParser(JSONLexer(text.iterator)).rest.syntax
 
   "JSON Parser" should "parse some basic examples" in {
 
@@ -123,55 +123,55 @@ class JSONParserTests extends FlatSpec with Inside {
   }
 
 
-  "Completions" should "work for arrays" in {
+  // "Completions" should "work for arrays" in {
 
-    val completed = JSONParser.arrayValue.complete {
-      case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
-    }
+  //   val completed = JSONParser.arrayValue.complete {
+  //     case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
+  //   }
 
-    assert(completed.nullable == Some(ArrayValue(Seq(), (0, 0))))
+  //   assert(completed.nullable == Some(ArrayValue(Seq(), (0, 0))))
 
-  }
+  // }
 
-  it should "work for objects" in {
-    val completed = JSONParser.objectValue.complete {
-      case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
-    }
+  // it should "work for objects" in {
+  //   val completed = JSONParser.objectValue.complete {
+  //     case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
+  //   }
 
-    assert(completed.nullable == Some(ObjectValue(Seq(), (0, 0))))
-  }
+  //   assert(completed.nullable == Some(ObjectValue(Seq(), (0, 0))))
+  // }
 
-  it should "work for general values" in {
-    val completed = JSONParser.value.complete {
-      case NullClass => NullToken((0, 0))
-    }
+  // it should "work for general values" in {
+  //   val completed = JSONParser.value.complete {
+  //     case NullClass => NullToken((0, 0))
+  //   }
 
-    assert(completed.nullable == Some(NullValue((0, 0))))
-  }
+  //   assert(completed.nullable == Some(NullValue((0, 0))))
+  // }
 
-  it should "work even after errors" in {
+  // it should "work even after errors" in {
 
-    val erroneous = rest("[1,}")
-    // Parser should fail:   ^ here
+  //   val erroneous = rest("[1,}")
+  //   // Parser should fail:   ^ here
 
-    assert(erroneous.nullable.isEmpty)
+  //   assert(erroneous.nullable.isEmpty)
 
-    val smallTrails = erroneous.trails.takeWhile(_.size <= 2).toList
-    assert(smallTrails.contains(Seq(StringClass, SeparatorClass(']'))))
-    assert(smallTrails.contains(Seq(NumberClass, SeparatorClass(']'))))
-    assert(smallTrails.contains(Seq(NullClass, SeparatorClass(']'))))
+  //   val smallTrails = erroneous.trails.takeWhile(_.size <= 2).toList
+  //   assert(smallTrails.contains(Seq(StringClass, SeparatorClass(']'))))
+  //   assert(smallTrails.contains(Seq(NumberClass, SeparatorClass(']'))))
+  //   assert(smallTrails.contains(Seq(NullClass, SeparatorClass(']'))))
 
-    val completed = erroneous.complete {
-      case StringClass => StringToken("XXX", (0, 0))
-      case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
-    }
+  //   val completed = erroneous.complete {
+  //     case StringClass => StringToken("XXX", (0, 0))
+  //     case SeparatorClass(sep) => SeparatorToken(sep, (0, 0))
+  //   }
 
-    inside(completed.nullable) {
-      case Some(ArrayValue(values, _)) => {
-        assert(values.size == 2)
-        assert(values(0) == NumberValue(1, (1, 2)))
-        assert(values(1) == StringValue("XXX", (0, 0)))
-      }
-    }
-  }
+  //   inside(completed.nullable) {
+  //     case Some(ArrayValue(values, _)) => {
+  //       assert(values.size == 2)
+  //       assert(values(0) == NumberValue(1, (1, 2)))
+  //       assert(values(1) == StringValue("XXX", (0, 0)))
+  //     }
+  //   }
+  // }
 }

@@ -52,7 +52,10 @@ case class NumberValue(value: Double, range: (Int, Int)) extends Value
 case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
-object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
+object JSONLexer extends Lexers with CharRegExps {
+
+  type Token = scallion.json.Token
+  type Position = Int
 
   val lexer = Lexer(
     // Separator
@@ -115,7 +118,10 @@ object JSONLexer extends Lexers[Token, Char, Int] with CharRegExps {
   }
 }
 
-object JSONParser extends Syntaxes[Token, TokenClass] {
+object JSONParser extends Syntaxes with LL1Parsing {
+
+  type Token = scallion.json.Token
+  type Kind = TokenClass
 
   import SafeImplicits._
 
@@ -165,5 +171,7 @@ object JSONParser extends Syntaxes[Token, TokenClass] {
     oneOf(arrayValue, objectValue, booleanValue, numberValue, stringValue.up[Value], nullValue)
   }
 
-  def apply(it: Iterator[Token]): ParseResult[Value] = value(it)
+  val parser = LL1(value)
+
+  def apply(it: Iterator[Token]): LL1.ParseResult[Value] = parser(it)
 }

@@ -30,9 +30,6 @@ package scallion
   * }
   * }}}
   *
-  * @groupprio abstract 0
-  * @groupname abstract Abstract Members
-  *
   * @groupprio parsing 1
   * @groupname parsing Parsing
   *

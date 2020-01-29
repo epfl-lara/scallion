@@ -26,7 +26,10 @@ case object C extends Symbol
 case object D extends Symbol
 case object M extends Symbol
 
-object RomanSyntax extends Syntaxes[Symbol, Symbol] {
+object RomanSyntax extends Syntaxes with LL1Parsing with Enumeration with PrettyPrinting {
+
+  type Token = Symbol
+  type Kind = Symbol
 
   import SafeImplicits._
 

@@ -26,7 +26,13 @@ package lexical
   * @groupname combinator Combinators
   * @groupprio combinator 2
   */
-trait RegExps[Character] {
+trait RegExps {
+
+  /** Type of characters.
+    *
+    * @group abstract
+    */
+  type Character
 
   import RegExp._
 
@@ -215,7 +221,9 @@ trait RegExps[Character] {
 
 /** Regular expressions on `Char` characters.
   * Expected to be mixed-in with [[scallion.lexical.RegExps]]. */
-trait CharRegExps { self: RegExps[Char] =>
+trait CharRegExps { self: RegExps =>
+
+  type Character = Char
 
   /** Single digit between 0 and 9. */
   val digit = elem(_.isDigit)

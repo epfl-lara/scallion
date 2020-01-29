@@ -29,7 +29,7 @@ import collection.mutable.Queue
   * @groupname dfa Deterministic Finite Automata
   * @groupprio dfa 12
   */
-trait Automatons[Character] { self: RegExps[Character] =>
+trait Automatons { self: RegExps =>
 
   /** Transition of an NFA.
     *

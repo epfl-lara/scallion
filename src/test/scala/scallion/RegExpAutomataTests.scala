@@ -19,7 +19,7 @@ import org.scalatest._
 
 import scallion.lexical._
 
-class RegExpAutomataTests extends FlatSpec with RegExps[Char] with CharRegExps with Automatons[Char] {
+class RegExpAutomataTests extends FlatSpec with RegExps with CharRegExps with Automatons {
 
   // Automaton with mutable current state for easier tests.
   class Automaton(regExp: RegExp) {

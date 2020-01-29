@@ -20,7 +20,10 @@ import org.scalatest._
 import scallion.input._
 import scallion.lexical._
 
-class LexerTests extends FlatSpec with Lexers[String, Char, (Int, Int)] with CharRegExps {
+class LexerTests extends FlatSpec with Lexers with CharRegExps {
+
+  type Token = String
+  type Position = (Int, Int)
 
   object PairPositioner extends Positioner[Char, (Int, Int)] {
     override val start = (0, 0)

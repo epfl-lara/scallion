@@ -26,7 +26,10 @@ case class ParenthesisToken(isOpen: Boolean) extends Token
 case object SpaceToken extends Token
 case class UnknownToken(content: String) extends Token
 
-object CalcLexer extends Lexers[Token, Char, Unit] with CharRegExps {
+object CalcLexer extends Lexers with CharRegExps {
+
+  type Position = Unit
+  type Token = example.calculator.Token
 
   val lexer = Lexer(
     // Operators
@@ -73,7 +76,10 @@ case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
+object CalcSyntax extends Syntaxes with Operators with LL1Parsing {
+
+  type Token = example.calculator.Token
+  type Kind = TokenClass
 
   import SafeImplicits._
 
@@ -136,10 +142,12 @@ object CalcSyntax extends Syntaxes[Token, TokenClass] with Operators {
     })
   }
 
-  def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
+  val parser = LL1(value)
 
-  def apply(it: Iterator[Token]): Option[Expr] = value(it) match {
-    case Parsed(value, _) => Some(value)
+  //def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
+
+  def apply(it: Iterator[Token]): Option[Expr] = parser(it) match {
+    case LL1.Parsed(value, _) => Some(value)
     case _ => None
   }
 }
