@@ -20,7 +20,16 @@ package scallion
   * To use the package, mix-in the [[scallion.lexical.Lexers]] trait.
   *
   * {{{
-  * object MyLexers extends Lexers[Character, Position] {
+  * object MyLexers extends Lexers {
+  *
+  *   // Type of characters consumed.
+  *   type Character = Char
+  *
+  *   // Type of positions.
+  *   type Position = MyPosition
+  *
+  *   // Type of tokens produced.
+  *   type Token = MyToken
   *
   *   // Then define your parsers using combinators.
   *   val myLexer = Lexer(...)

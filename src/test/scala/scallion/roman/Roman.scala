@@ -26,7 +26,7 @@ case object C extends Symbol
 case object D extends Symbol
 case object M extends Symbol
 
-object RomanSyntax extends Syntaxes with LL1Parsing {
+object RomanSyntax extends Syntaxes with ll1.Parsing {
 
   type Token = Symbol
   type Kind = Symbol

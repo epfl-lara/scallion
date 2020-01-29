@@ -142,7 +142,7 @@ case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
 // Then, we define the JSON Parser.
-object JSONParser extends Syntaxes with LL1Parsing with Enumeration {
+object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
 
   type Token = example.json.Token
   type Kind = TokenClass

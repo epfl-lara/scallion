@@ -86,11 +86,11 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../../syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
-    </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="util"></a><a id="util:util"></a>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
+    </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="syntactic"></a><a id="syntactic:syntactic"></a>
       <span class="permalink">
-      <a href="../scallion/index.html#util" title="Permalink">
+      <a href="../scallion/index.html#syntactic" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -99,14 +99,27 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../index.html"><span class="name">util</span></a>
+        <a title="This package is used to describe syntax for LL(1) languages." href="../index.html"><span class="name">syntactic</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li name="scallion.util.internal" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="internal"></a><a id="internal:internal"></a>
+      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes {
+
+  <span class="cmt">// Type of tokens.</span>
+  <span class="kw">type</span> Token = MyToken
+
+  <span class="cmt">// Type of token kinds.</span>
+  <span class="kw">type</span> Kind = MyKind
+
+  <span class="cmt">// Define the token kind of tokens.</span>
+  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
+
+  <span class="cmt">// Then define your syntax using combinators.</span>
+  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.syntactic.ll1" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ll1"></a><a id="ll1:ll1"></a>
       <span class="permalink">
-      <a href="../../scallion/util/index.html#internal" title="Permalink">
+      <a href="../../scallion/syntactic/index.html#ll1" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -115,51 +128,30 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="index.html"><span class="name">internal</span></a>
+        <a title="" href="index.html"><span class="name">ll1</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.util">util</a></dd></dl></div>
-    </li><li name="scallion.util.internal.JDKCollectionConvertersCompat" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="JDKCollectionConvertersCompat"></a><a id="JDKCollectionConvertersCompat:JDKCollectionConvertersCompat"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing" visbl="pub" class="indented4 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ParsingextendsAnyRef"></a><a id="Parsing:Parsing"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/index.html#JDKCollectionConvertersCompat" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/index.html#ParsingextendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Magic to get cross-compiling access to scala.jdk.CollectionConverters with a fallback on scala.collection.JavaConverters, without deprecation warning in any Scala version." href="JDKCollectionConvertersCompat$.html"><span class="name">JDKCollectionConvertersCompat</span></a>
+        <a title="This trait implements LL(1) parsing with derivatives." href="Parsing.html"><span class="name">Parsing</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Magic to get cross-compiling access to <code>scala.jdk.CollectionConverters</code>
- with a fallback on <code>scala.collection.JavaConverters</code>, without deprecation
- warning in any Scala version.</p><div class="fullcomment"><div class="comment cmt"><p>Magic to get cross-compiling access to <code>scala.jdk.CollectionConverters</code>
- with a fallback on <code>scala.collection.JavaConverters</code>, without deprecation
- warning in any Scala version.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.util.internal">internal</a></dd></dl></div>
-    </li><li name="scallion.util.internal.JDKCollectionConvertersCompat.Scope1" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Scope1"></a><a id="Scope1:Scope1"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$.html#Scope1" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="JDKCollectionConvertersCompat$$Scope1$.html"><span class="name">Scope1</span></a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JDKCollectionConvertersCompat$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat">JDKCollectionConvertersCompat</a></dd></dl></div>
-    </li><li class="current-entities indented5">
+      <p class="shortcomment cmt">This trait implements LL(1) parsing with derivatives.</p><div class="fullcomment"><div class="comment cmt"><p>This trait implements LL(1) parsing with derivatives.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.syntactic.ll1">ll1</a></dd></dl></div>
+    </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">jdk</a>
+                        <a class="object" href="" title="Factory of LL(1) parsers."></a>
+                        <a href="" title="Factory of LL(1) parsers.">LL1</a>
                       </li>
               </ul>
             </div>
@@ -168,9 +160,9 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
             <body class="object value">
       <div id="definition">
         <div class="big-circle object">o</div>
-        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.util">util</a>.<a href="index.html" class="extype" name="scallion.util.internal">internal</a>.<a href="JDKCollectionConvertersCompat$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat">JDKCollectionConvertersCompat</a>.<a href="JDKCollectionConvertersCompat$$Scope1$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat.Scope1">Scope1</a></p>
-        <h1>jdk<span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html" title="Permalink">
+        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a>.<a href="index.html" class="extype" name="scallion.syntactic.ll1">ll1</a>.<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a></p>
+        <h1>LL1<span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -183,12 +175,12 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">jdk</span>
+        <span class="name">LL1</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/JDKCollectionConvertersCompat.scala" target="_blank">JDKCollectionConvertersCompat.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Factory of LL(1) parsers.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/ll1/Parsing.scala" target="_blank">Parsing.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -209,7 +201,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -218,7 +210,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.util.internal.JDKCollectionConvertersCompat.Scope1.jdk"><span>jdk</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.ll1.Parsing.LL1"><span>LL1</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -240,22 +232,121 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.util.internal.JDKCollectionConvertersCompat.Scope1.jdk.CollectionConverters" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CollectionConverters=Int"></a><a id="CollectionConverters:CollectionConverters"></a>
+              <ol><li name="scallion.syntactic.ll1.Parsing.LL1.Conflict" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="conflict">
+      <a id="ConflictextendsAnyRef"></a><a id="Conflict:Conflict"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#CollectionConverters=Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#ConflictextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Describes a LL(1) conflict." href="Parsing$LL1$$Conflict.html"><span class="name">Conflict</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Describes a LL(1) conflict.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.ConflictException" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="conflict">
+      <a id="ConflictExceptionextendsExceptionwithProductwithSerializable"></a><a id="ConflictException:ConflictException"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#ConflictExceptionextendsExceptionwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">type</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CollectionConverters</span><span class="result alias"> = <span class="extype" name="scala.Int">Int</span></span>
+        <a title="Indicates that a syntax is not LL(1) due to various conflicts." href="Parsing$LL1$$ConflictException.html"><span class="name">ConflictException</span></a><span class="params">(<span name="conflicts">conflicts: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
+      <p class="shortcomment cmt">Indicates that a syntax is not LL(1) due to various conflicts.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.ParseResult" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="result">
+      <a id="ParseResult[A]extendsAnyRef"></a><a id="ParseResult[A]:ParseResult[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#ParseResult[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Result of parsing." href="Parsing$LL1$$ParseResult.html"><span class="name">ParseResult</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
       
+      <p class="shortcomment cmt">Result of parsing.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Parsed" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
+      <a id="Parsed[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable"></a><a id="Parsed[A]:Parsed[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#Parsed[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates that the input has been fully parsed, resulting in a value." href="Parsing$LL1$$Parsed.html"><span class="name">Parsed</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parsed.A">A</span></span>, <span name="rest">rest: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parsed.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$ParseResult.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parsed.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the input has been fully parsed, resulting in a <code>value</code>.</p><p>A parser for subsequent input is also provided.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>The value produced.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser for more input.</p></dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Parser" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="parsing">
+      <a id="Parser[A]extendsAnyRef"></a><a id="Parser[A]:Parser[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#Parser[A]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="LL(1) parser." href="Parsing$LL1$$Parser.html"><span class="name">Parser</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">LL(1) parser.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedEnd" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
+      <a id="UnexpectedEnd[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable"></a><a id="UnexpectedEnd[A]:UnexpectedEnd[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#UnexpectedEnd[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates that end of input was unexpectedly encountered." href="Parsing$LL1$$UnexpectedEnd.html"><span class="name">UnexpectedEnd</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="rest">rest: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedEnd.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$ParseResult.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedEnd.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that end of input was unexpectedly encountered.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that end of input was unexpectedly encountered.</p><p>The <code>syntax</code> for subsequent input is provided.
+</p></div></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedToken" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
+      <a id="UnexpectedToken[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable"></a><a id="UnexpectedToken[A]:UnexpectedToken[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#UnexpectedToken[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Indicates that the provided token was not expected at that point." href="Parsing$LL1$$UnexpectedToken.html"><span class="name">UnexpectedToken</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="token">token: (<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Token">Token</span></span>, <span name="rest">rest: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedToken.A">A</span>]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$ParseResult.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ParseResult">ParseResult</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedToken.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The parser at the point of error is returned.
+</p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser at the point of error.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -267,7 +358,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -283,7 +374,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html###():Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -299,7 +390,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -312,10 +403,27 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="parsing">
+      <a id="apply[A](syntax:Parsing.this.Syntax[A]):scallion.syntactic.ll1.Parsing.LL1.Parser[A]"></a><a id="apply[A]((Parsing.this)#Syntax[A]):Parser[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#apply[A](syntax:Parsing.this.Syntax[A]):scallion.syntactic.ll1.Parsing.LL1.Parser[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>)</span><span class="result">: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Builds a LL(1) parser from a syntax description.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a LL(1) parser from a syntax description.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The description of the syntax.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><a href="Parsing$LL1$$ConflictException.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ConflictException"><code>ConflictException</code></a> in case the syntax is not LL(1).</p></span></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -328,10 +436,27 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1#build" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="parsing">
+      <a id="build[A](syntax:Parsing.this.Syntax[A]):Either[Set[scallion.syntactic.ll1.Parsing.LL1.Conflict],scallion.syntactic.ll1.Parsing.LL1.Parser[A]]"></a><a id="build[A]((Parsing.this)#Syntax[A]):Either[Set[Conflict],Parser[A]]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#build[A](syntax:Parsing.this.Syntax[A]):Either[Set[scallion.syntactic.ll1.Parsing.LL1.Conflict],scallion.syntactic.ll1.Parsing.LL1.Parser[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">build</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.build.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>], <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.build.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Builds a LL(1) parser from a syntax description.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a LL(1) parser from a syntax description.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The description of the syntax.</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#clone():Object" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -355,7 +480,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -371,7 +496,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -387,7 +512,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#finalize():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -409,7 +534,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -428,7 +553,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#hashCode():Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -447,7 +572,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -463,7 +588,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -479,7 +604,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#notify():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -498,7 +623,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -517,7 +642,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -533,7 +658,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#toString():String" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -549,7 +674,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#wait():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -571,7 +696,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -593,7 +718,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope1$$jdk$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -614,6 +739,22 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Conflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="conflict">
+      <a id="Conflict"></a><a id="Conflict:Conflict"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#Conflict" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains the description of the various LL(1) conflicts." href="Parsing$LL1$$Conflict$.html"><span class="name">Conflict</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains the description of the various LL(1) conflicts.</p>
     </li>
               </ol>
             </div>
@@ -633,7 +774,16 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="parsing">
+              <h3>Parsing</h3>
+              
+            </div><div class="group" name="result">
+              <h3>Parse Results</h3>
+              
+            </div><div class="group" name="conflict">
+              <h3>LL(1) Conflicts</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

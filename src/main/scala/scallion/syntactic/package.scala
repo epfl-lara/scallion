@@ -20,7 +20,13 @@ package scallion
   * To use the package, mix-in the [[scallion.syntactic.Syntaxes]] trait.
   *
   * {{{
-  * object MySyntaxes extends Syntaxes[Token, Kind] {
+  * object MySyntaxes extends Syntaxes {
+  *
+  *   // Type of tokens.
+  *   type Token = MyToken
+  *
+  *   // Type of token kinds.
+  *   type Kind = MyKind
   *
   *   // Define the token kind of tokens.
   *   override def getKind(token: Token): Kind = ...

@@ -76,7 +76,7 @@ case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcSyntax extends Syntaxes with Operators with LL1Parsing {
+object CalcSyntax extends Syntaxes with Operators with ll1.Parsing {
 
   type Token = example.calculator.Token
   type Kind = TokenClass

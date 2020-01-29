@@ -36,7 +36,7 @@ object Tokens {
 }
 import Tokens._
 
-class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with LL1Parsing {
+class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with ll1.Parsing {
 
   type Token = Tokens.Token
   type Kind = Tokens.TokenClass

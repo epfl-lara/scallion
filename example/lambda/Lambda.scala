@@ -98,7 +98,7 @@ case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object LambdaSyntax extends Syntaxes with LL1Parsing {
+object LambdaSyntax extends Syntaxes with ll1.Parsing {
 
   type Token = example.lambda.Token
   type Kind = TokenClass

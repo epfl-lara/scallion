@@ -125,7 +125,16 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <span class="name">lexical</span>
       </span>
       
-      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
+      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers {
+
+  <span class="cmt">// Type of characters consumed.</span>
+  <span class="kw">type</span> Character = <span class="std">Char</span>
+
+  <span class="cmt">// Type of positions.</span>
+  <span class="kw">type</span> Position = MyPosition
+
+  <span class="cmt">// Type of tokens produced.</span>
+  <span class="kw">type</span> Token = MyToken
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">val</span> myLexer = Lexer(...)
@@ -164,7 +173,13 @@ for regular expressions on <code>Char</code>.
         <a title="This package is used to describe syntax for LL(1) languages." href="../syntactic/index.html"><span class="name">syntactic</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="../syntactic/Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes[Token, Kind] {
+      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="../syntactic/Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes {
+
+  <span class="cmt">// Type of tokens.</span>
+  <span class="kw">type</span> Token = MyToken
+
+  <span class="cmt">// Type of token kinds.</span>
+  <span class="kw">type</span> Kind = MyKind
 
   <span class="cmt">// Define the token kind of tokens.</span>
   <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
@@ -216,7 +231,16 @@ for regular expressions on <code>Char</code>.
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers {
+
+  <span class="cmt">// Type of characters consumed.</span>
+  <span class="kw">type</span> Character = <span class="std">Char</span>
+
+  <span class="cmt">// Type of positions.</span>
+  <span class="kw">type</span> Position = MyPosition
+
+  <span class="cmt">// Type of tokens produced.</span>
+  <span class="kw">type</span> Token = MyToken
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">val</span> myLexer = Lexer(...)

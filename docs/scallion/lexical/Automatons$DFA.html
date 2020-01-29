@@ -102,7 +102,16 @@ See the package <a href="../index.html" class="extype" name="scallion">scallion<
         <a title="This package is used to write lexers." href="index.html"><span class="name">lexical</span></a>
       </span>
       
-      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers[Character, Position] {
+      <p class="shortcomment cmt">This package is used to write lexers.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to write lexers.</p><p>To use the package, mix-in the <a href="Lexers.html" class="extype" name="scallion.lexical.Lexers">scallion.lexical.Lexers</a> trait.</p><pre><span class="kw">object</span> MyLexers <span class="kw">extends</span> Lexers {
+
+  <span class="cmt">// Type of characters consumed.</span>
+  <span class="kw">type</span> Character = <span class="std">Char</span>
+
+  <span class="cmt">// Type of positions.</span>
+  <span class="kw">type</span> Position = MyPosition
+
+  <span class="cmt">// Type of tokens produced.</span>
+  <span class="kw">type</span> Token = MyToken
 
   <span class="cmt">// Then define your parsers using combinators.</span>
   <span class="kw">val</span> myLexer = Lexer(...)

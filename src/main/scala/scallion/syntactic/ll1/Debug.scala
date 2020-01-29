@@ -14,12 +14,13 @@
  */
 
 package scallion.syntactic
+package ll1
 
 /** Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.
   *
   * @group debug
   */
-trait LL1Debug { self: Syntaxes with LL1Parsing =>
+trait Debug { self: Syntaxes with ll1.Parsing =>
 
   import LL1._
   import Conflict._

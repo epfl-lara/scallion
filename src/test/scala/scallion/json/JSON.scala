@@ -118,7 +118,7 @@ object JSONLexer extends Lexers with CharRegExps {
   }
 }
 
-object JSONParser extends Syntaxes with LL1Parsing {
+object JSONParser extends Syntaxes with ll1.Parsing {
 
   type Token = scallion.json.Token
   type Kind = TokenClass

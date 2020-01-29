@@ -14,6 +14,7 @@
  */
 
 package scallion.syntactic
+package ll1
 
 import scala.annotation.tailrec
 import scala.collection.immutable.HashSet
@@ -22,7 +23,7 @@ import scala.collection.mutable.HashMap
 import scallion.util.internal._
 
 /** This trait implements LL(1) parsing with derivatives. */
-trait LL1Parsing { self: Syntaxes =>
+trait Parsing { self: Syntaxes =>
 
   /** Factory of LL(1) parsers. */
   object LL1 {

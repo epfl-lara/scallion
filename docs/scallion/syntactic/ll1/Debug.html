@@ -86,11 +86,11 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">Scallion is a library for writing lexers, parsers and pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Scallion is a library for writing lexers, parsers and pretty printers.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../../syntactic/index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
-    </li><li name="scallion.util" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="util"></a><a id="util:util"></a>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd><dt>See also</dt><dd><span class="cmt"><p>See the package <a href="../../input/index.html" class="extype" name="scallion.input">scallion.input</a> for handling inputs.</p></span><span class="cmt"><p>See the package <a href="../../lexical/index.html" class="extype" name="scallion.lexical">scallion.lexical</a> for lexers.</p></span><span class="cmt"><p>See the package <a href="../index.html" class="extype" name="scallion.syntactic">scallion.syntactic</a> for parsers and pretty printers.</p></span></dd></dl></div>
+    </li><li name="scallion.syntactic" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="syntactic"></a><a id="syntactic:syntactic"></a>
       <span class="permalink">
-      <a href="../scallion/index.html#util" title="Permalink">
+      <a href="../scallion/index.html#syntactic" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -99,14 +99,27 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../index.html"><span class="name">util</span></a>
+        <a title="This package is used to describe syntax for LL(1) languages." href="../index.html"><span class="name">syntactic</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li name="scallion.util.internal" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="internal"></a><a id="internal:internal"></a>
+      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">scallion.syntactic.Syntaxes</a> trait.</p><pre><span class="kw">object</span> MySyntaxes <span class="kw">extends</span> Syntaxes {
+
+  <span class="cmt">// Type of tokens.</span>
+  <span class="kw">type</span> Token = MyToken
+
+  <span class="cmt">// Type of token kinds.</span>
+  <span class="kw">type</span> Kind = MyKind
+
+  <span class="cmt">// Define the token kind of tokens.</span>
+  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
+
+  <span class="cmt">// Then define your syntax using combinators.</span>
+  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
+    </li><li name="scallion.syntactic.ll1" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ll1"></a><a id="ll1:ll1"></a>
       <span class="permalink">
-      <a href="../../scallion/util/index.html#internal" title="Permalink">
+      <a href="../../scallion/syntactic/index.html#ll1" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -115,62 +128,29 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="index.html"><span class="name">internal</span></a>
+        <a title="" href="index.html"><span class="name">ll1</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.util">util</a></dd></dl></div>
-    </li><li name="scallion.util.internal.JDKCollectionConvertersCompat" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="JDKCollectionConvertersCompat"></a><a id="JDKCollectionConvertersCompat:JDKCollectionConvertersCompat"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/index.html#JDKCollectionConvertersCompat" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Magic to get cross-compiling access to scala.jdk.CollectionConverters with a fallback on scala.collection.JavaConverters, without deprecation warning in any Scala version." href="JDKCollectionConvertersCompat$.html"><span class="name">JDKCollectionConvertersCompat</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Magic to get cross-compiling access to <code>scala.jdk.CollectionConverters</code>
- with a fallback on <code>scala.collection.JavaConverters</code>, without deprecation
- warning in any Scala version.</p><div class="fullcomment"><div class="comment cmt"><p>Magic to get cross-compiling access to <code>scala.jdk.CollectionConverters</code>
- with a fallback on <code>scala.collection.JavaConverters</code>, without deprecation
- warning in any Scala version.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion.util.internal">internal</a></dd></dl></div>
-    </li><li name="scallion.util.internal.JDKCollectionConvertersCompat.Scope2" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Scope2"></a><a id="Scope2:Scope2"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$.html#Scope2" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="JDKCollectionConvertersCompat$$Scope2$.html"><span class="name">Scope2</span></a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JDKCollectionConvertersCompat$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat">JDKCollectionConvertersCompat</a></dd></dl></div>
-    </li><li class="current-entities indented5">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a></dd></dl></div>
+    </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">Inner</a>
+                        <a class="trait" href="" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes."></a>
+                        <a href="" title="Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.">Debug</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Parsing.html" title="This trait implements LL(1) parsing with derivatives."></a>
+                        <a href="Parsing.html" title="This trait implements LL(1) parsing with derivatives.">Parsing</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="trait type">
       <div id="definition">
-        <div class="big-circle object">o</div>
-        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.util">util</a>.<a href="index.html" class="extype" name="scallion.util.internal">internal</a>.<a href="JDKCollectionConvertersCompat$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat">JDKCollectionConvertersCompat</a>.<a href="JDKCollectionConvertersCompat$$Scope2$.html" class="extype" name="scallion.util.internal.JDKCollectionConvertersCompat.Scope2">Scope2</a></p>
-        <h1>Inner<span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html" title="Permalink">
+        <div class="big-circle trait">t</div>
+        <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a>.<a href="index.html" class="extype" name="scallion.syntactic.ll1">ll1</a></p>
+        <h1>Debug<span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -180,15 +160,16 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Inner</span>
+        <span class="name">Debug</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/util/internal/JDKCollectionConvertersCompat.scala" target="_blank">JDKCollectionConvertersCompat.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains methods to produce reports to help debug LL(1) conflicts in syntaxes.
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.syntactic.ll1.Debug">Debug</a> with <a href="../Syntaxes.html" class="extype" name="scallion.syntactic.Syntaxes">Syntaxes</a> with <a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a></dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/ll1/Debug.scala" target="_blank">Debug.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -209,7 +190,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -218,7 +199,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.util.internal.JDKCollectionConvertersCompat.Scope2.Inner"><span>Inner</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.ll1.Debug"><span>Debug</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -248,7 +229,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -264,7 +245,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html###():Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -280,7 +261,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -293,26 +274,10 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.util.internal.JDKCollectionConvertersCompat.Scope2.Inner#Converters" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Converters:scala.collection.JavaConverters.type"></a><a id="Converters:JavaConverters.type"></a>
-      <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#Converters:scala.collection.JavaConverters.type" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Converters</span><span class="result">: <span class="extype" name="scala.collection.JavaConverters">JavaConverters</span>.type</span>
-      </span>
-      
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -328,7 +293,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#clone():Object" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -349,10 +314,42 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Debug#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="debug">
+      <a id="debug[A](syntax:Debug.this.Syntax[A],showTrails:Boolean):Unit"></a><a id="debug[A]((Debug.this)#Syntax[A],Boolean):Unit"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#debug[A](syntax:Debug.this.Syntax[A],showTrails:Boolean):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="" class="extype" name="scallion.syntactic.ll1.Debug">Debug</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Debug.debug.A">A</span>]</span>, <span name="showTrails">showTrails: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Prints a report of LL(1) conflicts in the syntax.</p>
+    </li><li name="scallion.syntactic.ll1.Debug#debugString" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="debug">
+      <a id="debugString[A](syntax:Debug.this.Syntax[A],showTrails:Boolean):String"></a><a id="debugString[A]((Debug.this)#Syntax[A],Boolean):String"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#debugString[A](syntax:Debug.this.Syntax[A],showTrails:Boolean):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debugString</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="" class="extype" name="scallion.syntactic.ll1.Debug">Debug</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Debug.debugString.A">A</span>]</span>, <span name="showTrails">showTrails: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a report of LL(1) conflicts in the syntax.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -368,7 +365,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -384,7 +381,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#finalize():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -406,7 +403,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -425,7 +422,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#hashCode():Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -444,7 +441,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -460,7 +457,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -476,7 +473,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#notify():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -495,7 +492,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -514,7 +511,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -530,7 +527,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#toString():String" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -546,7 +543,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#wait():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -568,7 +565,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -590,7 +587,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/util/internal/JDKCollectionConvertersCompat$$Scope2$$Inner$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Debug.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -630,7 +627,10 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="debug">
+              <h3>Debugging</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>
