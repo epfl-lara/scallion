@@ -137,7 +137,7 @@ trait Parsing { self: Syntaxes =>
       }
 
     /** Cache of transformation from syntax to LL(1) parser. */
-    private val syntaxToParserCache: WeakHashMap[Syntax[_], LL1.Parser[_]] = new WeakHashMap()
+    private val syntaxToTreeCache: WeakHashMap[Syntax[_], Tree[_]] = new WeakHashMap()
 
     /** Builds a LL(1) parser from a syntax description.
       *
@@ -151,12 +151,13 @@ trait Parsing { self: Syntaxes =>
     def apply[A](syntax: Syntax[A], enforceLL1: Boolean = true): Parser[A] = {
 
       // Handles caching.
-      if (syntaxToParserCache.containsKey(syntax)) {
+      if (syntaxToTreeCache.containsKey(syntax)) {
         lazy val conflicts = syntaxToPropertiesCache.get(syntax).conflicts
         if (enforceLL1 && conflicts.nonEmpty) {
           throw ConflictException(conflicts)
         }
-        return syntaxToParserCache.get(syntax).asInstanceOf[Parser[A]]
+        val tree: Tree[A] = syntaxToTreeCache.get(syntax).asInstanceOf[Tree[A]]
+        return Focused(tree, Empty())
       }
 
       // Cache miss... Real work begins.
@@ -230,6 +231,40 @@ trait Parsing { self: Syntaxes =>
 
       checkConflicts(syntaxCell)
 
+      var recProps: Set[RecId] = Set()
+
+      def buildProperties[A](syntaxCell: SyntaxCell[A]): Unit = {
+
+        syntaxCell match {
+          case SyntaxCell.Disjunction(left, right, _) => {
+            buildProperties(left)
+            buildProperties(right)
+          }
+          case SyntaxCell.Sequence(left, right, _) => {
+            buildProperties(left)
+            buildProperties(right)
+          }
+          case SyntaxCell.Transform(inner, _, _, _) => {
+            buildProperties(inner)
+          }
+          case SyntaxCell.Recursive(recInner, recId, _) => if (!recProps.contains(recId)) {
+            recProps += recId
+            buildProperties(recInner)
+          }
+          case _ => ()
+        }
+
+        val properties = Properties(
+          syntaxCell.nullableCell.get,
+          syntaxCell.firstCell.get,
+          syntaxCell.snfCell.get.flatMap(_.kinds),
+          syntaxCell.conflictCell.get)
+
+        syntaxToPropertiesCache.put(syntaxCell.syntax, properties)
+      }
+
+      buildProperties(syntaxCell)
+
       val recTrees: HashMap[RecId, Any] = new HashMap()
 
       def buildTree[A](syntaxCell: SyntaxCell[A]): Tree[A] = {
@@ -274,7 +309,7 @@ trait Parsing { self: Syntaxes =>
             case None => {
               val rec = new Tree.Recursive[A] {
                 override val id = recId
-                override lazy val inner: Tree[A] = buildTree(recInner)
+                override lazy val inner: Tree[A] = syntaxToTreeCache.get(recInner.syntax).asInstanceOf[Tree[A]]
                 override val nullable: Option[A] = syntaxCell.nullableCell.get
                 override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
                 override val syntax: Syntax[A] = syntaxCell.syntax
@@ -282,21 +317,15 @@ trait Parsing { self: Syntaxes =>
 
               recTrees += recId -> rec
 
+              buildTree(recInner)
+
               rec
             }
             case Some(rec) => rec.asInstanceOf[Tree[A]]
           }
         }
 
-        syntaxToParserCache.put(syntaxCell.syntax, Focused[A, A](tree, Empty[A]()))
-
-        val properties = Properties(
-          syntaxCell.nullableCell.get,
-          syntaxCell.firstCell.get,
-          syntaxCell.snfCell.get.flatMap(_.kinds),
-          syntaxCell.conflictCell.get)
-
-        syntaxToPropertiesCache.put(syntaxCell.syntax, properties)
+        syntaxToTreeCache.put(syntaxCell.syntax, tree)
 
         tree
       }
