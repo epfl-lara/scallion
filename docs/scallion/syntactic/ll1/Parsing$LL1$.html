@@ -313,6 +313,23 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">LL(1) parser.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Properties[A]extendsProductwithSerializable"></a><a id="Properties[A]:Properties[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#Properties[A]extendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains properties of syntaxes." href="Parsing$LL1$$Properties.html"><span class="name">Properties</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="nullable">nullable: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Properties.A">A</span>]</span>, <span name="first">first: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="shouldNotFollow">shouldNotFollow: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="conflicts">conflicts: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Contains properties of syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Contains properties of syntaxes.
+</p></div><dl class="paramcmts block"><dt class="param">nullable</dt><dd class="cmt"><p>A value associated to the empty string, if any.</p></dd><dt class="param">first</dt><dd class="cmt"><p>The set of token kinds that can start valid sequences.</p></dd><dt class="param">shouldNotFollow</dt><dd class="cmt"><p>The set of token kinds that should not follow in sequence.</p></dd><dt class="param">conflicts</dt><dd class="cmt"><p>The set of LL(1) conflicts of the syntax.</p></dd></dl></div>
     </li><li name="scallion.syntactic.ll1.Parsing.LL1.UnexpectedEnd" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="result">
       <a id="UnexpectedEnd[A]extendsParsing.LL1.ParseResult[A]withProductwithSerializable"></a><a id="UnexpectedEnd[A]:UnexpectedEnd[A]"></a>
       <span class="permalink">
@@ -404,9 +421,9 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scallion.syntactic.ll1.Parsing.LL1#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="parsing">
-      <a id="apply[A](syntax:Parsing.this.Syntax[A]):scallion.syntactic.ll1.Parsing.LL1.Parser[A]"></a><a id="apply[A]((Parsing.this)#Syntax[A]):Parser[A]"></a>
+      <a id="apply[A](syntax:Parsing.this.Syntax[A],enforceLL1:Boolean):scallion.syntactic.ll1.Parsing.LL1.Parser[A]"></a><a id="apply[A]((Parsing.this)#Syntax[A],Boolean):Parser[A]"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#apply[A](syntax:Parsing.this.Syntax[A]):scallion.syntactic.ll1.Parsing.LL1.Parser[A]" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$.html#apply[A](syntax:Parsing.this.Syntax[A],enforceLL1:Boolean):scallion.syntactic.ll1.Parsing.LL1.Parser[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -415,11 +432,13 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>)</span><span class="result">: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>, <span name="enforceLL1">enforceLL1: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <a href="Parsing$LL1$$Parser.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Parser">Parser</a>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.apply.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Builds a LL(1) parser from a syntax description.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a LL(1) parser from a syntax description.
-</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The description of the syntax.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><a href="Parsing$LL1$$ConflictException.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ConflictException"><code>ConflictException</code></a> in case the syntax is not LL(1).</p></span></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The description of the syntax.</p></dd><dt class="param">enforceLL1</dt><dd class="cmt"><p>Indicates if the method should throw a
+                  <code>ConflictException</code> when the <code>syntax</code> is not LL(1).
+                  <code>true</code> by default.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><a href="Parsing$LL1$$ConflictException.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.ConflictException"><code>ConflictException</code></a> when the <code>syntax</code> is not LL(1) and <code>enforceLL1</code> is not set to <code>false</code>.</p></span></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -452,6 +471,8 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       </span>
       
       <p class="shortcomment cmt">Builds a LL(1) parser from a syntax description.</p><div class="fullcomment"><div class="comment cmt"><p>Builds a LL(1) parser from a syntax description.
+In case the syntax is not LL(1),
+returns the set of conflicts instead of a parser.
 </p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The description of the syntax.</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>

@@ -165,7 +165,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
       
       <p class="shortcomment cmt">Factory of LL(1) parsers.</p><div class="fullcomment"><div class="comment cmt"><p>Factory of LL(1) parsers.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a></dd></dl></div>
     </li><li class="current-entities indented5">
-                        <a class="object" href="" title="Contains the description of the various LL(1) conflicts."></a>
+                        <a class="object" href="Parsing$LL1$$Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
                         <a class="trait" href="Parsing$LL1$$Conflict.html" title="Describes a LL(1) conflict."></a>
                         <a href="Parsing$LL1$$Conflict.html" title="Describes a LL(1) conflict.">Conflict</a>
                       </li><li class="current-entities indented5">
@@ -186,8 +186,8 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                         <a href="Parsing$LL1$$Parser.html" title="LL(1) parser.">Parser</a>
                       </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="class" href="Parsing$LL1$$Properties.html" title="Contains properties of syntaxes."></a>
-                        <a href="Parsing$LL1$$Properties.html" title="Contains properties of syntaxes.">Properties</a>
+                        <a class="class" href="" title="Contains properties of syntaxes."></a>
+                        <a href="" title="Contains properties of syntaxes.">Properties</a>
                       </li><li class="current-entities indented5">
                         <span class="separator"></span>
                         <a class="class" href="Parsing$LL1$$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered."></a>
@@ -201,37 +201,35 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="class type">
       <div id="definition">
-        <a href="Parsing$LL1$$Conflict.html" title="See companion trait"><div class="big-circle object-companion-trait">o</div></a>
+        <div class="big-circle class">c</div>
         <p id="owner"><a href="../../index.html" class="extype" name="scallion">scallion</a>.<a href="../index.html" class="extype" name="scallion.syntactic">syntactic</a>.<a href="index.html" class="extype" name="scallion.syntactic.ll1">ll1</a>.<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.<a href="Parsing$LL1$.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1">LL1</a></p>
-        <h1><a href="Parsing$LL1$$Conflict.html" title="See companion trait">Conflict</a><span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html" title="Permalink">
+        <h1>Properties<span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"><div>
-            Companion <a href="Parsing$LL1$$Conflict.html" title="See companion trait">trait Conflict</a>
-          </div></span></h3>
+        <h3><span class="morelinks"></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Conflict</span>
+        <span class="name">Properties</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="nullable">nullable: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Properties.A">A</span>]</span>, <span name="first">first: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="shouldNotFollow">shouldNotFollow: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="conflicts">conflicts: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains the description of the various LL(1) conflicts.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/ll1/Parsing.scala" target="_blank">Parsing.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains properties of syntaxes.
+</p></div><dl class="paramcmts block"><dt class="param">nullable</dt><dd class="cmt"><p>A value associated to the empty string, if any.</p></dd><dt class="param">first</dt><dd class="cmt"><p>The set of token kinds that can start valid sequences.</p></dd><dt class="param">shouldNotFollow</dt><dd class="cmt"><p>The set of token kinds that should not follow in sequence.</p></dd><dt class="param">conflicts</dt><dd class="cmt"><p>The set of LL(1) conflicts of the syntax.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/syntactic/ll1/Parsing.scala" target="_blank">Parsing.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -257,7 +255,7 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scallion.syntactic.ll1.Parsing.LL1.Conflict"><span>Conflict</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scallion.syntactic.ll1.Parsing.LL1.Properties"><span>Properties</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -275,67 +273,28 @@ See the package <a href="../../index.html" class="extype" name="scallion">scalli
 
       <div id="template">
         <div id="allMembers">
-        
-
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="scallion.syntactic.ll1.Parsing.LL1.Conflict.FirstConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="FirstConflictextendsParsing.LL1.ConflictwithProductwithSerializable"></a><a id="FirstConflict:FirstConflict"></a>
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(nullable:Option[A],first:Set[Parsing.this.Kind],shouldNotFollow:Set[Parsing.this.Kind],conflicts:Set[scallion.syntactic.ll1.Parsing.LL1.Conflict]):scallion.syntactic.ll1.Parsing.LL1.Properties[A]"></a><a id="&lt;init&gt;:Properties[A]"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#FirstConflictextendsParsing.LL1.ConflictwithProductwithSerializable" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#&lt;init&gt;(nullable:Option[A],first:Set[Parsing.this.Kind],shouldNotFollow:Set[Parsing.this.Kind],conflicts:Set[scallion.syntactic.ll1.Parsing.LL1.Conflict]):scallion.syntactic.ll1.Parsing.LL1.Properties[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <a title="Indicates that two branches of a disjunction share some same first token kinds." href="Parsing$LL1$$Conflict$$FirstConflict.html"><span class="name">FirstConflict</span></a><span class="params">(<span name="source">source: <a href="../Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Properties</span><span class="params">(<span name="nullable">nullable: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Properties.A">A</span>]</span>, <span name="first">first: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="shouldNotFollow">shouldNotFollow: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>, <span name="conflicts">conflicts: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>]</span>)</span>
       </span>
       
-      <p class="shortcomment cmt">Indicates that two branches of a disjunction share some same first token kinds.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that two branches of a disjunction share some same first token kinds.
-</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
-    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Conflict.FollowConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="FollowConflictextendsParsing.LL1.ConflictwithProductwithSerializable"></a><a id="FollowConflict:FollowConflict"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#FollowConflictextendsParsing.LL1.ConflictwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Indicates that an ambiguity arises due to a disjunction appearing somewhere in the left-hand side of a sequence, that conflicts with the right-hand side of that sequence." href="Parsing$LL1$$Conflict$$FollowConflict.html"><span class="name">FollowConflict</span></a><span class="params">(<span name="source">source: <a href="../Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>, <span name="root">root: <a href="../Syntaxes$Syntax$$Sequence.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Sequence">Sequence</a>[_, _]</span>, <span name="ambiguities">ambiguities: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Indicates that an ambiguity arises due to a disjunction appearing somewhere in
-the left-hand side of a sequence, that conflicts with the right-hand side of
-that sequence.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that an ambiguity arises due to a disjunction appearing somewhere in
-the left-hand side of a sequence, that conflicts with the right-hand side of
-that sequence.
-</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd><dt class="param">root</dt><dd class="cmt"><p>The sequence in which the conflict occured.</p></dd><dt class="param">ambiguities</dt><dd class="cmt"><p>The conflicting kinds.</p></dd></dl></div>
-    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Conflict.NullableConflict" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="NullableConflictextendsParsing.LL1.ConflictwithProductwithSerializable"></a><a id="NullableConflict:NullableConflict"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#NullableConflictextendsParsing.LL1.ConflictwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="Indicates that both branches of a disjunction are nullable." href="Parsing$LL1$$Conflict$$NullableConflict.html"><span class="name">NullableConflict</span></a><span class="params">(<span name="source">source: <a href="../Syntaxes$Syntax$$Disjunction.html" class="extype" name="scallion.syntactic.Syntaxes.Syntax.Disjunction">Disjunction</a>[_]</span>)</span><span class="result"> extends <a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Indicates that both branches of a disjunction are nullable.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that both branches of a disjunction are nullable.
-</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>The source of the conflict.</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">nullable</dt><dd class="cmt"><p>A value associated to the empty string, if any.</p></dd><dt class="param">first</dt><dd class="cmt"><p>The set of token kinds that can start valid sequences.</p></dd><dt class="param">shouldNotFollow</dt><dd class="cmt"><p>The set of token kinds that should not follow in sequence.</p></dd><dt class="param">conflicts</dt><dd class="cmt"><p>The set of LL(1) conflicts of the syntax.</p></dd></dl></div>
     </li></ol>
             </div>
+
+        
 
         
 
@@ -345,7 +304,7 @@ that sequence.
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -361,7 +320,7 @@ that sequence.
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html###():Int" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -377,7 +336,7 @@ that sequence.
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -393,7 +352,7 @@ that sequence.
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -409,7 +368,7 @@ that sequence.
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#clone():Object" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -430,10 +389,26 @@ that sequence.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#conflicts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="conflicts:Set[scallion.syntactic.ll1.Parsing.LL1.Conflict]"></a><a id="conflicts:Set[Conflict]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#conflicts:Set[scallion.syntactic.ll1.Parsing.LL1.Conflict]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">conflicts</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Parsing$LL1$$Conflict.html" class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Conflict">Conflict</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -446,26 +421,10 @@ that sequence.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#equals(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#finalize():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -484,10 +443,26 @@ that sequence.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#first" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="first:Set[Parsing.this.Kind]"></a><a id="first:Set[(Parsing.this)#Kind]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#first:Set[Parsing.this.Kind]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">first</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -503,29 +478,10 @@ that sequence.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#hashCode():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -538,10 +494,58 @@ that sequence.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#isLL1" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isLL1:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#isLL1:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLL1</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates if the syntax is LL(1).</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#isNullable" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isNullable:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#isNullable:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isNullable</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates if the syntax accepts the empty sequence.</p>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#isProductive" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isProductive:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#isProductive:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isProductive</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Indicates if the syntax accepts at least one sequence.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -557,7 +561,7 @@ that sequence.
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#notify():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -576,7 +580,7 @@ that sequence.
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -592,10 +596,42 @@ that sequence.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#nullable" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="nullable:Option[A]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#nullable:Option[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nullable</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.syntactic.ll1.Parsing.LL1.Properties.A">A</span>]</span>
+      </span>
+      
+      
+    </li><li name="scallion.syntactic.ll1.Parsing.LL1.Properties#shouldNotFollow" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="shouldNotFollow:Set[Parsing.this.Kind]"></a><a id="shouldNotFollow:Set[(Parsing.this)#Kind]"></a>
+      <span class="permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#shouldNotFollow:Set[Parsing.this.Kind]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shouldNotFollow</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[(<a href="Parsing.html" class="extype" name="scallion.syntactic.ll1.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.syntactic.Syntaxes.Kind">Kind</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -608,26 +644,10 @@ that sequence.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#toString():String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#wait():Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -649,7 +669,7 @@ that sequence.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -671,7 +691,7 @@ that sequence.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Conflict$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../scallion/syntactic/ll1/Parsing$LL1$$Properties.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -702,7 +722,15 @@ that sequence.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
