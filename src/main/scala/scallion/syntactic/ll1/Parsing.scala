@@ -16,17 +16,55 @@
 package scallion.syntactic
 package ll1
 
+import scala.language.implicitConversions
+
 import scala.annotation.tailrec
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.HashMap
+
+import java.util.WeakHashMap
 
 import scallion.util.internal._
 
 /** This trait implements LL(1) parsing with derivatives. */
 trait Parsing { self: Syntaxes =>
 
+  /** Cache of computation of LL(1) properties for syntaxes. */
+  private val syntaxToPropertiesCache: WeakHashMap[Syntax[_], LL1.Properties[_]] = new WeakHashMap()
+
+  /** Decorates syntaxes with methods for LL(1) properties. */
+  implicit def syntaxToLL1Properties[A](syntax: Syntax[A]): LL1.Properties[A] = {
+    if (!syntaxToPropertiesCache.containsKey(syntax)) {
+      LL1(syntax, enforceLL1=false)
+    }
+    syntaxToPropertiesCache.get(syntax).asInstanceOf[LL1.Properties[A]]
+  }
+
   /** Factory of LL(1) parsers. */
   object LL1 {
+
+    /** Contains properties of syntaxes.
+      *
+      * @param nullable        A value associated to the empty string, if any.
+      * @param first           The set of token kinds that can start valid sequences.
+      * @param shouldNotFollow The set of token kinds that should not follow in sequence.
+      * @param conflicts       The set of LL(1) conflicts of the syntax.
+      */
+    case class Properties[A](
+        nullable: Option[A],
+        first: Set[Kind],
+        shouldNotFollow: Set[Kind],
+        conflicts: Set[Conflict]) {
+
+      /** Indicates if the syntax accepts the empty sequence. */
+      def isNullable: Boolean = nullable.nonEmpty
+
+      /** Indicates if the syntax accepts at least one sequence. */
+      def isProductive: Boolean = isNullable || first.nonEmpty
+
+      /** Indicates if the syntax is LL(1). */
+      def isLL1: Boolean = conflicts.isEmpty
+    }
 
     /** Describes a LL(1) conflict.
       *
@@ -34,10 +72,8 @@ trait Parsing { self: Syntaxes =>
       */
     sealed trait Conflict {
 
-      import Syntax._
-
       /** Source of the conflict. */
-      val source: Disjunction[_]
+      val source: Syntax.Disjunction[_]
     }
 
     /** Contains the description of the various LL(1) conflicts.
@@ -87,24 +123,43 @@ trait Parsing { self: Syntaxes =>
     case class ConflictException(conflicts: Set[Conflict]) extends Exception("Syntax is not LL(1).")
 
     /** Builds a LL(1) parser from a syntax description.
+      * In case the syntax is not LL(1),
+      * returns the set of conflicts instead of a parser.
       *
       * @param syntax The description of the syntax.
       * @group parsing
       */
     def build[A](syntax: Syntax[A]): Either[Set[Conflict], Parser[A]] =
-      util.Try(apply(syntax)) match {
+      util.Try(apply(syntax, enforceLL1=true)) match {
         case util.Success(parser) => Right(parser)
         case util.Failure(ConflictException(conflicts)) => Left(conflicts)
         case util.Failure(exception) => throw exception
       }
 
+    /** Cache of transformation from syntax to LL(1) parser. */
+    private val syntaxToParserCache: WeakHashMap[Syntax[_], LL1.Parser[_]] = new WeakHashMap()
+
     /** Builds a LL(1) parser from a syntax description.
       *
-      * @param syntax The description of the syntax.
-      * @throws ConflictException in case the syntax is not LL(1).
+      * @param syntax     The description of the syntax.
+      * @param enforceLL1 Indicates if the method should throw a
+      *                   `ConflictException` when the `syntax` is not LL(1).
+      *                   `true` by default.
+      * @throws ConflictException when the `syntax` is not LL(1) and `enforceLL1` is not set to `false`.
       * @group parsing
       */
-    def apply[A](syntax: Syntax[A]): Parser[A] = {
+    def apply[A](syntax: Syntax[A], enforceLL1: Boolean = true): Parser[A] = {
+
+      // Handles caching.
+      if (syntaxToParserCache.containsKey(syntax)) {
+        lazy val conflicts = syntaxToPropertiesCache.get(syntax).conflicts
+        if (enforceLL1 && conflicts.nonEmpty) {
+          throw ConflictException(conflicts)
+        }
+        return syntaxToParserCache.get(syntax).asInstanceOf[Parser[A]]
+      }
+
+      // Cache miss... Real work begins.
 
       val recCells: HashMap[RecId, Any] = new HashMap()
 
@@ -133,7 +188,6 @@ trait Parsing { self: Syntaxes =>
       syntaxCell.init()
 
       var recChecked: Set[RecId] = Set()
-      var conflicts: Set[Conflict] = Set()
 
       def checkConflicts[A](syntaxCell: SyntaxCell[A]): Unit = syntaxCell match {
         case SyntaxCell.Success(value, _) => ()
@@ -143,12 +197,13 @@ trait Parsing { self: Syntaxes =>
           checkConflicts(left)
           checkConflicts(right)
           if (left.nullableCell.get.nonEmpty && right.nullableCell.get.nonEmpty) {
-            conflicts += NullableConflict(syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]])
+            syntaxCell.conflictCell(Set(NullableConflict(
+              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]])))
           }
           val intersecting = left.firstCell.get.intersect(right.firstCell.get)
           if (intersecting.nonEmpty) {
-            conflicts += FirstConflict(
-              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]], intersecting)
+            syntaxCell.conflictCell(Set(FirstConflict(
+              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]], intersecting)))
           }
         }
         case SyntaxCell.Sequence(left: SyntaxCell[tA], right: SyntaxCell[tB], syntax) => {
@@ -159,8 +214,8 @@ trait Parsing { self: Syntaxes =>
           for (entry <- snfEntries) {
             val ambiguities = entry.kinds.intersect(firstSet)
             if (ambiguities.nonEmpty) {
-              conflicts += FollowConflict(
-                entry.source, syntaxCell.syntax.asInstanceOf[Syntax.Sequence[_, _]], ambiguities)
+              syntaxCell.conflictCell(Set(FollowConflict(
+                entry.source, syntaxCell.syntax.asInstanceOf[Syntax.Sequence[_, _]], ambiguities)))
             }
           }
         }
@@ -175,68 +230,85 @@ trait Parsing { self: Syntaxes =>
 
       checkConflicts(syntaxCell)
 
-      if (conflicts.nonEmpty) {
-        throw ConflictException(conflicts)
-      }
-
       val recTrees: HashMap[RecId, Any] = new HashMap()
 
-      def buildTree[A](syntaxCell: SyntaxCell[A]): Tree[A] = syntaxCell match {
-        case SyntaxCell.Success(value, _) =>
-          new Tree.Success(value) {
-            override val nullable: Option[A] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[A] = syntaxCell.syntax
-          }
-        case SyntaxCell.Failure(_) =>
-          new Tree.Failure[A]() {
-            override val nullable: Option[A] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[A] = syntaxCell.syntax
-          }
-        case SyntaxCell.Elem(kind, _) =>
-          new Tree.Elem(kind) {
-            override val nullable: Option[Token] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[Token] = syntaxCell.syntax
-          }
-        case SyntaxCell.Disjunction(left, right, _) =>
-          new Tree.Disjunction[A](buildTree(left), buildTree(right)) {
-            override val nullable: Option[A] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[A] = syntaxCell.syntax
-          }
-        case SyntaxCell.Sequence(left: SyntaxCell[tA], right: SyntaxCell[tB], _) =>
-          new Tree.Sequence[tA, tB](buildTree(left), buildTree(right)) {
-            override val nullable: Option[tA ~ tB] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[tA ~ tB] = syntaxCell.syntax
-          }
-        case SyntaxCell.Transform(inner: SyntaxCell[tA], function, inverse, _) =>
-          new Tree.Transform[tA, A](buildTree(inner), function, inverse) {
-            override val nullable: Option[A] = syntaxCell.nullableCell.get
-            override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
-            override val syntax: Syntax[A] = syntaxCell.syntax
-          }
-        case SyntaxCell.Recursive(recInner, recId, _) => recTrees.get(recId) match {
-          case None => {
-            val rec = new Tree.Recursive[A] {
-              override val id = recId
-              override lazy val inner: Tree[A] = buildTree(recInner)
+      def buildTree[A](syntaxCell: SyntaxCell[A]): Tree[A] = {
+        val tree: Tree[A] = syntaxCell match {
+          case SyntaxCell.Success(value, _) =>
+            new Tree.Success(value) {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
               override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
+          case SyntaxCell.Failure(_) =>
+            new Tree.Failure[A]() {
+              override val nullable: Option[A] = syntaxCell.nullableCell.get
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val syntax: Syntax[A] = syntaxCell.syntax
+            }
+          case SyntaxCell.Elem(kind, _) =>
+            new Tree.Elem(kind) {
+              override val nullable: Option[Token] = syntaxCell.nullableCell.get
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val syntax: Syntax[Token] = syntaxCell.syntax
+            }
+          case SyntaxCell.Disjunction(left, right, _) =>
+            new Tree.Disjunction[A](buildTree(left), buildTree(right)) {
+              override val nullable: Option[A] = syntaxCell.nullableCell.get
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val syntax: Syntax[A] = syntaxCell.syntax
+            }
+          case SyntaxCell.Sequence(left: SyntaxCell[tA], right: SyntaxCell[tB], _) =>
+            new Tree.Sequence[tA, tB](buildTree(left), buildTree(right)) {
+              override val nullable: Option[tA ~ tB] = syntaxCell.nullableCell.get
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val syntax: Syntax[tA ~ tB] = syntaxCell.syntax
+            }
+          case SyntaxCell.Transform(inner: SyntaxCell[tA], function, inverse, _) =>
+            new Tree.Transform[tA, A](buildTree(inner), function, inverse) {
+              override val nullable: Option[A] = syntaxCell.nullableCell.get
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val syntax: Syntax[A] = syntaxCell.syntax
+            }
+          case SyntaxCell.Recursive(recInner, recId, _) => recTrees.get(recId) match {
+            case None => {
+              val rec = new Tree.Recursive[A] {
+                override val id = recId
+                override lazy val inner: Tree[A] = buildTree(recInner)
+                override val nullable: Option[A] = syntaxCell.nullableCell.get
+                override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+                override val syntax: Syntax[A] = syntaxCell.syntax
+              }
 
-            recTrees += recId -> rec
+              recTrees += recId -> rec
 
-            rec
+              rec
+            }
+            case Some(rec) => rec.asInstanceOf[Tree[A]]
           }
-          case Some(rec) => rec.asInstanceOf[Tree[A]]
         }
+
+        syntaxToParserCache.put(syntaxCell.syntax, Focused[A, A](tree, Empty[A]()))
+
+        val properties = Properties(
+          syntaxCell.nullableCell.get,
+          syntaxCell.firstCell.get,
+          syntaxCell.snfCell.get.flatMap(_.kinds),
+          syntaxCell.conflictCell.get)
+
+        syntaxToPropertiesCache.put(syntaxCell.syntax, properties)
+
+        tree
       }
 
-      Focused(buildTree(syntaxCell), Empty())
+      val tree: Tree[A] = buildTree(syntaxCell)
+
+      lazy val conflicts: Set[Conflict] = syntaxToPropertiesCache.get(syntaxCell.syntax).conflicts
+      if (enforceLL1 && conflicts.nonEmpty) {
+        throw ConflictException(conflicts)
+      }
+
+      Focused(tree, Empty())
     }
 
     private sealed trait SyntaxCell[A] {
@@ -248,6 +320,7 @@ trait Parsing { self: Syntaxes =>
       val firstCell: Cell[Set[Kind], Set[Kind], Set[Kind]] = new SetCell[Kind]
       val snfCell: Cell[Set[ShouldNotFollowEntry],
         Set[ShouldNotFollowEntry], Set[ShouldNotFollowEntry]] = new SetCell[ShouldNotFollowEntry]
+      val conflictCell: Cell[Set[Conflict], Set[Conflict], Set[Conflict]] = new SetCell[Conflict]
     }
 
     private object SyntaxCell {
@@ -304,6 +377,9 @@ trait Parsing { self: Syntaxes =>
           right.firstCell.register(snfRight.contramap(ks =>
             Some(Set(ShouldNotFollowEntry(syntax.asInstanceOf[Syntax.Disjunction[_]], ks)))))
           snfRight.register(snfCell)
+
+          left.conflictCell.register(conflictCell)
+          right.conflictCell.register(conflictCell)
         }
       }
       case class Sequence[A, B](left: SyntaxCell[A], right: SyntaxCell[B], syntax: Syntax[A ~ B])
@@ -359,6 +435,9 @@ trait Parsing { self: Syntaxes =>
           left.productiveCell.register(snfRight.contramap((_: Unit) => None))
           right.snfCell.register(snfRight.contramap(Some(_)))
           snfRight.register(snfCell)
+
+          left.conflictCell.register(conflictCell)
+          right.conflictCell.register(conflictCell)
         }
       }
       case class Transform[A, B](
@@ -374,6 +453,7 @@ trait Parsing { self: Syntaxes =>
           inner.nullableCell.register(nullableCell.contramap(function))
           inner.firstCell.register(firstCell)
           inner.snfCell.register(snfCell)
+          inner.conflictCell.register(conflictCell)
         }
       }
       abstract class Recursive[A] extends SyntaxCell[A] {
@@ -392,6 +472,7 @@ trait Parsing { self: Syntaxes =>
             inner.nullableCell.register(nullableCell)
             inner.firstCell.register(firstCell)
             inner.snfCell.register(snfCell)
+            inner.conflictCell.register(conflictCell)
           }
         }
       }

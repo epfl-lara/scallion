@@ -69,8 +69,8 @@ trait Debug { self: Syntaxes with ll1.Parsing =>
           conflict match {
             case NullableConflict(source) => {
               builder ++= "There exists a disjunction where both alternatives are nullable.\n"
-              // builder ++= s"The nullable value on the left branch is ${source.left.nullable.get},\n"
-              // builder ++= s"while the value on the right branch is ${source.right.nullable.get}.\n"
+              builder ++= s"The nullable value on the left branch is ${source.left.nullable.get},\n"
+              builder ++= s"while the value on the right branch is ${source.right.nullable.get}.\n"
             }
             case FirstConflict(source, kinds) => {
               builder ++= "There exists a disjunction where "
@@ -82,10 +82,10 @@ trait Debug { self: Syntaxes with ll1.Parsing =>
                 builder ++= "The ambiguous token kinds are "
               }
               builder ++= s"${kinds.mkString(", ")}.\n"
-              // builder ++= "The first set of the left branch is "
-              // builder ++= s"{ ${source.left.first.mkString(", ")} },\n"
-              // builder ++= "while the first set of the right branch is "
-              // builder ++= s"{ ${source.right.first.mkString(", ")} }.\n"
+              builder ++= "The first set of the left branch is "
+              builder ++= s"{ ${source.left.first.mkString(", ")} },\n"
+              builder ++= "while the first set of the right branch is "
+              builder ++= s"{ ${source.right.first.mkString(", ")} }.\n"
             }
             case FollowConflict(source, root, kinds) => {
               builder ++= "There exists a nullable syntax directly followed by "
@@ -97,10 +97,10 @@ trait Debug { self: Syntaxes with ll1.Parsing =>
                 builder ++= "The ambiguous token kinds are "
               }
               builder ++= s"${kinds.mkString(", ")}.\n"
-              // builder ++= "The first set of the nullable syntax is "
-              // builder ++= s"{ ${source.first.mkString(", ")} },\n"
-              // builder ++= "while first set of the syntax that directly follows is "
-              // builder ++= s"{ ${root.right.first.mkString(", ")} }.\n"
+              builder ++= "The first set of the nullable syntax is "
+              builder ++= s"{ ${source.first.mkString(", ")} },\n"
+              builder ++= "while first set of the syntax that directly follows is "
+              builder ++= s"{ ${root.right.first.mkString(", ")} }.\n"
             }
           }
           builder ++= "\n"
