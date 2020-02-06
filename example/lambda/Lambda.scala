@@ -98,7 +98,7 @@ case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object LambdaSyntax extends Syntaxes with ll1.Parsing {
+object LambdaSyntax extends Syntaxes with zpwd.Parsing {
 
   type Token = example.lambda.Token
   type Kind = TokenClass
@@ -160,7 +160,7 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing {
   lazy val basic: Syntax[Expr] = variable | open.skip ~ expr ~ close.skip
 
   // Lambda expression.
-  lazy val lambdaExpr: Syntax[Expr] = (lambda.skip ~ many1(name) ~ dot.skip ~ expr).map({
+  lazy val lambdaExpr: Syntax[Expr] = (many1(name) ~ dot.skip ~ expr).map({
     // Given a sequence of names and the expression body, we create the corresponding lambda.
     case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
       case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.
@@ -195,7 +195,7 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing {
 
   //def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
 
-  val parser = LL1(expr)
+  val parser = ZPWD(expr)
 
   def apply(text: String): Option[Expr] = parser(LambdaLexer(text.iterator)).getValue
 }
