@@ -26,18 +26,18 @@ import java.util.WeakHashMap
 
 import scallion.util.internal._
 
-/** This trait implements LL(1) parsing with derivatives. */
+/** This trait implements generalized zippy parsing with derivatives. */
 trait Parsing { self: Syntaxes =>
 
-  /** Factory of LL(1) parsers. */
+  /** Factory of parsers. */
   object ZPWD {
 
-    /** Cache of transformation from syntax to LL(1) parser. */
+    /** Cache of transformation from syntax to parser. */
     private val syntaxToTreeCache: WeakHashMap[Syntax[_], Tree[_]] = new WeakHashMap()
 
-    /** Builds a LL(1) parser from a syntax description.
+    /** Builds a parser from a syntax description.
       *
-      * @param syntax     The description of the syntax.
+      * @param syntax The description of the syntax.
       * @group parsing
       */
     def apply[A](syntax: Syntax[A]): Parser[A] = {
@@ -331,7 +331,7 @@ trait Parsing { self: Syntaxes =>
       */
     case class UnexpectedEnd[A](rest: Parser[A]) extends ParseResult[A]
 
-    /** LL(1) parser.
+    /** Zippy parsing with derivatives parser.
       *
       * @group parsing
       */
@@ -511,7 +511,7 @@ trait Parsing { self: Syntaxes =>
             res += focused
           }
 
-          if (syntax.isNullable && !context.isEmpty) { // TODO: Check first of context also here for performance.
+          if (syntax.isNullable && !context.isEmpty) { // TODO: Check first of context also here for performance?
             val nullValue = syntax.nullable.get
 
             for (focused <- context.plugAll(nullValue)) {
