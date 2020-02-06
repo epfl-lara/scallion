@@ -539,6 +539,13 @@ trait Parsing { self: Syntaxes =>
         case Parsed(value, _) => Some(value)
         case _ => None
       }
+
+      /** Apply the given function on the result of the parse */
+      def map[B](f: A => B): ParseResult[B] = this match {
+        case Parsed(value, rest)          => Parsed(f(value), rest.map(f))
+        case UnexpectedEnd(rest)          => UnexpectedEnd(rest.map(f))
+        case UnexpectedToken(token, rest) => UnexpectedToken(token, rest.map(f))
+      }
     }
 
     /** Indicates that the input has been fully parsed, resulting in a `value`.
@@ -577,7 +584,7 @@ trait Parsing { self: Syntaxes =>
       *
       * @group parsing
       */
-    sealed trait Parser[A] {
+    sealed trait Parser[A] { self =>
 
       /** The value, if any, corresponding to the empty sequence of tokens in `this` parser.
         *
@@ -614,6 +621,22 @@ trait Parsing { self: Syntaxes =>
         * @group parsing
         */
       def apply(tokens: Iterator[Token]): ParseResult[A]
+
+      /** Apply the given function on the result of the parser.
+       *
+       * @group parsing
+       */
+      def map[B](f: A => B): Parser[B] = {
+        new Parser[B] {
+          def nullable = self.nullable.map(f)
+          def first = self.first
+          def syntax = self.syntax.map(f)
+
+          def apply(tokens: Iterator[Token]): ParseResult[B] = {
+            self.apply(tokens).map(f)
+          }
+        }
+      }
     }
 
     private case class Focused[A, B](tree: Tree[B], context: Context[B, A]) extends Parser[A] {
