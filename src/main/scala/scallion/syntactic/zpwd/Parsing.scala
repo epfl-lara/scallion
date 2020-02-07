@@ -442,26 +442,46 @@ trait Parsing { self: Syntaxes =>
     private trait Context[A, B] {
       import Context._
 
+      val first: Set[Kind]
+
       def isEmpty: Boolean = this match {
         case Empty() => true
         case _ => false
       }
 
-      def plugAll(value: A): Iterable[FocusedSyntax[B]] = this match {
-        case PrependValue(first, rest) => rest.plugAll(first ~ value)
-        case FollowBy(syntax, rest) => List(FocusedPair(syntax, PrependValue(value, rest)))
-        case ApplyFunction(function, rest) => rest.plugAll(function(value))
-        case Alternatives(rests) => rests.flatMap(_.plugAll(value))
-        case _: Empty[t] => List(FocusedPair(Tree.epsilon(value), this))
+      def plug(value: A): FocusedSyntax[B] = this match {
+        case PrependValue(first, rest) => rest.plug(first ~ value)
+        case FollowBy(tree, rest) => FocusedPair(tree, PrependValue(value, rest))
+        case ApplyFunction(function, _, rest) => rest.plug(function(value))
+        case _: Empty[t] => FocusedPair(Tree.epsilon(value), this)
+      }
+
+      def toSyntax(syntax: Syntax[A]): Syntax[B] = this match {
+        case PrependValue(first, rest) => rest.toSyntax(epsilon(first) ~ syntax)
+        case FollowBy(tree, rest) => rest.toSyntax(syntax ~ tree.syntax)
+        case ApplyFunction(function, inverse, rest) => rest.toSyntax(syntax.map(function, inverse))
+        case _: Empty[t] => syntax.asInstanceOf[Syntax[B]]
       }
     }
 
     private object Context {
-      case class PrependValue[A, B, C](value: A, rest: Context[A ~ B, C]) extends Context[B, C]
-      case class FollowBy[A, B, C](syntax: Tree[B], rest: Context[A ~ B, C]) extends Context[A, C]
-      case class ApplyFunction[A, B, C](function: A => B, rest: Context[B, C]) extends Context[A, C]
-      case class Alternatives[A, B](rest: ListBuffer[Context[A, B]]) extends Context[A, B]
-      case class Empty[A]() extends Context[A, A]
+      case class PrependValue[A, B, C](value: A, rest: Context[A ~ B, C]) extends Context[B, C] {
+        override val first: Set[Kind] = rest.first
+      }
+      case class FollowBy[A, B, C](syntax: Tree[B], rest: Context[A ~ B, C]) extends Context[A, C] {
+        override val first: Set[Kind] =
+          if (syntax.isNullable) {
+            syntax.first union rest.first
+          } else {
+            syntax.first
+          }
+      }
+      case class ApplyFunction[A, B, C](function: A => B, inverse: B => Seq[A], rest: Context[B, C]) extends Context[A, C] {
+        override val first: Set[Kind] = rest.first
+      }
+      case class Empty[A]() extends Context[A, A] {
+        override val first: Set[Kind] = Set.empty[Kind]
+      }
     }
 
     private case class State[A](focuseds: Iterable[FocusedSyntax[A]]) extends Parser[A] {
@@ -472,9 +492,9 @@ trait Parsing { self: Syntaxes =>
 
       override def isProductive: Boolean = isNullable || first.nonEmpty
 
-      override def first: Set[Kind] = ???
+      override def first: Set[Kind] = focuseds.foldLeft(Set.empty[Kind])(_ union _.first)
 
-      override def syntax: Syntax[A] = ???
+      override def syntax: Syntax[A] = focuseds.foldLeft(failure[A])(_ | _.syntax)
 
       override def apply(tokens: Iterator[Token]): ParseResult[A] = {
         var current: State[A] = this
@@ -485,7 +505,7 @@ trait Parsing { self: Syntaxes =>
 
           val located = current.locateAll(kind)
           val pierced = State(located).pierceAll(kind)
-          val plugged = pierced.flatMap(_.plugAll(token))
+          val plugged = pierced.map(_.plug(token))
 
           if (plugged.isEmpty) {
             return UnexpectedToken(token, current)
@@ -511,12 +531,10 @@ trait Parsing { self: Syntaxes =>
             res += focused
           }
 
-          if (syntax.isNullable && !context.isEmpty) { // TODO: Check first of context also here for performance?
+          if (syntax.isNullable && context.first.contains(kind)) {
             val nullValue = syntax.nullable.get
 
-            for (focused <- context.plugAll(nullValue)) {
-              locate(focused)
-            }
+            locate(context.plug(nullValue))
           }
         }
 
@@ -560,19 +578,11 @@ trait Parsing { self: Syntaxes =>
               pierce(rhs, PrependValue(lhs.nullable.get, context))
             }
           }
-          case Transform(inner, function, _) => {
-            pierce(inner, ApplyFunction(function, context))
+          case Transform(inner, function, inverse) => {
+            pierce(inner, ApplyFunction(function, inverse, context))
           }
           case Recursive(id, inner) => {
-            cache.get(id) match {
-              case Some(buffer) => buffer += context
-              case None => {
-                val buffer: ListBuffer[Context[_, A]] = new ListBuffer()
-                buffer += context
-                cache(id) = buffer
-                pierce(inner, Alternatives(buffer.asInstanceOf[ListBuffer[Context[B, A]]]))
-              }
-            }
+            pierce(inner, context)
           }
           case _ => ()
         }
@@ -587,16 +597,29 @@ trait Parsing { self: Syntaxes =>
     }
 
     private sealed trait FocusedSyntax[A] {
-      def nullable: Iterable[A]
+      def syntax: Syntax[A]
+      def first: Set[Kind]
+      def nullable: Option[A]
     }
-    private case class FocusedPair[A, B](syntax: Tree[A], context: Context[A, B]) extends FocusedSyntax[B] {
-      override def nullable: Iterable[B] = syntax.nullable match {
-        case None => List()
+
+    private case class FocusedPair[A, B](tree: Tree[A], context: Context[A, B]) extends FocusedSyntax[B] {
+
+      override def syntax: Syntax[B] = context.toSyntax(tree.syntax)
+
+      override def first: Set[Kind] =
+        if (tree.isNullable) {
+          tree.first union context.first
+        } else {
+          tree.first
+        }
+
+      override def nullable: Option[B] = tree.nullable match {
+        case None => None
         case Some(value) =>
           if (context.isEmpty) {
-            List(value.asInstanceOf[B])
+            Some(value.asInstanceOf[B])
           } else {
-            context.plugAll(value).flatMap(_.nullable)
+            context.plug(value).nullable
           }
       }
     }
