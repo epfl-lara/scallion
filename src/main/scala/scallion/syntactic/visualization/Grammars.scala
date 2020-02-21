@@ -129,6 +129,7 @@ trait Grammars { self: Syntaxes =>
         case Success(_, _) => Seq(Epsilon)
         case Elem(kind) => Seq(Terminal(kind))
         case Transform(_, _, inner) => getSequents(inner)
+        case Marked(_, inner) => getSequents(inner)
         case Sequence(left, right) => getSequents(left) ++ getSequents(right)
         case d@Disjunction(_, _) => {
           val id = inspect(d)

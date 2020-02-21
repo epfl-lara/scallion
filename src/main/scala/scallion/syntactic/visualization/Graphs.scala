@@ -78,6 +78,11 @@ trait Graphs { self: Syntaxes =>
 
             ("~", Seq(leftId, rightId))
           }
+          case Marked(mark, inner) =>  {
+            val innerId = inspect(inner)
+
+            ("marked (" + mark + ")", Seq(innerId))
+          }
           case Transform(_, _, inner) => {
             val innerId = inspect(inner)
 
@@ -95,6 +100,9 @@ trait Graphs { self: Syntaxes =>
 
       nodes
     }
+
+    private def escape(string: String): String =
+      string.replace("\\", "\\\\")
 
     /** Returns a Graphviz representation of the syntax. */
     private def toGraphviz[A](syntax: Syntax[A]): String = {
@@ -124,7 +132,7 @@ trait Graphs { self: Syntaxes =>
       for {
         Node(id, label, _) <- graph
       } {
-        builder ++= id.toString + " [label=\"" + label + "\"];\n"
+        builder ++= id.toString + " [label=\"" + escape(label) + "\"];\n"
       }
       builder ++= "}\n"
       builder.toString
