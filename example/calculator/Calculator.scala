@@ -76,7 +76,7 @@ case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcSyntax extends Syntaxes with Operators with ll1.Parsing {
+object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with Enumeration {
 
   type Token = example.calculator.Token
   type Kind = TokenClass
@@ -123,7 +123,7 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing {
   val open = parens(true)
   val close = parens(false)
 
-  lazy val basic: Syntax[Expr] = number | open.skip ~ value ~ close.skip
+  lazy val basic: Syntax[Expr] = (number | open.skip ~ value ~ close.skip).mark("basic")
 
   lazy val postfixed: Syntax[Expr] = postfixes(basic, fac)({
     case (e, op) => UnaryExpr(op, e)
@@ -139,10 +139,27 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing {
       case (l, op, r) => BinaryExpr(op, l, r)
     }, {
       case BinaryExpr(op, l, r) => (l, op, r)
-    })
+    }).mark("value")
   }
 
   val parser = LL1(value)
+
+   def completions(text: String): Iterator[String] = {
+
+    val syntax = parser(CalcLexer(text.iterator)).rest.markedPrefixes(Set("value"))
+
+    val holes: PartialFunction[Mark, String] = {
+      case "basic"  => "[basic]"
+      case "value"  => "[value]"
+    }
+
+    HoleEnumerator(syntax, holes.lift).map { vs =>
+      vs.values.map {
+        case Left(ts) => ts.mkString(" ")
+        case Right(h) => h
+      }.mkString(" ")
+    }
+  }
 
   //def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
 

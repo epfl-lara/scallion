@@ -187,7 +187,7 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
 
   // Defines the syntax for arrays.
   lazy val arrayValue: Syntax[Value] =
-    ('[' ~ repsep(value, ',') ~ ']').map {
+    ('[' ~ repsep(value, ',', Some("values")) ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
     }
 
@@ -195,11 +195,11 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
   lazy val binding: Syntax[(StringValue, Value)] =
     (stringValue ~ ':' ~ value).map {
       case key ~ _ ~ value => (key, value)
-    }
+    }.mark("binding")
 
   // Defines the syntax for objects.
   lazy val objectValue: Syntax[Value] =
-    ('{' ~ repsep(binding, ',') ~ '}').map {
+    ('{' ~ repsep(binding, ',', Some("bindings")) ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
     }
 
@@ -213,10 +213,28 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
       booleanValue,
       numberValue,
       stringValue.up[Value],  // We upcast the produced value from `StringValue` to `Value`.
-      nullValue)
+      nullValue).mark("value")
   }
 
   val parser = LL1(value)
+
+  def completions(text: String): Iterator[String] = {
+
+    val syntax = parser(JSONLexer(text.iterator)).rest.markedPrefixes(Set("value", "binding"))
+
+    val holes: PartialFunction[Mark, String] = {
+      case "value"  => "[value]"
+      case "values" => "[value]*"
+      case "bindings" => "[binding]*"
+    }
+
+    HoleEnumerator(syntax, holes.lift).map { vs =>
+      vs.values.map {
+        case Left(ts) => ts.mkString(" ")
+        case Right(h) => h
+      }.mkString(" ")
+    }
+  }
 
   // Turn the iterator of tokens into a value, if possible.
   def apply(it: Iterator[Token]): Option[Value] = parser(it) match {

@@ -26,7 +26,7 @@ case object C extends Symbol
 case object D extends Symbol
 case object M extends Symbol
 
-object RomanSyntax extends Syntaxes with ll1.Parsing with Enumeration with PrettyPrinting {
+object RomanSyntax extends Syntaxes with ll1.Parsing with gzpwd.Parsing with Enumeration with PrettyPrinting with visualization.Graphs {
 
   type Token = Symbol
   type Kind = Symbol

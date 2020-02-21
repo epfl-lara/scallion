@@ -98,10 +98,11 @@ case class Var(name: String) extends Expr
 case class App(left: Expr, right: Expr) extends Expr
 case class Abs(name: String, body: Expr) extends Expr
 
-object LambdaSyntax extends Syntaxes with zpwd.Parsing {
+object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visualization.Graphs {
 
   type Token = example.lambda.Token
   type Kind = TokenClass
+  override type Mark = String
 
   import SafeImplicits._
 
@@ -153,14 +154,14 @@ object LambdaSyntax extends Syntaxes with zpwd.Parsing {
   lazy val expr: Syntax[Expr] = recursive {
     // Accepts either a lambda expression or an application.
     // `appExpr` also includes single basic expressions.
-    lambdaExpr | appExpr
+    (lambdaExpr | appExpr).mark("expr")
   }
 
   // Basic expressions. Simply a variable or an expression in parenthesis.
-  lazy val basic: Syntax[Expr] = variable | open.skip ~ expr ~ close.skip
+  lazy val basic: Syntax[Expr] = (variable | open.skip ~ expr ~ close.skip).mark("basic")
 
   // Lambda expression.
-  lazy val lambdaExpr: Syntax[Expr] = (many1(name) ~ dot.skip ~ expr).map({
+  lazy val lambdaExpr: Syntax[Expr] = (lambda.skip ~ many1(name, Some("ids")) ~ dot.skip ~ expr.mark("body")).map({
     // Given a sequence of names and the expression body, we create the corresponding lambda.
     case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
       case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.
@@ -179,7 +180,7 @@ object LambdaSyntax extends Syntaxes with zpwd.Parsing {
   })
 
   // Application, which consists of a sequence of at least one basic expressions.
-  lazy val appExpr: Syntax[Expr] = many1(basic).map({
+  lazy val appExpr: Syntax[Expr] = many1(basic, Some("ops")).map({
     // We reduce all expressions into a single one using `reduceLeft`.
     xs => xs.reduceLeft(App(_, _))
   }, {
@@ -195,7 +196,29 @@ object LambdaSyntax extends Syntaxes with zpwd.Parsing {
 
   //def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
 
-  val parser = ZPWD(expr)
+  val parser = LL1(expr)
+
+  def completions(text: String): Iterator[String] = {
+
+    val holes: PartialFunction[Mark, String] = {
+      case "expr" => "[expr]"
+      case "ids"  => "<id>*"
+      case "ops"  => "[expr]*"
+    }
+
+    val syntax = parser(LambdaLexer(text.iterator)).rest.markedPrefixes(Set("expr"))
+
+    HoleEnumerator(syntax, holes.lift).map { vs =>
+      vs.values.map {
+        case Left(ts) => ts.mkString(" ")
+        case Right(h) => h
+      }.mkString(" ")
+    }
+
+    // Enumerator(syntax).map {
+    //   vs => vs.mkString(" ")
+    // }
+  }
 
   def apply(text: String): Option[Expr] = parser(LambdaLexer(text.iterator)).getValue
 }
