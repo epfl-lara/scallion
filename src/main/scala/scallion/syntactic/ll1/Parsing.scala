@@ -569,7 +569,7 @@ trait Parsing { self: Syntaxes =>
         case _ => None
       }
 
-      /** Apply the given function on the result of the parse */
+      /** Applies the given function on the parsed result. */
       def map[B](f: A => B): ParseResult[B] = this match {
         case Parsed(value, rest)          => Parsed(f(value), rest.map(f))
         case UnexpectedEnd(rest)          => UnexpectedEnd(rest.map(f))
@@ -657,7 +657,7 @@ trait Parsing { self: Syntaxes =>
         */
       def apply(tokens: Iterator[Token]): ParseResult[A]
 
-      /** Apply the given function on the result of the parser.
+      /** Applies the given function on the result of the parser.
        *
        * @group parsing
        */
