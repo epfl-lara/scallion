@@ -663,11 +663,13 @@ trait Parsing { self: Syntaxes =>
        */
       def map[B](f: A => B): Parser[B] = {
         new Parser[B] {
-          def nullable = self.nullable.map(f)
-          def first = self.first
-          def syntax = self.syntax.map(f)
+          override def nullable = self.nullable.map(f)
+          override def first = self.first
+          override def syntax = self.syntax.map(f)
+          override def markedPrefixes(marks: Set[Mark]): Syntax[_] =
+            self.markedPrefixes(marks)
 
-          def apply(tokens: Iterator[Token]): ParseResult[B] = {
+          override def apply(tokens: Iterator[Token]): ParseResult[B] = {
             self.apply(tokens).map(f)
           }
         }
