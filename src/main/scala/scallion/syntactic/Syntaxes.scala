@@ -378,9 +378,13 @@ trait Syntaxes {
     case class Transform[A, B](
         function: A => B,
         inverse: B => Seq[A],
-        inner: Syntax[A]) extends Syntax[B] with Unary[A]
+        inner: Syntax[A]) extends Syntax[B] with Unary[A] {
+      require(inner != null)
+    }
 
-    case class Marked[A](mark: Mark, inner: Syntax[A]) extends Syntax[A] with Unary[A]
+    case class Marked[A](mark: Mark, inner: Syntax[A]) extends Syntax[A] with Unary[A] {
+      require(inner != null)
+    }
 
     /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
       *
@@ -390,7 +394,9 @@ trait Syntaxes {
       * @group combinator
       */
     case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
-        extends Syntax[A ~ B] with Binary[A, B]
+        extends Syntax[A ~ B] with Binary[A, B] {
+      require(left != null && right != null)
+    }
 
     /** Syntax that acts as either the `left` or the `right` syntaxes.
       *
@@ -400,7 +406,9 @@ trait Syntaxes {
       * @group combinator
       */
     case class Disjunction[A](left: Syntax[A], right: Syntax[A])
-        extends Syntax[A] with Binary[A, A]
+        extends Syntax[A] with Binary[A, A] {
+      require(left != null && right != null)
+    }
 
     /** Companion object of `Recursive`.
       *
