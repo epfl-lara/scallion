@@ -41,7 +41,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   type Token = Tokens.Token
   type Kind = Tokens.TokenClass
 
-  import SafeImplicits._
+  import Implicits._
 
   override def getKind(token: Token): TokenClass = token match {
     case Num(_) => NumClass
@@ -753,7 +753,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   import Conflict._
 
   "LL1 conflicts" should "catch ambiguous first kinds" in {
-    val syntax = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass).unit()
+    val syntax = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass)
 
     val res = LL1.build(syntax)
     assert(res.isLeft)
@@ -809,7 +809,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
     } | epsilon(0)
 
     lazy val expr: Syntax[Int] = recursive {
-      plusExpr | opt(elem(OperatorClass('+'))).unit() ~>~ literal
+      plusExpr | opt(elem(OperatorClass('+'))) ~>~ literal
     }
 
     lazy val plusExpr: Syntax[Int] = (opt(elem(OperatorClass('+'))) ~ expr).map {

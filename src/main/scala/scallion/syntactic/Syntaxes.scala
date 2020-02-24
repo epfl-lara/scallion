@@ -62,7 +62,7 @@ trait Syntaxes {
     implicit def anyUninteresting[A]: Uninteresting[A] =
       new Uninteresting[A] {
         override def unit(syntax: Syntax[A]): Syntax[Unit] =
-          syntax.unit()
+          syntax.map(_ => ())
       }
   }
 
@@ -283,14 +283,14 @@ trait Syntaxes {
     }) | epsilon(None)
 
     /** Indicates that `this` syntax describes only a finite number of
-      * equivalent `values`.
+      * equivalent values.
       *
       * Parsed values are replaced by `()`, while printed values
-      * are replaced by the various `values`.
+      * are replaced by the various given values.
       *
       * @group combinator
       */
-    def unit(values: A*): Syntax[Unit] = this.map(_ => (), {
+    def unit(value: A, values: A*): Syntax[Unit] = this.map(_ => (), {
       case () => values
     })
 
