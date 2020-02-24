@@ -614,7 +614,7 @@ trait Parsing { self: Syntaxes =>
               go(value, rests.head)
             }
             else {
-              tasks.enqueue(rests.toSeq.map(FocusedValue.Entry(value, _)): _*)
+              tasks ++= rests.toSeq.map(FocusedValue.Entry(value, _))
             }
         }
 
@@ -684,7 +684,7 @@ trait Parsing { self: Syntaxes =>
               go(value, rests.head)
             }
             else {
-              tasks.enqueue(rests.toSeq.map((ctx: Context[B, A]) => FocusedSyntax.Entry[B, A](value, ctx)): _*)
+              tasks ++= rests.toSeq.map((ctx: Context[B, A]) => FocusedSyntax.Entry[B, A](value, ctx))
             }
         }
 
@@ -722,7 +722,7 @@ trait Parsing { self: Syntaxes =>
           }
         }
 
-        oneOf(res : _*)
+        oneOf(res.toSeq : _*)
       }
 
       override def apply(tokens: Iterator[Token]): ParseResult[A] = {
@@ -768,7 +768,7 @@ trait Parsing { self: Syntaxes =>
                 locate(value, rests.head)
               }
               else {
-                tasks.enqueue(rests.toSeq.map(FocusedValue.Entry(value, _)): _*)
+                tasks ++= rests.toSeq.map(FocusedValue.Entry(value, _))
               }
           }
 
