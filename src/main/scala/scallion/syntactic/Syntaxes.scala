@@ -45,6 +45,10 @@ trait Syntaxes {
     */
   type RecId = Int
 
+  /** Type of markings.
+    *
+    * @group other
+    */
   type Mark = String
 
   /** Low priority implicits.
@@ -302,6 +306,10 @@ trait Syntaxes {
         case Some(x) => Seq(x)
       })
 
+    /** Marks `this` syntax.
+      *      *
+      * @group combinator
+      */
     def mark(mark: Mark): Syntax[A] = Marked(mark, this)
   }
 

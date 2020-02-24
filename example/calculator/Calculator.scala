@@ -76,7 +76,7 @@ case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with Enumeration {
+object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPrinting with Enumeration {
 
   type Token = example.calculator.Token
   type Kind = TokenClass
@@ -130,6 +130,14 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with Enumerat
   }, {
     case UnaryExpr(op, e) => (e, op)
   })
+
+  lazy val addition: Syntax[Expr] = recursive {
+    infixLeft(basic, plus)({
+        case (l, op, r) => BinaryExpr(op, l, r)
+      }, {
+        case BinaryExpr('+', l, r) => (l, '+', r)
+      })
+  }
 
   lazy val value: Syntax[Expr] = recursive {
     operators(postfixed)(
