@@ -291,7 +291,7 @@ trait Syntaxes {
       * @group combinator
       */
     def unit(value: A, values: A*): Syntax[Unit] = this.map(_ => (), {
-      case () => values
+      case () => value +: values
     })
 
     /** Upcasts `this` syntax.
