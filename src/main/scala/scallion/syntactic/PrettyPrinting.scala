@@ -23,7 +23,7 @@ trait PrettyPrinting { self: Syntaxes =>
   import Syntax._
 
   /** Pretty printer. */
-  object PrettyPrinter {
+  class PrettyPrinter[A] private(syntax: Syntax[A]) {
 
     private val ops = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
 
@@ -31,7 +31,7 @@ trait PrettyPrinting { self: Syntaxes =>
       *
       * The sequences are produced lazily and in order of increasing length.
       */
-    def apply[A](syntax: Syntax[A], value: A): Iterator[Seq[Token]] = {
+    def apply(value: A): Iterator[Seq[Token]] = {
 
       def go[A](syntax: Syntax[A],
                 value: A,
@@ -69,4 +69,8 @@ trait PrettyPrinting { self: Syntaxes =>
     }
   }
 
+  /** Pretty printer factory. */
+  object PrettyPrinter {
+    def apply[A](syntax: Syntax[A]): PrettyPrinter[A] = new PrettyPrinter(syntax)
+  }
 }

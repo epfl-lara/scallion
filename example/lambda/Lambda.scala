@@ -20,19 +20,26 @@ import scallion.lexical._
 import scallion.syntactic._
 import scallion.syntactic.Unfolds._
 
-sealed trait Token
-case object LambdaToken extends Token
-case object DotToken extends Token
-case class IdentifierToken(name: String) extends Token
-case class ParenthesisToken(isOpen: Boolean) extends Token
-case object SpaceToken extends Token
-case class UnknownToken(content: String) extends Token
+/* In this example, we show a lexer and parser for lambda calculus. */
 
+
+// The tokens used in our lambda calculus language.
+sealed trait Token
+case object LambdaToken extends Token  // A single lambda.
+case object DotToken extends Token  // A single dot.
+case class IdentifierToken(name: String) extends Token  // A (string) identifier.
+case class ParenthesisToken(isOpen: Boolean) extends Token // A parenthesis.
+case object SpaceToken extends Token  // Space.
+case class UnknownToken(content: String) extends Token  // Unknown.
+
+// The following object describes the tokens of lambda calculus,
+// and provides methods to tokenize and display token sequences.
 object LambdaLexer extends Lexers with CharRegExps {
 
-  type Token = example.lambda.Token
-  type Position = Unit
+  type Token = example.lambda.Token  // The type of tokens.
+  type Position = Unit  // The type of positions. In this example, we ignore positions.
 
+  // Description of the lexer.
   val lexer = Lexer(
     // Lambda
     elem('\\') |> { cs => LambdaToken },
@@ -54,7 +61,7 @@ object LambdaLexer extends Lexers with CharRegExps {
     (cs, _) => UnknownToken(cs.mkString)
   }
 
-
+  // Tokenize a sequence of characters into a sequence of tokens.
   def apply(it: Iterator[Char]): Iterator[Token] = {
     val source = Source.fromIterator(it, NoPositioner)
 
@@ -63,10 +70,12 @@ object LambdaLexer extends Lexers with CharRegExps {
     tokens.filter((token: Token) => token != SpaceToken)
   }
 
+  // Turns a sequence of tokens into a sequence of characters.
   def unapply(tokens: Seq[Token]): String = {
 
     val space: ((Token, Token)) => String = {
       case (IdentifierToken(_), IdentifierToken(_)) => " "
+      case (DotToken, _) => " "
       case _ => ""
     }
 
@@ -84,38 +93,42 @@ object LambdaLexer extends Lexers with CharRegExps {
   }
 }
 
-sealed abstract class TokenClass(text: String) {
+// Token kind. Models groups of tokens equivalent for the parser.
+sealed abstract class TokenKind(text: String) {
   override def toString = text
 }
-case object IdentifierClass extends TokenClass("<id>")
-case object LambdaClass extends TokenClass("\\")
-case object DotClass extends TokenClass(".")
-case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
-case object OtherClass extends TokenClass("?")
+case object IdentifierKind extends TokenKind("<id>")
+case object LambdaKind extends TokenKind("\\")
+case object DotKind extends TokenKind(".")
+case class ParenthesisKind(isOpen: Boolean) extends TokenKind(if (isOpen) "(" else ")")
+case object OtherKind extends TokenKind("?")
 
+// The lambda calculus expressions.
 sealed abstract class Expr
-case class Var(name: String) extends Expr
-case class App(left: Expr, right: Expr) extends Expr
-case class Abs(name: String, body: Expr) extends Expr
+case class Var(name: String) extends Expr  // Variables.
+case class App(left: Expr, right: Expr) extends Expr  // Function application.
+case class Abs(name: String, body: Expr) extends Expr  // Lambda abstraction.
 
-object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visualization.Graphs {
+// The following object describes the syntax of lambda calculus,
+// and provides methods to parse and pretty print expressions.
+object LambdaSyntax extends Syntaxes with ll1.Parsing with PrettyPrinting {
 
-  type Token = example.lambda.Token
-  type Kind = TokenClass
-  override type Mark = String
+  type Token = example.lambda.Token  // The type of tokens.
+  type Kind = TokenKind  // The type of token types.
 
   import SafeImplicits._
 
-  override def getKind(token: Token): TokenClass = token match {
-    case IdentifierToken(_) => IdentifierClass
-    case DotToken => DotClass
-    case LambdaToken => LambdaClass
-    case ParenthesisToken(o) => ParenthesisClass(o)
-    case _ => OtherClass
+  // Returns the kind of tokens.
+  override def getKind(token: Token): TokenKind = token match {
+    case IdentifierToken(_) => IdentifierKind
+    case DotToken => DotKind
+    case LambdaToken => LambdaKind
+    case ParenthesisToken(o) => ParenthesisKind(o)
+    case _ => OtherKind
   }
 
-  // Accept any token of the kind IdentifierClass,
-  val name: Syntax[String] = accept(IdentifierClass)({
+  // Accept any token of the kind IdentifierKind,
+  val name: Syntax[String] = accept(IdentifierKind)({
     // Extract the string from them.
     case IdentifierToken(n) => n
   }, {
@@ -124,15 +137,15 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visu
     case n => Seq(IdentifierToken(n))
   })
 
-  // Accept any token of the kind LambdaClass, which will always be LambdaToken.
-  val lambda: Syntax[Unit] = elem(LambdaClass).unit(LambdaToken)
+  // Accept any token of the kind LambdaKind, which will always be LambdaToken.
+  val lambda: Syntax[Unit] = elem(LambdaKind).unit(LambdaToken)
 
-  // Accept any token of the kind DotClass, which will always be DotToken.
-  val dot: Syntax[Unit] = elem(DotClass).unit(DotToken)
+  // Accept any token of the kind DotKind, which will always be DotToken.
+  val dot: Syntax[Unit] = elem(DotKind).unit(DotToken)
 
   // Accepts an open or a close parenthesis.
   def parens(isOpen: Boolean): Syntax[Unit] =
-    elem(ParenthesisClass(isOpen)).unit(ParenthesisToken(isOpen))
+    elem(ParenthesisKind(isOpen)).unit(ParenthesisToken(isOpen))
 
   // Open parenthesis.
   val open = parens(true)
@@ -154,14 +167,14 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visu
   lazy val expr: Syntax[Expr] = recursive {
     // Accepts either a lambda expression or an application.
     // `appExpr` also includes single basic expressions.
-    (lambdaExpr | appExpr).mark("expr")
+    lambdaExpr | appExpr
   }
 
   // Basic expressions. Simply a variable or an expression in parenthesis.
-  lazy val basic: Syntax[Expr] = (variable | open.skip ~ expr ~ close.skip).mark("basic")
+  lazy val basic: Syntax[Expr] = variable | open.skip ~ expr ~ close.skip
 
   // Lambda expression.
-  lazy val lambdaExpr: Syntax[Expr] = (lambda.skip ~ many1(name, Some("ids")) ~ dot.skip ~ expr.mark("body")).map({
+  lazy val lambdaExpr: Syntax[Expr] = (lambda.skip ~ many1(name) ~ dot.skip ~ expr).map({
     // Given a sequence of names and the expression body, we create the corresponding lambda.
     case ns ~ e => ns.foldRight(e) {  // We do so by using `foldRight`.
       case (n, acc) => Abs(n, acc)  // Create an `Abs` from the name and body.
@@ -180,7 +193,7 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visu
   })
 
   // Application, which consists of a sequence of at least one basic expressions.
-  lazy val appExpr: Syntax[Expr] = many1(basic, Some("ops")).map({
+  lazy val appExpr: Syntax[Expr] = many1(basic).map({
     // We reduce all expressions into a single one using `reduceLeft`.
     xs => xs.reduceLeft(App(_, _))
   }, {
@@ -194,31 +207,36 @@ object LambdaSyntax extends Syntaxes with ll1.Parsing with Enumeration with visu
     }
   })
 
-  //def unapply(value: Expr): Iterator[String] = expr.unapply(value).map(LambdaLexer.unapply(_))
-
+  // Create the LL1 parser from the syntax description.
   val parser = LL1(expr)
 
-  def completions(text: String): Iterator[String] = {
+  // Create the pretty printer from the syntax description.
+  val printer = PrettyPrinter(expr)
 
-    val holes: PartialFunction[Mark, String] = {
-      case "expr" => "[expr]"
-      case "ids"  => "<id>*"
-      case "ops"  => "[expr]*"
-    }
+  // Returns the pretty printed representation of an expression.
+  def unapply(value: Expr): Option[String] =
+    printer(value).take(1).map(LambdaLexer.unapply(_)).toList.headOption
 
-    val syntax = parser(LambdaLexer(text.iterator)).rest.markedPrefixes(Set("expr"))
+  // Parses an expression.
+  def apply(text: String): Option[Expr] =
+    parser(LambdaLexer(text.iterator)).getValue
+}
 
-    HoleEnumerator(syntax, holes.lift).map { vs =>
-      vs.values.map {
-        case Left(ts) => ts.mkString(" ")
-        case Right(h) => h
-      }.mkString(" ")
-    }
+// Main class.
+object LambdaCalculus {
+  def main(args: Array[String]) {
+    println("Parsing and pretty printing expressions...")
 
-    // Enumerator(syntax).map {
-    //   vs => vs.mkString(" ")
-    // }
+    // Original text.
+    val str = """\ f. \x. (f (x) x)"""
+    println("Original string: " + str)
+
+    // Parsing the expression.
+    val e = LambdaSyntax("""\ f. \x. (f (x) x)""").get
+    println("Parsed expression tree: " + e)
+
+    // Pretty printing the expression.
+    val pretty = LambdaSyntax.unapply(e).get
+    println("Pretty printed expression: " + pretty)
   }
-
-  def apply(text: String): Option[Expr] = parser(LambdaLexer(text.iterator)).getValue
 }

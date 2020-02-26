@@ -21,6 +21,9 @@ import scallion.input._
 import scallion.lexical._
 import scallion.syntactic._
 
+/* In this example, we show a lexer and parser for JSON. */
+
+
 // First, we define the token for our language.
 sealed abstract class Token {
   // We store the indices at which the tokens
@@ -187,7 +190,7 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
 
   // Defines the syntax for arrays.
   lazy val arrayValue: Syntax[Value] =
-    ('[' ~ repsep(value, ',', Some("values")) ~ ']').map {
+    ('[' ~ repsep(value, ',') ~ ']').map {
       case start ~ vs ~ end => ArrayValue(vs, (start.range._1, end.range._2))
     }
 
@@ -195,11 +198,11 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
   lazy val binding: Syntax[(StringValue, Value)] =
     (stringValue ~ ':' ~ value).map {
       case key ~ _ ~ value => (key, value)
-    }.mark("binding")
+    }
 
   // Defines the syntax for objects.
   lazy val objectValue: Syntax[Value] =
-    ('{' ~ repsep(binding, ',', Some("bindings")) ~ '}').map {
+    ('{' ~ repsep(binding, ',') ~ '}').map {
       case start ~ bs ~ end => ObjectValue(bs, (start.range._1, end.range._2))
     }
 
@@ -213,35 +216,33 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
       booleanValue,
       numberValue,
       stringValue.up[Value],  // We upcast the produced value from `StringValue` to `Value`.
-      nullValue).mark("value")
+      nullValue)
   }
 
+  // Creates the LL1 parser from the syntax.
   val parser = LL1(value)
 
-  def completions(text: String): Iterator[String] = {
-
-    val syntax = parser(JSONLexer(text.iterator)).rest.markedPrefixes(Set("value", "binding"))
-
-    val holes: PartialFunction[Mark, String] = {
-      case "value"  => "[value]"
-      case "values" => "[value]*"
-      case "bindings" => "[binding]*"
-    }
-
-    HoleEnumerator(syntax, holes.lift).map { vs =>
-      vs.values.map {
-        case Left(ts) => ts.mkString(" ")
-        case Right(h) => h
-      }.mkString(" ")
-    }
-  }
-
   // Turn the iterator of tokens into a value, if possible.
-  def apply(it: Iterator[Token]): Option[Value] = parser(it) match {
-    case LL1.Parsed(value, syntax) => Some(value)  // The parse was successful.
-    case LL1.UnexpectedToken(token, syntax) => None  // Encountered an unexpected `token`.
-    case LL1.UnexpectedEnd(syntax) => None  // Encountered an unexpected end of input.
-    // In each case, syntax contains a `Syntax[Value]` which can
-    // be used to resume parsing at that point.
+  def apply(it: Iterator[Token]): Either[String, Value] = parser(it) match {
+    case LL1.Parsed(value, rest) => Right(value)  // The parse was successful.
+    case LL1.UnexpectedToken(token, rest) =>  // The parse was unsuccessful due to a wrong token.
+      Left("Unexpected " + token + ", expected one of " + rest.first.mkString(", "))
+    case LL1.UnexpectedEnd(rest) =>  // The parse was unsuccessful due to the end of input.
+      Left("Unexpected end of input. Quickest way to end is \"" +
+        Enumerator.enumerate(rest.syntax).next().mkString("") + "\"")
   }
 }
+
+object JSON {
+  def main(args: Array[String]) {
+    println("Parsing some valid JSON example strings.")
+    println(JSONParser(JSONLexer("""{"foo":"bar", "baz":null}""".iterator)))
+    println(JSONParser(JSONLexer("""[1, [true, false, {}], [3, [], [5, 6]]]""".iterator)))
+    println("Parsing some invalid JSON example strings.")
+    println(JSONParser(JSONLexer("""{1:2}""".iterator)))
+    println(JSONParser(JSONLexer("""[1, 2 3]""".iterator)))
+    println(JSONParser(JSONLexer("""[1, 2, 3}""".iterator)))
+    println(JSONParser(JSONLexer("""[1, {"foo": [{"bar" """.iterator)))
+  }
+}
+

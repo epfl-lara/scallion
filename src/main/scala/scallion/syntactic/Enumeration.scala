@@ -31,7 +31,7 @@ trait Enumeration { self: Syntaxes =>
       *
       * The sequences are produced lazily and in order of increasing length.
       */
-    def apply[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = {
+    def enumerate[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = {
 
       def go[A](syntax: Syntax[A], recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         syntax match {
@@ -58,7 +58,14 @@ trait Enumeration { self: Syntaxes =>
     }
   }
 
+  /** Sequence with holes.
+   *
+   * @tparam A The type of values.
+   * @tparam H The type of holes.
+   */
   class HoledSeq[A, H] private(val weight: Int, val values: Vector[Either[Vector[A], H]]) {
+
+    /** Concatenates `this` sequence and `that` sequence. */
     def ++(that: HoledSeq[A, H]): HoledSeq[A, H] = {
       val newValues =
         if (this.values.nonEmpty && that.values.nonEmpty &&
@@ -72,11 +79,22 @@ trait Enumeration { self: Syntaxes =>
     }
   }
 
+  /** Factory of sequences with holes. */
   object HoledSeq {
+
+    /** Empty sequence. */
     def empty[A, H]: HoledSeq[A, H] =
       new HoledSeq[A, H](0, Vector())
+
+    /** Sequence without holes. */
     def values[A, H](values: Vector[A]): HoledSeq[A, H] =
       new HoledSeq[A, H](values.size, Vector(Left(values)))
+
+    /** Sequence with a single hole.
+      *
+      * @param hole   The hole value.
+      * @param weight The weight of the hole in terms of number of values.
+      */
     def hole[A, H](hole: H, weight: Int = 1): HoledSeq[A, H] =
       new HoledSeq[A, H](weight, Vector(Right(hole)))
   }
@@ -88,14 +106,18 @@ trait Enumeration { self: Syntaxes =>
       left ++ right
   }
 
-  /** Enumerator. */
+  /** Enumerator which replaces kind sequences of marked syntaxes by holes. */
   object HoleEnumerator {
 
     /** Enumerates the sequences accepted by a syntax.
       *
       * The sequences are produced lazily and in order of increasing weight.
+      *
+      * @param syntax The syntax to enumerate.
+      * @param holes  Function which indicates which marked syntaxes to replace by holes.
+      * @param holeWeight Weight of holes in terms of number of kinds.
       */
-    def apply[A, H](syntax: Syntax[A], holes: Mark => Option[H], holeWeight: Int = 1): Iterator[HoledSeq[Kind, H]] = {
+    def enumerate[A, H](syntax: Syntax[A], holes: Mark => Option[H], holeWeight: Int = 1): Iterator[HoledSeq[Kind, H]] = {
 
       val ops = new ProducerOps[HoledSeq[Kind, H]](new HoledSeqPTPS[Kind, H])
 
@@ -127,14 +149,14 @@ trait Enumeration { self: Syntaxes =>
     }
   }
 
-  /** Enumerator. */
+  /** Enumerator which doesn't reenter recursive syntaxes. */
   object NonReentrantEnumerator {
 
     /** Enumerates the sequences accepted by a syntax.
       *
       * The sequences are produced lazily and in order of increasing length.
       */
-    def apply[A](syntax: Syntax[A]): Iterator[HoledSeq[Kind, RecId]] = {
+    def enumerate[A](syntax: Syntax[A]): Iterator[HoledSeq[Kind, RecId]] = {
 
       val ops = new ProducerOps[HoledSeq[Kind, RecId]](new HoledSeqPTPS[Kind, RecId])
 

@@ -17,6 +17,9 @@ package example.roman
 
 import scallion.syntactic._
 
+/* In this example, we show a parser and pretty printer for roman numerals. */
+
+// Symbols used by roman numerals.
 sealed trait Symbol
 case object I extends Symbol
 case object V extends Symbol
@@ -26,8 +29,10 @@ case object C extends Symbol
 case object D extends Symbol
 case object M extends Symbol
 
-object RomanSyntax extends Syntaxes with ll1.Parsing with gzpwd.Parsing with Enumeration with PrettyPrinting with visualization.Graphs {
+// The following describes the syntax of roman numerals.
+object RomanSyntax extends Syntaxes with ll1.Parsing with PrettyPrinting {
 
+  // Tokens and kinds coincide in this example.
   type Token = Symbol
   type Kind = Symbol
 
@@ -35,6 +40,8 @@ object RomanSyntax extends Syntaxes with ll1.Parsing with gzpwd.Parsing with Enu
 
   override def getKind(token: Symbol): Symbol = token
 
+  // Describes the syntax for values from 0 to 9 given symbol for
+  // 1, 5, and 10. Works for units, tens and hundreds.
   def base(si: Symbol, sv: Symbol, sx: Symbol): Syntax[Int] = {
 
     val i = elem(si).unit(si)
@@ -92,4 +99,19 @@ object RomanSyntax extends Syntaxes with ll1.Parsing with gzpwd.Parsing with Enu
     }
     case _ => Seq()
   })
+
+  val printer = PrettyPrinter(number)
+  val parser = LL1(number)
+}
+
+object Roman {
+  def main(args: Array[String]) {
+    println("Parsing roman numerals: ")
+    println("CXXXII => " + RomanSyntax.parser(Iterator(C, X, X, X, I, I)).getValue.get)
+    println("MCDL => " + RomanSyntax.parser(Iterator(M, C, D, L)).getValue.get)
+    println("Printing roman numerals: ")
+    println("1234 => " + RomanSyntax.printer(1234).next().mkString(""))
+    println("2020 => " + RomanSyntax.printer(2020).next().mkString(""))
+    println("1515 => " + RomanSyntax.printer(1515).next().mkString(""))
+  }
 }

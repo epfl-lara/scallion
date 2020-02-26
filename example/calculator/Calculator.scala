@@ -19,17 +19,32 @@ import scallion.input._
 import scallion.lexical._
 import scallion.syntactic._
 
-sealed trait Token
-case class NumberToken(value: Int) extends Token
-case class OperatorToken(operator: Char) extends Token
-case class ParenthesisToken(isOpen: Boolean) extends Token
-case object SpaceToken extends Token
-case class UnknownToken(content: String) extends Token
+/* In this example, we show a lexer and parser for a calculator. */
 
+// The tokens.
+sealed trait Token
+case class NumberToken(value: Int) extends Token {  // Numbers.
+  override def toString = value.toString
+}
+case class OperatorToken(operator: Char) extends Token {  // Single char operators.
+  override def toString = "" + operator
+}
+case class ParenthesisToken(isOpen: Boolean) extends Token {  // Parentheses.
+  override def toString = if (isOpen) "(" else ")"
+}
+case object SpaceToken extends Token {  // Spaces.
+  override def toString = " "
+}
+case class UnknownToken(content: String) extends Token {  // Unknowns.
+  override def toString = "?"
+}
+
+// The following object describes the tokens of the calculator language,
+// and provides methods to tokenize and display token sequences.
 object CalcLexer extends Lexers with CharRegExps {
 
-  type Position = Unit
-  type Token = example.calculator.Token
+  type Token = example.calculator.Token  // Tokens.
+  type Position = Unit  // Positions. Ignored here.
 
   val lexer = Lexer(
     // Operators
@@ -61,85 +76,92 @@ object CalcLexer extends Lexers with CharRegExps {
 
     tokens.filter((token: Token) => token != SpaceToken)
   }
+
+  def unapply(it: Iterable[Token]): String = {
+    it.mkString("")
+  }
 }
 
-sealed abstract class TokenClass(text: String) {
+// Token kind. Models groups of tokens equivalent for the parser.
+sealed abstract class TokenKind(text: String) {
   override def toString = text
 }
-case object NumberClass extends TokenClass("<number>")
-case class OperatorClass(op: Char) extends TokenClass(op.toString)
-case class ParenthesisClass(isOpen: Boolean) extends TokenClass(if (isOpen) "(" else ")")
-case object OtherClass extends TokenClass("?")
+case object NumberKind extends TokenKind("<number>")
+case class OperatorKind(op: Char) extends TokenKind(op.toString)
+case class ParenthesisKind(isOpen: Boolean) extends TokenKind(if (isOpen) "(" else ")")
+case object OtherKind extends TokenKind("?")
 
+// Expressions of our language.
 sealed abstract class Expr
 case class LitExpr(value: Int) extends Expr
 case class BinaryExpr(op: Char, left: Expr, right: Expr) extends Expr
 case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
-object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPrinting with Enumeration {
+// The following object describes the syntax of the calculator language,
+// and provides methods to parse and pretty print expressions.
+object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPrinting {
 
-  type Token = example.calculator.Token
-  type Kind = TokenClass
+  type Token = example.calculator.Token  // Type of tokens.
+  type Kind = TokenKind  // Type of token kinds.
 
   import SafeImplicits._
 
-  override def getKind(token: Token): TokenClass = token match {
-    case NumberToken(_) => NumberClass
-    case OperatorToken(c) => OperatorClass(c)
-    case ParenthesisToken(o) => ParenthesisClass(o)
-    case _ => OtherClass
+  // Returns the kind of tokens.
+  override def getKind(token: Token): TokenKind = token match {
+    case NumberToken(_) => NumberKind
+    case OperatorToken(c) => OperatorKind(c)
+    case ParenthesisToken(o) => ParenthesisKind(o)
+    case _ => OtherKind
   }
 
-  val number: Syntax[Expr] = accept(NumberClass)({
+  // Syntax for a single number expression.
+  val number: Syntax[Expr] = accept(NumberKind)({
     case NumberToken(n) => LitExpr(n)
   }, {
     case LitExpr(n) => Seq(NumberToken(n))
     case _ => Seq()
   })
 
-  def binOp(char: Char): Syntax[Char] = accept(OperatorClass(char))({
+  // Method that returns the syntax for a single character operator.
+  def operator(char: Char): Syntax[Char] = accept(OperatorKind(char))({
     case _ => char
   }, {
     case `char` => Seq(OperatorToken(char))
     case _ => Seq()
   })
 
-  val plus = binOp('+')
+  val plus = operator('+')
 
-  val minus = binOp('-')
+  val minus = operator('-')
 
-  val times = binOp('*')
+  val times = operator('*')
 
-  val div = binOp('/')
+  val div = operator('/')
 
-  val fac: Syntax[Char] = accept(OperatorClass('!'))({
-    case _ => '!'
-  }, {
-    case '!' => Seq(OperatorToken('!'))
-    case _ => Seq()
-  })
+  val fac = operator('!')
 
-  def parens(isOpen: Boolean) = elem(ParenthesisClass(isOpen)).unit(ParenthesisToken(isOpen))
+  // Syntaxes for parentheses.
+  def parens(isOpen: Boolean) = elem(ParenthesisKind(isOpen)).unit(ParenthesisToken(isOpen))
+
   val open = parens(true)
+
   val close = parens(false)
 
-  lazy val basic: Syntax[Expr] = (number | open.skip ~ value ~ close.skip).mark("basic")
+  // Syntax for basic expressions.
+  lazy val basic: Syntax[Expr] = number | open.skip ~ expr ~ close.skip
 
+  // Basic expression postfixed by factorial operators.
   lazy val postfixed: Syntax[Expr] = postfixes(basic, fac)({
     case (e, op) => UnaryExpr(op, e)
   }, {
     case UnaryExpr(op, e) => (e, op)
   })
 
-  lazy val addition: Syntax[Expr] = recursive {
-    infixLeft(basic, plus)({
-        case (l, op, r) => BinaryExpr(op, l, r)
-      }, {
-        case BinaryExpr('+', l, r) => (l, '+', r)
-      })
-  }
-
-  lazy val value: Syntax[Expr] = recursive {
+  // Syntax for all expressions.
+  lazy val expr: Syntax[Expr] = recursive {
+    // Operators is a library combinator
+    // used to build a syntax with
+    // operator precedence and associativity.
     operators(postfixed)(
       times | div is LeftAssociative,
       plus | minus is LeftAssociative
@@ -147,32 +169,40 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPr
       case (l, op, r) => BinaryExpr(op, l, r)
     }, {
       case BinaryExpr(op, l, r) => (l, op, r)
-    }).mark("value")
+    })
   }
 
-  val parser = LL1(value)
+  // The LL(1) parser.
+  val parser = LL1(expr)
 
-   def completions(text: String): Iterator[String] = {
+  // The pretty printer.
+  val printer = PrettyPrinter(expr)
 
-    val syntax = parser(CalcLexer(text.iterator)).rest.markedPrefixes(Set("value"))
+  // Pretty prints expressions.
+  def unapply(value: Expr): Iterator[Seq[Token]] = printer(value)
 
-    val holes: PartialFunction[Mark, String] = {
-      case "basic"  => "[basic]"
-      case "value"  => "[value]"
-    }
-
-    HoleEnumerator(syntax, holes.lift).map { vs =>
-      vs.values.map {
-        case Left(ts) => ts.mkString(" ")
-        case Right(h) => h
-      }.mkString(" ")
-    }
-  }
-
-  //def unapply(expr: Expr): Iterator[Seq[Token]] = value.unapply(expr)
-
+  // Parses expressions.
   def apply(it: Iterator[Token]): Option[Expr] = parser(it) match {
     case LL1.Parsed(value, _) => Some(value)
     case _ => None
+  }
+}
+
+object Calculator {
+  def main(args: Array[String]) {
+    println("Parsing and pretty printing calculator expressions.")
+    val expressions = Seq(
+      "1 + 2",
+      "3!",
+      "(4 + 5) + 6",
+      "7 + 8 * 9",
+      "(3 * 2!) + 4 * 5 - (6! + 2) + 2")
+    for (e <- expressions) {
+      println("Raw expression: " + e)
+      val parsed = CalcSyntax(CalcLexer(e.iterator)).get
+      println("Parsed: " + parsed)
+      val pretty = CalcSyntax.unapply(parsed).map(CalcLexer.unapply(_)).next()
+      println("Pretty: " + pretty)
+    }
   }
 }
