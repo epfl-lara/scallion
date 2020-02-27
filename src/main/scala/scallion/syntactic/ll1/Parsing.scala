@@ -891,15 +891,15 @@ trait Parsing { self: Syntaxes =>
         override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) =
           (true, Vector(), None)
       }
-      sealed abstract case class Failure[A]() extends Tree[A]{
+      sealed abstract case class Failure[A]() extends Tree[A] {
         override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) =
           (false, Vector(), None)
       }
-      sealed abstract case class Elem(kind: Kind) extends Tree[Token]{
+      sealed abstract case class Elem(kind: Kind) extends Tree[Token] {
         override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[Token]]) =
           (false, Vector(), Some(syntax))
       }
-      sealed abstract case class Sequence[A, B](left: Tree[A], right: Tree[B]) extends Tree[A ~ B]{
+      sealed abstract case class Sequence[A, B](left: Tree[A], right: Tree[B]) extends Tree[A ~ B] {
         override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A ~ B]]) = {
           val (changedLeft, coveredsLeft, missingLeft) = left.prefixCovering(marks)
 
