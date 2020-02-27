@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "5dd6c20fd06594bad16b3185",
+    "index": 0,
+    "guid": "24b4a7d8-272a-4eca-a9e5-0693fa8078a4",
+    "isActive": false,
+    "balance": "$1,720.68",
+    "picture": "http://placehold.it/32x32",
+    "age": 33,
+    "eyeColor": "brown",
+    "name": "Victoria Ford",
+    "gender": "female",
+    "company": "ANIVET",
+    "email": "victoriaford@anivet.com",
+    "phone": "+1 (963) 413-3498",
+    "address": "675 Remsen Avenue, Hasty, Washington, 1710",
+    "about": "Minim dolore labore laboris ea velit sit nulla. Amet ex ut eiusmod sunt reprehenderit voluptate. Laborum dolor nisi non pariatur sunt officia quis ut eu. Et magna enim esse anim proident. Irure incididunt reprehenderit ut esse cupidatat culpa enim ullamco duis consectetur. Mollit consequat ex qui cupidatat amet eu cillum elit occaecat eu.\r\n",
+    "registered": "2015-07-23T04:51:25 -02:00",
+    "latitude": -84.227777,
+    "longitude": -28.672767,
+    "tags": [
+      "veniam",
+      "amet",
+      "officia",
+      "exercitation",
+      "do",
+      "labore",
+      "pariatur"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Roseann Patton"
+      },
+      {
+        "id": 1,
+        "name": "Henson Wilkins"
+      },
+      {
+        "id": 2,
+        "name": "Mable Marks"
+      }
+    ],
+    "greeting": "Hello, Victoria Ford! You have 1 unread messages.",
+    "favoriteFruit": "banana"
+  }
+]

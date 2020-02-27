@@ -49,3 +49,22 @@ lazy val example = project
   )
   .dependsOn(scallion)
 
+lazy val benchmark = project
+  .in(file("benchmark"))
+  .settings(
+    commonSettings,
+    name                   := "scallion-benchmarks",
+    scalaSource in Compile := baseDirectory.value / "src",
+    scalaSource in Test    := baseDirectory.value / "src",
+    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/releases",
+    resolvers += "bintray-djspiewak-maven" at "https://dl.bintray.com/djspiewak/maven",
+    libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.19",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+    libraryDependencies += "com.codecommit" %% "parseback-core" % "0.3",
+    libraryDependencies += "com.codecommit" %% "parseback-cats" % "0.3",
+    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    parallelExecution in Test := false,
+  )
+  .dependsOn(scallion)
+
+

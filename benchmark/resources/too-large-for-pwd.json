@@ -1,0 +1,92 @@
+[
+  {
+    "_id": "5dd7dfbf9438de43d8e5dfd4",
+    "index": 0,
+    "guid": "1f303528-8fcb-4689-92d7-37152aa16140",
+    "isActive": true,
+    "balance": "$3,412.20",
+    "picture": "http://placehold.it/32x32",
+    "age": 23,
+    "eyeColor": "brown",
+    "name": "Terrie Page",
+    "gender": "female",
+    "company": "PLASTO",
+    "email": "terriepage@plasto.com",
+    "phone": "+1 (890) 412-3630",
+    "address": "714 Lott Place, Riner, Oregon, 2148",
+    "about": "Ullamco occaecat exercitation esse qui dolore minim sunt. Laboris ipsum enim sint do. Mollit aliquip non pariatur voluptate cupidatat. Excepteur qui nulla adipisicing qui aliquip do proident quis amet.\r\n",
+    "registered": "2018-07-10T07:56:21 -02:00",
+    "latitude": -19.314788,
+    "longitude": -7.611644,
+    "tags": [
+      "aliqua",
+      "nostrud",
+      "ea",
+      "in",
+      "ex",
+      "labore",
+      "veniam"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Ellison Gamble"
+      },
+      {
+        "id": 1,
+        "name": "Althea Hicks"
+      },
+      {
+        "id": 2,
+        "name": "Preston Valentine"
+      }
+    ],
+    "greeting": "Hello, Terrie Page! You have 7 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5dd7dfbf31c5885446fa4762",
+    "index": 1,
+    "guid": "778faeac-42fa-4079-8d22-719768ea96e6",
+    "isActive": true,
+    "balance": "$3,397.90",
+    "picture": "http://placehold.it/32x32",
+    "age": 22,
+    "eyeColor": "brown",
+    "name": "Vera Ellison",
+    "gender": "female",
+    "company": "STEELFAB",
+    "email": "veraellison@steelfab.com",
+    "phone": "+1 (929) 478-2575",
+    "address": "167 Claver Place, Bentonville, Georgia, 3409",
+    "about": "Dolore aute dolor nulla Lorem exercitation adipisicing. Aliqua culpa reprehenderit culpa culpa cillum Lorem magna. Excepteur deserunt irure excepteur pariatur et ad aliquip consectetur labore Lorem occaecat ea elit. Veniam aute nulla commodo ipsum dolor. In tempor velit sunt amet incididunt. Sint elit ipsum pariatur excepteur enim. Cillum Lorem excepteur sint ipsum pariatur proident nulla occaecat dolore dolor aliquip incididunt veniam.\r\n",
+    "registered": "2014-12-14T07:59:30 -01:00",
+    "latitude": 6.115787,
+    "longitude": -1.225153,
+    "tags": [
+      "et",
+      "consectetur",
+      "aute",
+      "mollit",
+      "velit",
+      "dolore",
+      "nostrud"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Gould Lawrence"
+      },
+      {
+        "id": 1,
+        "name": "Ross Ashley"
+      },
+      {
+        "id": 2,
+        "name": "Janis Nieves"
+      }
+    ],
+    "greeting": "Hello, Vera Ellison! You have 1 unread messages.",
+    "favoriteFruit": "strawberry"
+  }
+]
