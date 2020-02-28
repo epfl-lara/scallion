@@ -54,6 +54,9 @@ lazy val benchmark = project
   .settings(
     commonSettings,
     name                   := "scallion-benchmarks",
+    fork in run            := true,
+    run / baseDirectory    := file("."),
+    javaOptions in run     += "-Xss1024K",
     scalaSource in Compile := baseDirectory.value / "src",
     scalaSource in Test    := baseDirectory.value / "src",
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/releases",
