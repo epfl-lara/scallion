@@ -12,12 +12,12 @@ A comprehensive Scaladoc API is [available online](https://epfl-lara.github.io/s
 
 # Parsing Algorithm
 
-Scallion uses a novel parsing algorithm that we have described in the paper: [LL(1) Parsing with Derivatives and Zippers](https://arxiv.org/abs/1911.12737).
+Scallion uses a novel parsing algorithm that we have described in the PLDI'20 paper: [Zippy LL(1) Parsing with Derivatives](paper/PLDI20_ZippyLL1PWD.pdf).
 The algorithm has been [formally proven correct in Coq](https://github.com/epfl-lara/scallion-proofs/).
 
 # Examples
 
-* [JSON](example/json/JSON.scala): This example showcases how to build a basic JSON lexer & parser using Scallion.
-* [Lambda Calculus](example/lambda/Lambda.scala): This example shows how to get a pretty printer *almost for free* alongside your parser. 
+* [JSON](example/json/JSON.scala): This example showcases how to build a basic JSON parser using Scallion.
+* [Lambda Calculus](example/lambda/Lambda.scala): This example shows how to get a pretty printer *almost for free* alongside your parser.
 * [Calculator](example/calculator/Calculator.scala): This example shows how to use the `operators` combinator to easily handle operators with various associativities and priorities.
 * [Roman Numerals](example/roman/Roman.scala): This example presents a simple parser and pretty printer for roman numerals.
