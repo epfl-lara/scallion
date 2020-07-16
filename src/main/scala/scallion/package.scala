@@ -15,10 +15,10 @@
 
 /** This package is used to describe syntax for LL(1) languages.
   *
-  * To use the package, mix-in the [[scallion.Syntaxes]] trait.
+  * To use the package, mix-in the [[scallion.Parsers]] trait.
   *
   * {{{
-  * object MySyntaxes extends Syntaxes {
+  * object MyParser extends Parsers {
   *
   *   // Type of tokens.
   *   type Token = MyToken
@@ -40,9 +40,6 @@
   * @groupprio parsing 1
   * @groupname parsing Parsing
   *
-  * @groupprio printing 2
-  * @groupname printing Printing
-  *
   * @groupprio syntax 3
   * @groupname syntax Syntax
   *
@@ -63,6 +60,12 @@
   *
   * @groupprio debug 15
   * @groupname debug Debugging
+  *
+  * @groupprio enumeration 18
+  * @groupname enumeration Enumeration
+  *
+  * @groupprio pretty 19
+  * @groupname pretty Pretty Printing
   *
   * @groupprio visualization 20
   * @groupname visualization Visualization
@@ -106,5 +109,9 @@ package object scallion {
     def ~[B](second: B): A ~ B = scallion.~(first, second)
   }
 
+  /** Main trait for defining parsers.
+    *
+    * @group parsing
+    */
   trait Parsers extends Syntaxes with Parsing with Enumeration with PrettyPrinting with Operators with Debug
 }

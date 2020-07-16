@@ -17,12 +17,18 @@ package scallion
 
 import scallion.util.internal._
 
-/** Provides enumeration capabilites to syntaxes. */
+/** Provides enumeration capabilites to syntaxes.
+  *
+  * @group enumeration
+  */
 trait Enumeration { self: Syntaxes =>
 
   import Syntax._
 
-  /** Enumerator. */
+  /** Enumerator.
+    *
+    * @group enumeration
+    */
   object Enumerator {
 
     private val ops = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
@@ -30,6 +36,8 @@ trait Enumeration { self: Syntaxes =>
     /** Enumerates the sequences accepted by a syntax.
       *
       * The sequences are produced lazily and in order of increasing length.
+      *
+      * @group enumeration
       */
     def enumerate[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = producer(syntax).iterator
 
@@ -64,6 +72,8 @@ trait Enumeration { self: Syntaxes =>
    *
    * @tparam A The type of values.
    * @tparam H The type of holes.
+   *
+   * @group enumeration
    */
   class HoledSeq[A, H] private(val weight: Int, val values: Vector[Either[Vector[A], H]]) {
 
@@ -81,7 +91,10 @@ trait Enumeration { self: Syntaxes =>
     }
   }
 
-  /** Factory of sequences with holes. */
+  /** Factory of sequences with holes.
+    *
+    * @group enumeration
+    */
   object HoledSeq {
 
     /** Empty sequence. */
@@ -108,7 +121,10 @@ trait Enumeration { self: Syntaxes =>
       left ++ right
   }
 
-  /** Enumerator which replaces kind sequences of marked syntaxes by holes. */
+  /** Enumerator which replaces kind sequences of marked syntaxes by holes.
+    *
+    * @group enumeration
+    */
   object HoleEnumerator {
 
     /** Enumerates the sequences accepted by a syntax.
@@ -118,6 +134,7 @@ trait Enumeration { self: Syntaxes =>
       * @param syntax The syntax to enumerate.
       * @param holes  Function which indicates which marked syntaxes to replace by holes.
       * @param holeWeight Weight of holes in terms of number of kinds.
+      * @group enumeration
       */
     def enumerate[A, H](syntax: Syntax[A], holes: Mark => Option[H], holeWeight: Int = 1): Iterator[HoledSeq[Kind, H]] = {
 
@@ -151,12 +168,17 @@ trait Enumeration { self: Syntaxes =>
     }
   }
 
-  /** Enumerator which doesn't reenter recursive syntaxes. */
+  /** Enumerator which doesn't reenter recursive syntaxes.
+    *
+    * @group enumeration
+    */
   object NonReentrantEnumerator {
 
     /** Enumerates the sequences accepted by a syntax.
       *
       * The sequences are produced lazily and in order of increasing length.
+      *
+      * @group enumeration
       */
     def enumerate[A](syntax: Syntax[A]): Iterator[HoledSeq[Kind, RecId]] = {
 

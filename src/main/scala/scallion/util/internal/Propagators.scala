@@ -15,7 +15,7 @@
 
 package scallion.util.internal
 
-trait Cell[-I, +O, +S] extends (I => Unit) { self =>
+private[scallion] trait Cell[-I, +O, +S] extends (I => Unit) { self =>
   def apply(value: I): Unit
   def register(callback: O => Unit): Unit
   def get: S
@@ -33,7 +33,7 @@ trait Cell[-I, +O, +S] extends (I => Unit) { self =>
   }
 }
 
-class BooleanCell extends Cell[Unit, Unit, Boolean] {
+private[scallion] class BooleanCell extends Cell[Unit, Unit, Boolean] {
   private var registered: List[Unit => Unit] = List()
 
   private var state: Boolean = false
@@ -58,7 +58,7 @@ class BooleanCell extends Cell[Unit, Unit, Boolean] {
   override def get: Boolean = state
 }
 
-class OptionCell[A] extends Cell[A, A, Option[A]] {
+private[scallion] class OptionCell[A] extends Cell[A, A, Option[A]] {
   private var registered: List[A => Unit] = List()
 
   private var state: Option[A] = None
@@ -83,7 +83,7 @@ class OptionCell[A] extends Cell[A, A, Option[A]] {
   override def get: Option[A] = state
 }
 
-class SetCell[A] extends Cell[Set[A], Set[A], Set[A]] {
+private[scallion] class SetCell[A] extends Cell[Set[A], Set[A], Set[A]] {
   private var registered: List[Set[A] => Unit] = List()
 
   private var state: Set[A] = Set.empty
@@ -107,7 +107,7 @@ class SetCell[A] extends Cell[Set[A], Set[A], Set[A]] {
   override def get: Set[A] = state
 }
 
-class MergeOnceCell[A, B, C](merge: (A, B) => C) extends Cell[Either[A, B], C, Option[C]] {
+private[scallion] class MergeOnceCell[A, B, C](merge: (A, B) => C) extends Cell[Either[A, B], C, Option[C]] {
   private var registered: List[C => Unit] = List()
 
   private var fromLeft: Option[A] = None
@@ -143,7 +143,7 @@ class MergeOnceCell[A, B, C](merge: (A, B) => C) extends Cell[Either[A, B], C, O
   override def get: Option[C] = merged
 }
 
-class GatedCell[A] extends Cell[Option[A], A, List[A]] {
+private[scallion] class GatedCell[A] extends Cell[Option[A], A, List[A]] {
   private var registered: List[A => Unit] = List()
 
   private var values: List[A] = List()

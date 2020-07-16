@@ -20,6 +20,7 @@ import scala.language.higherKinds
 import scala.util.Try
 import scala.collection.mutable.Map
 
+/** Contains the definition of syntaxes. */
 trait Syntaxes {
 
   /** Type of tokens.

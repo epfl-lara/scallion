@@ -17,12 +17,18 @@ package scallion
 
 import scallion.util.internal._
 
-/** Provides pretty printing capabilites to syntaxes. */
+/** Provides pretty printing capabilites to syntaxes.
+  *
+  * @group pretty
+  */
 trait PrettyPrinting { self: Syntaxes =>
 
   import Syntax._
 
-  /** Pretty printer. */
+  /** Pretty printer.
+    *
+    * @group pretty
+    */
   class PrettyPrinter[A] private(syntax: Syntax[A]) {
 
     private val ops = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
@@ -69,7 +75,10 @@ trait PrettyPrinting { self: Syntaxes =>
     }
   }
 
-  /** Pretty printer factory. */
+  /** Pretty printer factory.
+    *
+    * @group pretty
+    */
   object PrettyPrinter {
     def apply[A](syntax: Syntax[A]): PrettyPrinter[A] = new PrettyPrinter(syntax)
   }

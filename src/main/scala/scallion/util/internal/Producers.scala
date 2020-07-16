@@ -71,7 +71,7 @@ private[internal] case object Unavailable extends Peek[Nothing]
   *
   * Producers can be converted to iterators using `iterator`.
   */
-trait Producer[+A] { self =>
+private[scallion] trait Producer[+A] { self =>
 
   /** Returns the next value to be produced, if any.
     *
@@ -141,7 +141,7 @@ trait Producer[+A] { self =>
 }
 
 /** Contains utilities to build producers. */
-object Producer {
+private[scallion] object Producer {
 
   /** The empty producer. */
   val empty: Producer[Nothing] = new Producer[Nothing] {
@@ -181,7 +181,7 @@ object Producer {
 /** Extra operations for producers of values with a
   * Posively Totally Preordered Semigroup (PTPS) defined on them.
   */
-class ProducerOps[A](ptps: PTPS[A]) {
+private[scallion] class ProducerOps[A](ptps: PTPS[A]) {
 
   import ptps._
 
@@ -455,7 +455,7 @@ private class IteratorProducer[A](iterator: Iterator[A]) extends Producer[A] {
   *     - `lessEquiv(a, append(a, b)) == true`.
   *     - `lessEquiv(b, append(a, b)) == true`.
   */
-trait PTPS[A] {
+private[scallion] trait PTPS[A] {
 
   /** Checks if `left` is less or equivalent to `right`. */
   def lessEquiv(left: A, right: A): Boolean
@@ -465,7 +465,7 @@ trait PTPS[A] {
 }
 
 /** Contains Positively Totally Preordered Semigroups (PTPSs) for various domains. */
-object PTPS {
+private[scallion] object PTPS {
 
   /** Returns a PTPS for sequences.
     *

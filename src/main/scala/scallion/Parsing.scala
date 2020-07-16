@@ -31,7 +31,10 @@ trait Parsing { self: Syntaxes =>
   /** Cache of computation of LL(1) properties for syntaxes. */
   private val syntaxToPropertiesCache: WeakHashMap[Syntax[_], Properties[_]] = new WeakHashMap()
 
-  /** Decorates syntaxes with methods for LL(1) properties. */
+  /** Decorates syntaxes with methods for LL(1) properties.
+    *
+    * @group property
+    */
   implicit def syntaxToLL1Properties[A](syntax: Syntax[A]): Properties[A] = {
     if (!syntaxToPropertiesCache.containsKey(syntax)) {
       Parser(syntax, enforceLL1=false)
@@ -167,6 +170,8 @@ trait Parsing { self: Syntaxes =>
     * @param first           The set of token kinds that can start valid sequences.
     * @param shouldNotFollow The set of token kinds that should not follow in sequence.
     * @param conflicts       The set of LL(1) conflicts of the syntax.
+    *
+    * @group property
     */
   case class Properties[A](
       nullable: Option[A],
@@ -238,7 +243,10 @@ trait Parsing { self: Syntaxes =>
   case class ConflictException(conflicts: Set[Conflict]) extends Exception("Syntax is not LL(1).")
 
 
-  /** Factory of LL(1) parsers. */
+  /** Factory of LL(1) parsers.
+    *
+    * @group parsing
+    */
   object Parser {
 
     /** Follow-last set tagged with its source. */
