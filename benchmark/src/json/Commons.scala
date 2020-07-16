@@ -36,8 +36,6 @@ case class NullValue(range: (Int, Int)) extends Value
 
 class JSONLexer(source: Iterator[Char]) {
 
-  import scallion.util.internal.BufferedIterator
-
   var in = source
   val out = new ArrayBuffer[Token]()
 

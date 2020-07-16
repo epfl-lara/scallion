@@ -1,4 +1,4 @@
-/* Copyright 2019 EPFL, Lausanne
+/* Copyright 2020 EPFL, Lausanne
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@ package example.json
 
 import scala.language.implicitConversions
 
-import scallion.input._
-import scallion.lexical._
-import scallion.syntactic._
+import scallion._
+import silex._
 
 /* In this example, we show a lexer and parser for JSON. */
 

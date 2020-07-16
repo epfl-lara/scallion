@@ -15,7 +15,7 @@
 
 package scallion.roman
 
-import scallion.syntactic._
+import scallion._
 
 sealed trait Symbol
 case object I extends Symbol

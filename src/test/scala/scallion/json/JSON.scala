@@ -17,9 +17,8 @@ package scallion.json
 
 import scala.language.implicitConversions
 
-import scallion.input._
-import scallion.lexical._
-import scallion.syntactic._
+import scallion._
+import silex._
 
 sealed abstract class Token {
   val range: (Int, Int)

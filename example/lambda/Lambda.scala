@@ -15,10 +15,9 @@
 
 package example.lambda
 
-import scallion.input._
-import scallion.lexical._
-import scallion.syntactic._
-import scallion.syntactic.Unfolds._
+import scallion._
+import scallion.util.Unfolds._
+import silex._
 
 /* In this example, we show a lexer and parser for lambda calculus. */
 

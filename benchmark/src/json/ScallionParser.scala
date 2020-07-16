@@ -2,11 +2,9 @@ package json
 
 import scala.language.implicitConversions
 
-import scallion.input._
-import scallion.lexical._
-import scallion.syntactic._
+import scallion._
 
-class ScallionParser extends Syntaxes with ll1.Parsing with gzpwd.Parsing with simplell1.Parsing {
+class ScallionParser extends Syntaxes with Parsing with simplell1.Parsing {
 
   type Token = json.Token
   type Kind = TokenClass
@@ -65,22 +63,14 @@ class ScallionParser extends Syntaxes with ll1.Parsing with gzpwd.Parsing with s
       nullValue)
   }
 
-  lazy val parser = LL1(value)
-
-  lazy val genParser = GZPWD(value)
+  lazy val parser = Parser(value)
 
   lazy val simpleParser = SimpleLL1(value)
 
   def apply(it: Iterator[Token]): Option[Value] = parser(it) match {
-    case LL1.Parsed(value, _) => Some(value)
-    case LL1.UnexpectedToken(token, _) => None
-    case LL1.UnexpectedEnd(_) => None
-  }
-
-  def genApply(it: Iterator[Token]): Option[Value] = genParser(it) match {
-    case GZPWD.Parsed(value, _) => Some(value)
-    case GZPWD.UnexpectedToken(token, _) => None
-    case GZPWD.UnexpectedEnd(_) => None
+    case Parsed(value, _) => Some(value)
+    case UnexpectedToken(token, _) => None
+    case UnexpectedEnd(_) => None
   }
 
   def simpleApply(it: Iterator[Token]): Option[Value] = simpleParser(it) match {

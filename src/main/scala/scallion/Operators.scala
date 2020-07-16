@@ -1,4 +1,4 @@
-/* Copyright 2019 EPFL, Lausanne
+/* Copyright 2020 EPFL, Lausanne
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-package scallion.syntactic
+package scallion
 
-import scallion.syntactic.Unfolds._
+import scallion.util.Unfolds._
 
 /** Contains utilities to write syntaxes with infix, prefix and postfix operators.
   * Expected to be mixed-in to `Syntaxes`.

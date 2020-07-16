@@ -1,5 +1,4 @@
 package scallion
-package syntactic
 package simplell1
 
 import scala.annotation.tailrec

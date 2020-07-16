@@ -69,17 +69,6 @@ class RecursiveDescent extends BenchmarkTokens {
   }
 }
 
-class ZippyGenPWD extends BenchmarkTokens {
-  performance of "Zippy (Generalized) Parsing with Derivatives" in {
-    measure method "parse" in {
-      using(tokens) in { ts =>
-        val parser = new ScallionParser
-        assert(parser.genApply(ts.toIterator).nonEmpty)
-      }
-    }
-  }
-}
-
 class EndToEndBenchmarks extends BenchmarkFiles {
 
   performance of "JSON end-to-end parsing" in {

@@ -15,7 +15,7 @@
 
 package example.roman
 
-import scallion.syntactic._
+import scallion._
 
 /* In this example, we show a parser and pretty printer for roman numerals. */
 

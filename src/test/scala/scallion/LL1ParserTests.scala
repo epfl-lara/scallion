@@ -17,7 +17,7 @@ package scallion
 
 import org.scalatest._
 
-import scallion.syntactic._
+import scallion._
 
 object Tokens {
   sealed trait Token

@@ -4,13 +4,14 @@ val commonSettings = Seq(
   scalaVersion       := "2.12.8",
   crossScalaVersions := Seq("2.12.8", "2.13.1"),
   organization       := "ch.epfl.lara",
+  resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
 )
 
 lazy val scallion = project
   .in(file("."))
   .settings(
     commonSettings,
-    name               := "scallion",
+    name := "scallion",
 
     scalacOptions ++= Seq(
       "-deprecation",
@@ -29,6 +30,7 @@ lazy val scallion = project
 
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+      "ch.epfl.lara" %% "silex" % "0.5" % "test",
     ),
 
     bintrayOrganization := Some("epfl-lara"),
@@ -46,6 +48,7 @@ lazy val example = project
     commonSettings,
     name := "scallion-examples",
     scalaSource in Compile := baseDirectory.value,
+    libraryDependencies += "ch.epfl.lara" %% "silex" % "0.5",
   )
   .dependsOn(scallion)
 

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package scallion.syntactic
+package scallion
 
 import scala.language.implicitConversions
 
@@ -252,10 +252,10 @@ trait Parsing { self: Syntaxes =>
       * @group parsing
       */
     def build[A](syntax: Syntax[A]): Either[Set[Conflict], Parser[A]] =
-      util.Try(apply(syntax, enforceLL1=true)) match {
-        case util.Success(parser) => Right(parser)
-        case util.Failure(ConflictException(conflicts)) => Left(conflicts)
-        case util.Failure(exception) => throw exception
+      scala.util.Try(apply(syntax, enforceLL1=true)) match {
+        case scala.util.Success(parser) => Right(parser)
+        case scala.util.Failure(ConflictException(conflicts)) => Left(conflicts)
+        case scala.util.Failure(exception) => throw exception
       }
 
     /** Cache of transformation from syntax to LL(1) parser. */

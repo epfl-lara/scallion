@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package scallion.syntactic
+package scallion
 
 import scallion.util.internal._
 

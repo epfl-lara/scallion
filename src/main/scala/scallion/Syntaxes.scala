@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package scallion.syntactic
+package scallion
 
 import scala.annotation.implicitNotFound
 import scala.language.higherKinds
@@ -198,7 +198,7 @@ trait Syntaxes {
       */
     def ~>~[B](that: Syntax[B])(implicit ev: Uninteresting[A]): Syntax[B] =
       ev.unit(this).~(that).map(_._2, {
-        case x => Seq(scallion.syntactic.~((), x))
+        case x => Seq(scallion.~((), x))
       })
 
     /** @usecase def ~<~[B](that: Syntax[B]): Syntax[A]
@@ -209,7 +209,7 @@ trait Syntaxes {
       */
     def ~<~[B](that: Syntax[B])(implicit ev: Uninteresting[B]): Syntax[A] =
       this.~(ev.unit(that)).map(_._1, {
-        case x => Seq(scallion.syntactic.~(x, ()))
+        case x => Seq(scallion.~(x, ()))
       })
 
     /** Sequences `this` and `that` syntax.
@@ -247,7 +247,7 @@ trait Syntaxes {
     def ~[B](that: Syntax[B]): Syntax[A ~ B] = (this, that) match {
       case (Failure(), _) => Failure()
       case (_, Failure()) => Failure()
-      case (Success(a, pa), Success(b, pb)) => Success(scallion.syntactic.~(a, b), {
+      case (Success(a, pa), Success(b, pb)) => Success(scallion.~(a, b), {
         case va ~ vb => pa(va) * pb(vb)
       })
       case _ => Sequence(this, that)

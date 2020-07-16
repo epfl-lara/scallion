@@ -15,9 +15,8 @@
 
 package example.calculator
 
-import scallion.input._
-import scallion.lexical._
-import scallion.syntactic._
+import scallion._
+import silex._
 
 /* In this example, we show a lexer and parser for a calculator. */
 
