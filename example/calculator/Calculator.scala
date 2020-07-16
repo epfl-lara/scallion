@@ -99,7 +99,7 @@ case class UnaryExpr(op: Char, inner: Expr) extends Expr
 
 // The following object describes the syntax of the calculator language,
 // and provides methods to parse and pretty print expressions.
-object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPrinting {
+object CalcParser extends Parsers {
 
   type Token = example.calculator.Token  // Type of tokens.
   type Kind = TokenKind  // Type of token kinds.
@@ -173,7 +173,7 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPr
   }
 
   // The LL(1) parser.
-  val parser = LL1(expr)
+  val parser = Parser(expr)
 
   // The pretty printer.
   val printer = PrettyPrinter(expr)
@@ -183,7 +183,7 @@ object CalcSyntax extends Syntaxes with Operators with ll1.Parsing with PrettyPr
 
   // Parses expressions.
   def apply(it: Iterator[Token]): Option[Expr] = parser(it) match {
-    case LL1.Parsed(value, _) => Some(value)
+    case Parsed(value, _) => Some(value)
     case _ => None
   }
 }
@@ -199,9 +199,9 @@ object Calculator {
       "(3 * 2!) + 4 * 5 - (6! + 2) + 2")
     for (e <- expressions) {
       println("Raw expression: " + e)
-      val parsed = CalcSyntax(CalcLexer(e.iterator)).get
+      val parsed = CalcParser(CalcLexer(e.iterator)).get
       println("Parsed: " + parsed)
-      val pretty = CalcSyntax.unapply(parsed).map(CalcLexer.unapply(_)).next()
+      val pretty = CalcParser.unapply(parsed).map(CalcLexer.unapply(_)).next()
       println("Pretty: " + pretty)
     }
   }

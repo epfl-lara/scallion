@@ -21,7 +21,7 @@ class RomanSyntaxTests extends FlatSpec with Inside {
 
   import RomanSyntax._
 
-  val parser = LL1(number)
+  val parser = Parser(number)
 
   def tokenize(string: String): Iterator[Symbol] =
     string.map {

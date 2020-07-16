@@ -145,7 +145,7 @@ case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
 // Then, we define the JSON Parser.
-object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
+object JSONParser extends Parsers {
 
   type Token = example.json.Token
   type Kind = TokenClass
@@ -220,14 +220,14 @@ object JSONParser extends Syntaxes with ll1.Parsing with Enumeration {
   }
 
   // Creates the LL1 parser from the syntax.
-  val parser = LL1(value)
+  val parser = Parser(value, false)
 
   // Turn the iterator of tokens into a value, if possible.
   def apply(it: Iterator[Token]): Either[String, Value] = parser(it) match {
-    case LL1.Parsed(value, rest) => Right(value)  // The parse was successful.
-    case LL1.UnexpectedToken(token, rest) =>  // The parse was unsuccessful due to a wrong token.
+    case Parsed(value, rest) => Right(value)  // The parse was successful.
+    case UnexpectedToken(token, rest) =>  // The parse was unsuccessful due to a wrong token.
       Left("Unexpected " + token + ", expected one of " + rest.first.mkString(", "))
-    case LL1.UnexpectedEnd(rest) =>  // The parse was unsuccessful due to the end of input.
+    case UnexpectedEnd(rest) =>  // The parse was unsuccessful due to the end of input.
       Left("Unexpected end of input. Quickest way to end is \"" +
         Enumerator.enumerate(rest.syntax).next().mkString("") + "\"")
   }

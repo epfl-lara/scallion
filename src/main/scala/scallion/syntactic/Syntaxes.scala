@@ -18,6 +18,7 @@ package scallion.syntactic
 import scala.annotation.implicitNotFound
 import scala.language.higherKinds
 import scala.util.Try
+import scala.collection.mutable.Map
 
 trait Syntaxes {
 
@@ -110,6 +111,9 @@ trait Syntaxes {
     * @group syntax
     */
   sealed trait Syntax[A] {
+
+    private[scallion] val trace = Traces.get
+
     // Combinators.
 
     /** Applies a `function` to the parsed values and the `inverse` function to the printed values.
@@ -307,10 +311,25 @@ trait Syntaxes {
       })
 
     /** Marks `this` syntax.
-      *      *
+      *
       * @group combinator
       */
     def mark(mark: Mark): Syntax[A] = Marked(mark, this)
+
+
+    private[scallion] def prefixOf(needle: Syntax[_]): Syntax[_] = prefixOf(needle, Map.empty)
+
+    protected def prefixOf(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = {
+
+      if (this eq needle) {
+        epsilon(())
+      }
+      else {
+        prefixOfHelper(needle, recs)
+      }
+    }
+
+    protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_]
   }
 
   /** Contains primitive basic syntaxes and syntax combinators.
@@ -326,13 +345,17 @@ trait Syntaxes {
       *
       * @group basic
       */
-    case class Success[A](value: A, matches: A => Int) extends Syntax[A]
+    case class Success[A](value: A, matches: A => Int) extends Syntax[A] {
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+    }
 
     /** Empty syntax.
       *
       * @group basic
       */
-    case class Failure[A]() extends Syntax[A]
+    case class Failure[A]() extends Syntax[A] {
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+    }
 
     /** Syntax that describes a single token of the given `kind`.
       *
@@ -340,7 +363,9 @@ trait Syntaxes {
       *
       * @group basic
       */
-    case class Elem(kind: Kind) extends Syntax[Token]
+    case class Elem(kind: Kind) extends Syntax[Token] {
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+    }
 
     /** Unary combinator.
       *
@@ -388,10 +413,16 @@ trait Syntaxes {
         inverse: B => Seq[A],
         inner: Syntax[A]) extends Syntax[B] with Unary[A] {
       require(inner != null)
+
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+        inner.prefixOf(needle, recs)
     }
 
     case class Marked[A](mark: Mark, inner: Syntax[A]) extends Syntax[A] with Unary[A] {
       require(inner != null)
+
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+        inner.prefixOf(needle, recs)
     }
 
     /** Syntax that sequences the `left` and `right` syntaxes and pairs the results.
@@ -404,6 +435,10 @@ trait Syntaxes {
     case class Sequence[A, B](left: Syntax[A], right: Syntax[B])
         extends Syntax[A ~ B] with Binary[A, B] {
       require(left != null && right != null)
+
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+        left.prefixOf(needle, recs).asInstanceOf[Syntax[Any]] |
+          (left ~ right.prefixOf(needle, recs)).asInstanceOf[Syntax[Any]]
     }
 
     /** Syntax that acts as either the `left` or the `right` syntaxes.
@@ -416,6 +451,10 @@ trait Syntaxes {
     case class Disjunction[A](left: Syntax[A], right: Syntax[A])
         extends Syntax[A] with Binary[A, A] {
       require(left != null && right != null)
+
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+        left.prefixOf(needle, recs).asInstanceOf[Syntax[Any]] |
+          right.prefixOf(needle, recs).asInstanceOf[Syntax[Any]]
     }
 
     /** Companion object of `Recursive`.
@@ -449,7 +488,12 @@ trait Syntaxes {
         */
       def create[A](syntax: => Syntax[A]): Recursive[A] = new Recursive[A] {
         override val id = nextId()
-        override lazy val inner: Syntax[A] = syntax
+        override lazy val inner: Syntax[A] = {
+          Traces.push(trace)
+          val res = syntax
+          Traces.pop()
+          res
+        }
       }
     }
 
@@ -481,6 +525,17 @@ trait Syntaxes {
         */
       override def hashCode(): Int = id
 
+      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+        recs.get(id) match {
+          case Some(rec) => rec
+          case None => {
+            lazy val inside: Syntax[_] = inner.prefixOf(needle, recs)
+            val rec = Recursive.create(inside)
+            recs += id -> rec
+            inside  // Forcing inside.
+            rec
+          }
+        }
     }
   }
 
@@ -636,5 +691,28 @@ trait Syntaxes {
     }
 
     queue.head
+  }
+}
+
+private object Traces {
+
+  private val traces = new ThreadLocal[List[(Int, List[StackTraceElement])]] {
+    override protected def initialValue: List[(Int, List[StackTraceElement])] = List()
+  }
+  def get: List[StackTraceElement] = {
+    val currents = traces.get()
+    val tss = currents.take(1).map(_._2).flatten
+    val n = currents.headOption.map(_._1).getOrElse(0)
+    val ts = Thread.currentThread.getStackTrace.toList
+    val k = ts.size
+    ts.take(k - n).drop(2).takeWhile(!_.isNativeMethod()) ++ tss
+  }
+  def push(extra: List[StackTraceElement]): Unit = {
+    val currents = traces.get()
+    traces.set((Thread.currentThread.getStackTrace.length, extra) :: currents)
+  }
+  def pop(): Unit = {
+    val currents = traces.get()
+    traces.set(currents.tail)
   }
 }

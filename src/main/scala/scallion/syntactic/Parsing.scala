@@ -14,7 +14,6 @@
  */
 
 package scallion.syntactic
-package ll1
 
 import scala.language.implicitConversions
 
@@ -30,97 +29,220 @@ import scallion.util.internal._
 trait Parsing { self: Syntaxes =>
 
   /** Cache of computation of LL(1) properties for syntaxes. */
-  private val syntaxToPropertiesCache: WeakHashMap[Syntax[_], LL1.Properties[_]] = new WeakHashMap()
+  private val syntaxToPropertiesCache: WeakHashMap[Syntax[_], Properties[_]] = new WeakHashMap()
 
   /** Decorates syntaxes with methods for LL(1) properties. */
-  implicit def syntaxToLL1Properties[A](syntax: Syntax[A]): LL1.Properties[A] = {
+  implicit def syntaxToLL1Properties[A](syntax: Syntax[A]): Properties[A] = {
     if (!syntaxToPropertiesCache.containsKey(syntax)) {
-      LL1(syntax, enforceLL1=false)
+      Parser(syntax, enforceLL1=false)
     }
-    syntaxToPropertiesCache.get(syntax).asInstanceOf[LL1.Properties[A]]
+    syntaxToPropertiesCache.get(syntax).asInstanceOf[Properties[A]]
   }
 
+  /** LL(1) parser.
+    *
+    * @group parsing
+    */
+  sealed trait Parser[A] { self =>
+
+    /** The value, if any, corresponding to the empty sequence of tokens in `this` parser.
+      *
+      * @group property
+      */
+    def nullable: Option[A]
+
+    /** Indicates if the empty sequence is described by `this` parser.
+      *
+      * @group property
+      */
+    def isNullable: Boolean = nullable.nonEmpty
+
+    /** Indicates if there exists a finite sequence of tokens that `this` parser describes.
+      *
+      * @group property
+      */
+    def isProductive: Boolean = isNullable || first.nonEmpty
+
+    /** Returns the set of token kinds that are accepted as the first token by `this` parser.
+      *
+      * @group property
+      */
+    def first: Set[Kind]
+
+    /** Syntax corresponding to this parser.
+      *
+      * @group property
+      */
+    def syntax: Syntax[A]
+
+    /** Returns the smallest interesting prefixes appropriately marked.
+      *
+      * @group property
+      */
+    def markedPrefixes(marks: Set[Mark]): Syntax[_]
+
+    /** Parses a sequence of tokens.
+      *
+      * @group parsing
+      */
+    def apply(tokens: Iterator[Token]): ParseResult[A]
+
+    /** Applies the given function on the result of the parser.
+     *
+     * @group parsing
+     */
+    def map[B](f: A => B): Parser[B] = {
+      new Parser[B] {
+        override def nullable = self.nullable.map(f)
+        override def first = self.first
+        override def syntax = self.syntax.map(f)
+        override def markedPrefixes(marks: Set[Mark]): Syntax[_] =
+          self.markedPrefixes(marks)
+
+        override def apply(tokens: Iterator[Token]): ParseResult[B] = {
+          self.apply(tokens).map(f)
+        }
+      }
+    }
+  }
+
+  /** Result of parsing.
+    *
+    * @group result
+    */
+  sealed trait ParseResult[A] {
+
+    /** Parser for the rest of input. */
+    val rest: Parser[A]
+
+    /** Returns the parsed value, if any. */
+    def getValue: Option[A] = this match {
+      case Parsed(value, _) => Some(value)
+      case _ => None
+    }
+
+    /** Applies the given function on the parsed result. */
+    def map[B](f: A => B): ParseResult[B] = this match {
+      case Parsed(value, rest)          => Parsed(f(value), rest.map(f))
+      case UnexpectedEnd(rest)          => UnexpectedEnd(rest.map(f))
+      case UnexpectedToken(token, rest) => UnexpectedToken(token, rest.map(f))
+    }
+  }
+
+  /** Indicates that the input has been fully parsed, resulting in a `value`.
+    *
+    * A parser for subsequent input is also provided.
+    *
+    * @param value The value produced.
+    * @param rest  Parser for more input.
+    *
+    * @group result
+    */
+  case class Parsed[A](value: A, rest: Parser[A]) extends ParseResult[A]
+
+  /** Indicates that the provided `token` was not expected at that point.
+    *
+    * The parser at the point of error is returned.
+    *
+    * @param token The token at fault.
+    * @param rest  Parser at the point of error.
+    *
+    * @group result
+    */
+  case class UnexpectedToken[A](token: Token, rest: Parser[A]) extends ParseResult[A]
+
+  /** Indicates that end of input was unexpectedly encountered.
+    *
+    * The `syntax` for subsequent input is provided.
+    *
+    * @param syntax Syntax at the end of input.
+    *
+    * @group result
+    */
+  case class UnexpectedEnd[A](rest: Parser[A]) extends ParseResult[A]
+
+  /** Contains properties of syntaxes.
+    *
+    * @param nullable        A value associated to the empty string, if any.
+    * @param first           The set of token kinds that can start valid sequences.
+    * @param shouldNotFollow The set of token kinds that should not follow in sequence.
+    * @param conflicts       The set of LL(1) conflicts of the syntax.
+    */
+  case class Properties[A](
+      nullable: Option[A],
+      first: Set[Kind],
+      shouldNotFollow: Set[Kind],
+      conflicts: Set[Conflict]) {
+
+    /** Indicates if the syntax accepts the empty sequence. */
+    def isNullable: Boolean = nullable.nonEmpty
+
+    /** Indicates if the syntax accepts at least one sequence. */
+    def isProductive: Boolean = isNullable || first.nonEmpty
+
+    /** Indicates if the syntax is LL(1). */
+    def isLL1: Boolean = conflicts.isEmpty
+  }
+
+  /** Describes a LL(1) conflict.
+    *
+    * @group conflict
+    */
+  sealed trait Conflict {
+
+    /** Source of the conflict. */
+    val source: Syntax.Disjunction[_]
+  }
+
+  /** Contains the description of the various LL(1) conflicts.
+    *
+    * @group conflict
+    */
+  object Conflict {
+
+    import Syntax._
+
+    /** Indicates that both branches of a disjunction are nullable.
+      *
+      * @param source The source of the conflict.
+      */
+    case class NullableConflict(source: Disjunction[_]) extends Conflict
+
+    /** Indicates that two branches of a disjunction share some same first token kinds.
+      *
+      * @param source      The source of the conflict.
+      * @param ambiguities The conflicting kinds.
+      */
+    case class FirstConflict(source: Disjunction[_],
+                             ambiguities: Set[Kind]) extends Conflict
+
+    /** Indicates that an ambiguity arises due to a disjunction appearing somewhere in
+      * the left-hand side of a sequence, that conflicts with the right-hand side of
+      * that sequence.
+      *
+      * @param source      The source of the conflict.
+      * @param root        The sequence in which the conflict occured.
+      * @param ambiguities The conflicting kinds.
+      */
+    case class FollowConflict(source: Disjunction[_],
+                              root: Sequence[_, _],
+                              ambiguities: Set[Kind]) extends Conflict
+  }
+
+  import Conflict._
+
+  /** Indicates that a syntax is not LL(1) due to various conflicts.
+    *
+    * @group conflict
+    */
+  case class ConflictException(conflicts: Set[Conflict]) extends Exception("Syntax is not LL(1).")
+
+
   /** Factory of LL(1) parsers. */
-  object LL1 {
-
-    /** Contains properties of syntaxes.
-      *
-      * @param nullable        A value associated to the empty string, if any.
-      * @param first           The set of token kinds that can start valid sequences.
-      * @param shouldNotFollow The set of token kinds that should not follow in sequence.
-      * @param conflicts       The set of LL(1) conflicts of the syntax.
-      */
-    case class Properties[A](
-        nullable: Option[A],
-        first: Set[Kind],
-        shouldNotFollow: Set[Kind],
-        conflicts: Set[Conflict]) {
-
-      /** Indicates if the syntax accepts the empty sequence. */
-      def isNullable: Boolean = nullable.nonEmpty
-
-      /** Indicates if the syntax accepts at least one sequence. */
-      def isProductive: Boolean = isNullable || first.nonEmpty
-
-      /** Indicates if the syntax is LL(1). */
-      def isLL1: Boolean = conflicts.isEmpty
-    }
-
-    /** Describes a LL(1) conflict.
-      *
-      * @group conflict
-      */
-    sealed trait Conflict {
-
-      /** Source of the conflict. */
-      val source: Syntax.Disjunction[_]
-    }
-
-    /** Contains the description of the various LL(1) conflicts.
-      *
-      * @group conflict
-      */
-    object Conflict {
-
-      import Syntax._
-
-      /** Indicates that both branches of a disjunction are nullable.
-        *
-        * @param source The source of the conflict.
-        */
-      case class NullableConflict(source: Disjunction[_]) extends Conflict
-
-      /** Indicates that two branches of a disjunction share some same first token kinds.
-        *
-        * @param source      The source of the conflict.
-        * @param ambiguities The conflicting kinds.
-        */
-      case class FirstConflict(source: Disjunction[_],
-                               ambiguities: Set[Kind]) extends Conflict
-
-      /** Indicates that an ambiguity arises due to a disjunction appearing somewhere in
-        * the left-hand side of a sequence, that conflicts with the right-hand side of
-        * that sequence.
-        *
-        * @param source      The source of the conflict.
-        * @param root        The sequence in which the conflict occured.
-        * @param ambiguities The conflicting kinds.
-        */
-      case class FollowConflict(source: Disjunction[_],
-                                root: Sequence[_, _],
-                                ambiguities: Set[Kind]) extends Conflict
-    }
-
-    import Conflict._
+  object Parser {
 
     /** Follow-last set tagged with its source. */
     private case class ShouldNotFollowEntry(source: Syntax.Disjunction[_], kinds: Set[Kind])
-
-    /** Indicates that a syntax is not LL(1) due to various conflicts.
-      *
-      * @group conflict
-      */
-    case class ConflictException(conflicts: Set[Conflict]) extends Exception("Syntax is not LL(1).")
 
     /** Builds a LL(1) parser from a syntax description.
       * In case the syntax is not LL(1),
@@ -367,21 +489,25 @@ trait Parsing { self: Syntaxes =>
     }
 
     private object SyntaxCell {
+
       case class Success[A](value: A, syntax: Syntax[A]) extends SyntaxCell[A] {
         override def init(): Unit = {
           productiveCell(())
           nullableCell(value)
         }
       }
+
       case class Failure[A](syntax: Syntax[A]) extends SyntaxCell[A] {
         override def init(): Unit = ()
       }
+
       case class Elem(kind: Kind, syntax: Syntax[Token]) extends SyntaxCell[Token] {
         override def init(): Unit = {
           productiveCell(())
           firstCell(Set(kind))
         }
       }
+
       case class Disjunction[A](left: SyntaxCell[A], right: SyntaxCell[A], syntax: Syntax[A])
           extends SyntaxCell[A] {
         override def init(): Unit = {
@@ -425,6 +551,7 @@ trait Parsing { self: Syntaxes =>
           right.conflictCell.register(conflictCell)
         }
       }
+
       case class Sequence[A, B](left: SyntaxCell[A], right: SyntaxCell[B], syntax: Syntax[A ~ B])
           extends SyntaxCell[A ~ B] {
 
@@ -483,6 +610,7 @@ trait Parsing { self: Syntaxes =>
           right.conflictCell.register(conflictCell)
         }
       }
+
       case class Marked[A](
           inner: SyntaxCell[A],
           mark: Mark,
@@ -498,6 +626,7 @@ trait Parsing { self: Syntaxes =>
           inner.conflictCell.register(conflictCell)
         }
       }
+
       case class Transform[A, B](
           inner: SyntaxCell[A],
           function: A => B,
@@ -514,6 +643,7 @@ trait Parsing { self: Syntaxes =>
           inner.conflictCell.register(conflictCell)
         }
       }
+
       abstract class Recursive[A] extends SyntaxCell[A] {
         def inner: SyntaxCell[A]
         val id: RecId
@@ -534,6 +664,7 @@ trait Parsing { self: Syntaxes =>
           }
         }
       }
+
       object Recursive {
         def apply[A](cell: => SyntaxCell[A], recId: RecId, syn: Syntax[A]): SyntaxCell[A] =
           new Recursive[A] {
@@ -549,128 +680,6 @@ trait Parsing { self: Syntaxes =>
           }
           else {
             None
-          }
-        }
-      }
-    }
-
-    /** Result of parsing.
-      *
-      * @group result
-      */
-    sealed trait ParseResult[A] {
-
-      /** Parser for the rest of input. */
-      val rest: Parser[A]
-
-      /** Returns the parsed value, if any. */
-      def getValue: Option[A] = this match {
-        case Parsed(value, _) => Some(value)
-        case _ => None
-      }
-
-      /** Applies the given function on the parsed result. */
-      def map[B](f: A => B): ParseResult[B] = this match {
-        case Parsed(value, rest)          => Parsed(f(value), rest.map(f))
-        case UnexpectedEnd(rest)          => UnexpectedEnd(rest.map(f))
-        case UnexpectedToken(token, rest) => UnexpectedToken(token, rest.map(f))
-      }
-    }
-
-    /** Indicates that the input has been fully parsed, resulting in a `value`.
-      *
-      * A parser for subsequent input is also provided.
-      *
-      * @param value The value produced.
-      * @param rest  Parser for more input.
-      *
-      * @group result
-      */
-    case class Parsed[A](value: A, rest: Parser[A]) extends ParseResult[A]
-
-    /** Indicates that the provided `token` was not expected at that point.
-      *
-      * The parser at the point of error is returned.
-      *
-      * @param token The token at fault.
-      * @param rest  Parser at the point of error.
-      *
-      * @group result
-      */
-    case class UnexpectedToken[A](token: Token, rest: Parser[A]) extends ParseResult[A]
-
-    /** Indicates that end of input was unexpectedly encountered.
-      *
-      * The `syntax` for subsequent input is provided.
-      *
-      * @param syntax Syntax at the end of input.
-      *
-      * @group result
-      */
-    case class UnexpectedEnd[A](rest: Parser[A]) extends ParseResult[A]
-
-    /** LL(1) parser.
-      *
-      * @group parsing
-      */
-    sealed trait Parser[A] { self =>
-
-      /** The value, if any, corresponding to the empty sequence of tokens in `this` parser.
-        *
-        * @group property
-        */
-      def nullable: Option[A]
-
-      /** Indicates if the empty sequence is described by `this` parser.
-        *
-        * @group property
-        */
-      def isNullable: Boolean = nullable.nonEmpty
-
-      /** Indicates if there exists a finite sequence of tokens that `this` parser describes.
-        *
-        * @group property
-        */
-      def isProductive: Boolean = isNullable || first.nonEmpty
-
-      /** Returns the set of token kinds that are accepted as the first token by `this` parser.
-        *
-        * @group property
-        */
-      def first: Set[Kind]
-
-      /** Syntax corresponding to this parser.
-        *
-        * @group property
-        */
-      def syntax: Syntax[A]
-
-      /** Returns the smallest interesting prefixes appropriately marked.
-        *
-        * @group property
-        */
-      def markedPrefixes(marks: Set[Mark]): Syntax[_]
-
-      /** Parses a sequence of tokens.
-        *
-        * @group parsing
-        */
-      def apply(tokens: Iterator[Token]): ParseResult[A]
-
-      /** Applies the given function on the result of the parser.
-       *
-       * @group parsing
-       */
-      def map[B](f: A => B): Parser[B] = {
-        new Parser[B] {
-          override def nullable = self.nullable.map(f)
-          override def first = self.first
-          override def syntax = self.syntax.map(f)
-          override def markedPrefixes(marks: Set[Mark]): Syntax[_] =
-            self.markedPrefixes(marks)
-
-          override def apply(tokens: Iterator[Token]): ParseResult[B] = {
-            self.apply(tokens).map(f)
           }
         }
       }

@@ -36,7 +36,7 @@ object Tokens {
 }
 import Tokens._
 
-class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with ll1.Parsing {
+class ParserTests extends FlatSpec with Inside with Parsers {
 
   type Token = Tokens.Token
   type Kind = Tokens.TokenClass
@@ -52,12 +52,11 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   import Syntax._
-  import LL1._
 
   // elem
 
   "elem" should "parse tokens from the specified class" in {
-    val parser = LL1(elem(NumClass))
+    val parser = Parser(elem(NumClass))
 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -68,7 +67,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not parse tokens from different classes" in {
-    val parser = LL1(elem(NumClass))
+    val parser = Parser(elem(NumClass))
 
     inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -78,7 +77,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "correctly fail at the end of input" in {
-    val parser = LL1(elem(NumClass))
+    val parser = Parser(elem(NumClass))
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
@@ -88,13 +87,13 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable" in {
-    val parser = LL1(elem(NumClass))
+    val parser = Parser(elem(NumClass))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "correctly define `first`" in {
-    val parser = LL1(elem(NumClass))
+    val parser = Parser(elem(NumClass))
 
     assert(parser.first == Set(NumClass))
   }
@@ -102,7 +101,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // accept
 
   "accept" should "parser tokens from the specified class" in {
-    val parser = LL1(accept(NumClass) {
+    val parser = Parser(accept(NumClass) {
       case Num(value) => value * 2
     })
 
@@ -115,7 +114,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not parse tokens from different classes" in {
-    val parser = LL1(accept(NumClass) {
+    val parser = Parser(accept(NumClass) {
       case Num(value) => value * 2
     })
 
@@ -127,7 +126,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "correctly fail at the end of input" in {
-    val parser = LL1(accept(NumClass) {
+    val parser = Parser(accept(NumClass) {
       case Num(value) => value * 2
     })
 
@@ -139,7 +138,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable" in {
-    val parser = LL1(accept(NumClass) {
+    val parser = Parser(accept(NumClass) {
       case Num(value) => value * 2
     })
 
@@ -147,7 +146,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "correctly define `first`" in {
-    val parser = LL1(accept(NumClass) {
+    val parser = Parser(accept(NumClass) {
       case Num(value) => value * 2
     })
 
@@ -157,7 +156,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // epsilon
 
   "epsilon" should "correctly return value at the end of input" in {
-    val parser = LL1(epsilon("ok"))
+    val parser = Parser(epsilon("ok"))
 
     inside(parser(Seq().iterator)) {
       case Parsed(res, rest) => {
@@ -167,7 +166,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "fail in case of remaining input" in {
-    val parser = LL1(epsilon("ok"))
+    val parser = Parser(epsilon("ok"))
 
     inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -177,13 +176,13 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "be nullable" in {
-    val parser = LL1(epsilon(17))
+    val parser = Parser(epsilon(17))
 
     assert(parser.nullable == Some(17))
   }
 
   it should "have an empty `first`" in {
-    val parser = LL1(epsilon(17))
+    val parser = Parser(epsilon(17))
 
     assert(parser.first.isEmpty)
   }
@@ -191,7 +190,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // failure
 
   "failure" should "correctly fail in case of end of input" in {
-    val parser = LL1(failure[Any])
+    val parser = Parser(failure[Any])
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
@@ -201,7 +200,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "correctly fail in case of remaining input" in {
-    val parser = LL1(failure[Any])
+    val parser = Parser(failure[Any])
 
     inside(parser(Seq(Bool(true)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -211,13 +210,13 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable" in {
-    val parser = LL1(failure[Any])
+    val parser = Parser(failure[Any])
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have an empty `first`" in {
-    val parser = LL1(failure[Any])
+    val parser = Parser(failure[Any])
 
     assert(parser.first.isEmpty)
   }
@@ -225,7 +224,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // sequencing
 
   "sequencing" should "parse using the two parsers in sequence" in {
-    val parser = LL1(elem(BoolClass) ~ elem(NumClass))
+    val parser = Parser(elem(BoolClass) ~ elem(NumClass))
 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(first ~ second, rest) => {
@@ -236,7 +235,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "use the fact that left might be nullable for parsing" in {
-    val parser = LL1((elem(BoolClass) | epsilon(Bool(true))) ~ elem(NumClass))
+    val parser = Parser((elem(BoolClass) | epsilon(Bool(true))) ~ elem(NumClass))
 
     inside(parser(Seq(Num(32)).iterator)) {
       case Parsed(first ~ second, rest) => {
@@ -247,7 +246,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "fail at the correct point" in {
-    val parser = LL1(elem(BoolClass) ~ elem(NumClass))
+    val parser = Parser(elem(BoolClass) ~ elem(NumClass))
 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -265,7 +264,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "be nullable if both sides are nullable" in {
-    val parser = LL1(epsilon(Bool(true)) ~ epsilon(Num(13)))
+    val parser = Parser(epsilon(Bool(true)) ~ epsilon(Num(13)))
 
     inside(parser.nullable) {
       case Some(first ~ second) => {
@@ -276,31 +275,31 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable if the first parser is not nullable" in {
-    val parser = LL1(elem(BoolClass) ~ epsilon(Bool(true)))
+    val parser = Parser(elem(BoolClass) ~ epsilon(Bool(true)))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if the second parser is not nullable" in {
-    val parser = LL1(epsilon(Bool(true)) ~ elem(BoolClass))
+    val parser = Parser(epsilon(Bool(true)) ~ elem(BoolClass))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if both sides are not nullable" in {
-    val parser = LL1(elem(BoolClass) ~ elem(NumClass))
+    val parser = Parser(elem(BoolClass) ~ elem(NumClass))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have correct `first` in case of non-nullable first parser" in {
-    val parser = LL1(elem(BoolClass) ~ elem(NumClass))
+    val parser = Parser(elem(BoolClass) ~ elem(NumClass))
 
     assert(parser.first == Set(BoolClass))
   }
 
   it should "have correct `first` in case of nullable first parser" in {
-    val parser = LL1((elem(BoolClass) | epsilon(Bool(true))) ~ elem(NumClass))
+    val parser = Parser((elem(BoolClass) | epsilon(Bool(true))) ~ elem(NumClass))
 
     assert(parser.first == Set(BoolClass, NumClass))
   }
@@ -308,43 +307,43 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   it should "not be LL(1) when the first is nullable and both sides have conflicting `first`" in {
 
     assertThrows[ConflictException] {
-      LL1((elem(BoolClass) | epsilon(Bool(true))) ~ elem(BoolClass))
+      Parser((elem(BoolClass) | epsilon(Bool(true))) ~ elem(BoolClass))
     }
   }
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
     val left = elem(NumClass) ~ (elem(BoolClass) | epsilon(Bool(true)))
 
-    LL1(left)
+    Parser(left)
 
     assertThrows[ConflictException] {
-      LL1(left ~ elem(BoolClass))
+      Parser(left ~ elem(BoolClass))
     }
   }
 
   it should "not be LL(1) when first parser is not LL(1)" in {
 
     assertThrows[ConflictException] {
-      LL1((epsilon(Bool(true)) | epsilon(Bool(false))) ~ Elem(BoolClass))
+      Parser((epsilon(Bool(true)) | epsilon(Bool(false))) ~ Elem(BoolClass))
     }
   }
 
   it should "not be LL(1) when second parser is not LL(1)" in {
 
     assertThrows[ConflictException] {
-      LL1(elem(BoolClass) ~ (epsilon(Bool(true)) | epsilon(Bool(false))))
+      Parser(elem(BoolClass) ~ (epsilon(Bool(true)) | epsilon(Bool(false))))
     }
   }
 
   it should "be LL(1) otherwise" in {
-    LL1((epsilon[Token](Num(2)) | elem(BoolClass)) ~ (elem(NumClass) | epsilon(Bool(true))))
+    Parser((epsilon[Token](Num(2)) | elem(BoolClass)) ~ (elem(NumClass) | epsilon(Bool(true))))
   }
 
   // concatenation
 
   "concatenation" should "parse using the two parsers in sequence" in {
     def f(k: TokenClass): Syntax[Seq[Token]] = elem(k).map(Seq(_))
-    val parser = LL1(f(BoolClass) ++ f(NumClass))
+    val parser = Parser(f(BoolClass) ++ f(NumClass))
 
     inside(parser(Seq(Bool(true), Num(32)).iterator)) {
       case Parsed(res, rest) => {
@@ -355,7 +354,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "use the fact that left might be nullable for parsing" in {
-    val parser = LL1((elem(BoolClass) |
+    val parser = Parser((elem(BoolClass) |
       epsilon(Bool(true))).map(Seq(_)) ++
       elem(NumClass).map(Seq(_)))
 
@@ -367,7 +366,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "fail at the correct point" in {
-    val parser = LL1(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
+    val parser = Parser(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
 
     inside(parser(Seq(Num(1), Num(2)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -385,71 +384,71 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "be nullable if both sides are nullable" in {
-    val parser = LL1(epsilon(Bool(true)).map(Seq(_)) ++ epsilon(Bool(false)).map(Seq(_)))
+    val parser = Parser(epsilon(Bool(true)).map(Seq(_)) ++ epsilon(Bool(false)).map(Seq(_)))
 
     assert(parser.nullable == Some(Seq(Bool(true), Bool(false))))
   }
 
   it should "not be nullable if the first parser is not nullable" in {
-    val parser = LL1(elem(BoolClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_)))
+    val parser = Parser(elem(BoolClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(false))).map(Seq(_)))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if the second parser is not nullable" in {
-    val parser = LL1(epsilon[Token](Bool(false)).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
+    val parser = Parser(epsilon[Token](Bool(false)).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "not be nullable if both sides are not nullable" in {
-    val parser = LL1(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
+    val parser = Parser(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "have correct `first` in case of non-nullable first parser" in {
-    val parser = LL1(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
+    val parser = Parser(elem(BoolClass).map(Seq(_)) ++ elem(NumClass).map(Seq(_)))
 
     assert(parser.first == Set(BoolClass))
   }
 
   it should "have correct `first` in case of nullable first parser" in {
-    val parser = LL1((elem(BoolClass).map(Seq(_)) | epsilon(Seq())) ++ elem(NumClass).map(Seq(_)))
+    val parser = Parser((elem(BoolClass).map(Seq(_)) | epsilon(Seq())) ++ elem(NumClass).map(Seq(_)))
 
     assert(parser.first == Set(BoolClass, NumClass))
   }
 
   it should "not be LL(1) when the first is nullable and both sides have conflicting `first`" in {
     assertThrows[ConflictException] {
-      LL1((elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
+      Parser((elem(BoolClass) | epsilon(Bool(true))).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
     }
   }
 
   it should "not be LL(1) when the first has a trailing nullable that conflicts with the second's `first`" in {
     val left = elem(NumClass).map(Seq(_)) ++ (elem(BoolClass) | epsilon(Bool(true))).map(Seq(_))
 
-    LL1(left)
+    Parser(left)
 
     assertThrows[ConflictException] {
-      LL1(left ++ elem(BoolClass).map(Seq(_)))
+      Parser(left ++ elem(BoolClass).map(Seq(_)))
     }
   }
 
   it should "not be LL(1) when first parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1((epsilon[Token](Bool(true)) | epsilon(Bool(false))).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
+      Parser((epsilon[Token](Bool(true)) | epsilon(Bool(false))).map(Seq(_)) ++ elem(BoolClass).map(Seq(_)))
     }
   }
 
   it should "not be LL(1) when second parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1(elem(BoolClass).map(Seq(_)) ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_)))
+      Parser(elem(BoolClass).map(Seq(_)) ++ (epsilon(Bool(true)) | epsilon(Bool(false))).map(Seq[Token](_)))
     }
   }
 
   it should "be LL(1) otherwise" in {
-    LL1(
+    Parser(
       (epsilon[Token](Num(2)) | elem(BoolClass)).map(Seq(_)) ++
       (elem(NumClass) | epsilon(Bool(true))).map(Seq(_)))
   }
@@ -457,7 +456,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // disjunction
 
   "disjunction" should "accept from the first parser" in {
-    val parser = LL1(elem(BoolClass) | elem(NumClass))
+    val parser = Parser(elem(BoolClass) | elem(NumClass))
 
     inside(parser(Seq(Bool(true)).iterator)) {
       case Parsed(res, rest) => {
@@ -470,7 +469,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "accept from the second parser" in {
-    val parser = LL1(elem(BoolClass) | elem(NumClass))
+    val parser = Parser(elem(BoolClass) | elem(NumClass))
 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -483,61 +482,61 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable if neither sides are nullable" in {
-    val parser = LL1(elem(BoolClass) | elem(NumClass))
+    val parser = Parser(elem(BoolClass) | elem(NumClass))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "be nullable if the first parser is nullable" in {
-    val parser = LL1(epsilon[Token](Bool(true)) | elem(NumClass))
+    val parser = Parser(epsilon[Token](Bool(true)) | elem(NumClass))
 
     assert(parser.nullable == Some(Bool(true)))
   }
 
   it should "be nullable if the second parser is nullable" in {
-    val parser = LL1(elem(BoolClass) | epsilon(Bool(true)))
+    val parser = Parser(elem(BoolClass) | epsilon(Bool(true)))
 
     assert(parser.nullable == Some(Bool(true)))
   }
 
   it should "have correct `first`" in {
-    val parser = LL1(elem(BoolClass) | elem(NumClass) | epsilon(Bool(true)))
+    val parser = Parser(elem(BoolClass) | elem(NumClass) | epsilon(Bool(true)))
 
     assert(parser.first == Set(BoolClass, NumClass))
   }
 
   it should "not be LL(1) when both sides are nullable" in {
     assertThrows[ConflictException] {
-      LL1(epsilon(Bool(true)) | epsilon(Bool(false)))
+      Parser(epsilon(Bool(true)) | epsilon(Bool(false)))
     }
   }
 
   it should "not be LL(1) when both sides have interecting first sets" in {
     assertThrows[ConflictException] {
-      LL1(elem(BoolClass) | (elem(NumClass) | elem(BoolClass)))
+      Parser(elem(BoolClass) | (elem(NumClass) | elem(BoolClass)))
     }
   }
 
   it should "not be LL(1) when first parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1((epsilon[Token](Bool(true)) | epsilon(Bool(false))) | Elem(BoolClass))
+      Parser((epsilon[Token](Bool(true)) | epsilon(Bool(false))) | Elem(BoolClass))
     }
   }
 
   it should "not be LL(1) when second parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1(elem(BoolClass) | (epsilon[Token](Bool(true)) | epsilon(Bool(false))))
+      Parser(elem(BoolClass) | (epsilon[Token](Bool(true)) | epsilon(Bool(false))))
     }
   }
 
   it should "be LL(1) otherwise" in {
-    LL1(elem(BoolClass) | elem(NumClass) | epsilon(Bool(true)))
+    Parser(elem(BoolClass) | elem(NumClass) | epsilon(Bool(true)))
   }
 
   // tagged disjunction
 
   "tagged disjunction" should "correctly tag values" in {
-    val parser = LL1(elem(BoolClass) || elem(NumClass))
+    val parser = Parser(elem(BoolClass) || elem(NumClass))
 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -553,7 +552,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "accept different branch types" in {
-    val parser = LL1(elem(BoolClass).map(_ => "X") || elem(NumClass).map(_ => 42))
+    val parser = Parser(elem(BoolClass).map(_ => "X") || elem(NumClass).map(_ => 42))
 
     inside(parser(Seq(Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -571,7 +570,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   // many
 
   "many" should "parse zero repetitions" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
     inside(parser(Seq().iterator)) {
       case Parsed(res, rest) => {
@@ -582,7 +581,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "parse one repetition" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
     inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
@@ -593,7 +592,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "parse several repetitions" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
     inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -604,7 +603,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not fix choices" in {
-    val parser = LL1(many(elem(NumClass) | elem(BoolClass)))
+    val parser = Parser(many(elem(NumClass) | elem(BoolClass)))
 
     inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
@@ -615,7 +614,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "fail when inner parser fails" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
     inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -627,33 +626,33 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "be nullable" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
     assert(parser.nullable.nonEmpty)
   }
 
   it should "inherit the `first`" in {
-    val parser = LL1(many(elem(NumClass)))
+    val parser = Parser(many(elem(NumClass)))
 
-    assert(parser.first == LL1(elem(NumClass)).first)
+    assert(parser.first == Parser(elem(NumClass)).first)
   }
 
   it should "not be LL(1) when the inner parser is nullable" in {
     assertThrows[ConflictException] {
-      LL1(many(elem(NumClass) | epsilon(Bool(true))))
+      Parser(many(elem(NumClass) | epsilon(Bool(true))))
     }
   }
 
   it should "not be LL(1) when the inner parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1(many(epsilon[Token](Num(1)) | elem(BoolClass) | epsilon[Token](Bool(true))))
+      Parser(many(epsilon[Token](Num(1)) | elem(BoolClass) | epsilon[Token](Bool(true))))
     }
   }
 
   // many1
 
   "many1" should "not parse zero repetitions" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
     inside(parser(Seq().iterator)) {
       case UnexpectedEnd(rest) => {
@@ -663,7 +662,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "parse one repetition" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
     inside(parser(Seq(Num(12)).iterator)) {
       case Parsed(res, rest) => {
@@ -674,7 +673,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "parse several repetitions" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
     inside(parser(Seq(Num(12), Num(34), Num(1)).iterator)) {
       case Parsed(res, rest) => {
@@ -685,7 +684,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not fix choices" in {
-    val parser = LL1(many1(elem(NumClass) | elem(BoolClass)))
+    val parser = Parser(many1(elem(NumClass) | elem(BoolClass)))
 
     inside(parser(Seq(Num(12), Bool(true), Num(1), Num(12), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
@@ -696,7 +695,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "fail when inner parser fails" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
     inside(parser(Seq(Num(12), Bool(true), Num(1)).iterator)) {
       case UnexpectedToken(token, rest) => {
@@ -708,26 +707,26 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   }
 
   it should "not be nullable" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
     assert(parser.nullable.isEmpty)
   }
 
   it should "inherit the `first`" in {
-    val parser = LL1(many1(elem(NumClass)))
+    val parser = Parser(many1(elem(NumClass)))
 
-    assert(parser.first == LL1(elem(NumClass)).first)
+    assert(parser.first == Parser(elem(NumClass)).first)
   }
 
   it should "not be LL(1) when the inner parser is nullable" in {
     assertThrows[ConflictException] {
-      LL1(many1(elem(NumClass) | epsilon(Bool(true))))
+      Parser(many1(elem(NumClass) | epsilon(Bool(true))))
     }
   }
 
   it should "not be LL(1) when the inner parser is not LL(1)" in {
     assertThrows[ConflictException] {
-      LL1(many1(epsilon[Token](Num(1)) | elem(BoolClass) | epsilon[Token](Bool(true))))
+      Parser(many1(epsilon[Token](Num(1)) | elem(BoolClass) | epsilon[Token](Bool(true))))
     }
   }
 
@@ -738,7 +737,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
       elem(BoolClass) +: syntax | epsilon(Seq())
     }
 
-    val parser = LL1(syntax)
+    val parser = Parser(syntax)
 
     inside(parser(Seq(Bool(true), Bool(false)).iterator)) {
       case Parsed(res, rest) => {
@@ -755,7 +754,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
   "LL1 conflicts" should "catch ambiguous first kinds" in {
     val syntax = elem(BoolClass) | elem(NumClass) | elem(BoolClass) ~<~ elem(NumClass)
 
-    val res = LL1.build(syntax)
+    val res = Parser.build(syntax)
     assert(res.isLeft)
 
     val Left(conflicts) = res
@@ -776,7 +775,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
       elem(OperatorClass('+')) |
       epsilon(Bool(true))
 
-    val res = LL1.build(syntax)
+    val res = Parser.build(syntax)
     assert(res.isLeft)
 
     val Left(conflicts) = res
@@ -796,7 +795,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
       (elem(NumClass).up[Any] | opt(elem(BoolClass)).up[Any]) ~
       elem(BoolClass)
 
-    val res = LL1.build(syntax)
+    val res = Parser.build(syntax)
     assert(res.isLeft)
 
     val Left(conflicts) = res
@@ -816,7 +815,7 @@ class ParserTests extends FlatSpec with Inside with Syntaxes with Operators with
       case _ ~ rhs => rhs
     }
 
-    val Left(conflicts) = LL1.build(expr)
+    val Left(conflicts) = Parser.build(expr)
     val cs = conflicts.toSeq
 
     assert(cs.size == 3)

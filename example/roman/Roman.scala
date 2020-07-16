@@ -30,7 +30,7 @@ case object D extends Symbol
 case object M extends Symbol
 
 // The following describes the syntax of roman numerals.
-object RomanSyntax extends Syntaxes with ll1.Parsing with PrettyPrinting {
+object RomanSyntax extends Parsers {
 
   // Tokens and kinds coincide in this example.
   type Token = Symbol
@@ -101,7 +101,7 @@ object RomanSyntax extends Syntaxes with ll1.Parsing with PrettyPrinting {
   })
 
   val printer = PrettyPrinter(number)
-  val parser = LL1(number)
+  val parser = Parser(number)
 }
 
 object Roman {

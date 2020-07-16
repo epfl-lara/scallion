@@ -104,4 +104,6 @@ package object syntactic {
     /** Builds a pair. */
     def ~[B](second: B): A ~ B = syntactic.~(first, second)
   }
+
+  trait Parsers extends Syntaxes with Parsing with Enumeration with PrettyPrinting with Operators with Debug
 }

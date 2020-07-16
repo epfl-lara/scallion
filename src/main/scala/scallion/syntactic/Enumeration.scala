@@ -31,7 +31,9 @@ trait Enumeration { self: Syntaxes =>
       *
       * The sequences are produced lazily and in order of increasing length.
       */
-    def enumerate[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = {
+    def enumerate[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = producer(syntax).iterator
+
+    private[scallion] def producer[A](syntax: Syntax[A]): Producer[Seq[Kind]] = {
 
       def go[A](syntax: Syntax[A], recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
         syntax match {
@@ -54,7 +56,7 @@ trait Enumeration { self: Syntaxes =>
           }
         }
 
-      go(syntax, Map()).iterator
+      go(syntax, Map())
     }
   }
 
