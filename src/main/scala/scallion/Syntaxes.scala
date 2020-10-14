@@ -128,8 +128,8 @@ trait Syntaxes {
       this match {
         case Failure() =>
           Failure()
-        case Success(value, predicate) =>
-          Success(function(value), (y: B) => Try(inverse(y)).getOrElse(Seq()).map(predicate).sum)
+        // case Success(value, predicate) =>
+        //   Success(function(value), (y: B) => Try(inverse(y)).getOrElse(Seq()).map(predicate).sum)
         case Transform(otherFunction, otherInverse, inner) =>
           Transform(
             otherFunction andThen function,
@@ -148,10 +148,7 @@ trait Syntaxes {
       (ev(this), that) match {
         case (Failure(), _) => Failure()
         case (_, Failure()) => Failure()
-        case (Success(a, pa), Success(b, pb)) => Success(a ++ b, (xs: Seq[B]) => {
-          val (as, bs) = xs.splitAt(a.size)
-          pa(as) * pb(bs)
-        })
+        case (Success(a), Success(b)) => Success(a ++ b)
         case _ => ev(this).~(that).map({
           case xs ~ ys => xs ++ ys
         }, {
@@ -248,9 +245,7 @@ trait Syntaxes {
     def ~[B](that: Syntax[B]): Syntax[A ~ B] = (this, that) match {
       case (Failure(), _) => Failure()
       case (_, Failure()) => Failure()
-      case (Success(a, pa), Success(b, pb)) => Success(scallion.~(a, b), {
-        case va ~ vb => pa(va) * pb(vb)
-      })
+      case (Success(a), Success(b)) => Success(scallion.~(a, b))
       case _ => Sequence(this, that)
     }
 
@@ -346,7 +341,7 @@ trait Syntaxes {
       *
       * @group basic
       */
-    case class Success[A](value: A, matches: A => Int) extends Syntax[A] {
+    case class Success[A](value: A) extends Syntax[A] {
       override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
     }
 
@@ -546,6 +541,8 @@ trait Syntaxes {
     * the inner `syntax` should be ignored when building up sequences
     * using `~`.
     *
+    * @param syntax The wrapped syntax.
+    *
     * @group other
     */
   case class Skip(syntax: Syntax[Unit]) {
@@ -612,7 +609,7 @@ trait Syntaxes {
     *
     * @group basic
     */
-  def epsilon[A](value: A): Syntax[A] = Success(value, (x: A) => if (value == x) 1 else 0)
+  def epsilon[A](value: A): Syntax[A] = Success(value)
 
   /** Empty syntax.
     *

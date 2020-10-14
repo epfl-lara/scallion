@@ -109,7 +109,7 @@ trait Debug { self: Syntaxes with Parsing with Enumeration =>
 
           if (showTrails) {
             builder ++= "\n"
-            val trails = Enumerator.enumerate(syntax.prefixOf(conflict.source)).take(5).toList.distinct
+            val trails = Enumerator(syntax.prefixOf(conflict.source)).take(5).toList.distinct
             if (trails.nonEmpty) {
               if (kinds.size > 1) {
                 builder ++= s"The following sequences lead to an ambiguity when followed by any of ${kinds.mkString(", ")}:\n\n"

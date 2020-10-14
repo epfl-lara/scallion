@@ -15,71 +15,137 @@
 
 package scallion
 
-import scallion.util.internal._
+import scala.collection.mutable.Queue
+
+import scallion.util.internal.enums._
 
 /** Provides pretty printing capabilites to syntaxes.
   *
   * @group pretty
   */
-trait PrettyPrinting { self: Syntaxes =>
+trait PrettyPrinting { self: Syntaxes with Parsing =>
 
-  import Syntax._
-
-  /** Pretty printer.
+  /** Pretty printer of values.
     *
     * @group pretty
     */
-  class PrettyPrinter[A] private(syntax: Syntax[A]) {
+  trait PrettyPrinter[A] {
 
-    private val ops = new ProducerOps[Seq[Token]](PTPS.seqPTPS[Token])
-
-    /** Enumerates the sequences of tokens that describe a given value.
+    /** Returns an iterator over token sequences that produce a given value.
       *
-      * The sequences are produced lazily and in order of increasing length.
+      * @group pretty
       */
-    def apply(value: A): Iterator[Seq[Token]] = {
-
-      def go[A](syntax: Syntax[A],
-                value: A,
-                recs: Map[(RecId, Any), () => Producer[Seq[Token]]]): Producer[Seq[Token]] =
-        syntax match {
-          case Success(_, matches) => Producer.fromIterator(Iterator.fill(matches(value))(Vector()))
-          case Failure() => Producer.empty
-          case Elem(kind) => if (getKind(value) == kind) Producer.single(Vector(value)) else Producer.empty
-          case Disjunction(left, right) => ops.union(go(left, value, recs), go(right, value, recs))
-          case Sequence(left, right) => ops.product(go(left, value._1, recs), go(right, value._2, recs))
-          case Marked(_, inner) => go(inner, value, recs)
-          case Transform(_, inverse, inner) => {
-            val producers = inverse(value).map(go(inner, _, recs))
-
-            if (producers.isEmpty) {
-              Producer.empty
-            }
-            else {
-              producers.reduceLeft(ops.union(_, _))
-            }
-          }
-          case Recursive(id, inner) => recs.get((id, value)) match {
-            case Some(function) => function()
-            case None => {
-              lazy val pair: (Producer[Seq[Token]], () => Producer[Seq[Token]]) =
-                Producer.duplicate(Producer.lazily {
-                  go(inner, value, recs + ((id, value) -> pair._2))
-                })
-              pair._1
-            }
-          }
-        }
-
-      go(syntax, value, Map()).iterator
-    }
+    def apply(value: A): Iterator[Iterator[Token]]
   }
 
-  /** Pretty printer factory.
+  /** Factory of pretty printers.
     *
     * @group pretty
     */
   object PrettyPrinter {
-    def apply[A](syntax: Syntax[A]): PrettyPrinter[A] = new PrettyPrinter(syntax)
+    import Syntax._
+
+    /** Returns a pretty printer for a syntax.
+      * The resulting pretty printer returns values in order of increasing length.
+      *
+      * This method relies on the presence of inverse transformations
+      * in the various parts of the argument syntax.
+      * Be sure to provide an inverse function as argument to the corresponding
+      * optionnal parameter of the various combinators used to describe the syntax,
+      * where applicable.
+      *
+      * @param syntax The syntax used to pretty print.
+      *
+      * @group pretty
+      */
+    def apply[A](syntax: Syntax[A]): PrettyPrinter[A] = { (value: A) =>
+
+      var recs: Map[(Any, Int), EnvEntry[Token]] = Map()
+      val probe: Probe = new Probe
+
+      def go[B](syntax: Syntax[B], value: B, subscriber: Tree[Token] => Unit): Cell = {
+        if (!syntax.isProductive) {
+          EmptyCell
+        }
+        else {
+          syntax match {
+            case Success(_) => EmptyCell
+            case Failure() => EmptyCell
+            case Elem(kind) => if (getKind(value) == kind) new ElemCell(value, subscriber) else EmptyCell
+            case Disjunction(left, right) => {
+              val res = new DisjunctionCell(subscriber)
+              val l = go(left, value, (tree: Tree[Token]) => res.informLeft(tree))
+              val r = go(right, value, (tree: Tree[Token]) => res.informRight(tree))
+              res.setLeftCell(l)
+              res.setRightCell(r)
+              res
+            }
+            case Sequence(left, right) => {
+              val leftValue ~ rightValue = value
+              val res = new SequenceCell(
+                left.nullable == Some(leftValue),
+                right.nullable == Some(rightValue),
+                probe, subscriber)
+              val l = go(left, leftValue, (tree: Tree[Token]) => res.informLeft(tree))
+              val r = go(right, rightValue, (tree: Tree[Token]) => res.informRight(tree))
+              res.setLeftCell(l)
+              res.setRightCell(r)
+              res
+            }
+            case Transform(_, inv, inner) => {
+              val invValues = inv(value)
+              if (invValues.size == 0) {
+                // No inverse.
+                EmptyCell
+              }
+              else if (invValues.size == 1) {
+                // Unique inverse.
+                go(inner, invValues(0), subscriber)
+              }
+              else {
+                // Multiple inverses
+                val sharedCell: SharedCell[Token] = new SharedCell(subscriber)
+
+                for (invValue <- invValues) {
+                  val cell = go(inner, invValue, (tree: Tree[Token]) => sharedCell.inform(tree))
+                  sharedCell.addCell(cell)
+                }
+                sharedCell
+              }
+            }
+            case Marked(_, inner) => {
+              go(inner, value, subscriber)
+            }
+            case Recursive(id, inner) => recs.get((value, id)) match {
+              case Some(entry) => {
+                entry.addVarCell(subscriber)
+              }
+              case None => {
+                val entry = new EnvEntry[Token](probe)
+                recs += ((value, id) -> entry)
+                val i = go(inner, value, (tree: Tree[Token]) => entry.inform(tree))
+                entry.setInner(i)
+                entry.addVarCell(subscriber)
+              }
+            }
+          }
+        }
+      }
+
+      val queue: Queue[Tree[Token]] = new Queue()
+      val receive: Tree[Token] => Unit = (tree: Tree[Token]) => {
+        queue.enqueue(tree)
+      }
+      val cell = go(syntax, value, receive)
+
+
+      val it = new Runner[Token](cell, queue, probe)
+      if (syntax.nullable == Some(value)) {
+        Iterator(Empty.values) ++ it
+      }
+      else {
+        it
+      }
+    }
   }
 }

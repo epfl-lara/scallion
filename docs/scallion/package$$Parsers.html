@@ -248,24 +248,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scallion.Enumeration.HoledSeq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="HoledSeq[A,H]extendsAnyRef"></a><a id="HoledSeq[A,H]:(Enumeration.this)#HoledSeq[A,H]"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoledSeq[A,H]extendsAnyRef" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="Sequence with holes." href="Enumeration$HoledSeq.html"><span class="name">HoledSeq</span></a><span class="tparams">[<span name="A">A</span>, <span name="H">H</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Sequence with holes.</p><div class="fullcomment"><div class="comment cmt"><p>Sequence with holes.
-</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>The type of values.</p></dd><dt class="tparam">H</dt><dd class="cmt"><p>The type of holes.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a></dd></dl></div>
-    </li><li name="scallion.Operators.Associativity" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="assoc">
+              <ol><li name="scallion.Operators.Associativity" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="assoc">
       <a id="AssociativityextendsAnyRef"></a><a id="Associativity:(Operators.this)#Associativity"></a>
       <span class="permalink">
       <a href="../scallion/Operators.html#AssociativityextendsAnyRef" title="Permalink">
@@ -523,7 +506,7 @@ that indicates the associativity of the operator.</p><h4>Example</h4><pre><span 
       
       <p class="shortcomment cmt">Indicates that the provided <code>token</code> was not expected at that point.</p><div class="fullcomment"><div class="comment cmt"><p>Indicates that the provided <code>token</code> was not expected at that point.</p><p>The parser at the point of error is returned.
 </p></div><dl class="paramcmts block"><dt class="param">token</dt><dd class="cmt"><p>The token at fault.</p></dd><dt class="param">rest</dt><dd class="cmt"><p>Parser at the point of error.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Parsing.html" class="extype" name="scallion.Parsing">Parsing</a></dd></dl></div>
-    </li><li name="scallion.PrettyPrinting.PrettyPrinter" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="pretty">
+    </li><li name="scallion.PrettyPrinting.PrettyPrinter" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="pretty">
       <a id="PrettyPrinter[A]extendsAnyRef"></a><a id="PrettyPrinter[A]:(PrettyPrinting.this)#PrettyPrinter[A]"></a>
       <span class="permalink">
       <a href="../scallion/PrettyPrinting.html#PrettyPrinter[A]extendsAnyRef" title="Permalink">
@@ -532,13 +515,13 @@ that indicates the associativity of the operator.</p><h4>Example</h4><pre><span 
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Pretty printer." href="PrettyPrinting$PrettyPrinter.html"><span class="name">PrettyPrinter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="Pretty printer of values." href="PrettyPrinting$PrettyPrinter.html"><span class="name">PrettyPrinter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Pretty printer.</p><div class="fullcomment"><div class="comment cmt"><p>Pretty printer.
+      <p class="shortcomment cmt">Pretty printer of values.</p><div class="fullcomment"><div class="comment cmt"><p>Pretty printer of values.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a></dd></dl></div>
     </li><li name="scallion.Syntaxes.Skip" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="other">
       <a id="SkipextendsProductwithSerializable"></a><a id="Skip:Skip"></a>
@@ -560,7 +543,7 @@ the inner <code>syntax</code> should be ignored when building up sequences
 using <code>~</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Wrapper around a <code>Syntax</code> indicating that values from
 the inner <code>syntax</code> should be ignored when building up sequences
 using <code>~</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes.html" class="extype" name="scallion.Syntaxes">Syntaxes</a></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The wrapped syntax.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Syntaxes.html" class="extype" name="scallion.Syntaxes">Syntaxes</a></dd></dl></div>
     </li><li name="scallion.Syntaxes.Syntax" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="syntax">
       <a id="Syntax[A]extendsAnyRef"></a><a id="Syntax[A]:Syntax[A]"></a>
       <span class="permalink">
@@ -661,61 +644,10 @@ Contains an instance for <a href="Syntaxes$Uninteresting.html" class="extype" na
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Enumerator." href="Enumeration$Enumerator$.html"><span class="name">Enumerator</span></a>
+        <a title="Factory of iterators over sequences accepted by a syntax." href="Enumeration$Enumerator$.html"><span class="name">Enumerator</span></a>
       </span>
       
-      <p class="shortcomment cmt">Enumerator.</p><div class="fullcomment"><div class="comment cmt"><p>Enumerator.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a></dd></dl></div>
-    </li><li name="scallion.Enumeration.HoleEnumerator" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="HoleEnumerator"></a><a id="HoleEnumerator:HoleEnumerator"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoleEnumerator" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Enumerator which replaces kind sequences of marked syntaxes by holes." href="Enumeration$HoleEnumerator$.html"><span class="name">HoleEnumerator</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerator which replaces kind sequences of marked syntaxes by holes.</p><div class="fullcomment"><div class="comment cmt"><p>Enumerator which replaces kind sequences of marked syntaxes by holes.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a></dd></dl></div>
-    </li><li name="scallion.Enumeration.HoledSeq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="HoledSeq"></a><a id="HoledSeq:HoledSeq"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoledSeq" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Factory of sequences with holes." href="Enumeration$HoledSeq$.html"><span class="name">HoledSeq</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Factory of sequences with holes.</p><div class="fullcomment"><div class="comment cmt"><p>Factory of sequences with holes.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a></dd></dl></div>
-    </li><li name="scallion.Enumeration.NonReentrantEnumerator" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="NonReentrantEnumerator"></a><a id="NonReentrantEnumerator:NonReentrantEnumerator"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#NonReentrantEnumerator" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Enumerator which doesn't reenter recursive syntaxes." href="Enumeration$NonReentrantEnumerator$.html"><span class="name">NonReentrantEnumerator</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerator which doesn't reenter recursive syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Enumerator which doesn't reenter recursive syntaxes.
+      <p class="shortcomment cmt">Factory of iterators over sequences accepted by a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Factory of iterators over sequences accepted by a syntax.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a></dd></dl></div>
     </li><li name="scallion.Operators.LeftAssociative" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="assoc">
       <a id="LeftAssociative"></a><a id="LeftAssociative:LeftAssociative"></a>
@@ -1590,10 +1522,10 @@ using <code>|</code> before specifying the associativity:</p><pre><span class="k
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Pretty printer factory." href="PrettyPrinting$PrettyPrinter$.html"><span class="name">PrettyPrinter</span></a>
+        <a title="Factory of pretty printers." href="PrettyPrinting$PrettyPrinter$.html"><span class="name">PrettyPrinter</span></a>
       </span>
       
-      <p class="shortcomment cmt">Pretty printer factory.</p><div class="fullcomment"><div class="comment cmt"><p>Pretty printer factory.
+      <p class="shortcomment cmt">Factory of pretty printers.</p><div class="fullcomment"><div class="comment cmt"><p>Factory of pretty printers.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a></dd></dl></div>
     </li><li name="scallion.Syntaxes.Implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="implicit">
       <a id="Implicits"></a><a id="Implicits:Implicits"></a>

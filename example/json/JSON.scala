@@ -228,7 +228,7 @@ object JSONParser extends Parsers {
       Left("Unexpected " + token + ", expected one of " + rest.first.mkString(", "))
     case UnexpectedEnd(rest) =>  // The parse was unsuccessful due to the end of input.
       Left("Unexpected end of input. Quickest way to end is \"" +
-        Enumerator.enumerate(rest.syntax).next().mkString("") + "\"")
+        Enumerator(rest.syntax).next().mkString("") + "\"")
   }
 }
 

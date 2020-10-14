@@ -15,194 +15,111 @@
 
 package scallion
 
-import scallion.util.internal._
+import scala.collection.mutable.Queue
+
+import scallion.util.internal.enums._
 
 /** Provides enumeration capabilites to syntaxes.
   *
   * @group enumeration
   */
-trait Enumeration { self: Syntaxes =>
+trait Enumeration { self: Syntaxes with Parsing =>
 
-  import Syntax._
-
-  /** Enumerator.
+  /** Factory of iterators over sequences accepted by a syntax.
     *
     * @group enumeration
     */
   object Enumerator {
+    import Syntax._
 
-    private val ops = new ProducerOps[Seq[Kind]](PTPS.seqPTPS[Kind])
-
-    /** Enumerates the sequences accepted by a syntax.
+    /** Returns an iterator that iterates over sequences accepted by a syntax.
       *
-      * The sequences are produced lazily and in order of increasing length.
+      * @param syntax       The syntax from which sequences are taken.
+      * @param kindFunction Function to convert kinds to the desired type.
+      * @param markFunction Partial function to converted marked syntaxes into a single value.
       *
       * @group enumeration
       */
-    def enumerate[A](syntax: Syntax[A]): Iterator[Seq[Kind]] = producer(syntax).iterator
+    def apply[A](syntax: Syntax[_], kindFunction: Kind => A)
+        (markFunction: PartialFunction[Mark, A]): Iterator[Iterator[A]] = {
+      var recs: Map[Int, EnvEntry[A]] = Map()
+      val probe: Probe = new Probe
+      val markLifted: Mark => Option[A] = markFunction.lift
 
-    private[scallion] def producer[A](syntax: Syntax[A]): Producer[Seq[Kind]] = {
-
-      def go[A](syntax: Syntax[A], recs: Map[RecId, () => Producer[Seq[Kind]]]): Producer[Seq[Kind]] =
-        syntax match {
-          case Success(_, _) => Producer.single(Vector())
-          case Failure() => Producer.empty
-          case Elem(kind) => Producer.single(Vector(kind))
-          case Disjunction(left, right) => ops.union(go(left, recs), go(right, recs))
-          case Sequence(left, right) => ops.product(go(left, recs), go(right, recs))
-          case Marked(_, inner) => go(inner, recs)
-          case Transform(_, _, inner) => go(inner, recs)
-          case Recursive(id, inner) => recs.get(id) match {
-            case Some(function) => function()
-            case None => {
-              lazy val pair: (Producer[Seq[Kind]], () => Producer[Seq[Kind]]) =
-                Producer.duplicate(Producer.lazily {
-                  go(inner, recs + (id -> pair._2))
-                })
-              pair._1
-            }
-          }
-        }
-
-      go(syntax, Map())
-    }
-  }
-
-  /** Sequence with holes.
-   *
-   * @tparam A The type of values.
-   * @tparam H The type of holes.
-   *
-   * @group enumeration
-   */
-  class HoledSeq[A, H] private(val weight: Int, val values: Vector[Either[Vector[A], H]]) {
-
-    /** Concatenates `this` sequence and `that` sequence. */
-    def ++(that: HoledSeq[A, H]): HoledSeq[A, H] = {
-      val newValues =
-        if (this.values.nonEmpty && that.values.nonEmpty &&
-            this.values.last.isLeft && that.values.head.isLeft) {
-          this.values.init ++ (Left(this.values.last.left.get ++ that.values.head.left.get) +: that.values.tail)
+      def go(syntax: Syntax[_], subscriber: Tree[A] => Unit): Cell = {
+        if (!syntax.isProductive) {
+          EmptyCell
         }
         else {
-          this.values ++ that.values
-        }
-      new HoledSeq(this.weight + that.weight, newValues)
-    }
-  }
-
-  /** Factory of sequences with holes.
-    *
-    * @group enumeration
-    */
-  object HoledSeq {
-
-    /** Empty sequence. */
-    def empty[A, H]: HoledSeq[A, H] =
-      new HoledSeq[A, H](0, Vector())
-
-    /** Sequence without holes. */
-    def values[A, H](values: Vector[A]): HoledSeq[A, H] =
-      new HoledSeq[A, H](values.size, Vector(Left(values)))
-
-    /** Sequence with a single hole.
-      *
-      * @param hole   The hole value.
-      * @param weight The weight of the hole in terms of number of values.
-      */
-    def hole[A, H](hole: H, weight: Int = 1): HoledSeq[A, H] =
-      new HoledSeq[A, H](weight, Vector(Right(hole)))
-  }
-
-  private class HoledSeqPTPS[A, H] extends PTPS[HoledSeq[A, H]] {
-    override def lessEquiv(left: HoledSeq[A, H], right: HoledSeq[A, H]): Boolean =
-      left.weight <= right.weight
-    override def append(left: HoledSeq[A, H], right: HoledSeq[A, H]): HoledSeq[A, H] =
-      left ++ right
-  }
-
-  /** Enumerator which replaces kind sequences of marked syntaxes by holes.
-    *
-    * @group enumeration
-    */
-  object HoleEnumerator {
-
-    /** Enumerates the sequences accepted by a syntax.
-      *
-      * The sequences are produced lazily and in order of increasing weight.
-      *
-      * @param syntax The syntax to enumerate.
-      * @param holes  Function which indicates which marked syntaxes to replace by holes.
-      * @param holeWeight Weight of holes in terms of number of kinds.
-      * @group enumeration
-      */
-    def enumerate[A, H](syntax: Syntax[A], holes: Mark => Option[H], holeWeight: Int = 1): Iterator[HoledSeq[Kind, H]] = {
-
-      val ops = new ProducerOps[HoledSeq[Kind, H]](new HoledSeqPTPS[Kind, H])
-
-      def go[A](syntax: Syntax[A], recs: Map[RecId, () => Producer[HoledSeq[Kind, H]]]): Producer[HoledSeq[Kind, H]] =
-        syntax match {
-          case Success(_, _) => Producer.single(HoledSeq.empty)
-          case Failure() => Producer.empty
-          case Elem(kind) => Producer.single(HoledSeq.values(Vector(kind)))
-          case Disjunction(left, right) => ops.union(go(left, recs), go(right, recs))
-          case Sequence(left, right) => ops.product(go(left, recs), go(right, recs))
-          case Marked(mark, inner) => holes(mark) match {
-            case Some(hole) => Producer.single(HoledSeq.hole(hole, holeWeight))
-            case None => go(inner, recs)
-          }
-          case Transform(_, _, inner) => go(inner, recs)
-          case Recursive(id, inner) => recs.get(id) match {
-            case Some(function) => function()
-            case None => {
-              lazy val pair: (Producer[HoledSeq[Kind, H]], () => Producer[HoledSeq[Kind, H]]) =
-                Producer.duplicate(Producer.lazily {
-                  go(inner, recs + (id -> pair._2))
-                })
-              pair._1
+          syntax match {
+            case Success(_) => EmptyCell
+            case Failure() => EmptyCell
+            case Elem(kind) => new ElemCell(kindFunction(kind), subscriber)
+            case Disjunction(left, right) => {
+              val res = new DisjunctionCell(subscriber)
+              val l = go(left, (tree: Tree[A]) => res.informLeft(tree))
+              val r = go(right, (tree: Tree[A]) => res.informRight(tree))
+              res.setLeftCell(l)
+              res.setRightCell(r)
+              res
+            }
+            case Sequence(left, right) => {
+              val res = new SequenceCell(left.isNullable, right.isNullable, probe, subscriber)
+              val l = go(left, (tree: Tree[A]) => res.informLeft(tree))
+              val r = go(right, (tree: Tree[A]) => res.informRight(tree))
+              res.setLeftCell(l)
+              res.setRightCell(r)
+              res
+            }
+            case Transform(_, _, inner) => {
+              go(inner, subscriber)
+            }
+            case Marked(mark, inner) => {
+              markLifted(mark) match {
+                case None => go(inner, subscriber)
+                case Some(elem) => new ElemCell(elem, subscriber)
+              }
+            }
+            case Recursive(id, inner) => recs.get(id) match {
+              case Some(entry) => {
+                entry.addVarCell(subscriber)
+              }
+              case None => {
+                val entry = new EnvEntry[A](probe)
+                recs += id -> entry
+                val i = go(inner, (tree: Tree[A]) => entry.inform(tree))
+                entry.setInner(i)
+                entry.addVarCell(subscriber)
+              }
             }
           }
         }
+      }
 
-      go(syntax, Map()).iterator
+      val queue: Queue[Tree[A]] = new Queue()
+      val receive: Tree[A] => Unit = (tree: Tree[A]) => {
+        queue.enqueue(tree)
+      }
+      val cell = go(syntax, receive)
+
+
+      val it = new Runner[A](cell, queue, probe)
+      if (syntax.isNullable) {
+        Iterator(Empty.values) ++ it
+      }
+      else {
+        it
+      }
     }
-  }
 
-  /** Enumerator which doesn't reenter recursive syntaxes.
-    *
-    * @group enumeration
-    */
-  object NonReentrantEnumerator {
-
-    /** Enumerates the sequences accepted by a syntax.
+    /** Returns an iterator that iterates over sequences of kinds accepted by a syntax.
       *
-      * The sequences are produced lazily and in order of increasing length.
+      * @param syntax       The syntax from which sequences are taken.
       *
       * @group enumeration
       */
-    def enumerate[A](syntax: Syntax[A]): Iterator[HoledSeq[Kind, RecId]] = {
-
-      val ops = new ProducerOps[HoledSeq[Kind, RecId]](new HoledSeqPTPS[Kind, RecId])
-
-      def go[A](syntax: Syntax[A], recs: Set[RecId]): Producer[HoledSeq[Kind, RecId]] =
-        syntax match {
-          case Success(_, _) => Producer.single(HoledSeq.empty)
-          case Failure() => Producer.empty
-          case Elem(kind) => Producer.single(HoledSeq.values(Vector(kind)))
-          case Disjunction(left, right) => ops.union(go(left, recs), go(right, recs))
-          case Sequence(left, right) => ops.product(go(left, recs), go(right, recs))
-          case Marked(mark, inner) => go(inner, recs)
-          case Transform(_, _, inner) => go(inner, recs)
-          case Recursive(id, inner) =>
-            if (recs.contains(id)) {
-              Producer.single(HoledSeq.hole(id))
-            }
-            else {
-              go(inner, recs + id)
-            }
-        }
-
-      go(syntax, Set()).iterator
+    def apply(syntax: Syntax[_]): Iterator[Iterator[Kind]] = {
+      apply(syntax, (kind: Kind) => kind)(PartialFunction.empty[Mark, Kind])
     }
   }
 }

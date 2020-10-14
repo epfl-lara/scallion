@@ -462,7 +462,7 @@ class ParserTests extends FlatSpec with Inside with Parsers {
       case Parsed(res, rest) => {
         assert(res == Bool(true))
         inside(rest.syntax) {
-          case Success(Bool(true), _) => ()
+          case Success(Bool(true)) => ()
         }
       }
     }
@@ -475,7 +475,7 @@ class ParserTests extends FlatSpec with Inside with Parsers {
       case Parsed(res, rest) => {
         assert(res == Num(1))
         inside(rest.syntax) {
-          case Success(Num(1), _) => ()
+          case Success(Num(1)) => ()
         }
       }
     }

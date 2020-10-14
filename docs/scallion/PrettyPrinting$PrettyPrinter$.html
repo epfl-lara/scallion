@@ -117,9 +117,9 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       <p class="shortcomment cmt">Provides pretty printing capabilites to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Provides pretty printing capabilites to syntaxes.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li class="current-entities indented2">
-                        <a class="object" href="" title="Pretty printer factory."></a>
-                        <a class="class" href="PrettyPrinting$PrettyPrinter.html" title="Pretty printer."></a>
-                        <a href="PrettyPrinting$PrettyPrinter.html" title="Pretty printer.">PrettyPrinter</a>
+                        <a class="object" href="" title="Factory of pretty printers."></a>
+                        <a class="trait" href="PrettyPrinting$PrettyPrinter.html" title="Pretty printer of values."></a>
+                        <a href="PrettyPrinting$PrettyPrinter.html" title="Pretty printer of values.">PrettyPrinter</a>
                       </li>
               </ul>
             </div>
@@ -127,15 +127,15 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
           <div id="content">
             <body class="object value">
       <div id="definition">
-        <a href="PrettyPrinting$PrettyPrinter.html" title="See companion class"><div class="big-circle object-companion-class">o</div></a>
+        <a href="PrettyPrinting$PrettyPrinter.html" title="See companion trait"><div class="big-circle object-companion-trait">o</div></a>
         <p id="owner"><a href="index.html" class="extype" name="scallion">scallion</a>.<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a></p>
-        <h1><a href="PrettyPrinting$PrettyPrinter.html" title="See companion class">PrettyPrinter</a><span class="permalink">
+        <h1><a href="PrettyPrinting$PrettyPrinter.html" title="See companion trait">PrettyPrinter</a><span class="permalink">
       <a href="../scallion/PrettyPrinting$PrettyPrinter$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
         <h3><span class="morelinks"><div>
-            Companion <a href="PrettyPrinting$PrettyPrinter.html" title="See companion class">class PrettyPrinter</a>
+            Companion <a href="PrettyPrinting$PrettyPrinter.html" title="See companion trait">trait PrettyPrinter</a>
           </div></span></h3>
       </div>
 
@@ -150,7 +150,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Pretty printer factory.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Factory of pretty printers.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/PrettyPrinting.scala" target="_blank">PrettyPrinting.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -172,7 +172,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -256,7 +256,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.PrettyPrinting.PrettyPrinter#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scallion.PrettyPrinting.PrettyPrinter#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="pretty">
       <a id="apply[A](syntax:PrettyPrinting.this.Syntax[A]):PrettyPrinting.this.PrettyPrinter[A]"></a><a id="apply[A]((PrettyPrinting.this)#Syntax[A]):(PrettyPrinting.this)#PrettyPrinter[A]"></a>
       <span class="permalink">
       <a href="../scallion/PrettyPrinting$PrettyPrinter$.html#apply[A](syntax:PrettyPrinting.this.Syntax[A]):PrettyPrinting.this.PrettyPrinter[A]" title="Permalink">
@@ -271,7 +271,13 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
         <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a>.this)#<span class="extype" name="scallion.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.PrettyPrinting.PrettyPrinter.apply.A">A</span>]</span>)</span><span class="result">: (<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a>.this)#<span class="extype" name="scallion.PrettyPrinting.PrettyPrinter">PrettyPrinter</span>[<span class="extype" name="scallion.PrettyPrinting.PrettyPrinter.apply.A">A</span>]</span>
       </span>
       
-      
+      <p class="shortcomment cmt">Returns a pretty printer for a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a pretty printer for a syntax.
+The resulting pretty printer returns values in order of increasing length.</p><p>This method relies on the presence of inverse transformations
+in the various parts of the argument syntax.
+Be sure to provide an inverse function as argument to the corresponding
+optionnal parameter of the various combinators used to describe the syntax,
+where applicable.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The syntax used to pretty print.</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -593,7 +599,10 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="pretty">
+              <h3>Pretty Printing</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

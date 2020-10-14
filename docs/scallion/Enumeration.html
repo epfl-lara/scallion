@@ -196,7 +196,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides enumeration capabilites to syntaxes.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.Enumeration">Enumeration</a> with <a href="Syntaxes.html" class="extype" name="scallion.Syntaxes">Syntaxes</a></dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Enumeration.scala" target="_blank">Enumeration.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scallion.Enumeration">Enumeration</a> with <a href="Syntaxes.html" class="extype" name="scallion.Syntaxes">Syntaxes</a> with <a href="Parsing.html" class="extype" name="scallion.Parsing">Parsing</a></dd><dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Enumeration.scala" target="_blank">Enumeration.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -251,27 +251,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="scallion.Enumeration.HoledSeq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="HoledSeq[A,H]extendsAnyRef"></a><a id="HoledSeq[A,H]:(Enumeration.this)#HoledSeq[A,H]"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoledSeq[A,H]extendsAnyRef" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="Sequence with holes." href="Enumeration$HoledSeq.html"><span class="name">HoledSeq</span></a><span class="tparams">[<span name="A">A</span>, <span name="H">H</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">Sequence with holes.</p><div class="fullcomment"><div class="comment cmt"><p>Sequence with holes.
-</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>The type of values.</p></dd><dt class="tparam">H</dt><dd class="cmt"><p>The type of holes.</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         
 
@@ -640,58 +620,10 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Enumerator." href="Enumeration$Enumerator$.html"><span class="name">Enumerator</span></a>
+        <a title="Factory of iterators over sequences accepted by a syntax." href="Enumeration$Enumerator$.html"><span class="name">Enumerator</span></a>
       </span>
       
-      <p class="shortcomment cmt">Enumerator.</p>
-    </li><li name="scallion.Enumeration.HoleEnumerator" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="enumeration">
-      <a id="HoleEnumerator"></a><a id="HoleEnumerator:HoleEnumerator"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoleEnumerator" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Enumerator which replaces kind sequences of marked syntaxes by holes." href="Enumeration$HoleEnumerator$.html"><span class="name">HoleEnumerator</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerator which replaces kind sequences of marked syntaxes by holes.</p>
-    </li><li name="scallion.Enumeration.HoledSeq" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="enumeration">
-      <a id="HoledSeq"></a><a id="HoledSeq:HoledSeq"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#HoledSeq" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Factory of sequences with holes." href="Enumeration$HoledSeq$.html"><span class="name">HoledSeq</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Factory of sequences with holes.</p>
-    </li><li name="scallion.Enumeration.NonReentrantEnumerator" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="enumeration">
-      <a id="NonReentrantEnumerator"></a><a id="NonReentrantEnumerator:NonReentrantEnumerator"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration.html#NonReentrantEnumerator" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Enumerator which doesn't reenter recursive syntaxes." href="Enumeration$NonReentrantEnumerator$.html"><span class="name">NonReentrantEnumerator</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerator which doesn't reenter recursive syntaxes.</p>
+      <p class="shortcomment cmt">Factory of iterators over sequences accepted by a syntax.</p>
     </li>
               </ol>
             </div>

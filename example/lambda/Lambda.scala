@@ -70,7 +70,8 @@ object LambdaLexer extends Lexers with CharRegExps {
   }
 
   // Turns a sequence of tokens into a sequence of characters.
-  def unapply(tokens: Seq[Token]): String = {
+  def unapply(tokens: Iterator[Token]): String = {
+    val ts = tokens.toSeq
 
     val space: ((Token, Token)) => String = {
       case (IdentifierToken(_), IdentifierToken(_)) => " "
@@ -78,9 +79,9 @@ object LambdaLexer extends Lexers with CharRegExps {
       case _ => ""
     }
 
-    val spaces = "" +: tokens.zip(tokens.tail).map(space)
+    val spaces = "" +: ts.zip(ts.tail).map(space)
 
-    val strings = tokens.map {
+    val strings = ts.map {
       case LambdaToken => "\\"
       case IdentifierToken(n) => n
       case DotToken => "."

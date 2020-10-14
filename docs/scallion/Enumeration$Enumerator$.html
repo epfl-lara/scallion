@@ -118,20 +118,8 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="" title="Enumerator."></a>
-                        <a href="" title="Enumerator.">Enumerator</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="Enumeration$HoleEnumerator$.html" title="Enumerator which replaces kind sequences of marked syntaxes by holes."></a>
-                        <a href="Enumeration$HoleEnumerator$.html" title="Enumerator which replaces kind sequences of marked syntaxes by holes.">HoleEnumerator</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Enumeration$HoledSeq$.html" title="Factory of sequences with holes."></a>
-                        <a class="class" href="Enumeration$HoledSeq.html" title="Sequence with holes."></a>
-                        <a href="Enumeration$HoledSeq.html" title="Sequence with holes.">HoledSeq</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="Enumeration$NonReentrantEnumerator$.html" title="Enumerator which doesn't reenter recursive syntaxes."></a>
-                        <a href="Enumeration$NonReentrantEnumerator$.html" title="Enumerator which doesn't reenter recursive syntaxes.">NonReentrantEnumerator</a>
+                        <a class="object" href="" title="Factory of iterators over sequences accepted by a syntax."></a>
+                        <a href="" title="Factory of iterators over sequences accepted by a syntax.">Enumerator</a>
                       </li>
               </ul>
             </div>
@@ -160,7 +148,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Enumerator.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Factory of iterators over sequences accepted by a syntax.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Enumeration.scala" target="_blank">Enumeration.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -266,6 +254,40 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scallion.Enumeration.Enumerator#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
+      <a id="apply(syntax:Enumeration.this.Syntax[_]):Iterator[Iterator[Enumeration.this.Kind]]"></a><a id="apply((Enumeration.this)#Syntax[_]):Iterator[Iterator[(Enumeration.this)#Kind]]"></a>
+      <span class="permalink">
+      <a href="../scallion/Enumeration$Enumerator$.html#apply(syntax:Enumeration.this.Syntax[_]):Iterator[Iterator[Enumeration.this.Kind]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="syntax">syntax: (<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Syntax">Syntax</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Iterator">Iterator</span>[(<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Kind">Kind</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns an iterator that iterates over sequences of kinds accepted by a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns an iterator that iterates over sequences of kinds accepted by a syntax.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The syntax from which sequences are taken.</p></dd></dl></div>
+    </li><li name="scallion.Enumeration.Enumerator#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
+      <a id="apply[A](syntax:Enumeration.this.Syntax[_],kindFunction:Enumeration.this.Kind=&gt;A)(markFunction:PartialFunction[Enumeration.this.Mark,A]):Iterator[Iterator[A]]"></a><a id="apply[A]((Enumeration.this)#Syntax[_],((Enumeration.this)#Kind)⇒A)(PartialFunction[(Enumeration.this)#Mark,A]):Iterator[Iterator[A]]"></a>
+      <span class="permalink">
+      <a href="../scallion/Enumeration$Enumerator$.html#apply[A](syntax:Enumeration.this.Syntax[_],kindFunction:Enumeration.this.Kind=&gt;A)(markFunction:PartialFunction[Enumeration.this.Mark,A]):Iterator[Iterator[A]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Syntax">Syntax</span>[_]</span>, <span name="kindFunction">kindFunction: ((<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Kind">Kind</span>) ⇒ <span class="extype" name="scallion.Enumeration.Enumerator.apply.A">A</span></span>)</span><span class="params">(<span name="markFunction">markFunction: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[(<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Mark">Mark</span>, <span class="extype" name="scallion.Enumeration.Enumerator.apply.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scallion.Enumeration.Enumerator.apply.A">A</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns an iterator that iterates over sequences accepted by a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Returns an iterator that iterates over sequences accepted by a syntax.
+</p></div><dl class="paramcmts block"><dt class="param">syntax</dt><dd class="cmt"><p>The syntax from which sequences are taken.</p></dd><dt class="param">kindFunction</dt><dd class="cmt"><p>Function to convert kinds to the desired type.</p></dd><dt class="param">markFunction</dt><dd class="cmt"><p>Partial function to converted marked syntaxes into a single value.</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -306,23 +328,6 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scallion.Enumeration.Enumerator#enumerate" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="enumeration">
-      <a id="enumerate[A](syntax:Enumeration.this.Syntax[A]):Iterator[Seq[Enumeration.this.Kind]]"></a><a id="enumerate[A]((Enumeration.this)#Syntax[A]):Iterator[Seq[(Enumeration.this)#Kind]]"></a>
-      <span class="permalink">
-      <a href="../scallion/Enumeration$Enumerator$.html#enumerate[A](syntax:Enumeration.this.Syntax[A]):Iterator[Seq[Enumeration.this.Kind]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">enumerate</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="syntax">syntax: (<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Syntax">Syntax</span>[<span class="extype" name="scallion.Enumeration.Enumerator.enumerate.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[(<a href="Enumeration.html" class="extype" name="scallion.Enumeration">Enumeration</a>.this)#<span class="extype" name="scallion.Syntaxes.Kind">Kind</span>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerates the sequences accepted by a syntax.</p><div class="fullcomment"><div class="comment cmt"><p>Enumerates the sequences accepted by a syntax.</p><p>The sequences are produced lazily and in order of increasing length.
-</p></div></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">

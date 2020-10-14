@@ -125,7 +125,7 @@ trait Grammars { self: Syntaxes =>
 
       def getSequents[B](next: Syntax[B]): Seq[Symbol] = next match {
         case Failure() => Seq()
-        case Success(_, _) => Seq(Epsilon)
+        case Success(_) => Seq(Epsilon)
         case Elem(kind) => Seq(Terminal(kind))
         case Transform(_, _, inner) => getSequents(inner)
         case Marked(_, inner) => getSequents(inner)

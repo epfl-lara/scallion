@@ -117,17 +117,17 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       <p class="shortcomment cmt">Provides pretty printing capabilites to syntaxes.</p><div class="fullcomment"><div class="comment cmt"><p>Provides pretty printing capabilites to syntaxes.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
     </li><li class="current-entities indented2">
-                        <a class="object" href="PrettyPrinting$PrettyPrinter$.html" title="Pretty printer factory."></a>
-                        <a class="class" href="" title="Pretty printer."></a>
-                        <a href="" title="Pretty printer.">PrettyPrinter</a>
+                        <a class="object" href="PrettyPrinting$PrettyPrinter$.html" title="Factory of pretty printers."></a>
+                        <a class="trait" href="" title="Pretty printer of values."></a>
+                        <a href="" title="Pretty printer of values.">PrettyPrinter</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="class type">
+            <body class="trait type">
       <div id="definition">
-        <a href="PrettyPrinting$PrettyPrinter$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
+        <a href="PrettyPrinting$PrettyPrinter$.html" title="See companion object"><div class="big-circle trait-companion-object">t</div></a>
         <p id="owner"><a href="index.html" class="extype" name="scallion">scallion</a>.<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a></p>
         <h1><a href="PrettyPrinting$PrettyPrinter$.html" title="See companion object">PrettyPrinter</a><span class="permalink">
       <a href="../scallion/PrettyPrinting$PrettyPrinter.html" title="Permalink">
@@ -142,7 +142,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <span class="name">PrettyPrinter</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
@@ -150,7 +150,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Pretty printer.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Pretty printer of values.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/PrettyPrinting.scala" target="_blank">PrettyPrinting.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -172,7 +172,7 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
           <div id="order">
             <span class="filtertype">Ordering</span>
             <ol>
-              
+              <li class="group out"><span>Grouped</span></li>
               <li class="alpha in"><span>Alphabetic</span></li>
               <li class="inherit out"><span>By Inheritance</span></li>
             </ol>
@@ -203,10 +203,29 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
 
         
 
-        
+        <div class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="scallion.PrettyPrinting.PrettyPrinter#apply" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="pretty">
+      <a id="apply(value:A):Iterator[Iterator[PrettyPrinting.this.Token]]"></a><a id="apply(A):Iterator[Iterator[(PrettyPrinting.this)#Token]]"></a>
+      <span class="permalink">
+      <a href="../scallion/PrettyPrinting$PrettyPrinter.html#apply(value:A):Iterator[Iterator[PrettyPrinting.this.Token]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.PrettyPrinting.PrettyPrinter.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Iterator">Iterator</span>[(<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a>.this)#<span class="extype" name="scallion.Syntaxes.Token">Token</span>]]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns an iterator over token sequences that produce a given value.</p>
+    </li></ol>
+            </div>
 
         <div class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
@@ -256,23 +275,6 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scallion.PrettyPrinting.PrettyPrinter#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(value:A):Iterator[Seq[PrettyPrinting.this.Token]]"></a><a id="apply(A):Iterator[Seq[(PrettyPrinting.this)#Token]]"></a>
-      <span class="permalink">
-      <a href="../scallion/PrettyPrinting$PrettyPrinter.html#apply(value:A):Iterator[Seq[PrettyPrinting.this.Token]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="value">value: <span class="extype" name="scallion.PrettyPrinting.PrettyPrinter.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Seq">Seq</span>[(<a href="PrettyPrinting.html" class="extype" name="scallion.PrettyPrinting">PrettyPrinting</a>.this)#<span class="extype" name="scallion.Syntaxes.Token">Token</span>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Enumerates the sequences of tokens that describe a given value.</p><div class="fullcomment"><div class="comment cmt"><p>Enumerates the sequences of tokens that describe a given value.</p><p>The sequences are produced lazily and in order of increasing length.
-</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -594,7 +596,10 @@ See the package <a href="index.html" class="extype" name="scallion">scallion</a>
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="pretty">
+              <h3>Pretty Printing</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

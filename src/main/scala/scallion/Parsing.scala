@@ -295,7 +295,7 @@ trait Parsing { self: Syntaxes =>
       val recCells: HashMap[RecId, Any] = new HashMap()
 
       def buildCell[A](syntax: Syntax[A]): SyntaxCell[A] = syntax match {
-        case Syntax.Success(value, _) => SyntaxCell.Success(value, syntax)
+        case Syntax.Success(value) => SyntaxCell.Success(value, syntax)
         case Syntax.Failure() => SyntaxCell.Failure(syntax)
         case Syntax.Elem(kind) => SyntaxCell.Elem(kind, syntax)
         case Syntax.Disjunction(left, right) =>
