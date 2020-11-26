@@ -278,7 +278,7 @@ trait Parsing { self: Syntaxes =>
       * @throws ConflictException when the `syntax` is not LL(1) and `enforceLL1` is not set to `false`.
       * @group parsing
       */
-    def apply[A](syntax: Syntax[A], enforceLL1: Boolean = true): Parser[A] = {
+    def apply[A](syntax: Syntax[A], enforceLL1: Boolean = true): Parser[A] = synchronized {
 
       // Handles caching.
       if (syntaxToTreeCache.containsKey(syntax)) {
