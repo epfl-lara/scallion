@@ -110,8 +110,8 @@ object Roman {
     println("CXXXII => " + RomanSyntax.parser(Iterator(C, X, X, X, I, I)).getValue.get)
     println("MCDL => " + RomanSyntax.parser(Iterator(M, C, D, L)).getValue.get)
     println("Printing roman numerals: ")
-    println("1234 => " + RomanSyntax.printer(1234).next().mkString(""))
-    println("2020 => " + RomanSyntax.printer(2020).next().mkString(""))
-    println("1515 => " + RomanSyntax.printer(1515).next().mkString(""))
+    println("1234 => " + RomanSyntax.printer(1234).get.mkString(""))
+    println("2020 => " + RomanSyntax.printer(2020).get.mkString(""))
+    println("1515 => " + RomanSyntax.printer(1515).get.mkString(""))
   }
 }

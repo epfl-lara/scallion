@@ -178,7 +178,7 @@ object CalcParser extends Parsers {
   val printer = PrettyPrinter(expr)
 
   // Pretty prints expressions.
-  def unapply(value: Expr): Iterator[Seq[Token]] = printer(value).map(_.toSeq)
+  def unapply(value: Expr): Option[Seq[Token]] = printer(value).map(_.toSeq)
 
   // Parses expressions.
   def apply(it: Iterator[Token]): Option[Expr] = parser(it) match {
@@ -194,13 +194,14 @@ object Calculator {
       "1 + 2",
       "3!",
       "(4 + 5) + 6",
+      "4 + (5 + 6)",
       "7 + 8 * 9",
       "(3 * 2!) + 4 * 5 - (6! + 2) + 2")
     for (e <- expressions) {
       println("Raw expression: " + e)
       val parsed = CalcParser(CalcLexer(e.iterator)).get
       println("Parsed: " + parsed)
-      val pretty = CalcParser.unapply(parsed).map(CalcLexer.unapply(_)).next()
+      val pretty = CalcParser.unapply(parsed).map(CalcLexer.unapply(_)).getOrElse("???")
       println("Pretty: " + pretty)
     }
   }
