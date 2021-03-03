@@ -337,7 +337,6 @@ trait Syntaxes {
     /** Syntax for the empty string.
       *
       * @param value   The value produced.
-      * @param matches The function that counts how many times its parameter matches the `value`.
       *
       * @group basic
       */
