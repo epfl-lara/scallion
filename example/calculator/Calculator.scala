@@ -40,7 +40,7 @@ case class UnknownToken(content: String) extends Token {  // Unknowns.
 
 // The following object describes the tokens of the calculator language,
 // and provides methods to tokenize and display token sequences.
-object CalcLexer extends Lexers with CharRegExps {
+object CalcLexer extends Lexers with CharLexers {
 
   type Token = example.calculator.Token  // Tokens.
   type Position = Unit  // Positions. Ignored here.

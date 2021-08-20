@@ -16,8 +16,10 @@
 package scallion.json
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
-class JSONParserTests extends FlatSpec with Inside {
+class JSONParserTests extends AnyFlatSpec with should.Matchers with Inside {
 
   def parse(text: String): Option[Value] =
     JSONParser(JSONLexer(text.iterator)).getValue

@@ -16,6 +16,8 @@
 package scallion
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
 import scallion._
 
@@ -36,11 +38,10 @@ object Tokens {
 }
 import Tokens._
 
-class ParserTests extends FlatSpec with Inside with Parsers {
+class ParserTests extends AnyFlatSpec with should.Matchers with Inside with Parsers {
 
   type Token = Tokens.Token
   type Kind = Tokens.TokenClass
-
   import Implicits._
 
   override def getKind(token: Token): TokenClass = token match {

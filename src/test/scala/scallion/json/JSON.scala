@@ -51,7 +51,7 @@ case class NumberValue(value: Double, range: (Int, Int)) extends Value
 case class StringValue(value: String, range: (Int, Int)) extends Value
 case class NullValue(range: (Int, Int)) extends Value
 
-object JSONLexer extends Lexers with CharRegExps {
+object JSONLexer extends Lexers with CharLexers {
 
   type Token = scallion.json.Token
   type Position = Int

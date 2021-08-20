@@ -39,7 +39,7 @@ case class UnknownToken(content: String, range: (Int, Int)) extends Token
 
 // Then, we define the lexer.
 // The lexer converts sequences of characters into tokens.
-object JSONLexer extends Lexers with CharRegExps {
+object JSONLexer extends Lexers with CharLexers {
 
   type Token = example.json.Token
   type Position = Int

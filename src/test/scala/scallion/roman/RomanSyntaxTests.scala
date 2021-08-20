@@ -16,8 +16,10 @@
 package scallion.roman
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
-class RomanSyntaxTests extends FlatSpec with Inside {
+class RomanSyntaxTests extends AnyFlatSpec with should.Matchers with Inside {
 
   import RomanSyntax._
 

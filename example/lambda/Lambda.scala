@@ -33,7 +33,7 @@ case class UnknownToken(content: String) extends Token  // Unknown.
 
 // The following object describes the tokens of lambda calculus,
 // and provides methods to tokenize and display token sequences.
-object LambdaLexer extends Lexers with CharRegExps {
+object LambdaLexer extends Lexers with CharLexers {
 
   type Token = example.lambda.Token  // The type of tokens.
   type Position = Unit  // The type of positions. In this example, we ignore positions.
