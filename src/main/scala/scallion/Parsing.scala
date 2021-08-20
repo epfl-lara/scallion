@@ -1024,9 +1024,9 @@ trait Parsing { self: Syntaxes =>
 
       def epsilon[A](value: A): Tree[A] = {
         new Success(value) {
-          override val nullable: Option[A] = Some(value)
+          override val nullable: Option[A] = Some(this.value)
           override val first: HashSet[Kind] = HashSet()
-          override val syntax: Syntax[A] = self.epsilon(value)
+          override val syntax: Syntax[A] = self.epsilon(this.value)
         }
       }
     }
