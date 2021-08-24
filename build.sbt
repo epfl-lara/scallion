@@ -1,6 +1,6 @@
 
 val commonSettings = Seq(
-  version            := "0.5",
+  version            := "0.6",
   scalaVersion       := "3.0.1",
   crossScalaVersions := Seq("3.0.1"),
   organization       := "ch.epfl.lara",
