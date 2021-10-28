@@ -115,7 +115,7 @@ trait Debug { self: Syntaxes with Parsing with Enumeration =>
                 builder ++= s"The following sequences lead to an ambiguity when followed by any of ${kinds.mkString(", ")}:\n\n"
               }
               else if (kinds.size == 1) {
-                builder ++= s"The following sequences lead to an ambiguity when followed by of token of kind ${kinds.head}:\n\n"
+                builder ++= s"The following sequences lead to an ambiguity when followed by a token of kind ${kinds.head}:\n\n"
               }
               else {
                 builder ++= "The following sequences lead to an ambiguity:\n\n"
