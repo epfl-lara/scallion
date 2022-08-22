@@ -7,6 +7,10 @@ val commonSettings = Seq(
   resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
 )
 
+def ghProject(repo: String, version: String) = RootProject(uri(s"${repo}#${version}"))
+
+lazy val silex = ghProject("https://github.com/epfl-lara/silex.git", "eaf296425b9d8cc9100dfa66a079641ee4cfe4ae")
+
 lazy val scallion = project
   .in(file("."))
   .settings(
@@ -30,7 +34,6 @@ lazy val scallion = project
 
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.2.9" % "test",
-      "ch.epfl.lara" %% "silex" % "0.6" % "test",
     ),
 
     bintrayOrganization := Some("epfl-lara"),
@@ -41,6 +44,7 @@ lazy val scallion = project
       "parser-combinators", "parsing-combinators"
     ),
   )
+  .dependsOn(silex)
 
 lazy val example = project
   .in(file("example"))
@@ -48,7 +52,6 @@ lazy val example = project
     commonSettings,
     name := "scallion-examples",
     scalaSource in Compile := baseDirectory.value,
-    libraryDependencies += "ch.epfl.lara" %% "silex" % "0.6",
   )
   .dependsOn(scallion)
 
