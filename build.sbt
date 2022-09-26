@@ -5,7 +5,9 @@ val commonSettings = Seq(
   crossScalaVersions := Seq("3.0.1"),
   organization       := "ch.epfl.lara",
   resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
+  scalaVersion in silex       := "3.0.1",
 )
+lazy val silex = RootProject(uri("git://github.com/epfl-lara/silex.git"))
 
 lazy val scallion = project
   .in(file("."))
@@ -30,7 +32,6 @@ lazy val scallion = project
 
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.2.9" % "test",
-      "ch.epfl.lara" %% "silex" % "0.6" % "test",
     ),
 
     bintrayOrganization := Some("epfl-lara"),
@@ -40,7 +41,7 @@ lazy val scallion = project
       "ll1", "ll1-parsing", "ll1-grammar",
       "parser-combinators", "parsing-combinators"
     ),
-  )
+  ).dependsOn(silex)
 
 lazy val example = project
   .in(file("example"))
@@ -48,7 +49,6 @@ lazy val example = project
     commonSettings,
     name := "scallion-examples",
     scalaSource in Compile := baseDirectory.value,
-    libraryDependencies += "ch.epfl.lara" %% "silex" % "0.6",
   )
   .dependsOn(scallion)
 
