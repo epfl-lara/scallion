@@ -5,7 +5,6 @@ val commonSettings = Seq(
   crossScalaVersions := Seq("3.0.1"),
   organization       := "ch.epfl.lara",
   resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
-  scalaVersion in silex       := "3.0.1",
 )
 lazy val silex = RootProject(uri("git://github.com/epfl-lara/silex.git"))
 
