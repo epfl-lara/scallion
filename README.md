@@ -1,3 +1,4 @@
+[![Compile and run sbt test](https://github.com/epfl-lara/scallion/actions/workflows/CI.yml/badge.svg)](https://github.com/epfl-lara/scallion/actions/workflows/CI.yml)
 
 <p align="center">
 <img src="images/scallion.png" width="300px" alt="SCALL1ON" />
