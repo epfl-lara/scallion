@@ -1,12 +1,14 @@
-
 val commonSettings = Seq(
   version            := "0.6",
   scalaVersion       := "3.5.0",
   crossScalaVersions := Seq("3.5.0"),
   organization       := "ch.epfl.lara",
-  resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
+//  resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
 )
-lazy val silex = RootProject(uri("git://github.com/epfl-lara/silex.git"))
+
+def ghProject(repo: String, version: String) = RootProject(uri(s"${repo}#${version}"))
+
+lazy val silex = ghProject("https://github.com/epfl-lara/silex.git", "f13df9ee24288cee167e262b6a36be29c63b7045")
 
 lazy val scallion = project
   .in(file("."))
@@ -23,11 +25,10 @@ lazy val scallion = project
     Compile / doc / scalacOptions ++= Seq(
       "-groups",
       "-sourcepath", baseDirectory.value.getAbsolutePath,
-      "-doc-source-url", "https://raw.githubusercontent.com/epfl-lara/scallion/master€{FILE_PATH}.scala",
       "-doc-root-content", baseDirectory.value + "/project/root-doc.txt"
     ),
 
-    target in Compile in doc := baseDirectory.value / "docs",
+    Compile / doc / target := baseDirectory.value / "docs",
 
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.2.9" % "test",
@@ -47,10 +48,11 @@ lazy val example = project
   .settings(
     commonSettings,
     name := "scallion-examples",
-    scalaSource in Compile := baseDirectory.value,
+    Compile / scalaSource := baseDirectory.value,
   )
   .dependsOn(scallion)
 
+/*
 lazy val benchmark = project
   .in(file("benchmark"))
   .settings(
@@ -71,5 +73,6 @@ lazy val benchmark = project
     parallelExecution in Test := false,
   )
   .dependsOn(scallion)
+ */
 
 
