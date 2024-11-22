@@ -1,0 +1,37 @@
+name: Compile and run sbt test
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    if: github.event.pull_request.draft == false
+    runs-on: [self-hosted, linux]
+    env:
+      # define Java options for both official sbt and sbt-extras
+      JAVA_OPTS: -Xss64M -Xms1024M -Xmx8G 
+      JVM_OPTS:  -Xss64M -Xms1024M -Xmx8G 
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 17
+    - name: Install and unpack sbt
+      run: |
+        wget https://github.com/sbt/sbt/releases/download/v1.10.1/sbt-1.10.1.tgz
+        tar xfz sbt-1.10.1.tgz
+        echo "PATH=./sbt/bin/:$PATH" >> "$GITHUB_ENV"
+    - name: Run Tests
+      run: sbt -Dtest-parallelism=4 -batch test
+  fail_if_pull_request_is_draft:
+    if: github.event.pull_request.draft == true
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: Fails in order to indicate that pull request needs to be marked as ready to review and tests workflows need to pass.
+      run: exit 1

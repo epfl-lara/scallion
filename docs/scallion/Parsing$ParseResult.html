@@ -1,677 +1,229 @@
-<!DOCTYPE html >
-<html>
-        <head>
-          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
-          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-          
-      <link href="../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../lib/jquery.js"></script>
-      <script type="text/javascript" src="../lib/jquery.panzoom.min.js"></script>
-      <script type="text/javascript" src="../lib/jquery.mousewheel.min.js"></script>
-      <script type="text/javascript" src="../lib/index.js"></script>
-      <script type="text/javascript" src="../index.js"></script>
-      <script type="text/javascript" src="../lib/scheduler.js"></script>
-      <script type="text/javascript" src="../lib/template.js"></script>
-      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
-      
-      <script type="text/javascript">
-        /* this variable can be used by the JS to determine the path to the root document */
-        var toRoot = '../';
-      </script>
-    
-        </head>
-        <body>
-      <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
-        <span class="close-results"><span class="left">&lt;</span> Back</span>
-        <div id="textfilter">
-          <span class="input">
-            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
-            <i class="clear material-icons"></i>
-            <i id="search-icon" class="material-icons"></i>
-          </span>
-        </div>
+<!DOCTYPE html><html data-pathToRoot="../" data-rawLocation="scallion/Parsing$ParseResult" data-dynamicSideMenu="false"><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta><title>ParseResult</title><link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"></link><script type="text/javascript" src="../scripts/theme.js"></script><script type="text/javascript" src="../scripts/searchData.js" defer="true"></script><script type="text/javascript" src="../scripts/scastieConfiguration.js" defer="true"></script><link rel="stylesheet" href="../styles/theme/bundle.css"></link><link rel="stylesheet" href="../styles/theme/components/bundle.css"></link><link rel="stylesheet" href="../styles/theme/components/button/bundle.css"></link><link rel="stylesheet" href="../styles/theme/layout/bundle.css"></link><link rel="stylesheet" href="../styles/nord-light.css"></link><link rel="stylesheet" href="../styles/dotty-icons.css"></link><link rel="stylesheet" href="../styles/filter-bar.css"></link><link rel="stylesheet" href="../styles/code-snippets.css"></link><link rel="stylesheet" href="../styles/searchbar.css"></link><link rel="stylesheet" href="../styles/social-links.css"></link><link rel="stylesheet" href="../styles/versions-dropdown.css"></link><link rel="stylesheet" href="../styles/content-contributors.css"></link><link rel="stylesheet" href="../styles/fontawesome.css"></link><script type="text/javascript" src="../hljs/highlight.pack.js" defer="true"></script><script type="text/javascript" src="../scripts/hljs-scala3.js" defer="true"></script><script type="text/javascript" src="../scripts/ux.js" defer="true"></script><script type="text/javascript" src="../scripts/common/component.js" defer="true"></script><script type="text/javascript" src="../scripts/common/utils.js" defer="true"></script><script type="text/javascript" src="../scripts/components/FilterBar.js" defer="true"></script><script type="text/javascript" src="../scripts/components/DocumentableList.js" defer="true"></script><script type="text/javascript" src="../scripts/components/Input.js" defer="true"></script><script type="text/javascript" src="../scripts/components/FilterGroup.js" defer="true"></script><script type="text/javascript" src="../scripts/components/Filter.js" defer="true"></script><script type="text/javascript" src="../scripts/scaladoc-scalajs.js" defer="true"></script><script type="text/javascript" src="../scripts/contributors.js" defer="true"></script><script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" defer="true"></script><script type="text/javascript" src="https://d3js.org/d3.v6.min.js" defer="true"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphlib-dot@0.6.2/dist/graphlib-dot.min.js" defer="true"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.1/dagre-d3.min.js" defer="true"></script><script type="text/javascript" src="https://scastie.scala-lang.org/embedded.js" defer="true"></script><script type="text/javascript" src="../scripts/data.js" defer="true"></script><link rel="stylesheet" href="../styles/apistyles.css"></link><script>var pathToRoot = "../";</script></head><body><div id=""><div id="header" class="body-small"><div class="header-container-left"><a href="../" class="logo-container"><span class="project-name h300">scallion</span></a><span onclick="dropdownHandler(event)" class="text-button with-arrow" id="dropdown-trigger"><a></a></span><div id="version-dropdown" class="dropdown-menu"></div></div><div class="header-container-right"><button id="search-toggle" class="icon-button"></button><span id="theme-toggle" class="icon-button"></span><span id="mobile-menu-toggle" class="icon-button hamburger"></span></div></div><div id="mobile-menu"><div class="mobile-menu-header body-small"><span class="mobile-menu-logo"><span class="project-name h300">scallion</span></span><button id="mobile-menu-close" class="icon-button close"></button></div><div class="mobile-menu-container body-medium"><input id="mobile-scaladoc-searchbar-input" class="scaladoc-searchbar-input" type="search" placeholder="Find anything"></input><span id="mobile-theme-toggle" class="mobile-menu-item mode"></span></div></div><span id="mobile-sidebar-toggle" class="floating-button"></span><div id="leftColumn" class="body-small"><div class="switcher-container"><a id="api-nav-button" class="switcher h100 selected" href="../index.html">API</a></div><nav id="api-nav" class="side-menu"><div class="ni n0 expanded"><span class="nh h100 expanded cs"><button class="ar icon-button expanded"></button><a href="../scallion.html"><span class="micon pa"></span><span>scallion</span></a></span><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="util.html"><span class="micon pa"></span><span>util</span></a></span><div class="ni n2 "><span class="nh "><a href="util/Unfolds$.html"><span class="micon ob"></span><span>Unfolds</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="visualization.html"><span class="micon pa"></span><span>visualization</span></a></span><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="visualization/Grammars.html"><span class="micon tr"></span><span>Grammars</span></a></span><div class="ni n3"><span class="nh "><button class="ar icon-button "></button><a href="visualization/Grammars$grammars$.html"><span class="micon ob"></span><span>grammars</span></a></span><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$Epsilon$.html"><span class="micon ob"></span><span>Epsilon</span></a></span></div><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$Grammar.html"><span class="micon cl"></span><span>Grammar</span></a></span></div><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$NonTerminal.html"><span class="micon cl"></span><span>NonTerminal</span></a></span></div><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$Rule.html"><span class="micon cl"></span><span>Rule</span></a></span></div><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$Symbol.html"><span class="micon tr"></span><span>Symbol</span></a></span></div><div class="ni n4 "><span class="nh "><a href="visualization/Grammars$grammars$$Terminal.html"><span class="micon cl"></span><span>Terminal</span></a></span></div></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="visualization/Graphs.html"><span class="micon tr"></span><span>Graphs</span></a></span><div class="ni n3 "><span class="nh "><a href="visualization/Graphs$graphs$.html"><span class="micon ob"></span><span>graphs</span></a></span></div></div></div><div class="ni n1 "><span class="nh "><a href="Debug.html"><span class="micon tr"></span><span>Debug</span></a></span></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="Enumeration.html"><span class="micon tr"></span><span>Enumeration</span></a></span><div class="ni n2 "><span class="nh "><a href="Enumeration$Enumerator$.html"><span class="micon ob"></span><span>Enumerator</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="Operators.html"><span class="micon tr"></span><span>Operators</span></a></span><div class="ni n2 "><span class="nh "><a href="Operators$Associativity.html"><span class="micon tr"></span><span>Associativity</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Operators$LeftAssociative$.html"><span class="micon ob"></span><span>LeftAssociative</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Operators$Level.html"><span class="micon cl"></span><span>Level</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Operators$LevelDecorator.html"><span class="micon cl"></span><span>LevelDecorator</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Operators$RightAssociative$.html"><span class="micon ob"></span><span>RightAssociative</span></a></span></div></div><div class="ni n1 "><span class="nh "><a href="PairDecorator.html"><span class="micon cl"></span><span>PairDecorator</span></a></span></div><div class="ni n1 "><span class="nh "><a href="Parsers.html"><span class="micon tr"></span><span>Parsers</span></a></span></div><div class="ni n1 expanded"><span class="nh h100 expanded cs"><button class="ar icon-button expanded"></button><a href="Parsing.html"><span class="micon tr"></span><span>Parsing</span></a></span><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="Parsing$Conflict$.html"><span class="micon ob"></span><span>Conflict</span></a></span><div class="ni n3 "><span class="nh "><a href="Parsing$Conflict$$FirstConflict.html"><span class="micon cl"></span><span>FirstConflict</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Parsing$Conflict$$FollowConflict.html"><span class="micon cl"></span><span>FollowConflict</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Parsing$Conflict$$NullableConflict.html"><span class="micon cl"></span><span>NullableConflict</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="Parsing$Conflict.html"><span class="micon tr"></span><span>Conflict</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$ConflictException.html"><span class="micon cl"></span><span>ConflictException</span></a></span></div><div class="ni n2 expanded"><span class="nh h100 selected"><a href="#"><span class="micon tr"></span><span>ParseResult</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$Parsed.html"><span class="micon cl"></span><span>Parsed</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$Parser$.html"><span class="micon ob"></span><span>Parser</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$Parser.html"><span class="micon tr"></span><span>Parser</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$Properties.html"><span class="micon cl"></span><span>Properties</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$UnexpectedEnd.html"><span class="micon cl"></span><span>UnexpectedEnd</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Parsing$UnexpectedToken.html"><span class="micon cl"></span><span>UnexpectedToken</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="PrettyPrinting.html"><span class="micon tr"></span><span>PrettyPrinting</span></a></span><div class="ni n2 "><span class="nh "><a href="PrettyPrinting$PrettyPrinter$.html"><span class="micon ob"></span><span>PrettyPrinter</span></a></span></div><div class="ni n2 "><span class="nh "><a href="PrettyPrinting$PrettyPrinter.html"><span class="micon tr"></span><span>PrettyPrinter</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="Syntaxes.html"><span class="micon tr"></span><span>Syntaxes</span></a></span><div class="ni n2 "><span class="nh "><a href="Syntaxes$Implicits$.html"><span class="micon ob"></span><span>Implicits</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Syntaxes$SafeImplicits$.html"><span class="micon ob"></span><span>SafeImplicits</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Syntaxes$Skip.html"><span class="micon cl"></span><span>Skip</span></a></span></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="Syntaxes$Syntax$.html"><span class="micon ob"></span><span>Syntax</span></a></span><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Binary.html"><span class="micon tr"></span><span>Binary</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Disjunction.html"><span class="micon cl"></span><span>Disjunction</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Elem.html"><span class="micon cl"></span><span>Elem</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Failure.html"><span class="micon cl"></span><span>Failure</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Marked.html"><span class="micon cl"></span><span>Marked</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Recursive.html"><span class="micon cl"></span><span>Recursive</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Recursive$.html"><span class="micon ob"></span><span>Recursive</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Sequence.html"><span class="micon cl"></span><span>Sequence</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Success.html"><span class="micon cl"></span><span>Success</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Transform.html"><span class="micon cl"></span><span>Transform</span></a></span></div><div class="ni n3 "><span class="nh "><a href="Syntaxes$Syntax$$Unary.html"><span class="micon tr"></span><span>Unary</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="Syntaxes$Syntax.html"><span class="micon tr"></span><span>Syntax</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Syntaxes$Uninteresting.html"><span class="micon tr"></span><span>Uninteresting</span></a></span></div><div class="ni n2 "><span class="nh "><a href="Syntaxes$UnsafeImplicits.html"><span class="micon tr"></span><span>UnsafeImplicits</span></a></span></div></div><div class="ni n1 "><span class="nh "><a href="$tilde$.html"><span class="micon cl"></span><span>~</span></a></span></div></div></nav></div><div id="footer" class="body-small"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div><div id="scaladoc-searchBar"></div><div id="main"><div class="breadcrumbs container"><a href="../index.html">scallion</a>/<a href="../scallion.html">scallion</a>/<a href="Parsing.html">Parsing</a>/<a href="Parsing$ParseResult.html">ParseResult</a></div><div id="content" class="body-medium"><div><div class="cover-header">
+ <span class="icon"><span class="micon tr"></span></span>
+ <h1 class="h600 single">ParseResult</h1>
+</div>
+<div class="fqname body-large">
+ <span>scallion.Parsing.ParseResult</span>
+</div>
+<div class="main-signature mono-small-block">
+ <div class="signature">
+  <span class="modifiers"><span t="k">sealed </span></span><span class="kind"><span t="k">trait </span></span><a href="Parsing$ParseResult.html" t="n" class="documentableName ">ParseResult</a>[<span t="k"></span><span data-unresolved-link="" t="t">A</span>]
+ </div>
+</div>
+<div class="cover">
+ <div class="doc">
+  <p>Result of parsing.</p>
+ </div>
+ <section id="attributes">
+  <h2 class="h500">Attributes</h2>
+  <dl class="attributes">
+   <dt class="body-small">
+    Source
+   </dt>
+   <dd class="body-medium">
+    <a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Parsing.scala" target="_blank">Parsing.scala</a>
+   </dd>
+   <dt class="body-small">
+    Graph
+   </dt>
+   <dd class="body-medium">
+    <div id="inheritance-diagram" class="diagram-class showGraph">
+     <button type="button" class="label-only-button" onclick="zoomOut()">Reset zoom</button><button type="button" class="label-only-button" onclick="hideGraph()">Hide graph</button><button type="button" class="label-only-button" onclick="showGraph()">Show graph</button>
+     <svg id="graph"></svg>
+     <script type="text/dot" id="dot"> digraph g {
+ node0 [id=node0, label="<span style=\"color: #FFFFFF;\">sealed trait <a href=\"Parsing$ParseResult.html\" t=\"n\">ParseResult</a>[<span t=\"t\">A</span>]</span>", class="trait vertex"];
+node1 [id=node1, label="<span style=\"color: #FFFFFF;\">class <span data-unresolved-link=\"\" t=\"n\">Object</span></span>", class="class vertex"];
+node2 [id=node2, label="<span style=\"color: #FFFFFF;\">class <span data-unresolved-link=\"\" t=\"n\">Any</span></span>", class="class vertex"];
+node3 [id=node3, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">Matchable</span></span>", class="trait vertex"];
+node4 [id=node4, label="<span style=\"color: #FFFFFF;\">class <a href=\"Parsing$Parsed.html\" t=\"n\">Parsed</a>[<span t=\"t\">A</span>]</span>", class="class vertex"];
+node5 [id=node5, label="<span style=\"color: #FFFFFF;\">class <a href=\"Parsing$UnexpectedEnd.html\" t=\"n\">UnexpectedEnd</a>[<span t=\"t\">A</span>]</span>", class="class vertex"];
+node6 [id=node6, label="<span style=\"color: #FFFFFF;\">class <a href=\"Parsing$UnexpectedToken.html\" t=\"n\">UnexpectedToken</a>[<span t=\"t\">A</span>]</span>", class="class vertex"];
+
+
+ node0 -> node1;
+node1 -> node2;
+node1 -> node3;
+node3 -> node2;
+node4 -> node0;
+node5 -> node0;
+node6 -> node0;
+
+}
+</script>
     </div>
-      <div id="search-results">
-        <div id="search-progress">
-          <div id="progress-fill"></div>
-        </div>
-        <div id="results-content">
-          <div id="entity-results"></div>
-          <div id="member-results"></div>
-        </div>
+   </dd>
+   <dt class="body-small">
+    Supertypes
+   </dt>
+   <dd class="body-medium">
+    <div class="mono-small-block supertypes">
+     <div>
+      class <span data-unresolved-link="" t="n">Object</span>
+     </div>
+     <div>
+      trait <span data-unresolved-link="" t="n">Matchable</span>
+     </div>
+     <div>
+      class <span data-unresolved-link="" t="n">Any</span>
+     </div><span></span>
+    </div>
+   </dd>
+   <dt class="body-small">
+    Known subtypes
+   </dt>
+   <dd class="body-medium">
+    <div class="mono-small-block subtypes">
+     <div>
+      class <a href="Parsing$Parsed.html" t="n">Parsed</a>[<span t="t">A</span>]
+     </div>
+     <div>
+      class <a href="Parsing$UnexpectedEnd.html" t="n">UnexpectedEnd</a>[<span t="t">A</span>]
+     </div>
+     <div>
+      class <a href="Parsing$UnexpectedToken.html" t="n">UnexpectedToken</a>[<span t="t">A</span>]
+     </div><span></span>
+    </div>
+   </dd>
+  </dl>
+ </section>
+</div>
+<section id="members-list">
+ <h2 class="h500">Members list</h2>
+ <div class="documentableFilter">
+  <div class="filtersContainer"></div><input class="filterableInput" placeholder="Filter by any phrase" data-test-id="filterBarInput" type="search"><button class="clearButton label-only-button" data-test-id="filterBarClearButton">Clear all</button>
+ </div>
+ <div class="membersList expand">
+  <div class="tabs">
+   <div class="contents">
+    <section id="Value-members">
+     <div data-togglable="Value members" class="tab expand">
+      <div class="member-group-header">
+       <h3 data-togglable="Value members" class="h400">Value members</h3>
       </div>
-      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
-        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
-          <div id="subpackage-spacer">
-            <div id="packages">
-              <h1>Packages</h1>
-              <ul>
-                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="_root_"></a><a id="root:_root_"></a>
-      <span class="permalink">
-      <a href="index.html#_root_" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="Scallion is a library for easily writing LL(1) parsers in Scala, with support for pretty printing." href="../index.html"><span class="name">root</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Scallion is a library for easily writing LL(1) parsers in Scala, with support for pretty printing.</p><div class="fullcomment"><div class="comment cmt"><h4>Overview</h4><p>Scallion is a library for easily writing LL(1) parsers in Scala, with support for pretty printing.
-See the package <a href="index.html" class="extype" name="scallion">scallion</a> for more information.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="_root_.scallion" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="scallion"></a><a id="scallion:scallion"></a>
-      <span class="permalink">
-      <a href="index.html#scallion" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="This package is used to describe syntax for LL(1) languages." href="index.html"><span class="name">scallion</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">This package is used to describe syntax for LL(1) languages.</p><div class="fullcomment"><div class="comment cmt"><p>This package is used to describe syntax for LL(1) languages.</p><p>To use the package, mix-in the <a href="package$$Parsers.html" class="extype" name="scallion.Parsers">scallion.Parsers</a> trait.</p><pre><span class="kw">object</span> MyParser <span class="kw">extends</span> Parsers {
-
-  <span class="cmt">// Type of tokens.</span>
-  <span class="kw">type</span> Token = MyToken
-
-  <span class="cmt">// Type of token kinds.</span>
-  <span class="kw">type</span> Kind = MyKind
-
-  <span class="cmt">// Define the token kind of tokens.</span>
-  <span class="kw">override</span> <span class="kw">def</span> getKind(token: Token): Kind = ...
-
-  <span class="cmt">// Then define your syntax using combinators.</span>
-  <span class="kw">lazy</span> <span class="kw">val</span> mySyntax = ...
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="scallion.Parsing" visbl="pub" class="indented2 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ParsingextendsAnyRef"></a><a id="Parsing:Parsing"></a>
-      <span class="permalink">
-      <a href="../scallion/index.html#ParsingextendsAnyRef" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a title="This trait implements LL(1) parsing with derivatives." href="Parsing.html"><span class="name">Parsing</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">This trait implements LL(1) parsing with derivatives.</p><div class="fullcomment"><div class="comment cmt"><p>This trait implements LL(1) parsing with derivatives.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scallion">scallion</a></dd></dl></div>
-    </li><li class="current-entities indented2">
-                        <a class="object" href="Parsing$Conflict$.html" title="Contains the description of the various LL(1) conflicts."></a>
-                        <a class="trait" href="Parsing$Conflict.html" title="Describes a LL(1) conflict."></a>
-                        <a href="Parsing$Conflict.html" title="Describes a LL(1) conflict.">Conflict</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsing$ConflictException.html" title="Indicates that a syntax is not LL(1) due to various conflicts."></a>
-                        <a href="Parsing$ConflictException.html" title="Indicates that a syntax is not LL(1) due to various conflicts.">ConflictException</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="trait" href="" title="Result of parsing."></a>
-                        <a href="" title="Result of parsing.">ParseResult</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsing$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value."></a>
-                        <a href="Parsing$Parsed.html" title="Indicates that the input has been fully parsed, resulting in a value.">Parsed</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Parsing$Parser$.html" title="Factory of LL(1) parsers."></a>
-                        <a class="trait" href="Parsing$Parser.html" title="LL(1) parser."></a>
-                        <a href="Parsing$Parser.html" title="LL(1) parser.">Parser</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsing$Properties.html" title="Contains properties of syntaxes."></a>
-                        <a href="Parsing$Properties.html" title="Contains properties of syntaxes.">Properties</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsing$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered."></a>
-                        <a href="Parsing$UnexpectedEnd.html" title="Indicates that end of input was unexpectedly encountered.">UnexpectedEnd</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="Parsing$UnexpectedToken.html" title="Indicates that the provided token was not expected at that point."></a>
-                        <a href="Parsing$UnexpectedToken.html" title="Indicates that the provided token was not expected at that point.">UnexpectedToken</a>
-                      </li>
-              </ul>
-            </div>
+      <section id="Concrete-methods">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Concrete methods</h4>
+        </div>
+        <div class="documentableElement" id="getValue-0">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Parsing$ParseResult.html#getValue-0" t="n" class="documentableName ">getValue</a>: <span data-unresolved-link="" t="t">Option</span>[<span t="t">A</span>]
+           </div>
           </div>
-          <div id="content">
-            <body class="trait type">
-      <div id="definition">
-        <div class="big-circle trait">t</div>
-        <p id="owner"><a href="index.html" class="extype" name="scallion">scallion</a>.<a href="Parsing.html" class="extype" name="scallion.Parsing">Parsing</a></p>
-        <h1>ParseResult<span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span></h1>
-        <h3><span class="morelinks"></span></h3>
-      </div>
-
-      <h4 id="signature" class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ParseResult</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-
-      
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Result of parsing.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Parsing.scala" target="_blank">Parsing.scala</a></dd></dl><div class="toggleContainer block">
-          <span class="toggle">
-            Linear Supertypes
-          </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">
-              Known Subclasses
-            </span>
-            <div class="subClasses hiddenContent"><a href="Parsing$Parsed.html" class="extype" name="scallion.Parsing.Parsed">Parsed</a>, <a href="Parsing$UnexpectedEnd.html" class="extype" name="scallion.Parsing.UnexpectedEnd">UnexpectedEnd</a>, <a href="Parsing$UnexpectedToken.html" class="extype" name="scallion.Parsing.UnexpectedToken">UnexpectedToken</a></div>
-          </div></div>
-        
-
-      <div id="mbrsel">
-        <div class="toggle"></div>
-        <div id="memberfilter">
-          <i class="material-icons arrow"></i>
-          <span class="input">
-            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
-          </span>
-          <i class="clear material-icons"></i>
-        </div>
-        <div id="filterby">
-          <div id="order">
-            <span class="filtertype">Ordering</span>
-            <ol>
-              
-              <li class="alpha in"><span>Alphabetic</span></li>
-              <li class="inherit out"><span>By Inheritance</span></li>
-            </ol>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Returns the parsed value, if any.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Returns the parsed value, if any.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">
+               Source
+              </dt>
+              <dd class="body-medium">
+               <a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Parsing.scala" target="_blank">Parsing.scala</a>
+              </dd>
+             </dl>
+            </div>
+           </div>
           </div>
-          <div class="ancestors">
-                  <span class="filtertype">Inherited<br />
-                  </span>
-                  <ol id="linearization">
-                    <li class="in" name="scallion.Parsing.ParseResult"><span>ParseResult</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
-                  </ol>
-                </div><div class="ancestors">
-              <span class="filtertype"></span>
-              <ol>
-                <li class="hideall out"><span>Hide All</span></li>
-                <li class="showall in"><span>Show All</span></li>
-              </ol>
-            </div>
-          <div id="visbl">
-              <span class="filtertype">Visibility</span>
-              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
-            </div>
+         </div>
         </div>
-      </div>
-
-      <div id="template">
-        <div id="allMembers">
-        
-
-        
-
-        <div class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="scallion.Parsing.ParseResult#rest" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="rest:Parsing.this.Parser[A]"></a><a id="rest:(Parsing.this)#Parser[A]"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#rest:Parsing.this.Parser[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">rest</span><span class="result">: (<a href="Parsing.html" class="extype" name="scallion.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.Parsing.Parser">Parser</span>[<span class="extype" name="scallion.Parsing.ParseResult.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Parser for the rest of input.</p>
-    </li></ol>
-            </div>
-
-        <div class="values members">
-              <h3>Concrete Value Members</h3>
-              <ol>
-                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#!=(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="##():Int"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html###():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#==(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asInstanceOf[T0]:T0"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#asInstanceOf[T0]:T0" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#clone():Object" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java/lang/index.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-                <span class="name">@throws</span><span class="args">(<span>
-      
-      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#eq(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#equals(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="finalize():Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#finalize():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java/lang/index.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">(<span>
-      
-      <span class="symbol">classOf[java.lang.Throwable]</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getClass():Class[_]"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#getClass():Class[_]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="scallion.Parsing.ParseResult#getValue" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getValue:Option[A]"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#getValue:Option[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getValue</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scallion.Parsing.ParseResult.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Returns the parsed value, if any.</p>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#hashCode():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isInstanceOf[T0]:Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#isInstanceOf[T0]:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scallion.Parsing.ParseResult#map" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="map[B](f:A=&gt;B):Parsing.this.ParseResult[B]"></a><a id="map[B]((A)⇒B):(Parsing.this)#ParseResult[B]"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#map[B](f:A=&gt;B):Parsing.this.ParseResult[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scallion.Parsing.ParseResult.A">A</span>) ⇒ <span class="extype" name="scallion.Parsing.ParseResult.map.B">B</span></span>)</span><span class="result">: (<a href="Parsing.html" class="extype" name="scallion.Parsing">Parsing</a>.this)#<span class="extype" name="scallion.Parsing.ParseResult">ParseResult</span>[<span class="extype" name="scallion.Parsing.ParseResult.map.B">B</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Applies the given function on the parsed result.</p>
-    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#ne(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="notify():Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#notify():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="notifyAll():Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#notifyAll():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#toString():String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait():Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#wait():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">(<span>
-      
-      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">(<span>
-      
-      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
-      <span class="permalink">
-      <a href="../scallion/Parsing$ParseResult.html#wait(x$1:Long):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-                <span class="name">@throws</span><span class="args">(<span>
-      
-      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li>
-              </ol>
-            </div>
-
-        
-
-        
-        </div>
-
-        <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
-            </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
-            </div>
-        
-        </div>
-
-        <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
-              <h3>Ungrouped</h3>
-              
-            </div>
-        </div>
-
-      </div>
-
-      <div id="tooltip"></div>
-
-      <div id="footer">  </div>
-    </body>
+        <div class="documentableElement" id="map-fffff31b">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Parsing$ParseResult.html#map-fffff31b" t="n" class="documentableName ">map</a>[<span t="k"></span><span data-unresolved-link="" t="t">B</span>](<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">f</span>: <span t="t">A</span><span t="k"> =&gt; </span><span t="t">B</span>): <a href="Parsing$ParseResult.html" t="t">ParseResult</a>[<span data-unresolved-link="" t="t">B</span>]
+           </div>
           </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Applies the given function on the parsed result.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Applies the given function on the parsed result.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">
+               Source
+              </dt>
+              <dd class="body-medium">
+               <a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Parsing.scala" target="_blank">Parsing.scala</a>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
         </div>
-      </div>
-    </body>
-      </html>
+       </div>
+      </section>
+      <section id="Abstract-fields">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Abstract fields</h4>
+        </div>
+        <div class="documentableElement" id="rest-0">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">val </span></span><a href="Parsing$ParseResult.html#rest-0" t="n" class="documentableName ">rest</a>: <a href="Parsing$Parser.html" t="t">Parser</a>[<span t="t">A</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Parser for the rest of input.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Parser for the rest of input.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">
+               Source
+              </dt>
+              <dd class="body-medium">
+               <a href="https://raw.githubusercontent.com/epfl-lara/scallion/master/src/main/scala/scallion/Parsing.scala" target="_blank">Parsing.scala</a>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+  </div>
+ </div>
+</section></div><div id="toc" class="body-small"><div id="toc-container"><span class="toc-title h200">In this article</span><nav class="toc-nav"><ul class="toc-list"><li><a href="#attributes">Attributes</a></li><li><a href="#members-list">Members list</a><ul><li><a href="#Value-members">Value members</a><ul><li><a href="#Concrete-methods">Concrete methods</a></li><li><a href="#Abstract-fields">Abstract fields</a></li></ul></li></ul></li></ul></nav></div></div></div><div id="footer" class="body-small mobile-footer"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div></div></div></body></html>
