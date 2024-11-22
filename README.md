@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/epfl-lara/scallion/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/epfl-lara/scallion/actions/workflows/CI.yml/?branch=main)
+
 <p align="center">
 <img src="images/scallion.png" width="300px" alt="SCALL1ON" />
 </p>
