@@ -23,3 +23,4 @@ The algorithm has been [formally proven correct in Coq](https://github.com/epfl-
 * [Lambda Calculus](example/lambda/Lambda.scala): This example shows how to get a pretty printer *almost for free* alongside your parser.
 * [Calculator](example/calculator/Calculator.scala): This example shows how to use the `operators` combinator to easily handle operators with various associativities and priorities.
 * [Roman Numerals](example/roman/Roman.scala): This example presents a simple parser and pretty printer for roman numerals.
+
