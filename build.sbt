@@ -8,7 +8,7 @@ val commonSettings = Seq(
 
 def ghProject(repo: String, version: String) = RootProject(uri(s"${repo}#${version}"))
 
-lazy val silex = ghProject("https://github.com/epfl-lara/silex.git", "f13df9ee24288cee167e262b6a36be29c63b7045")
+lazy val silex = ghProject("https://github.com/epfl-lara/silex.git", "b52891cda928bf13e86690e09bf922b86a34f7b1")
 
 lazy val scallion = project
   .in(file("."))
