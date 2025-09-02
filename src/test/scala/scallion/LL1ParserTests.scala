@@ -758,7 +758,7 @@ class ParserTests extends AnyFlatSpec with should.Matchers with Inside with Pars
     val res = Parser.build(syntax)
     assert(res.isLeft)
 
-    val Left(conflicts) = res
+    val Left(conflicts) = res: @unchecked
     assert(conflicts.size == 1)
 
     inside(conflicts.toSeq(0)) {
@@ -779,7 +779,7 @@ class ParserTests extends AnyFlatSpec with should.Matchers with Inside with Pars
     val res = Parser.build(syntax)
     assert(res.isLeft)
 
-    val Left(conflicts) = res
+    val Left(conflicts) = res: @unchecked
     assert(conflicts.size == 1)
 
     inside(conflicts.toSeq(0)) {
@@ -799,7 +799,7 @@ class ParserTests extends AnyFlatSpec with should.Matchers with Inside with Pars
     val res = Parser.build(syntax)
     assert(res.isLeft)
 
-    val Left(conflicts) = res
+    val Left(conflicts) = res: @unchecked
     assert(conflicts.size == 2)
   }
 
@@ -816,7 +816,7 @@ class ParserTests extends AnyFlatSpec with should.Matchers with Inside with Pars
       case _ ~ rhs => rhs
     }
 
-    val Left(conflicts) = Parser.build(expr)
+    val Left(conflicts) = Parser.build(expr): @unchecked
     val cs = conflicts.toSeq
 
     assert(cs.size == 3)
