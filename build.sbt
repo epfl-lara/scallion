@@ -1,7 +1,7 @@
 val commonSettings = Seq(
   version            := "0.6.1",
-  scalaVersion       := "3.5.2",
-  crossScalaVersions := Seq("3.5.2"),
+  scalaVersion       := "3.7.2",
+  crossScalaVersions := Seq("3.7.2"),
   organization       := "ch.epfl.lara",
 //  resolvers          += "bintray-epfl-lara" at "https://dl.bintray.com/epfl-lara/maven",
 )
@@ -22,7 +22,13 @@ lazy val scallion = project
       "-unchecked"
     ),
 
-    Compile / doc / scalacOptions ++= Seq(
+    ThisBuild / scalacOptions ++= Seq(
+      "-source:3.7-migration", // enable migration mode
+      "-rewrite"               // apply rewrites automatically
+    ),
+
+
+      Compile / doc / scalacOptions ++= Seq(
       "-groups",
       "-sourcepath", baseDirectory.value.getAbsolutePath,
       "-doc-root-content", baseDirectory.value + "/project/root-doc.txt"
@@ -31,7 +37,7 @@ lazy val scallion = project
     Compile / doc / target := baseDirectory.value / "docs",
 
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.2.9" % "test",
+      "org.scalatest" %% "scalatest" % "3.2.19" % "test",
     ),
 
     bintrayOrganization := Some("epfl-lara"),

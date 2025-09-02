@@ -21,7 +21,7 @@ import scala.io.AnsiColor._
   *
   * @group debug
   */
-trait Debug { self: Syntaxes with Parsing with Enumeration =>
+trait Debug { self: Syntaxes & Parsing & Enumeration =>
 
   import Conflict._
 
@@ -68,7 +68,7 @@ trait Debug { self: Syntaxes with Parsing with Enumeration =>
 
           import scala.language.existentials
 
-          val (root, kinds): (Syntax[_], Set[Kind]) = conflict match {
+          val (root, kinds): (Syntax[?], Set[Kind]) = (conflict match {
             case NullableConflict(source) => {
               builder ++= s"${m(BOLD)}Nullable/Nullable conflict.${m(RESET)}\n\n"
               builder ++= "Both branches of a disjunction are nullable.\n"
@@ -98,7 +98,7 @@ trait Debug { self: Syntaxes with Parsing with Enumeration =>
               builder ++= s"${kinds.mkString(", ")}.\n"
               (root, kinds)
             }
-          }
+          }): @unchecked
           builder ++= "\n"
 
           builder ++= "The source of the conflict can be traced to:\n\n"

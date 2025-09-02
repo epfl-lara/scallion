@@ -53,11 +53,11 @@ package object enums {
     val hash: Int
     override def hashCode(): Int = hash
     override def equals(that: Any): Boolean = {
-      if (!that.isInstanceOf[Tree[_]]) {
+      if (!that.isInstanceOf[Tree[?]]) {
         return false
       }
       val thisValues = values
-      val thatValues = that.asInstanceOf[Tree[_]].values
+      val thatValues = that.asInstanceOf[Tree[?]].values
 
       while (thisValues.hasNext) {
         if (!thatValues.hasNext) {

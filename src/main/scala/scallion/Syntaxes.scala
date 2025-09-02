@@ -314,9 +314,9 @@ trait Syntaxes {
     def mark(mark: Mark): Syntax[A] = Marked(mark, this)
 
 
-    private[scallion] def prefixOf(needle: Syntax[_]): Syntax[_] = prefixOf(needle, Map.empty)
+    private[scallion] def prefixOf(needle: Syntax[?]): Syntax[?] = prefixOf(needle, Map.empty)
 
-    protected def prefixOf(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = {
+    protected def prefixOf(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] = {
 
       if (this eq needle) {
         epsilon(())
@@ -326,7 +326,7 @@ trait Syntaxes {
       }
     }
 
-    protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_]
+    protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?]
   }
 
   /** Contains primitive basic syntaxes and syntax combinators.
@@ -342,7 +342,7 @@ trait Syntaxes {
       * @group basic
       */
     case class Success[A](value: A) extends Syntax[A] {
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] = failure
     }
 
     /** Empty syntax.
@@ -350,7 +350,7 @@ trait Syntaxes {
       * @group basic
       */
     case class Failure[A]() extends Syntax[A] {
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] = failure
     }
 
     /** Syntax that describes a single token of the given `kind`.
@@ -360,14 +360,14 @@ trait Syntaxes {
       * @group basic
       */
     case class Elem(kind: Kind) extends Syntax[Token] {
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] = failure
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] = failure
     }
 
     /** Unary combinator.
       *
       * @group combinator
       */
-    sealed trait Unary[A] { self: Syntax[_] =>
+    sealed trait Unary[A] { self: Syntax[?] =>
 
       /** The inner syntax.
         *
@@ -380,7 +380,7 @@ trait Syntaxes {
       *
       * @group combinator
       */
-    sealed trait Binary[A, B] { self: Syntax[_] =>
+    sealed trait Binary[A, B] { self: Syntax[?] =>
 
       /** The left-hand side syntax.
         *
@@ -410,14 +410,14 @@ trait Syntaxes {
         inner: Syntax[A]) extends Syntax[B] with Unary[A] {
       require(inner != null)
 
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] =
         inner.prefixOf(needle, recs)
     }
 
     case class Marked[A](mark: Mark, inner: Syntax[A]) extends Syntax[A] with Unary[A] {
       require(inner != null)
 
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] =
         inner.prefixOf(needle, recs)
     }
 
@@ -432,7 +432,7 @@ trait Syntaxes {
         extends Syntax[A ~ B] with Binary[A, B] {
       require(left != null && right != null)
 
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] =
         left.prefixOf(needle, recs).asInstanceOf[Syntax[Any]] |
           (left ~ right.prefixOf(needle, recs)).asInstanceOf[Syntax[Any]]
     }
@@ -448,7 +448,7 @@ trait Syntaxes {
         extends Syntax[A] with Binary[A, A] {
       require(left != null && right != null)
 
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] =
         left.prefixOf(needle, recs).asInstanceOf[Syntax[Any]] |
           right.prefixOf(needle, recs).asInstanceOf[Syntax[Any]]
     }
@@ -469,7 +469,7 @@ trait Syntaxes {
 
       /** Extract the id and inner syntax of a `Recursive` syntax. */
       def unapply[A](that: Syntax[A]): Option[(RecId, Syntax[A])] = {
-        if (that.isInstanceOf[Recursive[_]]) {
+        if (that.isInstanceOf[Recursive[?]]) {
           val other = that.asInstanceOf[Recursive[A]]
           Some((other.id, other.inner))
         }
@@ -507,11 +507,11 @@ trait Syntaxes {
         * @group other
         */
       override def equals(other: Any): Boolean =
-        if (!other.isInstanceOf[Recursive[_]]) {
+        if (!other.isInstanceOf[Recursive[?]]) {
           false
         }
         else {
-          val that = other.asInstanceOf[Recursive[_]]
+          val that = other.asInstanceOf[Recursive[?]]
           this.id == that.id
         }
 
@@ -521,11 +521,11 @@ trait Syntaxes {
         */
       override def hashCode(): Int = id
 
-      override protected def prefixOfHelper(needle: Syntax[_], recs: Map[RecId, Recursive[_]]): Syntax[_] =
+      override protected def prefixOfHelper(needle: Syntax[?], recs: Map[RecId, Recursive[?]]): Syntax[?] =
         recs.get(id) match {
           case Some(rec) => rec
           case None => {
-            lazy val inside: Syntax[_] = inner.prefixOf(needle, recs)
+            lazy val inside: Syntax[?] = inner.prefixOf(needle, recs)
             val rec = Recursive.create(inside)
             recs += id -> rec
             inside  // Forcing inside.
@@ -656,7 +656,7 @@ trait Syntaxes {
     */
   def repsep[A, B](rep: Syntax[A], sep: Syntax[B], mark: Option[Mark] = None)
       (implicit ev: Uninteresting[B]): Syntax[Seq[A]] = {
-    optMark(rep1sep(rep, sep, mark)(ev) | epsilon(Vector()), mark)
+    optMark(rep1sep(rep, sep, mark)(using ev) | epsilon(Vector()), mark)
   }
 
   /** @usecase def rep1sep[A, B](rep: Syntax[A], sep: Syntax[B]): Syntax[Seq[A]]

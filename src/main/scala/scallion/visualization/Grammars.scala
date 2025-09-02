@@ -115,8 +115,8 @@ trait Grammars { self: Syntaxes =>
     def getGrammar[A](syntax: Syntax[A]): Grammar = {
       var nextId = 0
       var rules = Vector[Rule]()
-      val queue = new Queue[Syntax[_]]
-      var ids = Map[Syntax[_], Int]()
+      val queue = new Queue[Syntax[?]]
+      var ids = Map[Syntax[?], Int]()
 
       def getSymbols[B](next: Syntax[B]): Seq[Seq[Symbol]] = next match {
         case Disjunction(left, right) => getSymbols(left) ++ getSymbols(right)
