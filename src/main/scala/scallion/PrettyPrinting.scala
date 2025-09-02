@@ -23,7 +23,7 @@ import scallion.util.internal.enums._
   *
   * @group pretty
   */
-trait PrettyPrinting { self: Syntaxes with Parsing =>
+trait PrettyPrinting { self: Syntaxes & Parsing =>
 
   /** Pretty printer of values.
     *
@@ -68,7 +68,7 @@ trait PrettyPrinting { self: Syntaxes with Parsing =>
 
       override def apply(value: A): Option[Iterator[Token]] = {
         var stack: List[() => Unit] = Nil
-        val queue: PriorityQueue[(Int, () => Unit)] = PriorityQueue.empty(Ordering.by(-_._1))
+        val queue: PriorityQueue[(Int, () => Unit)] = PriorityQueue.empty(using Ordering.by(-_._1))
         var recs: Map[(Any, Int), (Tree[Token] => Unit) => Unit] = Map()
 
         def thenGo[B](

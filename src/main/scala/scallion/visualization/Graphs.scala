@@ -37,8 +37,8 @@ trait Graphs { self: Syntaxes =>
     private def getGraph[A](syntax: Syntax[A]): Graph = {
       var nextId = 0
       var nodes = Vector[Node]()
-      val queue = new Queue[(Syntax[_], Int)]
-      var ids = Map[Syntax[_], Int]()
+      val queue = new Queue[(Syntax[?], Int)]
+      var ids = Map[Syntax[?], Int]()
 
       def inspect[B](next: Syntax[B]): Int = {
         if (!ids.contains(next)) {
@@ -57,7 +57,7 @@ trait Graphs { self: Syntaxes =>
 
       while(queue.nonEmpty) {
         import scala.language.existentials
-        val (current: Syntax[_], id: Int) = queue.dequeue()
+        val (current: Syntax[?], id: Int) = queue.dequeue(): @unchecked
 
         val (label, targets) = current match {
           case Failure() => ("⊥", Seq())

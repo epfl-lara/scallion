@@ -29,7 +29,7 @@ import scallion.util.internal._
 trait Parsing { self: Syntaxes =>
 
   /** Cache of computation of LL(1) properties for syntaxes. */
-  private val syntaxToPropertiesCache: WeakHashMap[Syntax[_], Properties[_]] = new WeakHashMap()
+  private val syntaxToPropertiesCache: WeakHashMap[Syntax[?], Properties[?]] = new WeakHashMap()
 
   /** Decorates syntaxes with methods for LL(1) properties.
     *
@@ -82,7 +82,7 @@ trait Parsing { self: Syntaxes =>
       *
       * @group property
       */
-    def markedPrefixes(marks: Set[Mark]): Syntax[_]
+    def markedPrefixes(marks: Set[Mark]): Syntax[?]
 
     /** Parses a sequence of tokens.
       *
@@ -99,7 +99,7 @@ trait Parsing { self: Syntaxes =>
         override def nullable = self.nullable.map(f)
         override def first = self.first
         override def syntax = self.syntax.map(f)
-        override def markedPrefixes(marks: Set[Mark]): Syntax[_] =
+        override def markedPrefixes(marks: Set[Mark]): Syntax[?] =
           self.markedPrefixes(marks)
 
         override def apply(tokens: Iterator[Token]): ParseResult[B] = {
@@ -196,7 +196,7 @@ trait Parsing { self: Syntaxes =>
   sealed trait Conflict {
 
     /** Source of the conflict. */
-    val source: Syntax.Disjunction[_]
+    val source: Syntax.Disjunction[?]
   }
 
   /** Contains the description of the various LL(1) conflicts.
@@ -211,14 +211,14 @@ trait Parsing { self: Syntaxes =>
       *
       * @param source The source of the conflict.
       */
-    case class NullableConflict(source: Disjunction[_]) extends Conflict
+    case class NullableConflict(source: Disjunction[?]) extends Conflict
 
     /** Indicates that two branches of a disjunction share some same first token kinds.
       *
       * @param source      The source of the conflict.
       * @param ambiguities The conflicting kinds.
       */
-    case class FirstConflict(source: Disjunction[_],
+    case class FirstConflict(source: Disjunction[?],
                              ambiguities: Set[Kind]) extends Conflict
 
     /** Indicates that an ambiguity arises due to a disjunction appearing somewhere in
@@ -229,8 +229,8 @@ trait Parsing { self: Syntaxes =>
       * @param root        The sequence in which the conflict occured.
       * @param ambiguities The conflicting kinds.
       */
-    case class FollowConflict(source: Disjunction[_],
-                              root: Sequence[_, _],
+    case class FollowConflict(source: Disjunction[?],
+                              root: Sequence[?, ?],
                               ambiguities: Set[Kind]) extends Conflict
   }
 
@@ -250,7 +250,7 @@ trait Parsing { self: Syntaxes =>
   object Parser {
 
     /** Follow-last set tagged with its source. */
-    private case class ShouldNotFollowEntry(source: Syntax.Disjunction[_], kinds: Set[Kind])
+    private case class ShouldNotFollowEntry(source: Syntax.Disjunction[?], kinds: Set[Kind])
 
     /** Builds a LL(1) parser from a syntax description.
       * In case the syntax is not LL(1),
@@ -267,7 +267,7 @@ trait Parsing { self: Syntaxes =>
       }
 
     /** Cache of transformation from syntax to LL(1) parser. */
-    private val syntaxToTreeCache: WeakHashMap[Syntax[_], Tree[_]] = new WeakHashMap()
+    private val syntaxToTreeCache: WeakHashMap[Syntax[?], Tree[?]] = new WeakHashMap()
 
     /** Builds a LL(1) parser from a syntax description.
       *
@@ -331,12 +331,12 @@ trait Parsing { self: Syntaxes =>
           checkConflicts(right)
           if (left.nullableCell.get.nonEmpty && right.nullableCell.get.nonEmpty) {
             syntaxCell.conflictCell(Set(NullableConflict(
-              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]])))
+              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[?]])))
           }
           val intersecting = left.firstCell.get.intersect(right.firstCell.get)
           if (intersecting.nonEmpty) {
             syntaxCell.conflictCell(Set(FirstConflict(
-              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[_]], intersecting)))
+              syntaxCell.syntax.asInstanceOf[Syntax.Disjunction[?]], intersecting)))
           }
         }
         case SyntaxCell.Sequence(left: SyntaxCell[tA], right: SyntaxCell[tB], syntax) => {
@@ -348,7 +348,7 @@ trait Parsing { self: Syntaxes =>
             val ambiguities = entry.kinds.intersect(firstSet)
             if (ambiguities.nonEmpty) {
               syntaxCell.conflictCell(Set(FollowConflict(
-                entry.source, syntaxCell.syntax.asInstanceOf[Syntax.Sequence[_, _]], ambiguities)))
+                entry.source, syntaxCell.syntax.asInstanceOf[Syntax.Sequence[?, ?]], ambiguities)))
             }
           }
         }
@@ -410,43 +410,43 @@ trait Parsing { self: Syntaxes =>
           case SyntaxCell.Success(value, _) =>
             new Tree.Success(value) {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
           case SyntaxCell.Failure(_) =>
             new Tree.Failure[A]() {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
           case SyntaxCell.Elem(kind, _) =>
             new Tree.Elem(kind) {
               override val nullable: Option[Token] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[Token] = syntaxCell.syntax
             }
           case SyntaxCell.Disjunction(left, right, _) =>
             new Tree.Disjunction[A](buildTree(left), buildTree(right)) {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
           case SyntaxCell.Sequence(left: SyntaxCell[tA], right: SyntaxCell[tB], _) =>
             new Tree.Sequence[tA, tB](buildTree(left), buildTree(right)) {
               override val nullable: Option[tA ~ tB] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[tA ~ tB] = syntaxCell.syntax
             }
           case SyntaxCell.Marked(inner, mark, _) =>
             new Tree.Marked[A](buildTree(inner), mark) {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
           case SyntaxCell.Transform(inner: SyntaxCell[tA], function, inverse, _) =>
             new Tree.Transform[tA, A](buildTree(inner), function, inverse) {
               override val nullable: Option[A] = syntaxCell.nullableCell.get
-              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+              override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
               override val syntax: Syntax[A] = syntaxCell.syntax
             }
           case SyntaxCell.Recursive(recInner, recId, _) => recTrees.get(recId) match {
@@ -455,7 +455,7 @@ trait Parsing { self: Syntaxes =>
                 override val id = recId
                 override lazy val inner: Tree[A] = syntaxToTreeCache.get(recInner.syntax).asInstanceOf[Tree[A]]
                 override val nullable: Option[A] = syntaxCell.nullableCell.get
-                override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq: _*)
+                override val first: HashSet[Kind] = HashSet(syntaxCell.firstCell.get.toSeq*)
                 override val syntax: Syntax[A] = syntaxCell.syntax
               }
 
@@ -543,7 +543,7 @@ trait Parsing { self: Syntaxes =>
             new GatedCell[Set[ShouldNotFollowEntry]]
 
           left.firstCell.register(snfLeft.contramap(ks =>
-            Some(Set(ShouldNotFollowEntry(syntax.asInstanceOf[Syntax.Disjunction[_]], ks)))))
+            Some(Set(ShouldNotFollowEntry(syntax.asInstanceOf[Syntax.Disjunction[?]], ks)))))
           right.nullableCell.register(snfLeft.contramap((_: A) => None))
           snfLeft.register(snfCell)
 
@@ -552,7 +552,7 @@ trait Parsing { self: Syntaxes =>
 
           left.nullableCell.register(snfRight.contramap((_: A) => None))
           right.firstCell.register(snfRight.contramap(ks =>
-            Some(Set(ShouldNotFollowEntry(syntax.asInstanceOf[Syntax.Disjunction[_]], ks)))))
+            Some(Set(ShouldNotFollowEntry(syntax.asInstanceOf[Syntax.Disjunction[?]], ks)))))
           snfRight.register(snfCell)
 
           left.conflictCell.register(conflictCell)
@@ -682,7 +682,7 @@ trait Parsing { self: Syntaxes =>
           }
 
         def unapply[A](that: SyntaxCell[A]): Option[(SyntaxCell[A], RecId, Syntax[A])] = {
-          if (that.isInstanceOf[Recursive[_]]) {
+          if (that.isInstanceOf[Recursive[?]]) {
             val other = that.asInstanceOf[Recursive[A]]
             Some((other.inner, other.id, other.syntax))
           }
@@ -747,10 +747,10 @@ trait Parsing { self: Syntaxes =>
         go(context, tree.syntax)
       }
 
-      def markedPrefixes(marks: Set[Mark]): Syntax[_] = {
+      def markedPrefixes(marks: Set[Mark]): Syntax[?] = {
 
         @tailrec
-        def go[B](prefix: Option[Syntax[B]], nullable: Option[B], context: Context[B, A], acc: Seq[Syntax[_]]): Seq[Syntax[_]] = context match {
+        def go[B](prefix: Option[Syntax[B]], nullable: Option[B], context: Context[B, A], acc: Seq[Syntax[?]]): Seq[Syntax[?]] = context match {
           case Empty() => acc ++ prefix
           case Layered(layer, rest) =>
             if (layer.marks.exists(marks.contains(_))) {
@@ -789,7 +789,7 @@ trait Parsing { self: Syntaxes =>
                 val newPrefix = if (disjuncts.isEmpty) {
                   None
                 } else {
-                  Some(oneOf(disjuncts : _*))
+                  Some(oneOf(disjuncts*))
                 }
 
                 val tail = rest.asInstanceOf[Context[B ~ layer.FollowType, A]]
@@ -804,11 +804,11 @@ trait Parsing { self: Syntaxes =>
 
         val syntaxes = go(missing, tree.nullable, context, covereds)
 
-        oneOf(syntaxes.map(_.up[Any]).toSeq : _*)
+        oneOf(syntaxes.map(_.up[Any]).toSeq*)
       }
 
       override def apply(tokens: Iterator[Token]): ParseResult[A] = {
-        var current: Focused[A, _] = this
+        var current: Focused[A, ?] = this
         while (tokens.hasNext) {
           val token = tokens.next()
           val kind: Kind = getKind(token)
@@ -827,9 +827,9 @@ trait Parsing { self: Syntaxes =>
         }
       }
 
-      private def locate(kind: Kind): Option[Focused[A, _]] = {
+      private def locate(kind: Kind): Option[Focused[A, ?]] = {
         @tailrec
-        def go[B](tree: Tree[B], context: Context[B, A]): Option[Focused[A, _]] = {
+        def go[B](tree: Tree[B], context: Context[B, A]): Option[Focused[A, ?]] = {
           if (tree.first.contains(kind)) Some(Focused(tree, context))
           else if (context.isEmpty) None
           else tree.nullable match {
@@ -845,7 +845,7 @@ trait Parsing { self: Syntaxes =>
         go(tree, context)
       }
 
-      private def pierce(token: Token, kind: Kind): Focused[A, _] = {
+      private def pierce(token: Token, kind: Kind): Focused[A, ?] = {
         tree.pierce(kind, context).plug(token)
       }
     }
@@ -857,7 +857,7 @@ trait Parsing { self: Syntaxes =>
       val first: HashSet[Kind]
       val syntax: Syntax[A]
 
-      def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]])
+      def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]])
 
       def pierce[B](kind: Kind, context: Context[A, B]): Context[Token, B] = {
 
@@ -905,19 +905,19 @@ trait Parsing { self: Syntaxes =>
 
     private object Tree {
       sealed abstract case class Success[A](value: A) extends Tree[A] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) =
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]]) =
           (true, Vector(), None)
       }
       sealed abstract case class Failure[A]() extends Tree[A] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) =
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]]) =
           (false, Vector(), None)
       }
       sealed abstract case class Elem(kind: Kind) extends Tree[Token] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[Token]]) =
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[Token]]) =
           (false, Vector(), Some(syntax))
       }
       sealed abstract case class Sequence[A, B](left: Tree[A], right: Tree[B]) extends Tree[A ~ B] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A ~ B]]) = {
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A ~ B]]) = {
           val (changedLeft, coveredsLeft, missingLeft) = left.prefixCovering(marks)
 
           left.nullable match {
@@ -940,7 +940,7 @@ trait Parsing { self: Syntaxes =>
         }
       }
       sealed abstract case class Disjunction[A](left: Tree[A], right: Tree[A]) extends Tree[A] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) = {
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]]) = {
           val (changedLeft, coveredsLeft, missingLeft) = left.prefixCovering(marks)
           val (changedRight, coveredsRight, missingRight) = right.prefixCovering(marks)
 
@@ -956,7 +956,7 @@ trait Parsing { self: Syntaxes =>
         }
       }
       sealed abstract case class Marked[A](inner: Tree[A], mark: Mark) extends Tree[A] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) = {
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]]) = {
           val (changed, covereds, missing) = inner.prefixCovering(marks)
 
           if (marks.contains(mark)) {
@@ -972,7 +972,7 @@ trait Parsing { self: Syntaxes =>
       }
       sealed abstract case class Transform[A, B](
           inner: Tree[A], function: A => B, inverse: B => Seq[A]) extends Tree[B] {
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[B]]) = {
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[B]]) = {
           val (changed, covereds, missing) = inner.prefixCovering(marks)
 
           (changed, covereds, missing.map(Syntax.Transform(function, inverse, _)))
@@ -992,11 +992,11 @@ trait Parsing { self: Syntaxes =>
           * @group other
           */
         override def equals(other: Any): Boolean =
-          if (!other.isInstanceOf[Recursive[_]]) {
+          if (!other.isInstanceOf[Recursive[?]]) {
             false
           }
           else {
-            val that = other.asInstanceOf[Recursive[_]]
+            val that = other.asInstanceOf[Recursive[?]]
             this.id == that.id
           }
 
@@ -1006,13 +1006,13 @@ trait Parsing { self: Syntaxes =>
           */
         override def hashCode(): Int = id
 
-        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[_]], Option[Syntax[A]]) =
+        override def prefixCovering(marks: Set[Mark]): (Boolean, Seq[Syntax[?]], Option[Syntax[A]]) =
           inner.prefixCovering(marks)
       }
 
       object Recursive {
         def unapply[A](that: Tree[A]): Option[(RecId, Tree[A])] = {
-          if (that.isInstanceOf[Recursive[_]]) {
+          if (that.isInstanceOf[Recursive[?]]) {
             val other = that.asInstanceOf[Recursive[A]]
             Some((other.id, other.inner))
           }
@@ -1075,10 +1075,10 @@ trait Parsing { self: Syntaxes =>
 
       def empty(value: A): Option[B]
 
-      def plug(value: A): Focused[B, _] = {
+      def plug(value: A): Focused[B, ?] = {
 
         @tailrec
-        def go[A, B](context: Context[A, B], value: A): Focused[B, _] =
+        def go[A, B](context: Context[A, B], value: A): Focused[B, ?] =
           context match {
             case Empty() => Focused(Tree.epsilon(value), context)
             case Layered(head, tail) => head(value) match {
@@ -1128,7 +1128,7 @@ trait Parsing { self: Syntaxes =>
 
     private sealed trait Layer[A, B] {
       type FollowType
-      def apply(value: A): Either[B, LayeredTree[_, B]]
+      def apply(value: A): Either[B, LayeredTree[?, B]]
       def apply(syntax: Syntax[A]): Syntax[B]
       def marks: Option[Mark]
       def followTree: Option[Tree[FollowType]]
@@ -1138,7 +1138,7 @@ trait Parsing { self: Syntaxes =>
     private object Layer {
       case class Marked[A](mark: Mark, complete: Boolean) extends Layer[A, A] {
         override type FollowType = Nothing
-        override def apply(value: A): Either[A, LayeredTree[_, A]] =
+        override def apply(value: A): Either[A, LayeredTree[?, A]] =
           Left(value)
         override def apply(syntax: Syntax[A]): Syntax[A] =
           if (complete) Syntax.Marked(mark, syntax) else syntax
@@ -1149,7 +1149,7 @@ trait Parsing { self: Syntaxes =>
 
       case class ApplyFunction[A, B](function: A => B, inverse: B => Seq[A]) extends Layer[A, B] {
         override type FollowType = Nothing
-        override def apply(value: A): Either[B, LayeredTree[_, B]] =
+        override def apply(value: A): Either[B, LayeredTree[?, B]] =
           Left(function(value))
         override def apply(syntax: Syntax[A]): Syntax[B] =
           syntax.map(function, inverse)
@@ -1160,7 +1160,7 @@ trait Parsing { self: Syntaxes =>
 
       case class PrependValue[A, B](first: A) extends Layer[B, A ~ B] {
         override type FollowType = Nothing
-        override def apply(second: B): Either[A ~ B, LayeredTree[_, A ~ B]] =
+        override def apply(second: B): Either[A ~ B, LayeredTree[?, A ~ B]] =
           Left(first ~ second)
         override def apply(syntax: Syntax[B]): Syntax[A ~ B] =
           self.epsilon(first) ~ syntax
@@ -1171,7 +1171,7 @@ trait Parsing { self: Syntaxes =>
 
       case class FollowBy[A, B](second: Tree[B]) extends Layer[A, A ~ B] {
         override type FollowType = B
-        override def apply(first: A): Either[A ~ B, LayeredTree[_, A ~ B]] =
+        override def apply(first: A): Either[A ~ B, LayeredTree[?, A ~ B]] =
           Right(LayeredTree(second, PrependValue(first)))
         override def apply(syntax: Syntax[A]): Syntax[A ~ B] =
           syntax ~ second.syntax

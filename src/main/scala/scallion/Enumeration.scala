@@ -23,7 +23,7 @@ import scallion.util.internal.enums._
   *
   * @group enumeration
   */
-trait Enumeration { self: Syntaxes with Parsing =>
+trait Enumeration { self: Syntaxes & Parsing =>
 
   /** Factory of iterators over sequences accepted by a syntax.
     *
@@ -40,13 +40,13 @@ trait Enumeration { self: Syntaxes with Parsing =>
       *
       * @group enumeration
       */
-    def apply[A](syntax: Syntax[_], kindFunction: Kind => A)
+    def apply[A](syntax: Syntax[?], kindFunction: Kind => A)
         (markFunction: PartialFunction[Mark, A]): Iterator[Iterator[A]] = {
       var recs: Map[Int, EnvEntry[A]] = Map()
       val probe: Probe = new Probe
       val markLifted: Mark => Option[A] = markFunction.lift
 
-      def go(syntax: Syntax[_], subscriber: Tree[A] => Unit): Cell = {
+      def go(syntax: Syntax[?], subscriber: Tree[A] => Unit): Cell = {
         if (!syntax.isProductive) {
           EmptyCell
         }
@@ -118,7 +118,7 @@ trait Enumeration { self: Syntaxes with Parsing =>
       *
       * @group enumeration
       */
-    def apply(syntax: Syntax[_]): Iterator[Iterator[Kind]] = {
+    def apply(syntax: Syntax[?]): Iterator[Iterator[Kind]] = {
       apply(syntax, (kind: Kind) => kind)(PartialFunction.empty[Mark, Kind])
     }
   }
